@@ -1,0 +1,59 @@
+<div class="h-100">
+
+  <div id="row1" class="split split-vertical pt-3 pl-3 clearfix">
+    <div id="scenes" class="split split-horizontal">
+      <div class="card border-secondary">
+        <div class="card-body border-secondary">
+          <h5 class="card-title">Scenes</h5>
+        </div>
+      </div>
+    </div>
+
+    <div id="preview" class="split split-horizontal pr-3 h-100">
+      <div class="card border-secondary h-100">
+        <div class="card-body p-0 h-100">
+          <div class="h-100" #canvas (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="row2" class="split split-vertical clearfix px-3">
+    <div class="card border-secondary h-100">
+      <div class="card-body h-100">
+
+        <div class="row h-100">
+          <div class="col">
+            <select class="form-control" id="exampleFormControlSelect1">
+              <option>Fixed</option>
+              <option>Movement</option>
+            </select>
+
+            <svg id="panTiltGrid" width="250" height="250" viewBox="-100 -100 1200 1200" style="border: 1px solid black;"></svg>
+            <br />two sliders with text field
+          </div>
+          <div class="col col-auto" style="border-left: solid 1px black;">
+            <select multiple class="form-control" id="sel2" style="max-width: 250px;">
+              <option>Moving Head 1</option>
+              <option>Moving Head 2</option>
+              <option>Par 1</option>
+              <option>Par 2</option>
+              <option>Par 3</option>
+            </select>
+            <label for="sel2" style="font-size: 10px;">Mutiple select list (hold shift to select more than one):</label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="row3" class="split split-vertical clearfix px-3 pb-3">
+    <div class="card border-secondary h-100">
+      <div class="card-body h-100">
+        Timeline
+      </div>
+    </div>
+  </div>
+
+</div>

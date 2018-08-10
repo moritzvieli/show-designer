@@ -1,0 +1,34 @@
+/* Add the theme */
+@import 'theme.scss';
+
+/* Some overrides */
+$enable-rounded: false;
+
+/* Add bootstrap */
+@import '../node_modules/bootstrap/scss/bootstrap';
+
+body, html {
+    height: 100%;
+}
+
+/* Style the splitters */
+.gutter.gutter-horizontal {
+    cursor: ew-resize;
+}
+
+.gutter.gutter-vertical {
+    cursor: ns-resize;
+}
+
+.split-horizontal, .gutter.gutter-horizontal {
+    float: left;
+}
+
+.split-vertical, .gutter.gutter-horizontal {
+    height: 100%;
+}
+
+.split {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
