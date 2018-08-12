@@ -1,6 +1,6 @@
+import { MovingHead } from './../models/moving-head';
 import { Fixture } from './../models/fixture';
-import { MovingHead } from '../models/moving-head';
-import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, HostListener, Input } from '@angular/core';
 import * as THREE from 'three';
 import './js/EnableThreeExamples';
 import 'three/examples/js/controls/OrbitControls';
@@ -17,12 +17,18 @@ export class PreviewComponent implements AfterViewInit {
 
   constructor() { }
 
+  @Input()
+  fixtures: Fixture[];
+
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   public controls: THREE.OrbitControls;
   private loader = new THREE.GLTFLoader();
-  private fixtures: Fixture[] = [];
+
+  // TODO Refactor to own component
+  private pan: number;
+  private tilt: number;
 
   @ViewChild('canvas')
   private canvasRef: ElementRef;
@@ -35,10 +41,32 @@ export class PreviewComponent implements AfterViewInit {
     this.renderer.render(this.scene, this.camera);
   }
 
-  private animate() {
+  private animate(nowMillis) {
     if (this.controls) {
       this.controls.update();
     }
+
+    let cycle = 2;
+
+    // Process the effects
+    this.fixtures.forEach(element => {
+      if(element instanceof MovingHead) {
+        let movingHead = <MovingHead>element;
+
+        let direction = Math.floor(nowMillis / cycle / 255) % 2;
+
+        let red;
+        if(direction) {
+          red = Math.floor(nowMillis / cycle % 255)
+        } else {
+          red = 255 - Math.floor(nowMillis / cycle % 255)
+        }
+        
+        var color = new THREE.Color("rgb(" + red + ", 2550, 0)");
+        //var color = new THREE.Color("rgb(100, 0, 0)");
+        movingHead.color = color;
+      }
+    });
 
     this.fixtures.forEach(element => {
       element.update();
@@ -125,7 +153,7 @@ export class PreviewComponent implements AfterViewInit {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.25;
     this.controls.screenSpacePanning = false;
-    this.controls.minDistance = 10; // TODO 100
+    this.controls.minDistance = 100;
     this.controls.zoom = 100;
     this.controls.maxDistance = 200
     this.controls.maxPolarAngle = Math.PI / 2;
@@ -153,9 +181,21 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   public updateSlider(val) {
-    let movingHead: MovingHead = <MovingHead>this.fixtures[0];
+    this.fixtures.forEach(element => {
+      if(element instanceof MovingHead) {
+        let movingHead = <MovingHead>element;
+        movingHead.tilt = val;
+      }
+    });
+  }
 
-    movingHead.tilt = val;
+  public changePan(val) {
+    this.fixtures.forEach(element => {
+      if(element instanceof MovingHead) {
+        let movingHead = <MovingHead>element;
+        movingHead.pan = val;
+      }
+    });
   }
 
   private setupStage() {
@@ -199,7 +239,7 @@ export class PreviewComponent implements AfterViewInit {
       this.loadMesh('moving_head_arm'),
       this.loadMesh('moving_head_head')
     ).pipe(map(([socket, arm, head]) => {
-      let movingHead = new MovingHead(this.scene, socket, arm, head);
+      let movingHead = new MovingHead(this.scene, this.camera, socket, arm, head);
       return movingHead;
     }));
   }
@@ -218,9 +258,29 @@ export class PreviewComponent implements AfterViewInit {
     // Add the fixtures
     // TODO
     this.createMovingHead().subscribe(movingHead => {
-      this.fixtures.push(movingHead);
       movingHead.positionY = 30;
-      //movingHead.positionZ = 20;
+
+      movingHead.name = 'Moving Head 1';
+
+      this.fixtures.push(movingHead);
+    });
+
+    this.createMovingHead().subscribe(movingHead => {
+      movingHead.positionY = 30;
+      movingHead.positionX = 10;
+
+      movingHead.name = 'Moving Head 2';
+
+      this.fixtures.push(movingHead);
+    });
+
+    this.createMovingHead().subscribe(movingHead => {
+      movingHead.positionY = 30;
+      movingHead.positionX = 20;
+
+      movingHead.name = 'Moving Head 2';
+
+      this.fixtures.push(movingHead);
     });
   }
 
@@ -231,7 +291,7 @@ export class PreviewComponent implements AfterViewInit {
     this.setupScene();
 
     this.onResize();
-    this.animate();
+    this.animate(null);
   }
 
 }

@@ -1,3 +1,4 @@
+import { Fixture } from './models/fixture';
 import { PreviewComponent } from './preview/preview.component';
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import Split from 'split.js';
@@ -13,6 +14,9 @@ export class AppComponent implements AfterViewInit {
   @ViewChild(PreviewComponent)
   previewComponent:PreviewComponent;
 
+  private fixtures: Fixture[] = [];
+  private selectedFixtures: Fixture[] = [];
+
   private onResize() {
     if(this.previewComponent) {
       this.previewComponent.onResize();
@@ -20,8 +24,11 @@ export class AppComponent implements AfterViewInit {
   }
 
   public changeSlider(evt) {
-    console.log(evt);
     this.previewComponent.updateSlider(evt.newValue);
+  }
+
+  public changePan(evt) {
+    this.previewComponent.changePan(evt.newValue);
   }
 
   ngAfterViewInit(): void {

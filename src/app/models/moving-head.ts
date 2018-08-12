@@ -8,9 +8,16 @@ export class MovingHead implements Fixture {
     private spotLight: THREE.SpotLight;
     private spotLightHelper: THREE.SpotLightHelper;
     private shadowCameraHelper: THREE.CameraHelper;
+    private spotLightBeam: THREE.Mesh;
+    private camera: THREE.Camera;
+    private scene: THREE.scene;
 
+    private moonGlow;
+
+    color: THREE.Color = new THREE.Color('red');
     pan: number = 0;
     tilt: number = 0;
+    name: string = "";
 
     positionX: number = 0;
     positionY: number = 0;
@@ -18,7 +25,73 @@ export class MovingHead implements Fixture {
 
     // TODO add color, gobo, etc.
 
-    constructor(scene: THREE.scene, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
+    private atmosphereMat() {
+        var vertexShader = [
+            'varying vec3	vVertexWorldPosition;',
+            'varying vec3	vVertexNormal;',
+
+            'varying vec4	vFragColor;',
+
+            'void main(){',
+            '	vVertexNormal	= normalize(normalMatrix * normal);',
+
+            '	vVertexWorldPosition	= (modelMatrix * vec4(position, 1.0)).xyz;',
+
+            '	// set gl_Position',
+            '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+            '}',
+
+        ].join('\n')
+        var fragmentShader = [
+            'uniform vec3	glowColor;',
+            'uniform float	coeficient;',
+            'uniform float	power;',
+
+            'varying vec3	vVertexNormal;',
+            'varying vec3	vVertexWorldPosition;',
+
+            'varying vec4	vFragColor;',
+
+            'void main(){',
+            '	vec3 worldCameraToVertex= vVertexWorldPosition - cameraPosition;',
+            '	vec3 viewCameraToVertex	= (viewMatrix * vec4(worldCameraToVertex, 0.0)).xyz;',
+            '	viewCameraToVertex	= normalize(viewCameraToVertex);',
+            '	float intensity		= pow(coeficient + dot(vVertexNormal, viewCameraToVertex), power);',
+            '	gl_FragColor		= vec4(glowColor, intensity);',
+            '}',
+        ].join('\n')
+
+        // create custom material from the shader code above
+        //   that is within specially labeled script tags
+        var material = new THREE.ShaderMaterial({
+            uniforms: {
+                coeficient: {
+                    type: "f",
+                    value: 0.3
+                },
+                power: {
+                    type: "f",
+                    value: 1.3
+                },
+                glowColor: {
+                    type: "c",
+                    value: new THREE.Color('white')
+                },
+            },
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            //blending	: THREE.AdditiveBlending,
+            transparent: true,
+            depthWrite: true,
+        });
+
+        return material;
+    }
+
+    constructor(scene: THREE.scene, camera: THREE.camera, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
+        this.camera = camera;
+        this.scene = scene;
+
         // TODO
         let path = './assets/textures/SwedishRoyalCastle/';
         let format = '.jpg';
@@ -78,104 +151,20 @@ export class MovingHead implements Fixture {
         spotLightTarget.position.set(0, -10, 0);
 
         // Add the light beam
-        let geometry = new THREE.CylinderGeometry(0.1, 10, 100, 32 * 2, 20, true);
+        let geometry = new THREE.CylinderGeometry(0.1, 10, 100, 64, 20, false);
 
         geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
         geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 
-        let vertexShader = [
-            'varying vec3 vNormal;',
-            'varying vec3 vWorldPosition;',
+        var zrak_mat = new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, opacity: 0.1 });
 
-            'void main(){',
-            '// compute intensity',
-            'vNormal		= normalize( normalMatrix * normal );',
+        this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMat());
+        this.spotLightBeam.position.set(0, -0.02, 0);
 
-            'vec4 worldPosition	= modelMatrix * vec4( position, 1.0 );',
-            'vWorldPosition		= worldPosition.xyz;',
-
-            '// set gl_Position',
-            'gl_Position	= projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-            '}',
-        ].join('\n');
-
-        let fragmentShader = [
-            'varying vec3		vNormal;',
-            'varying vec3		vWorldPosition;',
-
-            'uniform vec3		lightColor;',
-
-            'uniform vec3		spotPosition;',
-
-            'uniform float		attenuation;',
-            'uniform float		anglePower;',
-
-            'void main(){',
-            'float intensity;',
-
-            //////////////////////////////////////////////////////////
-            // distance attenuation					//
-            //////////////////////////////////////////////////////////
-            'intensity	= distance(vWorldPosition, spotPosition)/attenuation;',
-            'intensity	= 1.0 - clamp(intensity, 0.0, 1.0);',
-
-            //////////////////////////////////////////////////////////
-            // intensity on angle					//
-            //////////////////////////////////////////////////////////
-            'vec3 normal	= vec3(vNormal.x, vNormal.y, abs(vNormal.z));',
-            'float angleIntensity	= pow( dot(normal, vec3(0.0, 0.0, 1.0)), anglePower );',
-            'intensity	= intensity * angleIntensity;',
-            // 'gl_FragColor	= vec4( lightColor, intensity );',
-
-            //////////////////////////////////////////////////////////
-            // final color						//
-            //////////////////////////////////////////////////////////
-
-            // set the final color
-            'gl_FragColor	= vec4( lightColor, intensity);',
-            '}',
-        ].join('\n');
-
-        let spotLightBeamMaterial = new THREE.ShaderMaterial({
-            uniforms: {
-                attenuation: {
-                    type: "f",
-                    value: 20.0
-                },
-                anglePower: {
-                    type: "f",
-                    value: 1
-                },
-                spotPosition: {
-                    type: "v3",
-                    value: new THREE.Vector3(0, 0, 0)
-                },
-                lightColor: {
-                    type: "c",
-                    value: new THREE.Color('cyan')
-                },
-            },
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            side: THREE.DoubleSide,
-            blending	: THREE.AdditiveBlending,
-            transparent: true,
-            depthWrite: false,
-        });
-        spotLightBeamMaterial.uniforms.lightColor.value.set('white')
-
-        let spotLightBeam: THREE.Mesh;
-        spotLightBeam = new THREE.Mesh(geometry, spotLightBeamMaterial);
-        spotLightBeam.position.copy(this.spotLight.position);
-        spotLightBeam.position.set(0, -0.02, 0);
-
-        spotlightGroup.add(spotLightBeam);
-        spotLightBeam.rotation.x = Math.PI / 2;
-
-        //spotlightGroup.rotation.x = Math.PI / 2;
+        spotlightGroup.add(this.spotLightBeam);
+        this.spotLightBeam.rotation.x = Math.PI / 2;
 
         this.headGroup.add(spotlightGroup);
-        //spotlightGroup.position.set(0, -15, 0);
 
         // Add the arm
         this.armGroup.add(this.headGroup);
@@ -202,5 +191,11 @@ export class MovingHead implements Fixture {
 
         this.spotLightHelper.update();
         this.shadowCameraHelper.update();
+
+        this.spotLight.color = this.color;
+        this.spotLightBeam.material.uniforms.glowColor.value = this.color;
+
+        // this.spotLightBeam.material.uniforms.viewVector.value =
+        //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);
     }
 }

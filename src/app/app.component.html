@@ -12,7 +12,7 @@
     <div id="preview" class="split split-horizontal pr-3 h-100">
       <div class="card border-secondary h-100">
         <div class="card-body p-0 h-100">
-          <app-preview class="h-100"></app-preview>
+          <app-preview class="h-100" [fixtures]="fixtures"></app-preview>
         </div>
       </div>
     </div>
@@ -29,20 +29,16 @@
               <option>Movement</option>
             </select> -->
 
-            <mv-slider [min]="0" [max]="6" [step]="0.01" (change)="changeSlider($event)"></mv-slider>
+            <mv-slider [value]="0" [min]="-3" [max]="3" [step]="0.01" (change)="changeSlider($event)"></mv-slider>
+            <mv-slider [value]="0" [min]="-3" [max]="3" [step]="0.01" (change)="changePan($event)"></mv-slider>
 
-            <!-- <svg id="panTiltGrid" width="250" height="250" viewBox="-100 -100 1200 1200" style="border: 1px solid black;"></svg>
-            <br />two sliders with text field -->
+            <svg id="panTiltGrid" width="250" height="250" viewBox="-100 -100 1200 1200" style="border: 1px solid black;"></svg>
+            <!-- <br />two sliders with text field -->
           </div>
           <div class="col col-auto" style="border-left: solid 1px black;">
-            <select multiple class="form-control" id="sel2" style="max-width: 250px;">
-              <option>Moving Head 1</option>
-              <option>Moving Head 2</option>
-              <option>Par 1</option>
-              <option>Par 2</option>
-              <option>Par 3</option>
-            </select>
-            <label for="sel2" style="font-size: 10px;">Mutiple select list (hold shift to select more than one):</label>
+            <ul class="list-group">
+              <li *ngFor="let item of fixtures" class="list-group-item">{{ item.name }}</li>
+            </ul>
           </div>
         </div>
 
