@@ -19,6 +19,11 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
+  public changeSlider(evt) {
+    console.log(evt);
+    this.previewComponent.updateSlider(evt.newValue);
+  }
+
   ngAfterViewInit(): void {
     Split(['#row1', '#row2', '#row3'], {
       sizes: [50, 30, 20],

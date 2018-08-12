@@ -24,13 +24,15 @@
 
         <div class="row h-100">
           <div class="col">
-            <select class="form-control" id="exampleFormControlSelect1">
+            <!-- <select class="form-control" id="exampleFormControlSelect1">
               <option>Fixed</option>
               <option>Movement</option>
-            </select>
+            </select> -->
 
-            <svg id="panTiltGrid" width="250" height="250" viewBox="-100 -100 1200 1200" style="border: 1px solid black;"></svg>
-            <br />two sliders with text field
+            <mv-slider [min]="0" [max]="6" [step]="0.01" (change)="changeSlider($event)"></mv-slider>
+
+            <!-- <svg id="panTiltGrid" width="250" height="250" viewBox="-100 -100 1200 1200" style="border: 1px solid black;"></svg>
+            <br />two sliders with text field -->
           </div>
           <div class="col col-auto" style="border-left: solid 1px black;">
             <select multiple class="form-control" id="sel2" style="max-width: 250px;">

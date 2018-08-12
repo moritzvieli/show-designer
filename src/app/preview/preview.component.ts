@@ -1,9 +1,12 @@
+import { Fixture } from './../models/fixture';
+import { MovingHead } from '../models/moving-head';
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import * as THREE from 'three';
-import "./js/EnableThreeExamples";
-import "three/examples/js/controls/OrbitControls";
-import "three/examples/js/loaders/GLTFLoader";
-import { Observable } from 'rxjs';
+import './js/EnableThreeExamples';
+import 'three/examples/js/controls/OrbitControls';
+import 'three/examples/js/loaders/GLTFLoader';
+import { Observable, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-preview',
@@ -17,10 +20,9 @@ export class PreviewComponent implements AfterViewInit {
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
-
   public controls: THREE.OrbitControls;
-
   private loader = new THREE.GLTFLoader();
+  private fixtures: Fixture[] = [];
 
   @ViewChild('canvas')
   private canvasRef: ElementRef;
@@ -34,11 +36,17 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private animate() {
-    if(this.controls) {
+    if (this.controls) {
       this.controls.update();
     }
-    requestAnimationFrame(this.animate.bind(this));
+
+    this.fixtures.forEach(element => {
+      element.update();
+    });
+
     this.render();
+
+    requestAnimationFrame(this.animate.bind(this));
   }
 
   private getAspectRatio(): number {
@@ -78,13 +86,13 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private loadMesh(name: string): Observable<THREE.Mesh> {
-    return this.loadScene(name).pipe((scene: THREE.Scene) => {
+    return this.loadScene(name).pipe(map((scene: THREE.Scene) => {
       let model = scene.children[0];
       model.geometry.center();
       model.position.set(0, 0, 0);
 
       return model;
-    });
+    }));
   }
 
   @HostListener('window:resize', ['$event'])
@@ -101,6 +109,8 @@ export class PreviewComponent implements AfterViewInit {
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.gammaInput = true;
+    this.renderer.gammaOutput = true;
   }
 
   private setupCamera() {
@@ -115,7 +125,8 @@ export class PreviewComponent implements AfterViewInit {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.25;
     this.controls.screenSpacePanning = false;
-    this.controls.minDistance = 100;
+    this.controls.minDistance = 10; // TODO 100
+    this.controls.zoom = 100;
     this.controls.maxDistance = 200
     this.controls.maxPolarAngle = Math.PI / 2;
     this.controls.target = new THREE.Vector3(0, 20, 0);
@@ -125,18 +136,26 @@ export class PreviewComponent implements AfterViewInit {
   private setupFloor() {
     let geometry = new THREE.BoxGeometry(20, 0.1, 20, 20, 1, 20);
 
-    var texture = new THREE.TextureLoader().load('./assets/textures/planks.jpg');
+    let texture = new THREE.TextureLoader().load('./assets/textures/planks.jpg');
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(10, 10);
-    var floorMaterial = new THREE.MeshBasicMaterial({ map: texture });
+    let floorMaterial = new THREE.MeshBasicMaterial({ map: texture });
 
-    let floor = new THREE.Mesh(geometry.clone(), floorMaterial);
+    var material = new THREE.MeshPhongMaterial( { color: 0x808080, dithering: true } );
+
+    let floor = new THREE.Mesh(geometry.clone(), material);
     floor.receiveShadow = true
     floor.castShadow = true
     floor.scale.multiplyScalar(8.0)
     floor.position.set(0, -geometry.parameters.height / 2, 0)
     this.scene.add(floor);
+  }
+
+  public updateSlider(val) {
+    let movingHead: MovingHead = <MovingHead>this.fixtures[0];
+
+    movingHead.tilt = val;
   }
 
   private setupStage() {
@@ -146,15 +165,15 @@ export class PreviewComponent implements AfterViewInit {
     // Load the stage
     this.loadScene('stage').subscribe((scene) => {
       // TODO Too heavy for the stage?
-      var path = './assets/textures/SwedishRoyalCastle/';
-      var format = '.jpg';
-      var urls = [
-          path + 'px' + format, path + 'nx' + format,
-          path + 'py' + format, path + 'ny' + format,
-          path + 'pz' + format, path + 'nz' + format
-        ];
+      let path = './assets/textures/SwedishRoyalCastle/';
+      let format = '.jpg';
+      let urls = [
+        path + 'px' + format, path + 'nx' + format,
+        path + 'py' + format, path + 'ny' + format,
+        path + 'pz' + format, path + 'nz' + format
+      ];
 
-      var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+      var reflectionCube = new THREE.CubeTextureLoader().load(urls);
 
       let material = new THREE.MeshStandardMaterial({
         color: 0xffffff,
@@ -162,7 +181,6 @@ export class PreviewComponent implements AfterViewInit {
         metalness: 1,
         envMap: reflectionCube,
         envMapIntensity: 1.4
-
       });
 
       scene.scale.multiplyScalar(3)
@@ -173,6 +191,17 @@ export class PreviewComponent implements AfterViewInit {
 
       this.scene.add(scene);
     });
+  }
+
+  private createMovingHead(): Observable<MovingHead> {
+    return forkJoin(
+      this.loadMesh('moving_head_socket'),
+      this.loadMesh('moving_head_arm'),
+      this.loadMesh('moving_head_head')
+    ).pipe(map(([socket, arm, head]) => {
+      let movingHead = new MovingHead(this.scene, socket, arm, head);
+      return movingHead;
+    }));
   }
 
   private setupScene() {
@@ -188,6 +217,11 @@ export class PreviewComponent implements AfterViewInit {
 
     // Add the fixtures
     // TODO
+    this.createMovingHead().subscribe(movingHead => {
+      this.fixtures.push(movingHead);
+      movingHead.positionY = 30;
+      //movingHead.positionZ = 20;
+    });
   }
 
   ngAfterViewInit(): void {
