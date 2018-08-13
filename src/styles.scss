@@ -32,3 +32,13 @@ body, html {
     overflow-y: hidden;
     overflow-x: hidden;
 }
+
+.card-body {
+    overflow: auto;
+    padding: 0.25rem;
+}
+
+/* Make bootstrap more compact */
+.list-group-item {
+    padding: 0.3rem 0.75rem
+}

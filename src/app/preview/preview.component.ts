@@ -1,5 +1,8 @@
-import { MovingHead } from './../models/moving-head';
-import { Fixture } from './../models/fixture';
+import { IFixture3d } from './models/i-fixture-3d';
+import { MovingHead3d } from './models/moving-head-3d';
+import { FixtureService } from '../services/fixture.service';
+import { MovingHead } from '../models/moving-head';
+import { Fixture } from '../models/fixture';
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener, Input } from '@angular/core';
 import * as THREE from 'three';
 import './js/EnableThreeExamples';
@@ -15,23 +18,30 @@ import { map } from 'rxjs/operators';
 })
 export class PreviewComponent implements AfterViewInit {
 
-  constructor() { }
-
-  @Input()
-  fixtures: Fixture[];
-
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   public controls: THREE.OrbitControls;
   private loader = new THREE.GLTFLoader();
 
-  // TODO Refactor to own component
-  private pan: number;
-  private tilt: number;
+  private fixtures3d: IFixture3d[] = [];
 
   @ViewChild('canvas')
   private canvasRef: ElementRef;
+
+  constructor(private fixtureService: FixtureService) {
+    this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
+      if(fixture instanceof MovingHead) {
+        forkJoin(
+          this.loadMesh('moving_head_socket'),
+          this.loadMesh('moving_head_arm'),
+          this.loadMesh('moving_head_head')
+        ).pipe(map(([socket, arm, head]) => {
+          this.fixtures3d.push(new MovingHead3d(fixture, this.scene, this.camera, socket, arm, head));
+        })).subscribe();
+      }
+    });
+  }
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
@@ -41,35 +51,39 @@ export class PreviewComponent implements AfterViewInit {
     this.renderer.render(this.scene, this.camera);
   }
 
-  private animate(nowMillis) {
+  private animate(timeMillis) {
     if (this.controls) {
       this.controls.update();
     }
 
-    let cycle = 2;
-
+    // TODO Source this out
     // Process the effects
-    this.fixtures.forEach(element => {
-      if(element instanceof MovingHead) {
-        let movingHead = <MovingHead>element;
+    // this.fixtures3d.forEach(element => {
+    //   if(element instanceof MovingHead3d) {
+    //     let movingHead3d = <MovingHead3d>element;
 
-        let direction = Math.floor(nowMillis / cycle / 255) % 2;
-
-        let red;
-        if(direction) {
-          red = Math.floor(nowMillis / cycle % 255)
-        } else {
-          red = 255 - Math.floor(nowMillis / cycle % 255)
-        }
+    //     // Sine wave
+    //     let length = 2000;
+    //     let phaseMillis = 0;
+    //     let amplitude = 255;
+    //     let position = 0;
+    //     let minValue = 0;
+    //     let maxValue = 255;
         
-        var color = new THREE.Color("rgb(" + red + ", 2550, 0)");
-        //var color = new THREE.Color("rgb(100, 0, 0)");
-        movingHead.color = color;
-      }
-    });
+    //     let red = Math.min(Math.max(Math.round(amplitude / 2 * Math.sin((2 * Math.PI * (nowMillis - phaseMillis)) / length) + amplitude / 2 + position), minValue), maxValue);
+        
+    //     phaseMillis = 500;
+    //     let blue = Math.min(Math.max(Math.round(amplitude / 2 * Math.sin((2 * Math.PI * (nowMillis - phaseMillis)) / length) + amplitude / 2 + position), minValue), maxValue);
 
-    this.fixtures.forEach(element => {
-      element.update();
+    //     console.log(red, blue);
+
+    //     movingHead3d.movingHead.colorR = red;
+    //     movingHead3d.movingHead.colorG = 255;
+    //   }
+    // });
+
+    this.fixtures3d.forEach(element => {
+      element.update(timeMillis);
     });
 
     this.render();
@@ -181,19 +195,19 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   public updateSlider(val) {
-    this.fixtures.forEach(element => {
-      if(element instanceof MovingHead) {
-        let movingHead = <MovingHead>element;
-        movingHead.tilt = val;
+    this.fixtures3d.forEach(element => {
+      if(element instanceof MovingHead3d) {
+        let movingHead3d = <MovingHead3d>element;
+        movingHead3d.movingHead.tilt = val;
       }
     });
   }
 
   public changePan(val) {
-    this.fixtures.forEach(element => {
-      if(element instanceof MovingHead) {
-        let movingHead = <MovingHead>element;
-        movingHead.pan = val;
+    this.fixtures3d.forEach(element => {
+      if(element instanceof MovingHead3d) {
+        let movingHead3d = <MovingHead3d>element;
+        movingHead3d.movingHead.pan = val;
       }
     });
   }
@@ -233,17 +247,6 @@ export class PreviewComponent implements AfterViewInit {
     });
   }
 
-  private createMovingHead(): Observable<MovingHead> {
-    return forkJoin(
-      this.loadMesh('moving_head_socket'),
-      this.loadMesh('moving_head_arm'),
-      this.loadMesh('moving_head_head')
-    ).pipe(map(([socket, arm, head]) => {
-      let movingHead = new MovingHead(this.scene, this.camera, socket, arm, head);
-      return movingHead;
-    }));
-  }
-
   private setupScene() {
     // Create a new scene
     this.scene = new THREE.Scene();
@@ -254,34 +257,6 @@ export class PreviewComponent implements AfterViewInit {
 
     // Create the stage
     this.setupStage();
-
-    // Add the fixtures
-    // TODO
-    this.createMovingHead().subscribe(movingHead => {
-      movingHead.positionY = 30;
-
-      movingHead.name = 'Moving Head 1';
-
-      this.fixtures.push(movingHead);
-    });
-
-    this.createMovingHead().subscribe(movingHead => {
-      movingHead.positionY = 30;
-      movingHead.positionX = 10;
-
-      movingHead.name = 'Moving Head 2';
-
-      this.fixtures.push(movingHead);
-    });
-
-    this.createMovingHead().subscribe(movingHead => {
-      movingHead.positionY = 30;
-      movingHead.positionX = 20;
-
-      movingHead.name = 'Moving Head 2';
-
-      this.fixtures.push(movingHead);
-    });
   }
 
   ngAfterViewInit(): void {
