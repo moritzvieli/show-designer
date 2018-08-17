@@ -1,3 +1,5 @@
+import { EffectService } from './services/effect.service';
+import { UuidService } from './services/uuid.service';
 import { EffectMapping } from './models/effect-mapping';
 import { WaveSine } from './models/wave-sine';
 import { MovingHead, MovingHeadChannel } from './models/moving-head';
@@ -20,7 +22,10 @@ export class AppComponent implements AfterViewInit {
   @ViewChild(PreviewComponent)
   previewComponent:PreviewComponent;
 
-  constructor (public fixtureService: FixtureService) {}
+  constructor (
+    public fixtureService: FixtureService,
+    private uuidService: UuidService,
+    private effectService: EffectService) {}
 
   private onResize() {
     if(this.previewComponent) {
@@ -64,14 +69,15 @@ export class AppComponent implements AfterViewInit {
 
     let movingHead: MovingHead;
 
-    let effect = new WaveSine();
+    let effect = new WaveSine(this.uuidService, this.fixtureService, this.effectService);
     let effectMapping = new EffectMapping<MovingHeadChannel>();
     effectMapping.effect = effect;
     effectMapping.channels.push(MovingHeadChannel.colorR);
 
-    let effectTilt = new WaveSine();
+    let effectTilt = new WaveSine(this.uuidService, this.fixtureService, this.effectService);
     effectTilt.amplitude = 6;
     effectTilt.lengthMillis = 3000;
+    effectTilt.phasingMillis = 100;
     let effectMappingTilt = new EffectMapping<MovingHeadChannel>();
     effectMappingTilt.effect = effectTilt;
     effectMappingTilt.channels.push(MovingHeadChannel.tilt);
@@ -80,18 +86,24 @@ export class AppComponent implements AfterViewInit {
     movingHead.positionY = 30;
     movingHead.positionX = 0;
     movingHead.colorG = 255;
-    movingHead.effects.push(effectMapping);
-    movingHead.effects.push(effectMappingTilt);
+    //movingHead.effects.push(effectMapping);
+    movingHead.effectMappings.push(effectMappingTilt);
     this.fixtureService.addFixture(movingHead);
 
     movingHead = new MovingHead();
     movingHead.positionY = 30;
     movingHead.positionX = 10;
+    movingHead.colorG = 255;
+    //movingHead.effects.push(effectMapping);
+    movingHead.effectMappings.push(effectMappingTilt);
     this.fixtureService.addFixture(movingHead);
 
     movingHead = new MovingHead();
     movingHead.positionY = 30;
     movingHead.positionX = 20;
+    movingHead.colorG = 255;
+    //movingHead.effects.push(effectMapping);
+    movingHead.effectMappings.push(effectMappingTilt);
     this.fixtureService.addFixture(movingHead);
   }
 

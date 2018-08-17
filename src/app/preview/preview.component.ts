@@ -56,34 +56,8 @@ export class PreviewComponent implements AfterViewInit {
       this.controls.update();
     }
 
-    // TODO Source this out
-    // Process the effects
-    // this.fixtures3d.forEach(element => {
-    //   if(element instanceof MovingHead3d) {
-    //     let movingHead3d = <MovingHead3d>element;
-
-    //     // Sine wave
-    //     let length = 2000;
-    //     let phaseMillis = 0;
-    //     let amplitude = 255;
-    //     let position = 0;
-    //     let minValue = 0;
-    //     let maxValue = 255;
-        
-    //     let red = Math.min(Math.max(Math.round(amplitude / 2 * Math.sin((2 * Math.PI * (nowMillis - phaseMillis)) / length) + amplitude / 2 + position), minValue), maxValue);
-        
-    //     phaseMillis = 500;
-    //     let blue = Math.min(Math.max(Math.round(amplitude / 2 * Math.sin((2 * Math.PI * (nowMillis - phaseMillis)) / length) + amplitude / 2 + position), minValue), maxValue);
-
-    //     console.log(red, blue);
-
-    //     movingHead3d.movingHead.colorR = red;
-    //     movingHead3d.movingHead.colorG = 255;
-    //   }
-    // });
-
-    this.fixtures3d.forEach(element => {
-      element.update(timeMillis);
+    this.fixtures3d.forEach((element, index) => {
+      element.update(timeMillis, index);
     });
 
     this.render();

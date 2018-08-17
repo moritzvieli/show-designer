@@ -42,3 +42,22 @@ body, html {
 .list-group-item {
     padding: 0.3rem 0.75rem
 }
+
+/* Style the sliders */
+.slider-track {
+    height: 5px !important;
+}
+
+.slider-track, .slider-track-low, .slider-track-high, .slider-selection {
+    background-color: white !important;
+    border-radius: 0  !important;
+    background-image: none  !important;
+    box-shadow: none !important;
+}
+
+.slider-handle {
+    width: 15px !important;
+    height: 15px !important;
+    background-color: $link-color !important;
+    background-image: none !important;
+}

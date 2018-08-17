@@ -1,5 +1,6 @@
 import { Fixture } from './fixture';
 import { EffectMapping } from './effect-mapping';
+import { IFixture } from './i-fixture';
 
 export enum MovingHeadChannel
 {
@@ -12,7 +13,7 @@ export enum MovingHeadChannel
 
 export class MovingHead extends Fixture {
 
-    effects: EffectMapping<MovingHeadChannel>[] = []; 
+    effectMappings: EffectMapping<MovingHeadChannel>[] = []; 
 
     colorR: number = 0;
     colorG: number = 0;
@@ -25,6 +26,10 @@ export class MovingHead extends Fixture {
         super();
 
         this.name = 'Moving Head';
+    }
+
+    getEffectMappings(): EffectMapping<MovingHeadChannel>[] {
+        return this.effectMappings;
     }
 
 }

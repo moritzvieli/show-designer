@@ -13,19 +13,11 @@ export class MovingHead3d implements IFixture3d {
     private spotLightHelper: THREE.SpotLightHelper;
     private shadowCameraHelper: THREE.CameraHelper;
     private spotLightBeam: THREE.Mesh;
-    private camera: THREE.Camera;
-    private scene: THREE.scene;
-
-    private moonGlow;
-
-    // TODO add color, gobo, etc.
 
     private atmosphereMat() {
         var vertexShader = [
             'varying vec3	vVertexWorldPosition;',
             'varying vec3	vVertexNormal;',
-
-            'varying vec4	vFragColor;',
 
             'void main(){',
             '	vVertexNormal	= normalize(normalMatrix * normal);',
@@ -44,8 +36,6 @@ export class MovingHead3d implements IFixture3d {
 
             'varying vec3	vVertexNormal;',
             'varying vec3	vVertexWorldPosition;',
-
-            'varying vec4	vFragColor;',
 
             'void main(){',
             '	vec3 worldCameraToVertex= vVertexWorldPosition - cameraPosition;',
@@ -85,8 +75,6 @@ export class MovingHead3d implements IFixture3d {
 
     constructor(movingHead: MovingHead, scene: THREE.scene, camera: THREE.camera, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
         this.movingHead = movingHead;
-        this.camera = camera;
-        this.scene = scene;
 
         // TODO
         let path = './assets/textures/SwedishRoyalCastle/';
@@ -180,10 +168,10 @@ export class MovingHead3d implements IFixture3d {
         return this.objectGroup;
     }
 
-    public update(timeMillis: number) {
+    public update(timeMillis: number, fixtureIndex: number) {
         // Process the effects
-        this.movingHead.effects.forEach(effectMapping => {
-            let value = effectMapping.effect.getValueAtMillis(timeMillis);
+        this.movingHead.effectMappings.forEach(effectMapping => {
+            let value = effectMapping.effect.getValueAtMillis(timeMillis, fixtureIndex);
 
             effectMapping.channels.forEach(channel => {
                 switch (channel) {
