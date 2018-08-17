@@ -1,18 +1,33 @@
+import { Fixture } from './../../models/fixture';
 import { MovingHeadChannel } from '../../models/moving-head';
 import { IFixture3d } from './i-fixture-3d';
 import { MovingHead } from '../../models/moving-head';
 import * as THREE from 'three';
+import { Positioning } from '../../models/fixture';
 
 export class MovingHead3d implements IFixture3d {
     movingHead: MovingHead;
 
+    private scene: THREE.scene;
+
+    private socket: THREE.Mesh;
+    private arm: THREE.Mesh;
+    private head: THREE.Mesh;
+
     private headGroup: THREE.Object3D = new THREE.Object3D();
+    private spotlightGroup: THREE.Object3D = new THREE.Object3D();
     private armGroup: THREE.Object3D = new THREE.Object3D();
     private objectGroup: THREE.Object3D = new THREE.Object3D();
     private spotLight: THREE.SpotLight;
     private spotLightHelper: THREE.SpotLightHelper;
     private shadowCameraHelper: THREE.CameraHelper;
     private spotLightBeam: THREE.Mesh;
+
+    private lastBeamAngleDegrees: number;
+    private lastSelected: boolean;
+
+    private material: THREE.MeshStandardMaterial;
+    private selectedMaterial: THREE.MeshLambertMaterial;
 
     private atmosphereMat() {
         var vertexShader = [
@@ -73,8 +88,30 @@ export class MovingHead3d implements IFixture3d {
         return material;
     }
 
+    private createSpotLightBeam() {
+        if (this.spotLightBeam) {
+            this.spotlightGroup.remove(this.spotLightBeam);
+        }
+
+        let geometry = new THREE.CylinderGeometry(0.1, this.movingHead.beamAngleDegrees * 1.2, 100, 64, 20, false);
+        geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
+        geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+
+        //var zrak_mat = new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, opacity: 0.1 });
+
+        this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMat());
+        this.spotLightBeam.position.set(0, -0.02, 0);
+
+        this.spotlightGroup.add(this.spotLightBeam);
+        this.spotLightBeam.rotation.x = Math.PI / 2;
+    }
+
     constructor(movingHead: MovingHead, scene: THREE.scene, camera: THREE.camera, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
         this.movingHead = movingHead;
+        this.scene = scene;
+        this.socket = socket;
+        this.arm = arm;
+        this.head = head;
 
         // TODO
         let path = './assets/textures/SwedishRoyalCastle/';
@@ -87,7 +124,7 @@ export class MovingHead3d implements IFixture3d {
 
         var reflectionCube = new THREE.CubeTextureLoader().load(urls);
 
-        let material = new THREE.MeshStandardMaterial({
+        this.material = new THREE.MeshStandardMaterial({
             color: 0xffffff,
             roughness: 0.07,
             metalness: 1,
@@ -95,9 +132,14 @@ export class MovingHead3d implements IFixture3d {
             envMapIntensity: 1.4
         });
 
-        socket.material = material;
-        arm.material = material;
-        head.material = material;
+        this.selectedMaterial = new THREE.MeshLambertMaterial({
+            color: 0xff00ff,
+            emissive: 0xff00ff
+        });
+
+        socket.material = this.material;
+        arm.material = this.material;
+        head.material = this.material;
 
         // Add the head
         head.scale.multiplyScalar(0.9)
@@ -106,10 +148,8 @@ export class MovingHead3d implements IFixture3d {
         this.headGroup.add(headPivotGroup);
 
         // Add the spotlight
-        let spotlightGroup = new THREE.Object3D();
-
         this.spotLight = new THREE.SpotLight(0xffffff, 1);
-        this.spotLight.angle = 0.13; //Math.PI / 4;
+        this.spotLight.angle = 0.244;;
         this.spotLight.penumbra = 0.5;
         this.spotLight.decay = 2;
         this.spotLight.distance = 200;
@@ -129,26 +169,15 @@ export class MovingHead3d implements IFixture3d {
         let spotLightTarget = new THREE.Object3D();
         this.spotLight.target = spotLightTarget;
 
-        spotlightGroup.add(this.spotLight);
-        spotlightGroup.add(spotLightTarget);
+        this.spotlightGroup.add(this.spotLight);
+        this.spotlightGroup.add(spotLightTarget);
         this.spotLight.position.set(0, -1.4, 0);
         spotLightTarget.position.set(0, -10, 0);
 
         // Add the light beam
-        let geometry = new THREE.CylinderGeometry(0.1, 10, 100, 64, 20, false);
+        this.createSpotLightBeam();
 
-        geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
-        geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
-
-        var zrak_mat = new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, opacity: 0.1 });
-
-        this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMat());
-        this.spotLightBeam.position.set(0, -0.02, 0);
-
-        spotlightGroup.add(this.spotLightBeam);
-        this.spotLightBeam.rotation.x = Math.PI / 2;
-
-        this.headGroup.add(spotlightGroup);
+        this.headGroup.add(this.spotlightGroup);
 
         // Add the arm
         this.armGroup.add(this.headGroup);
@@ -179,6 +208,18 @@ export class MovingHead3d implements IFixture3d {
                         this.movingHead.colorR = Math.round(value);
                         break;
                     }
+                    case MovingHeadChannel.colorG: {
+                        this.movingHead.colorG = Math.round(value);
+                        break;
+                    }
+                    case MovingHeadChannel.colorB: {
+                        this.movingHead.colorB = Math.round(value);
+                        break;
+                    }
+                    case MovingHeadChannel.pan: {
+                        this.movingHead.pan = value;
+                        break;
+                    }
                     case MovingHeadChannel.tilt: {
                         this.movingHead.tilt = value;
                         break;
@@ -187,17 +228,43 @@ export class MovingHead3d implements IFixture3d {
             });
         });
 
-        // Update the 3d objects
+        // Update the position
         this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY, this.movingHead.positionZ);
-        this.armGroup.rotation.y = this.movingHead.pan;
-        this.headGroup.rotation.x = this.movingHead.tilt + 0;
 
+        // Calculate the y/x rotation in radiants based on pan/tilt (0-255) respecting the max pan/tilt
+        this.armGroup.rotation.y = THREE.Math.degToRad(this.movingHead.maxPanDegrees * this.movingHead.pan / 255) - THREE.Math.degToRad(this.movingHead.maxPanDegrees / 2);
+        this.headGroup.rotation.x = THREE.Math.degToRad(this.movingHead.maxTiltDegrees * this.movingHead.tilt / 255) - THREE.Math.degToRad(this.movingHead.maxTiltDegrees / 2);
+
+        // Update the angle (only on change, because it's expensive)
+        if (this.lastBeamAngleDegrees != this.movingHead.beamAngleDegrees) {
+            this.spotLight.angle = THREE.Math.degToRad(this.movingHead.beamAngleDegrees);
+            this.createSpotLightBeam();
+            this.lastBeamAngleDegrees = this.movingHead.beamAngleDegrees;
+        }
+
+        // Update the material
+        if(this.lastSelected != this.movingHead.isSelected) {
+            if (this.movingHead.isSelected) {
+                this.socket.material = this.selectedMaterial;
+                this.arm.material = this.selectedMaterial;
+                this.head.material = this.selectedMaterial;
+            } else {
+                this.socket.material = this.material;
+                this.arm.material = this.material;
+                this.head.material = this.material;
+            }
+
+            this.lastSelected = this.movingHead.isSelected;
+        }
+
+        // Update the light helpers
         this.spotLightHelper.update();
         this.shadowCameraHelper.update();
 
         var color = new THREE.Color("rgb(" + this.movingHead.colorR + ", " + this.movingHead.colorG + ", " + this.movingHead.colorB + ")");
 
         this.spotLight.color = color;
+        //this.spotLightBeam.material.color = color;
         this.spotLightBeam.material.uniforms.glowColor.value = color;
 
         // this.spotLightBeam.material.uniforms.viewVector.value =

@@ -21,52 +21,139 @@
   <div id="row2" class="split split-vertical clearfix px-3">
     <div id="effects" class="split split-horizontal h-100">
 
-      <div class="card border-secondary h-100">
-        <div class="card-body h-100">
+      <div class="row h-100">
+        <div class="col col-auto pr-1">
+          <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link px-3 active" id="v-pills-home-tab" popover="Fixture properties" container="body" placement="right" triggers="mouseenter:mouseleave"
+              data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">
+              <i class="fa fa-cog fa-fw" aria-hidden="true"></i>
+            </a>
+            <a class="nav-link px-3" id="v-pills-profile-tab" popover="Effects" container="body" placement="right" triggers="mouseenter:mouseleave"
+              data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">
+              <i class="fa fa-bolt fa-fw" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col pl-0">
+          <div class="tab-content h-100" id="v-pills-tabContent">
+            <div class="tab-pane h-100 show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+              <div class="card border-secondary h-100">
+                <div class="card-body h-100">
+
+                  <div class="row m-0">
+
+                    <div class="col-sm-4">
+                      <div class="card border-secondary">
+                        <div class="card-body border-secondary">
+                          <div class="card-header">
+                            Position
+                          </div>
+
+                          <div>
+                            <select class="m-2" id="exampleFormControlSelect1" style="width: 50px;">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                              <option>5</option>
+                            </select>
+                          </div>
+
+                          <div class="ml-2 d-flex">
+                            <div class="my-auto" style="width: 17px; float: left;">
+                              X
+                            </div>
+                            <div class="my-auto">
+                              <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changeSlider($event)"></mv-slider>
+                            </div>
+                          </div>
+
+                          <div class="ml-2 d-flex">
+                            <div class="my-auto" style="width: 17px; float: left;">
+                              Y
+                            </div>
+                            <div class="my-auto">
+                              <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changeSlider($event)"></mv-slider>
+                            </div>
+                          </div>
+
+                          <div class="ml-2 d-flex">
+                            <div class="my-auto" style="width: 17px; float: left;">
+                              Z
+                            </div>
+                            <div class="my-auto">
+                              <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'" [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changeSlider($event)"></mv-slider>
+                            </div>
+                          </div>
 
 
-          <div id="accordion">
-            <div class="card">
-              <div class="card-header" id="headingOne">
-                <h5 class="mb-0">
-                  <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    Curve
-                  </button>
-                </h5>
-              </div>
+                        </div>
+                      </div>
+                    </div>
 
-              <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                <div class="card-body">
+                    <div class="col-sm-3">
+
+                    </div>
+
+                  </div>
 
                 </div>
               </div>
             </div>
-            <div class="card">
-              <div class="card-header" id="headingTwo">
-                <h5 class="mb-0">
-                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Movement
-                    </button>
-                </h5>
-              </div>
-              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                <div class="card-body">
-                    <mv-slider [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changeSlider($event)"></mv-slider>
-                    <mv-slider [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changePan($event)"></mv-slider>
-          
-                    <svg id="panTiltGrid" width="250" height="250" viewBox="-100 -100 1200 1200" style="border: 1px solid black;"></svg>
+            <div class="tab-pane h-100" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+
+              <div class="card border-secondary h-100">
+                <div class="card-body h-100">
+
+                  <accordion [closeOthers]="true">
+                    <accordion-group *ngFor="let item of effects; let i = index" (isOpenChange)="openEffect(i, $event)">
+
+                      <button class="btn btn-link btn-block clearfix" accordion-heading>
+                        <div class="pull-left float-left">
+                          <img *ngIf="item.constructor.name == 'CurveEffect'" class="mr-1" width="25px;" src="assets/icons/levels.png"> {{ item.constructor.name }}
+                        </div>
+                      </button>
+
+                      <div *ngIf="item.constructor.name == 'CurveEffect'">
+                        <svg id="panTiltGrid" width="250" height="250" viewBox="-100 -100 1200 1200" style="border: 1px solid black;"></svg>
+
+                        <mv-slider [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changeSlider($event)"></mv-slider>
+                        <mv-slider [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changePan($event)"></mv-slider>
+
+
+                      </div>
+
+                      <div *ngIf="item.constructor.name == 'PanTiltEffect'">
+                        <mv-slider [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changeSlider($event)"></mv-slider>
+                        <mv-slider [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changePan($event)"></mv-slider>
+
+                        <svg id="panTiltGrid" width="250" height="250" viewBox="-100 -100 1200 1200" style="border: 1px solid black;"></svg>
+                      </div>
+
+                    </accordion-group>
+                  </accordion>
+
+                  <div class="d-flex mx-auto">
+                    <div class="dropdown show d-flex">
+                      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fa fa-plus" aria-hidden="true"></i> Add New Effect
+                      </a>
+
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#" (click)="addCurveEffect()">
+                          <img class="mr-1" width="17px;" src="assets/icons/levels.png"> Curve</a>
+                        <a class="dropdown-item" href="#" (click)="addPanTiltEffect()">
+                          <img class="mr-1" width="17px;" src="assets/icons/four-expand-arrows.png"> Pan/Tilt</a>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- <select class="form-control" id="exampleFormControlSelect1">
-              <option>Fixed</option>
-              <option>Movement</option>
-            </select> -->
-
-
-          <!-- <br />two sliders with text field -->
         </div>
       </div>
 
@@ -76,9 +163,33 @@
     <div id="fixtures" class="split split-horizontal h-100">
       <div class="card border-secondary h-100">
         <div class="card-body h-100">
-          <ul class="list-group list-group-flush">
-            <li *ngFor="let item of fixtureService.fixtures" class="list-group-item">{{ item.name }}</li>
-          </ul>
+          <!-- List of fixtures -->
+          <div class="list-group list-group-flush" [sortablejs]="fixtureService.fixtures">
+            <div class="list-group-item" *ngFor="let item of fixtureService.fixtures" [class.active]="item.isSelected">
+              <div class="row" (click)="selectFixture($event, item)" style="cursor: pointer;">
+                <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
+                  <i class="fa fa-bars" aria-hidden="true"></i>
+                </div>
+                {{ item.name }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Add a new fixture -->
+          <div class="d-flex mx-auto">
+            <div class="dropdown show d-flex">
+              <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                <i class="fa fa-plus" aria-hidden="true"></i> Add New Fixture
+              </a>
+
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="#" (click)="addMovingHead()">
+                  <img class="mr-1" width="17px;" src="assets/icons/four-expand-arrows.png"> Moving Head</a>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -93,3 +204,31 @@
   </div>
 
 </div>
+
+<!--
+<div>Icons made by
+  <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> from
+  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+  <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+</div>
+<div>Icons made by
+  <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from
+  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+  <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+</div>
+<div>Icons made by
+  <a href="https://www.flaticon.com/authors/epiccoders" title="EpicCoders">EpicCoders</a> from
+  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+  <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+</div>
+<div>Icons made by
+  <a href="https://www.flaticon.com/authors/pixelmeetup" title="Pixelmeetup">Pixelmeetup</a> from
+  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+  <a href="http://creativecommons.org/licenses/by/3.0/" title="Cre Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+</div>
+<div>Icons made by
+  <a href="http://www.freepik.com" title="Freepik">Freepik</a> from
+  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+  <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+</div>
+-->

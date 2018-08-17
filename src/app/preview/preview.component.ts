@@ -1,3 +1,4 @@
+import { Positioning } from './../models/fixture';
 import { IFixture3d } from './models/i-fixture-3d';
 import { MovingHead3d } from './models/moving-head-3d';
 import { FixtureService } from '../services/fixture.service';
@@ -8,8 +9,14 @@ import * as THREE from 'three';
 import './js/EnableThreeExamples';
 import 'three/examples/js/controls/OrbitControls';
 import 'three/examples/js/loaders/GLTFLoader';
+import * as STATS from 'three/examples/js/libs/stats.min';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+declare var THREEx: any;
+
+// export function Stats() {
+// }
 
 @Component({
   selector: 'app-preview',
@@ -24,6 +31,9 @@ export class PreviewComponent implements AfterViewInit {
   public controls: THREE.OrbitControls;
   private loader = new THREE.GLTFLoader();
 
+  private stats: any = STATS();
+  private rendererStats = new THREEx.RendererStats();
+
   private fixtures3d: IFixture3d[] = [];
 
   @ViewChild('canvas')
@@ -31,7 +41,7 @@ export class PreviewComponent implements AfterViewInit {
 
   constructor(private fixtureService: FixtureService) {
     this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
-      if(fixture instanceof MovingHead) {
+      if (fixture instanceof MovingHead) {
         forkJoin(
           this.loadMesh('moving_head_socket'),
           this.loadMesh('moving_head_arm'),
@@ -51,16 +61,48 @@ export class PreviewComponent implements AfterViewInit {
     this.renderer.render(this.scene, this.camera);
   }
 
+  private updateStagePosition(positioning: Positioning, xMin: number, xMax: number, yMin: number, yMax: number, zMin: number, zMax: number) {
+    let positionCount: number = 0; // Number of fixtures in the same position
+    let positionIndex: number = 1;
+
+    this.fixtureService.fixtures.forEach((element, index) => {
+      if(element.positioning == positioning) {
+        positionCount++;
+      }
+    });
+
+    this.fixtureService.fixtures.forEach((element, index) => {
+      if(element.positioning == positioning) {
+        element.positionX = xMin + (xMax - xMin) / (positionCount + 1) * positionIndex;
+        element.positionY = yMin + (yMax - yMin) / (positionCount + 1) * positionIndex;
+        element.positionZ = zMin + (zMax - zMin) / (positionCount + 1) * positionIndex;
+
+        positionIndex++;
+      }
+    });
+  }
+
   private animate(timeMillis) {
+    this.stats.begin();
+
     if (this.controls) {
       this.controls.update();
     }
 
+    // Update the positions
+    this.updateStagePosition(Positioning.topFront, -22, 13, 32, 32, 15, 15);
+    // TODO All other stage positioning options
+
+    // Update the 3d objects
     this.fixtures3d.forEach((element, index) => {
       element.update(timeMillis, index);
     });
 
+    this.rendererStats.update(this.renderer);
+
     this.render();
+
+    this.stats.end();
 
     requestAnimationFrame(this.animate.bind(this));
   }
@@ -131,7 +173,7 @@ export class PreviewComponent implements AfterViewInit {
 
   private setupCamera() {
     this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 1000);
-    this.camera.position.set(-20, 8, 50);
+    this.camera.position.set(-60, 8, 70);
   }
 
   private setupControls() {
@@ -141,7 +183,7 @@ export class PreviewComponent implements AfterViewInit {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.25;
     this.controls.screenSpacePanning = false;
-    this.controls.minDistance = 100;
+    this.controls.minDistance = 70;
     this.controls.zoom = 100;
     this.controls.maxDistance = 200
     this.controls.maxPolarAngle = Math.PI / 2;
@@ -158,7 +200,7 @@ export class PreviewComponent implements AfterViewInit {
     texture.repeat.set(10, 10);
     let floorMaterial = new THREE.MeshBasicMaterial({ map: texture });
 
-    var material = new THREE.MeshPhongMaterial( { color: 0x808080, dithering: true } );
+    var material = new THREE.MeshPhongMaterial({ color: 0x808080, dithering: true });
 
     let floor = new THREE.Mesh(geometry.clone(), material);
     floor.receiveShadow = true
@@ -170,7 +212,7 @@ export class PreviewComponent implements AfterViewInit {
 
   public updateSlider(val) {
     this.fixtures3d.forEach(element => {
-      if(element instanceof MovingHead3d) {
+      if (element instanceof MovingHead3d) {
         let movingHead3d = <MovingHead3d>element;
         movingHead3d.movingHead.tilt = val;
       }
@@ -179,7 +221,7 @@ export class PreviewComponent implements AfterViewInit {
 
   public changePan(val) {
     this.fixtures3d.forEach(element => {
-      if(element instanceof MovingHead3d) {
+      if (element instanceof MovingHead3d) {
         let movingHead3d = <MovingHead3d>element;
         movingHead3d.movingHead.pan = val;
       }
@@ -221,6 +263,17 @@ export class PreviewComponent implements AfterViewInit {
     });
   }
 
+  private setupStats() {
+    this.rendererStats.domElement.style.position = 'absolute'
+    this.rendererStats.domElement.style.left = '0px'
+    this.rendererStats.domElement.style.bottom = '0px'
+    this.canvas.appendChild(this.rendererStats.domElement)
+
+    this.stats.domElement.style.position = 'absolute'
+    this.stats.domElement.style.left = '0px'
+    this.canvas.appendChild(this.stats.domElement)
+  }
+
   private setupScene() {
     // Create a new scene
     this.scene = new THREE.Scene();
@@ -231,6 +284,9 @@ export class PreviewComponent implements AfterViewInit {
 
     // Create the stage
     this.setupStage();
+
+    // Create the stats
+    this.setupStats();
   }
 
   ngAfterViewInit(): void {
@@ -240,7 +296,7 @@ export class PreviewComponent implements AfterViewInit {
     this.setupScene();
 
     this.onResize();
-    this.animate(null);
+    //this.animate(null);
   }
 
 }

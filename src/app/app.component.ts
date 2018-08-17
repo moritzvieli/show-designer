@@ -1,12 +1,14 @@
 import { EffectService } from './services/effect.service';
 import { UuidService } from './services/uuid.service';
 import { EffectMapping } from './models/effect-mapping';
-import { WaveSine } from './models/wave-sine';
+import { CurveEffect } from './models/curve-effect';
 import { MovingHead, MovingHeadChannel } from './models/moving-head';
 import { FixtureService } from './services/fixture.service';
 import { Fixture } from './models/fixture';
 import { PreviewComponent } from './preview/preview.component';
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { Effect } from './models/effect';
+
 import Split from 'split.js';
 
 @Component({
@@ -16,19 +18,18 @@ import Split from 'split.js';
 })
 export class AppComponent implements AfterViewInit {
   title = 'app';
-
-  fixtures: Fixture[] = [];
+  effects: Effect[] = [];
 
   @ViewChild(PreviewComponent)
-  previewComponent:PreviewComponent;
+  previewComponent: PreviewComponent;
 
-  constructor (
+  constructor(
     public fixtureService: FixtureService,
     private uuidService: UuidService,
-    private effectService: EffectService) {}
+    private effectService: EffectService) { }
 
   private onResize() {
-    if(this.previewComponent) {
+    if (this.previewComponent) {
       this.previewComponent.onResize();
     }
   }
@@ -67,44 +68,72 @@ export class AppComponent implements AfterViewInit {
 
     this.onResize();
 
-    let movingHead: MovingHead;
+    // let movingHead: MovingHead;
 
-    let effect = new WaveSine(this.uuidService, this.fixtureService, this.effectService);
-    let effectMapping = new EffectMapping<MovingHeadChannel>();
-    effectMapping.effect = effect;
-    effectMapping.channels.push(MovingHeadChannel.colorR);
+    // let effect = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
+    // let effectMapping = new EffectMapping<MovingHeadChannel>();
+    // effectMapping.effect = effect;
+    // effectMapping.channels.push(MovingHeadChannel.colorR);
 
-    let effectTilt = new WaveSine(this.uuidService, this.fixtureService, this.effectService);
-    effectTilt.amplitude = 6;
-    effectTilt.lengthMillis = 3000;
-    effectTilt.phasingMillis = 100;
-    let effectMappingTilt = new EffectMapping<MovingHeadChannel>();
-    effectMappingTilt.effect = effectTilt;
-    effectMappingTilt.channels.push(MovingHeadChannel.tilt);
+    // let effectTilt = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
+    // effectTilt.lengthMillis = 3000;
+    // effectTilt.phasingMillis = 200;
+    // effectTilt.amplitude = 100;
+    // //effectTilt.position = 100;
 
-    movingHead = new MovingHead();
+    // let effectMappingTilt = new EffectMapping<MovingHeadChannel>();
+    // effectMappingTilt.effect = effectTilt;
+    // effectMappingTilt.channels.push(MovingHeadChannel.tilt);
+
+    // let effectPan = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
+    // effectPan.lengthMillis = 6000;
+    // effectPan.phasingMillis = 200;
+    // effectPan.amplitude = 100;
+
+    // let effectMappingPan = new EffectMapping<MovingHeadChannel>();
+    // effectMappingPan.effect = effectPan;
+    // effectTilt.lengthMillis = 2000;
+    // effectMappingPan.channels.push(MovingHeadChannel.pan);
+
+    // for (var i = 0; i < 10; i++) {
+    //   movingHead = new MovingHead();
+    //   movingHead.positionY = 30;
+    //   movingHead.positionX = i * 5 - 30;
+    //   movingHead.colorG = 255;
+    //   movingHead.pan = 127;
+    //   movingHead.tilt = 127;
+    //   //movingHead.effects.push(effectMapping);
+    //   movingHead.effectMappings.push(effectMappingTilt);
+    //   movingHead.effectMappings.push(effectMappingPan);
+    //   this.fixtureService.addFixture(movingHead);
+    // }
+
+
+
+  }
+
+  addCurveEffect() {
+    this.effects.push(new CurveEffect(this.uuidService, this.fixtureService, this.effectService));
+  }
+
+  addPanTiltEffect() {
+    // TODO
+  }
+
+  openEffect(index: number, event: any) {
+    console.log(index, event);
+  }
+
+  addMovingHead() {
+    let movingHead = new MovingHead();
     movingHead.positionY = 30;
-    movingHead.positionX = 0;
-    movingHead.colorG = 255;
-    //movingHead.effects.push(effectMapping);
-    movingHead.effectMappings.push(effectMappingTilt);
-    this.fixtureService.addFixture(movingHead);
+    movingHead.isSelected = true;
 
-    movingHead = new MovingHead();
-    movingHead.positionY = 30;
-    movingHead.positionX = 10;
-    movingHead.colorG = 255;
-    //movingHead.effects.push(effectMapping);
-    movingHead.effectMappings.push(effectMappingTilt);
     this.fixtureService.addFixture(movingHead);
+  }
 
-    movingHead = new MovingHead();
-    movingHead.positionY = 30;
-    movingHead.positionX = 20;
-    movingHead.colorG = 255;
-    //movingHead.effects.push(effectMapping);
-    movingHead.effectMappings.push(effectMappingTilt);
-    this.fixtureService.addFixture(movingHead);
+  selectFixture(event, item: Fixture) {
+    item.isSelected = !item.isSelected;
   }
 
 }

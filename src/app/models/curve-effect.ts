@@ -1,11 +1,11 @@
-import { EffectService } from './../services/effect.service';
+import { EffectService } from '../services/effect.service';
 import { FixtureService } from '../services/fixture.service';
 import { UuidService } from '../services/uuid.service';
 import { Effect } from './effect';
 import { IEffect } from './i-effect';
 import { IFixture } from './i-fixture';
 
-export class WaveSine extends Effect implements IEffect {
+export class CurveEffect extends Effect implements IEffect {
 
     lengthMillis = 2000;
     phaseMillis = 0;
@@ -39,10 +39,10 @@ export class WaveSine extends Effect implements IEffect {
             }
         }
 
-        let phasingOffset = phasingIndex * this.phasingMillis;
+        let phase = this.phaseMillis + phasingIndex * this.phasingMillis;
 
         // Calculate the value according to the curve
-        let value = this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - this.phaseMillis) / this.lengthMillis) + this.amplitude / 2) + this.amplitude / 2 + this.position - phasingOffset;
+        let value = this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis) + this.amplitude / 2) + 255 / 2 + this.position;
 
         if (this.minValue && value < this.minValue) {
             value = this.minValue;

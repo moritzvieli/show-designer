@@ -19,8 +19,13 @@ export class MovingHead extends Fixture {
     colorG: number = 0;
     colorB: number = 0;
 
-    pan: number = 0;
-    tilt: number = 0;
+    pan: number = 127;
+    tilt: number = 127;
+
+    maxPanDegrees: number = 540;
+    maxTiltDegrees: number = 270;
+
+    beamAngleDegrees: number = 14;
 
     constructor() {
         super();
