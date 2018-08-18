@@ -1,8 +1,7 @@
 import { EffectService } from './services/effect.service';
 import { UuidService } from './services/uuid.service';
-import { EffectMapping } from './models/effect-mapping';
-import { CurveEffect } from './models/curve-effect';
-import { MovingHead, MovingHeadChannel } from './models/moving-head';
+import { EffectCurve } from './models/effect-curve';
+import { MovingHead } from './models/moving-head';
 import { FixtureService } from './services/fixture.service';
 import { Fixture } from './models/fixture';
 import { PreviewComponent } from './preview/preview.component';
@@ -21,8 +20,10 @@ declare var iro: any;
 export class AppComponent implements AfterViewInit {
   color: string;
   title = 'app';
-  effects: Effect[] = [];
   colorPicker: any;
+
+  // The currently selected
+  selectedEffect: Effect;
 
   @ViewChild(PreviewComponent)
   previewComponent: PreviewComponent;
@@ -84,10 +85,12 @@ export class AppComponent implements AfterViewInit {
 
     this.onResize();
 
+    this.addCurveEffect();
+
     // let movingHead: MovingHead;
 
-    let effect = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
-    this.effects.push(effect);
+    // let effect = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
+    // this.effects.push(effect);
 
     // let effectMapping = new EffectMapping<MovingHeadChannel>();
     // effectMapping.effect = effect;
@@ -134,8 +137,8 @@ export class AppComponent implements AfterViewInit {
     this.color = color.hexString;
 
     this.fixtureService.fixtures.forEach(fixture => {
-      if(fixture.isSelected) {
-        if(fixture instanceof MovingHead) {
+      if (fixture.isSelected) {
+        if (fixture instanceof MovingHead) {
           fixture.colorR = color.rgb.r;
           fixture.colorG = color.rgb.g;
           fixture.colorB = color.rgb.b;
@@ -145,15 +148,40 @@ export class AppComponent implements AfterViewInit {
   }
 
   addCurveEffect() {
-    this.effects.push(new CurveEffect(this.uuidService, this.fixtureService, this.effectService));
+    let curveEffect = new EffectCurve(this.uuidService, this.fixtureService, this.effectService);
+    this.effectService.effects.push(curveEffect);
   }
 
   addPanTiltEffect() {
     // TODO
   }
 
-  openEffect(index: number, event: any) {
-    console.log(index, event);
+  openEffect(effect: Effect, event: any) {
+    // Select all fixtures with this effect and unselect all other
+    if (event) {
+      this.fixtureService.fixtures.forEach(fixture => {
+        let effectSelected = false;
+
+        for (var i = 0; i < fixture.effects.length; i++) {
+          if (fixture.effects[i].uuid == effect.uuid) {
+            effectSelected = true;
+            break;
+          }
+        }
+
+        if(effectSelected) {
+          fixture.isSelected = true;
+        } else {
+          fixture.isSelected = false;
+        }
+      });
+
+      this.selectedEffect = effect;
+    } else {
+      if (this.selectedEffect == effect) {
+        this.selectedEffect = undefined;
+      }
+    }
   }
 
   addMovingHead() {
@@ -165,6 +193,23 @@ export class AppComponent implements AfterViewInit {
   }
 
   selectFixture(event, item: Fixture) {
+    if (item.isSelected) {
+      // Delete current effect
+      if (this.selectedEffect) {
+        for (var i = 0; i < item.effects.length; i++) {
+          if (item.effects[i].uuid == this.selectedEffect.uuid) {
+            item.effects.splice(i, 1);
+            break;
+          }
+        }
+      }
+    } else {
+      // Add current effect
+      if (this.selectedEffect) {
+        item.effects.push(this.selectedEffect);
+      }
+    }
+
     item.isSelected = !item.isSelected;
   }
 

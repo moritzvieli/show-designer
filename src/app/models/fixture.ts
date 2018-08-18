@@ -1,6 +1,4 @@
-import { EffectMapping } from './effect-mapping';
-import { IFixture } from "./i-fixture";
-
+import { Effect } from './effect';
 export enum Positioning
 {
     topFront,
@@ -10,9 +8,10 @@ export enum Positioning
     manual
 }
 
-export class Fixture implements IFixture {
+export class Fixture {
 
     uid: string;
+    effects: Effect[] = [];
     name: string;
     isSelected: boolean = false;
 
@@ -22,9 +21,5 @@ export class Fixture implements IFixture {
     positionZ: number = 0;
 
     positioning: Positioning = Positioning.topFront;
-
-    getEffectMappings(): EffectMapping<any>[] {
-        return [];
-    }
 
 }

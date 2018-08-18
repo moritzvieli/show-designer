@@ -321,7 +321,7 @@ export class PreviewComponent implements AfterViewInit {
     this.setupScene();
 
     this.onResize();
-    //this.animate(null);
+    this.animate(null);
   }
 
 }

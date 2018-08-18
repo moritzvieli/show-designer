@@ -1,9 +1,7 @@
-import { Fixture } from './../../models/fixture';
-import { MovingHeadChannel } from '../../models/moving-head';
+import { EffectChannel } from './../../models/effect';
 import { IFixture3d } from './i-fixture-3d';
 import { MovingHead } from '../../models/moving-head';
 import * as THREE from 'three';
-import { Positioning } from '../../models/fixture';
 
 export class MovingHead3d implements IFixture3d {
     movingHead: MovingHead;
@@ -204,28 +202,28 @@ export class MovingHead3d implements IFixture3d {
 
     public update(timeMillis: number, fixtureIndex: number) {
         // Process the effects
-        this.movingHead.effectMappings.forEach(effectMapping => {
-            let value = effectMapping.effect.getValueAtMillis(timeMillis, fixtureIndex);
+        this.movingHead.effects.forEach(effect => {
+            let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
 
-            effectMapping.channels.forEach(channel => {
+            effect.channels.forEach(channel => {
                 switch (channel) {
-                    case MovingHeadChannel.colorR: {
+                    case EffectChannel.colorR: {
                         this.movingHead.colorR = Math.round(value);
                         break;
                     }
-                    case MovingHeadChannel.colorG: {
+                    case EffectChannel.colorG: {
                         this.movingHead.colorG = Math.round(value);
                         break;
                     }
-                    case MovingHeadChannel.colorB: {
+                    case EffectChannel.colorB: {
                         this.movingHead.colorB = Math.round(value);
                         break;
                     }
-                    case MovingHeadChannel.pan: {
+                    case EffectChannel.pan: {
                         this.movingHead.pan = value;
                         break;
                     }
-                    case MovingHeadChannel.tilt: {
+                    case EffectChannel.tilt: {
                         this.movingHead.tilt = value;
                         break;
                     }

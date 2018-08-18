@@ -1,11 +1,10 @@
+import { Fixture } from './fixture';
 import { EffectService } from '../services/effect.service';
 import { FixtureService } from '../services/fixture.service';
 import { UuidService } from '../services/uuid.service';
 import { Effect } from './effect';
-import { IEffect } from './i-effect';
-import { IFixture } from './i-fixture';
 
-export class CurveEffect extends Effect implements IEffect {
+export class EffectCurve extends Effect {
 
     lengthMillis = 2000;
     phaseMillis = 0;
@@ -22,27 +21,32 @@ export class CurveEffect extends Effect implements IEffect {
         super(uuidService);
     }
 
-    getValueAtMillis(timeMillis: number, fixtureIndex: number): number {
+    getValueAtMillis(timeMillis: number, fixtureIndex?: number): number {
         // Calculate the offset for phasing
         let phasingIndex = 0;
 
-        for(var i = 0; i < this.fixtureService.fixtures.length; i++) {
-            let fixture: IFixture = this.fixtureService.fixtures[i];
+        if(fixtureIndex) {
+            for(var i = 0; i < this.fixtureService.fixtures.length; i++) {
+                let fixture: Fixture = this.fixtureService.fixtures[i];
 
-            if (fixtureIndex == i) {
-                // The current fixture is the one we need to get the phasing-index
-                break;
-            }
+                if (fixtureIndex == i) {
+                    // The current fixture is the one we need to get the phasing-index
+                    break;
+                }
 
-            if (this.effectService.effectContainedInEffectMappings(this.uuid, fixture.getEffectMappings())) {
-                phasingIndex++;
+                for(var i = 0; i < this.effectService.effects.length; i++) {
+                    if(this.effectService.effects[i].uuid == this.uuid) {
+                        phasingIndex++;
+                        break;
+                    }
+                }
             }
         }
 
         let phase = this.phaseMillis + phasingIndex * this.phasingMillis;
 
         // Calculate the value according to the curve
-        let value = this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis) + this.amplitude / 2) + 255 / 2 + this.position;
+        let value = this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) + 255 / 2 + this.position;
 
         if (this.minValue && value < this.minValue) {
             value = this.minValue;

@@ -8,11 +8,13 @@ import { NgxBootstrapSliderModule } from 'ngx-bootstrap-slider';
 import { AccordionModule, PopoverModule } from 'ngx-bootstrap';
 import { SortablejsModule } from 'angular-sortablejs';
 import { FormsModule } from '@angular/forms';
+import { EffectCurveComponent } from './effects/effect-curve/effect-curve.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PreviewComponent
+    PreviewComponent,
+    EffectCurveComponent
   ],
   imports: [
     BrowserModule,
