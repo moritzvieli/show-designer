@@ -1,15 +1,25 @@
 /* Add the theme */
-@import 'theme.scss';
+@import "theme.scss";
 
 /* Some overrides */
 $enable-rounded: false;
+$spacer: 0.8rem;
 
 /* Add bootstrap */
-@import '../node_modules/bootstrap/scss/bootstrap';
+@import "../node_modules/bootstrap/scss/bootstrap";
 
 /* General styles */
 body, html {
     height: 100%;
+}
+
+body {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
 *:focus {
@@ -17,11 +27,12 @@ body, html {
 }
 
 select {
-    font-size: 13px;
+    font-size: 0.8rem;
+    cursor: pointer;
 }
 
 input {
-    font-size: 11px;
+    font-size: 0.7rem;
     background-color: transparent;
     color: white;
     border: 1px solid;
@@ -40,11 +51,11 @@ select {
 }
 
 input, select {
-    border-color: #d4d4d4;
+    border-color: $gray-300;
 }
 
 .list-group-item {
-    padding: 0.3rem 0.75rem
+    padding: 0.3rem 0.75rem;
 }
 
 .card-header {
@@ -52,7 +63,7 @@ input, select {
 }
 
 .card-header {
-    padding: 5px;
+    padding: 0.4rem;
 }
 
 .card-body {

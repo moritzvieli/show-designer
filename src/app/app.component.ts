@@ -43,26 +43,28 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    let gutterSize: number = 12.8;
+
     Split(['#row1', '#row2', '#row3'], {
       sizes: [50, 30, 20],
       direction: 'vertical',
       cursor: 'row-resize',
       snapOffset: 0,
-      gutterSize: 15,
+      gutterSize: gutterSize,
       onDrag: this.onResize.bind(this)
     });
 
     Split(['#scenes', '#preview'], {
       sizes: [30, 70],
       snapOffset: 0,
-      gutterSize: 15,
+      gutterSize: gutterSize,
       onDrag: this.onResize.bind(this)
     });
 
     Split(['#effects', '#fixtures'], {
       sizes: [80, 20],
       snapOffset: 0,
-      gutterSize: 15,
+      gutterSize: gutterSize,
       onDrag: this.onResize.bind(this)
     });
 

@@ -1,21 +1,28 @@
 <div class="h-100">
 
-  <div id="row1" class="split split-vertical pt-3 pl-3 clearfix">
+  <div id="row1" class="split split-vertical clearfix pt-3 pl-3">
+
+    <!-- Scene selection -->
     <div id="scenes" class="split split-horizontal">
       <div class="card border-secondary panel">
+        <div class="card-header">
+          Scenes
+        </div>
         <div class="card-body border-secondary">
-          <h5 class="card-title">Scenes</h5>
+
         </div>
       </div>
     </div>
 
-    <div id="preview" class="split split-horizontal pr-3 h-100">
+    <!-- 3D preview -->
+    <div id="preview" class="split split-horizontal h-100 pr-3">
       <div class="card border-secondary h-100">
         <div class="card-body p-0 h-100">
           <app-preview class="h-100"></app-preview>
         </div>
       </div>
     </div>
+
   </div>
 
   <div id="row2" class="split split-vertical clearfix px-3">
@@ -43,6 +50,7 @@
 
                   <div class="row m-0">
 
+                    <!-- Position -->
                     <div class="col col-auto p-0">
                       <div class="card border-secondary">
                         <div class="card-header">
@@ -96,7 +104,6 @@
                             </div>
                           </div>
 
-
                         </div>
                       </div>
                     </div>
@@ -120,7 +127,8 @@
 
                       <button class="btn btn-link btn-block clearfix" accordion-heading>
                         <div class="pull-left float-left">
-                          <img *ngIf="item.constructor.name == 'CurveEffect'" class="mr-1" width="25px;" src="assets/icons/levels.png"> {{ item.constructor.name }}
+                          <img *ngIf="item.constructor.name == 'CurveEffect'" class="mr-1" width="25px;" src="assets/icons/levels.png">                          {{
+                          item.constructor.name }}
                         </div>
                       </button>
 
@@ -171,7 +179,12 @@
 
     <div id="fixtures" class="split split-horizontal h-100">
       <div class="card border-secondary h-100 panel">
-        <div class="card-body h-100">
+        <div class="card-header">
+          Fixtures
+        </div>
+
+        <div class="card-body h-100 p-0">
+
           <!-- List of fixtures -->
           <div class="list-group list-group-flush" [sortablejs]="fixtureService.fixtures">
             <div class="list-group-item" *ngFor="let item of fixtureService.fixtures" [class.active]="item.isSelected">
@@ -186,8 +199,8 @@
 
           <!-- Add a new fixture -->
           <div class="d-flex mx-auto">
-            <div class="dropdown show d-flex">
-              <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            <div class="dropdown show d-flex" style="width: 100%">
+              <a class="btn btn-secondary dropdown-toggle" style="width: 100%" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
                 <i class="fa fa-plus" aria-hidden="true"></i> Add New Fixture
               </a>
@@ -204,6 +217,7 @@
     </div>
   </div>
 
+  <!-- Timeline -->
   <div id="row3" class="split split-vertical clearfix px-3 pb-3">
     <div class="card border-secondary h-100">
       <div class="card-body h-100">
