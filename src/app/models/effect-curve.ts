@@ -10,8 +10,8 @@ export class EffectCurve extends Effect {
     phaseMillis = 0;
     amplitude = 255;
     position = 0;
-    minValue = undefined;
-    maxValue = undefined;
+    minValue = 0;
+    maxValue = 255;
     phasingMillis = 0;
 
     constructor(uuidService: UuidService,
@@ -34,8 +34,8 @@ export class EffectCurve extends Effect {
                     break;
                 }
 
-                for(var i = 0; i < this.effectService.effects.length; i++) {
-                    if(this.effectService.effects[i].uuid == this.uuid) {
+                for(var j = 0; j < fixture.effects.length; j++) {
+                    if(fixture.effects[j].uuid == this.uuid) {
                         phasingIndex++;
                         break;
                     }
@@ -48,11 +48,11 @@ export class EffectCurve extends Effect {
         // Calculate the value according to the curve
         let value = this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) + 255 / 2 + this.position;
 
-        if (this.minValue && value < this.minValue) {
+        if (value < this.minValue) {
             value = this.minValue;
         }
 
-        if (this.maxValue && value > this.maxValue) {
+        if (value > this.maxValue) {
             value = this.maxValue;
         }
 

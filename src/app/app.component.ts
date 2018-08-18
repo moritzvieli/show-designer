@@ -189,6 +189,10 @@ export class AppComponent implements AfterViewInit {
     movingHead.positionY = 30;
     movingHead.isSelected = true;
 
+    if (this.selectedEffect) {
+      movingHead.effects.push(this.selectedEffect);
+    }
+
     this.fixtureService.addFixture(movingHead);
   }
 

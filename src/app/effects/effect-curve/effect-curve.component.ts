@@ -24,7 +24,7 @@ export class EffectCurveComponent implements OnInit {
     }
 
     var svgns = "http://www.w3.org/2000/svg";
-    let width: number = 150;
+    let width: number = 100;
 
     for (var i = 0; i < 5000; i += 15) {
       let val = this.curve.getValueAtMillis(i);
@@ -34,9 +34,9 @@ export class EffectCurveComponent implements OnInit {
 
       var rect = document.createElementNS(svgns, 'rect');
       rect.setAttributeNS(null, 'x', i.toString());
-      rect.setAttributeNS(null, 'y', (val - width).toString());
+      rect.setAttributeNS(null, 'y', (val - width * 2.5).toString());
       rect.setAttributeNS(null, 'width', width.toString());
-      rect.setAttributeNS(null, 'height', (width * 2).toString());
+      rect.setAttributeNS(null, 'height', (width * 5).toString());
       rect.setAttributeNS(null, 'fill', '#fff');
       this.curveGrid.nativeElement.appendChild(rect);
     }
