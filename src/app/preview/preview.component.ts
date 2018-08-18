@@ -15,9 +15,6 @@ import { map } from 'rxjs/operators';
 
 declare var THREEx: any;
 
-// export function Stats() {
-// }
-
 @Component({
   selector: 'app-preview',
   templateUrl: './preview.component.html',

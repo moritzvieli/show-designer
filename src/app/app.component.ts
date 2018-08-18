@@ -11,12 +11,15 @@ import { Effect } from './models/effect';
 
 import Split from 'split.js';
 
+declare var iro: any;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
+  color: string;
   title = 'app';
   effects: Effect[] = [];
 
@@ -46,7 +49,7 @@ export class AppComponent implements AfterViewInit {
     let gutterSize: number = 12.8;
 
     Split(['#row1', '#row2', '#row3'], {
-      sizes: [50, 30, 20],
+      sizes: [50, 35, 15],
       direction: 'vertical',
       cursor: 'row-resize',
       snapOffset: 0,
@@ -67,6 +70,16 @@ export class AppComponent implements AfterViewInit {
       gutterSize: gutterSize,
       onDrag: this.onResize.bind(this)
     });
+
+    let demoColorPicker = new iro.ColorPicker("#color-picker-container", {
+      width: 220,
+      color: "#fff",
+      borderWidth: 1,
+      borderColor: "#fff",
+      sliderMargin: 20
+    });
+
+    demoColorPicker.on("color:change", this.colorChange.bind(this));
 
     this.onResize();
 
@@ -112,6 +125,10 @@ export class AppComponent implements AfterViewInit {
 
 
 
+  }
+
+  colorChange(color: any) {
+    this.color = color.hexString;
   }
 
   addCurveEffect() {

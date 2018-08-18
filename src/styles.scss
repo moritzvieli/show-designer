@@ -68,7 +68,15 @@ input, select {
 
 .card-body {
     overflow: auto;
-    padding: 0.8rem;
+    padding: $spacer;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: $gray-700;
+}
+
+.nav a {
+    color: white;
 }
 
 /* Style the splitters */
@@ -152,4 +160,9 @@ input, select {
 
 .bs-popover-top .arrow::after, .bs-popover-auto[x-placement^="top"] .arrow::after {
     border-top-color: white;
+}
+
+/* Color wheel */
+.iro__wheel, .iro__slider {
+    cursor: pointer;
 }

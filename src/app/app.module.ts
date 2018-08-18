@@ -7,6 +7,7 @@ import { PreviewComponent } from './preview/preview.component';
 import { NgxBootstrapSliderModule } from 'ngx-bootstrap-slider';
 import { AccordionModule, PopoverModule } from 'ngx-bootstrap';
 import { SortablejsModule } from 'angular-sortablejs';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { SortablejsModule } from 'angular-sortablejs';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     NgxBootstrapSliderModule,
     AccordionModule.forRoot(),
     PopoverModule.forRoot(),
