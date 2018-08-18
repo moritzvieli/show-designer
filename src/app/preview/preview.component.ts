@@ -63,13 +63,13 @@ export class PreviewComponent implements AfterViewInit {
     let positionIndex: number = 1;
 
     this.fixtureService.fixtures.forEach((element, index) => {
-      if(element.positioning == positioning) {
+      if (element.positioning == positioning) {
         positionCount++;
       }
     });
 
     this.fixtureService.fixtures.forEach((element, index) => {
-      if(element.positioning == positioning) {
+      if (element.positioning == positioning) {
         element.positionX = xMin + (xMax - xMin) / (positionCount + 1) * positionIndex;
         element.positionY = yMin + (yMax - yMin) / (positionCount + 1) * positionIndex;
         element.positionZ = zMin + (zMax - zMin) / (positionCount + 1) * positionIndex;
@@ -197,13 +197,16 @@ export class PreviewComponent implements AfterViewInit {
     texture.repeat.set(10, 10);
     let floorMaterial = new THREE.MeshBasicMaterial({ map: texture });
 
-    var material = new THREE.MeshPhongMaterial({ color: 0x808080, dithering: true });
+    let material = new THREE.MeshLambertMaterial({
+      color: 0x0d0d0d,
+      emissive: 0x0d0d0d
+    });
 
     let floor = new THREE.Mesh(geometry.clone(), material);
     floor.receiveShadow = true
     floor.castShadow = true
-    floor.scale.multiplyScalar(8.0)
-    floor.position.set(0, -geometry.parameters.height / 2, 0)
+    floor.scale.multiplyScalar(200)
+    floor.position.set(0, -geometry.parameters.height / 2 * 200, 0)
     this.scene.add(floor);
   }
 
@@ -232,29 +235,40 @@ export class PreviewComponent implements AfterViewInit {
     // Load the stage
     this.loadScene('stage').subscribe((scene) => {
       // TODO Too heavy for the stage?
-      let path = './assets/textures/SwedishRoyalCastle/';
-      let format = '.jpg';
-      let urls = [
-        path + 'px' + format, path + 'nx' + format,
-        path + 'py' + format, path + 'ny' + format,
-        path + 'pz' + format, path + 'nz' + format
-      ];
+      // let path = './assets/textures/SwedishRoyalCastle/';
+      // let format = '.jpg';
+      // let urls = [
+      //   path + 'px' + format, path + 'nx' + format,
+      //   path + 'py' + format, path + 'ny' + format,
+      //   path + 'pz' + format, path + 'nz' + format
+      // ];
 
-      var reflectionCube = new THREE.CubeTextureLoader().load(urls);
+      //var reflectionCube = new THREE.CubeTextureLoader().load(urls);
 
-      let material = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        roughness: 0.07,
-        metalness: 1,
-        envMap: reflectionCube,
-        envMapIntensity: 1.4
+      // let material = new THREE.MeshStandardMaterial({
+      //   color: 0xffffff,
+      //   roughness: 0.07,
+      //   metalness: 1,
+      //   envMap: reflectionCube,
+      //   envMapIntensity: 1.4
+      // });
+
+      // let material = new THREE.MeshaaaaMaterial({
+      //   color: 0xa8a7c7,
+      //   roughness: 0.07,
+      //   metalness: 1,
+      // });
+
+      let material = new THREE.MeshLambertMaterial({
+        color: 0x0d0d0d,
+        emissive: 0x0d0d0d
       });
-
-      scene.scale.multiplyScalar(3)
 
       scene.children.forEach(element => {
         element.material = material;
       });
+
+      scene.scale.multiplyScalar(3)
 
       this.scene.add(scene);
     });
@@ -281,6 +295,20 @@ export class PreviewComponent implements AfterViewInit {
 
     // Create the stage
     this.setupStage();
+
+    // TODO
+    var lights = [];
+    lights[0] = new THREE.PointLight(0xffffff, 1, 0);
+    lights[1] = new THREE.PointLight(0xffffff, 1, 0);
+    lights[2] = new THREE.PointLight(0xffffff, 1, 0);
+
+    lights[0].position.set(0, 200, 0);
+    lights[1].position.set(100, 200, 100);
+    lights[2].position.set(- 100, - 200, - 100);
+
+    this.scene.add(lights[0]);
+    this.scene.add(lights[1]);
+    this.scene.add(lights[2]);
 
     // Create the stats
     this.setupStats();

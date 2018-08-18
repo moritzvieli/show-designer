@@ -75,8 +75,21 @@ input, select {
     background-color: $gray-700;
 }
 
-.nav a {
-    color: white;
+.nav a, .panel-title .btn-link {
+    color: white !important;
+}
+
+.accordion-toggle .btn, .accordion-toggle button {
+    padding: 0;
+}
+
+.curve-svg {
+    background-color: black;
+    border: 1px solid white;
+}
+
+.panel-body {
+    background-color: $gray-800;
 }
 
 /* Style the splitters */

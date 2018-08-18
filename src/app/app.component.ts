@@ -22,6 +22,7 @@ export class AppComponent implements AfterViewInit {
   color: string;
   title = 'app';
   effects: Effect[] = [];
+  colorPicker: any;
 
   @ViewChild(PreviewComponent)
   previewComponent: PreviewComponent;
@@ -49,7 +50,7 @@ export class AppComponent implements AfterViewInit {
     let gutterSize: number = 12.8;
 
     Split(['#row1', '#row2', '#row3'], {
-      sizes: [50, 35, 15],
+      sizes: [50, 31, 19],
       direction: 'vertical',
       cursor: 'row-resize',
       snapOffset: 0,
@@ -71,21 +72,23 @@ export class AppComponent implements AfterViewInit {
       onDrag: this.onResize.bind(this)
     });
 
-    let demoColorPicker = new iro.ColorPicker("#color-picker-container", {
-      width: 220,
+    this.colorPicker = new iro.ColorPicker("#color-picker-container", {
+      width: 180,
       color: "#fff",
       borderWidth: 1,
       borderColor: "#fff",
       sliderMargin: 20
     });
 
-    demoColorPicker.on("color:change", this.colorChange.bind(this));
+    this.colorPicker.on("color:change", this.changeColor.bind(this));
 
     this.onResize();
 
     // let movingHead: MovingHead;
 
-    // let effect = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
+    let effect = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
+    this.effects.push(effect);
+
     // let effectMapping = new EffectMapping<MovingHeadChannel>();
     // effectMapping.effect = effect;
     // effectMapping.channels.push(MovingHeadChannel.colorR);
@@ -127,8 +130,18 @@ export class AppComponent implements AfterViewInit {
 
   }
 
-  colorChange(color: any) {
+  changeColor(color: any) {
     this.color = color.hexString;
+
+    this.fixtureService.fixtures.forEach(fixture => {
+      if(fixture.isSelected) {
+        if(fixture instanceof MovingHead) {
+          fixture.colorR = color.rgb.r;
+          fixture.colorG = color.rgb.g;
+          fixture.colorB = color.rgb.b;
+        }
+      }
+    });
   }
 
   addCurveEffect() {
