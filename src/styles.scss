@@ -7,8 +7,57 @@ $enable-rounded: false;
 /* Add bootstrap */
 @import '../node_modules/bootstrap/scss/bootstrap';
 
+/* General styles */
 body, html {
     height: 100%;
+}
+
+*:focus {
+    outline: none;
+}
+
+select {
+    font-size: 13px;
+}
+
+input {
+    font-size: 11px;
+    background-color: transparent;
+    color: white;
+    border: 1px solid;
+}
+
+select {
+    border-radius: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-position: right 50%;
+    background-repeat: no-repeat;
+    background-image: url(./assets/icons/caret-down-white.png);
+    padding: 4px;
+    color: white;
+    background-color: transparent;
+}
+
+input, select {
+    border-color: #d4d4d4;
+}
+
+.list-group-item {
+    padding: 0.3rem 0.75rem
+}
+
+.card-header {
+    margin-bottom: 0;
+}
+
+.card-header {
+    padding: 5px;
+}
+
+.card-body {
+    overflow: auto;
+    padding: 0.8rem;
 }
 
 /* Style the splitters */
@@ -33,24 +82,14 @@ body, html {
     overflow-x: hidden;
 }
 
-.card-body {
-    overflow: auto;
-    padding: 0.25rem;
-}
-
-.card-header {
-    padding: 5px;
-    margin-bottom: 10px;
-}
-
-/* Make bootstrap more compact */
-.list-group-item {
-    padding: 0.3rem 0.75rem
+/* The main panels */
+.panel {
+    background-color: transparent;
 }
 
 /* Sliders */
 .slider-track {
-    height: 3px !important;
+    height: 2px !important;
 }
 
 .slider-track, .slider-track-low, .slider-track-high, .slider-selection {
@@ -70,7 +109,13 @@ body, html {
     background-color: white !important;
     background-image: none !important;
     border: 1px solid $gray-800;
-    margin-top: 3px;
+    margin-top: 2.5px;
+}
+
+.slider-input {
+    width: 35px;
+    margin-left: 8px;
+    text-align: center;
 }
 
 /* Popover */
@@ -96,18 +141,4 @@ body, html {
 
 .bs-popover-top .arrow::after, .bs-popover-auto[x-placement^="top"] .arrow::after {
     border-top-color: white;
-}
-
-/* Select */
-select:not([multiple]) {
-    border-radius: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-position: right 50%;
-    background-repeat: no-repeat;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAMCAYAAABSgIzaAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NDZFNDEwNjlGNzFEMTFFMkJEQ0VDRTM1N0RCMzMyMkIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NDZFNDEwNkFGNzFEMTFFMkJEQ0VDRTM1N0RCMzMyMkIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0NkU0MTA2N0Y3MUQxMUUyQkRDRUNFMzU3REIzMzIyQiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo0NkU0MTA2OEY3MUQxMUUyQkRDRUNFMzU3REIzMzIyQiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuGsgwQAAAA5SURBVHjaYvz//z8DOYCJgUxAf42MQIzTk0D/M+KzkRGPoQSdykiKJrBGpOhgJFYTWNEIiEeAAAMAzNENEOH+do8AAAAASUVORK5CYII=);
-    padding: .2em;
-    padding-right: 1.5em;
-
-    background-color: transparent;
 }
