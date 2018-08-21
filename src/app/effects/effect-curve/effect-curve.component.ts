@@ -1,5 +1,9 @@
+import { AnimationService } from './../../services/animation.service';
+import { FixtureService } from './../../services/fixture.service';
+import { Observable, Subscription, timer } from 'rxjs';
 import { EffectCurve } from './../../models/effect-curve';
 import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
+import { EffectChannel, Effect } from '../../models/effect';
 
 @Component({
   selector: 'app-effect-curve',
@@ -8,37 +12,138 @@ import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
 })
 export class EffectCurveComponent implements OnInit {
 
+  private gridUpdateSubscription: Subscription;
+  private ctx: any;
+  private maxWidth: number;
+  private maxHeight: number;
+
+  channels: Array<string>;
+
   @Input() curve: EffectCurve;
+
+  // Whether the effect is currently being edited (open) or not
+  @Input()
+  set isSelected(value: boolean) {
+    if (value) {
+      // Start the update timer
+      if (!this.gridUpdateSubscription) {
+        this.gridUpdateSubscription = timer(15, 0).subscribe(() => { this.redraw(); });
+      }
+    } else {
+      // Stop the update timer
+      if (this.gridUpdateSubscription) {
+        this.gridUpdateSubscription.unsubscribe();
+        this.gridUpdateSubscription = undefined;
+      }
+    }
+  }
+
 
   @ViewChild('curveGrid') curveGrid: ElementRef;
 
-  constructor() { }
+  constructor(
+    private fixtureService: FixtureService,
+    private animationService: AnimationService) {
+
+    //let channelEnum = EffectChannel;
+    let keys = Object.keys(EffectChannel);
+    this.channels = keys.slice(keys.length / 2)
+  }
 
   ngOnInit() {
+    let canvas = this.curveGrid.nativeElement;
+    this.ctx = canvas.getContext("2d");
+    this.maxWidth = canvas.width;
+    this.maxHeight = canvas.height;
+
     this.redraw();
   }
 
+  private drawCurrentValue(currMillis: number, radius: number, lineWidth: number, durationMillis: number, maxValue: number) {
+    let currVal = this.curve.getValueAtMillis(currMillis);
+    let x = this.maxWidth * (currMillis % durationMillis) / durationMillis;
+    let y = this.maxHeight - ((this.maxHeight - lineWidth * 4) * currVal / maxValue + lineWidth * 2);
+
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+    this.ctx.fillStyle = '#fff';
+    this.ctx.fill();
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeStyle = '#000';
+    this.ctx.stroke();
+  }
+
   redraw() {
-    while (this.curveGrid.nativeElement.lastChild) {
-      this.curveGrid.nativeElement.removeChild(this.curveGrid.nativeElement.lastChild);
-    }
+    this.ctx.clearRect(0, 0, this.maxWidth, this.maxHeight);
+    this.ctx.fillStyle = "#fff";
+    this.ctx.strokeStyle = "#fff";
 
-    var svgns = "http://www.w3.org/2000/svg";
-    let width: number = 100;
+    // The width of the lines
+    let width: number = 3;
 
-    for (var i = 0; i < 5000; i += 15) {
+    this.ctx.lineWidth = width;
+
+    let oldX: number;
+    let oldY: number;
+
+    let step = 50;
+    let durationMillis = 5000;
+    let maxValue = this.curve.maxValue;
+
+    // Draw the curve
+    for (var i = -step * 2; i < durationMillis + step * 2; i += step) {
       let val = this.curve.getValueAtMillis(i);
 
-      // Scale the value to the svg
-      val = 5000 * val / 255;
+      // Scale the values to the grid dimensions
+      let x = this.maxWidth * i / durationMillis;
+      let y = this.maxHeight - ((this.maxHeight - width * 4) * val / maxValue + width * 2);
 
-      var rect = document.createElementNS(svgns, 'rect');
-      rect.setAttributeNS(null, 'x', i.toString());
-      rect.setAttributeNS(null, 'y', (val - width * 2.5).toString());
-      rect.setAttributeNS(null, 'width', width.toString());
-      rect.setAttributeNS(null, 'height', (width * 5).toString());
-      rect.setAttributeNS(null, 'fill', '#fff');
-      this.curveGrid.nativeElement.appendChild(rect);
+      if (oldY) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(oldX, oldY);
+        this.ctx.lineTo(x, y);
+        this.ctx.stroke();
+      }
+
+      oldX = x;
+      oldY = y;
+    }
+
+    // Draw the current value
+    this.drawCurrentValue(this.animationService.timeMillis % durationMillis, 5, width, durationMillis, maxValue);
+
+    // Draw the phasing values, if required
+    let phasingCount = 0;
+
+    if (this.curve.phasingMillis > 0) {
+      this.fixtureService.fixtures.forEach(fixture => {
+        for (let i = 0; i < fixture.effects.length; i++) {
+          if (fixture.effects[i].uuid == this.curve.uuid) {
+            phasingCount++;
+            break;
+          }
+        }
+      });
+    }
+
+    for (let i = 1; i < phasingCount; i++) {
+      this.drawCurrentValue((this.animationService.timeMillis - i * this.curve.phasingMillis) % durationMillis, 3, width, durationMillis, maxValue);
+    }
+  }
+
+  toggleChannel(event, channel: EffectChannel) {
+    let enumChannel: any = Number(Object.keys(EffectChannel).find(key => EffectChannel[key] === channel)));
+
+    if(event.currentTarget.checked) {
+      // Add the channel
+      this.curve.channels.push(enumChannel);
+    } else {
+      // Remove the channel
+      for(let i = 0; i < this.curve.channels.length; i++) {
+        if(this.curve.channels[i] == enumChannel) {
+          this.curve.channels.splice(i, 1);
+        }
+      }
     }
   }
 

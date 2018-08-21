@@ -6,7 +6,7 @@ import { Effect } from './effect';
 
 export class EffectCurve extends Effect {
 
-    lengthMillis = 2000;
+    lengthMillis = 2500;
     phaseMillis = 0;
     amplitude = 255;
     position = 0;

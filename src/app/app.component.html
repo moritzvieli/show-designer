@@ -37,7 +37,7 @@
             </a>
             <a class="nav-link px-3" id="v-pills-profile-tab" popover="Effects" container="body" placement="right" triggers="mouseenter:mouseleave"
               data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">
-              <i class="fa fa-bolt fa-fw" aria-hidden="true"></i>
+              <i class="fa fa-magic fa-fw" aria-hidden="true"></i>
             </a>
           </div>
         </div>
@@ -174,7 +174,7 @@
 
                       <div *ngIf="item.constructor.name == 'EffectCurve'">
 
-                        <app-effect-curve [curve]="item"></app-effect-curve>
+                        <app-effect-curve [curve]="item" [isSelected]="item == selectedEffect"></app-effect-curve>
 
                       </div>
 

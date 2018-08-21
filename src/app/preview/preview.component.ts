@@ -1,3 +1,4 @@
+import { AnimationService } from './../services/animation.service';
 import { Positioning } from './../models/fixture';
 import { IFixture3d } from './models/i-fixture-3d';
 import { MovingHead3d } from './models/moving-head-3d';
@@ -36,7 +37,10 @@ export class PreviewComponent implements AfterViewInit {
   @ViewChild('canvas')
   private canvasRef: ElementRef;
 
-  constructor(private fixtureService: FixtureService) {
+  constructor(
+    private fixtureService: FixtureService,
+    private animationService: AnimationService) {
+
     this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
       if (fixture instanceof MovingHead) {
         forkJoin(
@@ -81,6 +85,8 @@ export class PreviewComponent implements AfterViewInit {
 
   private animate(timeMillis) {
     this.stats.begin();
+
+    this.animationService.timeMillis = timeMillis;
 
     if (this.controls) {
       this.controls.update();
