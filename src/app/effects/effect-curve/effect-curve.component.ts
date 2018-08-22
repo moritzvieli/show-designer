@@ -87,7 +87,7 @@ export class EffectCurveComponent implements OnInit {
     let oldY: number;
 
     let step = 50;
-    let durationMillis = 5000;
+    let durationMillis = this.curve.lengthMillis * Math.round(4 - this.curve.lengthMillis / 1000);
     let maxValue = this.curve.maxValue;
 
     // Draw the curve
@@ -132,7 +132,7 @@ export class EffectCurveComponent implements OnInit {
   }
 
   toggleChannel(event, channel: EffectChannel) {
-    let enumChannel: any = Number(Object.keys(EffectChannel).find(key => EffectChannel[key] === channel)));
+    let enumChannel: any = Number(Object.keys(EffectChannel).find(key => EffectChannel[key] === channel));
 
     if(event.currentTarget.checked) {
       // Add the channel

@@ -203,10 +203,12 @@ export class PreviewComponent implements AfterViewInit {
     texture.repeat.set(10, 10);
     let floorMaterial = new THREE.MeshBasicMaterial({ map: texture });
 
-    let material = new THREE.MeshLambertMaterial({
-      color: 0x0d0d0d,
-      emissive: 0x0d0d0d
-    });
+    // let material = new THREE.MeshLambertMaterial({
+    //   color: 0x0d0d0d,
+    //   emissive: 0x0d0d0d,
+    // });
+
+    let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
 
     let floor = new THREE.Mesh(geometry.clone(), material);
     floor.receiveShadow = true
@@ -249,7 +251,7 @@ export class PreviewComponent implements AfterViewInit {
       //   path + 'pz' + format, path + 'nz' + format
       // ];
 
-      //var reflectionCube = new THREE.CubeTextureLoader().load(urls);
+      // var reflectionCube = new THREE.CubeTextureLoader().load(urls);
 
       // let material = new THREE.MeshStandardMaterial({
       //   color: 0xffffff,
@@ -259,16 +261,14 @@ export class PreviewComponent implements AfterViewInit {
       //   envMapIntensity: 1.4
       // });
 
-      // let material = new THREE.MeshaaaaMaterial({
-      //   color: 0xa8a7c7,
-      //   roughness: 0.07,
-      //   metalness: 1,
+      // let material = new THREE.MeshLambertMaterial({
+      //   color: 0x0d0d0d,
+      //   emissive: 0x0d0d0d
       // });
+      
+      let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
 
-      let material = new THREE.MeshLambertMaterial({
-        color: 0x0d0d0d,
-        emissive: 0x0d0d0d
-      });
+      //let material = new THREE.MeshPhongMaterial( { color: 0x0d0d0d, dithering: true } );
 
       scene.children.forEach(element => {
         element.material = material;

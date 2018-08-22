@@ -163,23 +163,22 @@
                 <div class="card-body h-100">
 
                   <accordion [closeOthers]="true">
-                    <accordion-group *ngFor="let item of effectService.effects; let i = index" (isOpenChange)="openEffect(item, $event)">
+                    <accordion-group *ngFor="let item of effectService.effects; let i = index" [isOpen]="selectedEffect == item" (isOpenChange)="openEffect(item, $event)">
 
                       <button class="btn btn-link btn-block clearfix" accordion-heading>
                         <div class="pull-left float-left">
-                          <i *ngIf="item.constructor.name == 'CurveEffect'" class="fa fa-area-chart" aria-hidden="true"></i>
+                          <i *ngIf="item.constructor.name == 'EffectCurve'" class="fa fa-area-chart fa-fw" aria-hidden="true"></i>
+                          <i *ngIf="item.constructor.name == 'EffectPanTilt'" class="fa fa-arrows-alt fa-fw" aria-hidden="true"></i>
                           {{ item.constructor.name }}
                         </div>
                       </button>
 
                       <div *ngIf="item.constructor.name == 'EffectCurve'">
-
                         <app-effect-curve [curve]="item" [isSelected]="item == selectedEffect"></app-effect-curve>
-
                       </div>
 
-                      <div *ngIf="item.constructor.name == 'PanTiltEffect'">
-                        <svg id="panTiltGrid" width="250" height="250" viewBox="-100 -100 1200 1200" style="border: 1px solid black;"></svg>
+                      <div *ngIf="item.constructor.name == 'EffectPanTilt'">
+                        <app-effect-pan-tilt></app-effect-pan-tilt>
                       </div>
 
                     </accordion-group>
@@ -194,9 +193,9 @@
 
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <a class="dropdown-item" href="#" (click)="addCurveEffect()">
-                          <img class="mr-1" width="17px;" src="assets/icons/levels.png"> Curve</a>
+                          <i class="fa fa-area-chart fa-fw" aria-hidden="true"></i> Curve</a>
                         <a class="dropdown-item" href="#" (click)="addPanTiltEffect()">
-                          <img class="mr-1" width="17px;" src="assets/icons/four-expand-arrows.png"> Pan/Tilt</a>
+                          <i class="fa fa-arrows-alt fa-fw" aria-hidden="true"></i> Pan/Tilt</a>
                       </div>
                     </div>
                   </div>
@@ -244,7 +243,7 @@
 
               <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item" href="#" (click)="addMovingHead()">
-                  <img class="mr-1" width="17px;" src="assets/icons/four-expand-arrows.png"> Moving Head</a>
+                  <i class="fa fa-arrows-alt" aria-hidden="true"></i> Moving Head</a>
               </div>
             </div>
           </div>
@@ -264,31 +263,3 @@
   </div>
 
 </div>
-
-<!--
-<div>Icons made by
-  <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> from
-  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
-  <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-</div>
-<div>Icons made by
-  <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from
-  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
-  <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-</div>
-<div>Icons made by
-  <a href="https://www.flaticon.com/authors/epiccoders" title="EpicCoders">EpicCoders</a> from
-  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
-  <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-</div>
-<div>Icons made by
-  <a href="https://www.flaticon.com/authors/pixelmeetup" title="Pixelmeetup">Pixelmeetup</a> from
-  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
-  <a href="http://creativecommons.org/licenses/by/3.0/" title="Cre Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-</div>
-<div>Icons made by
-  <a href="http://www.freepik.com" title="Freepik">Freepik</a> from
-  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
-  <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-</div>
--->

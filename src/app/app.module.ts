@@ -9,12 +9,14 @@ import { AccordionModule, PopoverModule } from 'ngx-bootstrap';
 import { SortablejsModule } from 'angular-sortablejs';
 import { FormsModule } from '@angular/forms';
 import { EffectCurveComponent } from './effects/effect-curve/effect-curve.component';
+import { EffectPanTiltComponent } from './effects/effect-pan-tilt/effect-pan-tilt.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PreviewComponent,
-    EffectCurveComponent
+    EffectCurveComponent,
+    EffectPanTiltComponent
   ],
   imports: [
     BrowserModule,

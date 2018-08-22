@@ -3,9 +3,9 @@ import { Fixture } from './fixture';
 
 export class MovingHead extends Fixture {
 
-    colorR: number = 0;
-    colorG: number = 0;
-    colorB: number = 0;
+    colorR: number = 255;
+    colorG: number = 255;
+    colorB: number = 255;
 
     pan: number = 127;
     tilt: number = 127;

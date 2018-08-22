@@ -9,6 +9,7 @@ import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { Effect } from './models/effect';
 
 import Split from 'split.js';
+import { EffectPanTilt } from './models/effect-pan-tilt';
 
 declare var iro: any;
 
@@ -83,54 +84,9 @@ export class AppComponent implements AfterViewInit {
 
     this.colorPicker.on("color:change", this.changeColor.bind(this));
 
+    this.addPanTiltEffect();
+
     this.onResize();
-
-    this.addCurveEffect();
-
-    // let movingHead: MovingHead;
-
-    // let effect = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
-    // this.effects.push(effect);
-
-    // let effectMapping = new EffectMapping<MovingHeadChannel>();
-    // effectMapping.effect = effect;
-    // effectMapping.channels.push(MovingHeadChannel.colorR);
-
-    // let effectTilt = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
-    // effectTilt.lengthMillis = 3000;
-    // effectTilt.phasingMillis = 200;
-    // effectTilt.amplitude = 100;
-    // //effectTilt.position = 100;
-
-    // let effectMappingTilt = new EffectMapping<MovingHeadChannel>();
-    // effectMappingTilt.effect = effectTilt;
-    // effectMappingTilt.channels.push(MovingHeadChannel.tilt);
-
-    // let effectPan = new CurveEffect(this.uuidService, this.fixtureService, this.effectService);
-    // effectPan.lengthMillis = 6000;
-    // effectPan.phasingMillis = 200;
-    // effectPan.amplitude = 100;
-
-    // let effectMappingPan = new EffectMapping<MovingHeadChannel>();
-    // effectMappingPan.effect = effectPan;
-    // effectTilt.lengthMillis = 2000;
-    // effectMappingPan.channels.push(MovingHeadChannel.pan);
-
-    // for (var i = 0; i < 10; i++) {
-    //   movingHead = new MovingHead();
-    //   movingHead.positionY = 30;
-    //   movingHead.positionX = i * 5 - 30;
-    //   movingHead.colorG = 255;
-    //   movingHead.pan = 127;
-    //   movingHead.tilt = 127;
-    //   //movingHead.effects.push(effectMapping);
-    //   movingHead.effectMappings.push(effectMappingTilt);
-    //   movingHead.effectMappings.push(effectMappingPan);
-    //   this.fixtureService.addFixture(movingHead);
-    // }
-
-
-
   }
 
   changeColor(color: any) {
@@ -148,12 +104,15 @@ export class AppComponent implements AfterViewInit {
   }
 
   addCurveEffect() {
-    let curveEffect = new EffectCurve(this.uuidService, this.fixtureService, this.effectService);
-    this.effectService.effects.push(curveEffect);
+    let effect = new EffectCurve(this.uuidService, this.fixtureService, this.effectService);
+    this.selectedEffect = effect;
+    this.effectService.effects.push(effect);
   }
 
   addPanTiltEffect() {
-    // TODO
+    let effect = new EffectPanTilt(this.uuidService, this.fixtureService, this.effectService);
+    this.selectedEffect = effect;
+    this.effectService.effects.push(effect);
   }
 
   openEffect(effect: Effect, event: any) {
