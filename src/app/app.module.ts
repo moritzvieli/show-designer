@@ -10,13 +10,15 @@ import { SortablejsModule } from 'angular-sortablejs';
 import { FormsModule } from '@angular/forms';
 import { EffectCurveComponent } from './effects/effect-curve/effect-curve.component';
 import { EffectPanTiltComponent } from './effects/effect-pan-tilt/effect-pan-tilt.component';
+import { SceneComponent } from './scene/scene/scene.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PreviewComponent,
     EffectCurveComponent,
-    EffectPanTiltComponent
+    EffectPanTiltComponent,
+    SceneComponent
   ],
   imports: [
     BrowserModule,

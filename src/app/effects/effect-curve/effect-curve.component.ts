@@ -116,14 +116,7 @@ export class EffectCurveComponent implements OnInit {
     let phasingCount = 0;
 
     if (this.curve.phasingMillis > 0) {
-      this.fixtureService.fixtures.forEach(fixture => {
-        for (let i = 0; i < fixture.effects.length; i++) {
-          if (fixture.effects[i].uuid == this.curve.uuid) {
-            phasingCount++;
-            break;
-          }
-        }
-      });
+      phasingCount = this.curve.fixtures.length;
     }
 
     for (let i = 1; i < phasingCount; i++) {

@@ -1,6 +1,5 @@
-import { Effect } from './effect';
-export enum Positioning
-{
+import { UuidService } from '../services/uuid.service';
+export enum Positioning {
     topFront,
     topBack,
     bottomFront,
@@ -10,8 +9,7 @@ export enum Positioning
 
 export class Fixture {
 
-    uid: string;
-    effects: Effect[] = [];
+    uuid: string;
     name: string;
     isSelected: boolean = false;
 
@@ -21,5 +19,11 @@ export class Fixture {
     positionZ: number = 0;
 
     positioning: Positioning = Positioning.topFront;
+
+    constructor(private uuidService: UuidService) {
+        if (this.uuidService) {
+            this.uuid = this.uuidService.getUuid();
+        }
+    }
 
 }

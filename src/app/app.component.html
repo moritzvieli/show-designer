@@ -4,14 +4,7 @@
 
     <!-- Scene selection -->
     <div id="scenes" class="split split-horizontal">
-      <div class="card border-secondary panel">
-        <div class="card-header">
-          Scenes
-        </div>
-        <div class="card-body border-secondary">
-
-        </div>
-      </div>
+      <app-scene></app-scene>
     </div>
 
     <!-- 3D preview -->
@@ -163,7 +156,7 @@
                 <div class="card-body h-100">
 
                   <accordion [closeOthers]="true">
-                    <accordion-group *ngFor="let item of effectService.effects; let i = index" [isOpen]="selectedEffect == item" (isOpenChange)="openEffect(item, $event)">
+                    <accordion-group *ngFor="let item of sceneService.getCurrentScene().effects; let i = index" [isOpen]="selectedEffect == item" (isOpenChange)="openEffect(item, $event)">
 
                       <button class="btn btn-link btn-block clearfix" accordion-heading>
                         <div class="pull-left float-left">
@@ -236,7 +229,7 @@
           <!-- Add a new fixture -->
           <div class="d-flex mx-auto mt-3">
             <div class="dropdown show d-flex" style="width: 100%">
-              <a class="btn btn-secondary dropdown-toggle" style="width: 100%" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+              <a class="btn btn-secondary dropdown-toggle w-100" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-plus" aria-hidden="true"></i> Add New Fixture
               </a>
@@ -257,7 +250,11 @@
   <div id="row3" class="split split-vertical clearfix px-3 pb-3">
     <div class="card border-secondary h-100">
       <div class="card-body h-100">
-        Timeline
+
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-secondary" (click)="play()"><i class="fa fa-play" aria-hidden="true"></i></button>
+        </div>
+
       </div>
     </div>
   </div>

@@ -1,5 +1,4 @@
 import { Fixture } from './fixture';
-import { EffectService } from '../services/effect.service';
 import { FixtureService } from '../services/fixture.service';
 import { UuidService } from '../services/uuid.service';
 import { Effect } from './effect';
@@ -9,8 +8,7 @@ export class EffectPanTilt extends Effect {
     phasingMillis = 0;
 
     constructor(uuidService: UuidService,
-        private fixtureService: FixtureService,
-        private effectService: EffectService) {
+        private fixtureService: FixtureService) {
 
         super(uuidService);
     }
@@ -20,21 +18,7 @@ export class EffectPanTilt extends Effect {
         let phasingIndex = 0;
 
         if(fixtureIndex) {
-            for(var i = 0; i < this.fixtureService.fixtures.length; i++) {
-                let fixture: Fixture = this.fixtureService.fixtures[i];
-
-                if (fixtureIndex == i) {
-                    // The current fixture is the one we need to get the phasing-index
-                    break;
-                }
-
-                for(var j = 0; j < fixture.effects.length; j++) {
-                    if(fixture.effects[j].uuid == this.uuid) {
-                        phasingIndex++;
-                        break;
-                    }
-                }
-            }
+            phasingIndex = fixtureIndex;
         }
 
         // let phase = this.phaseMillis + phasingIndex * this.phasingMillis;

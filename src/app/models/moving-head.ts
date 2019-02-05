@@ -1,5 +1,5 @@
-import { Effect } from './effect';
 import { Fixture } from './fixture';
+import { UuidService } from '../services/uuid.service';
 
 export class MovingHead extends Fixture {
 
@@ -15,8 +15,8 @@ export class MovingHead extends Fixture {
 
     beamAngleDegrees: number = 14;
 
-    constructor() {
-        super();
+    constructor(uuidService: UuidService) {
+        super(uuidService);
 
         this.name = 'Moving Head';
     }

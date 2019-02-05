@@ -1,0 +1,29 @@
+<div class="card border-secondary panel">
+  <div class="card-header">
+    Scenes
+  </div>
+  <div class="card-body border-secondary">
+
+    <!-- List of scenes -->
+    <div class="list-group list-group-flush" [sortablejs]="sceneService.scenes">
+      <div class="list-group-item" *ngFor="let scene of sceneService.scenes; let i = index" [class.active]="sceneService.getCurrentScene() == scene">
+        <div class="row" (click)="selectScene($event, i)" style="cursor: pointer;">
+          <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+          </div>
+          <div style="width: 20px;">
+            <i *ngIf="sceneService.getCurrentScene() == scene" class="fa fa-check" aria-hidden="true"></i>
+          </div>
+          {{ scene.name }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Add a new scene -->
+    <div class="d-flex mx-auto mt-3">
+      <button type="button" class="btn btn-secondary w-100" (click)="addScene()"><i class="fa fa-plus" aria-hidden="true"></i>
+        Add New Scene</button>
+    </div>
+
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { EffectChannel } from './../../models/effect';
+import { EffectChannel, Effect } from './../../models/effect';
 import { IFixture3d } from './i-fixture-3d';
 import { MovingHead } from '../../models/moving-head';
 import * as THREE from 'three';
@@ -200,9 +200,17 @@ export class MovingHead3d implements IFixture3d {
         return this.objectGroup;
     }
 
-    public update(timeMillis: number, fixtureIndex: number) {
+    public update(timeMillis: number, fixtureIndex: number, effects: Effect[], sceneFixture: MovingHead): void {
+        // Apply the scene base settings
+        this.movingHead.colorR = sceneFixture.colorR;
+        this.movingHead.colorG = sceneFixture.colorG;
+        this.movingHead.colorB = sceneFixture.colorB;
+
+        this.movingHead.pan = sceneFixture.pan;
+        this.movingHead.tilt = sceneFixture.tilt;
+
         // Process the effects
-        this.movingHead.effects.forEach(effect => {
+        effects.forEach(effect => {
             let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
 
             effect.channels.forEach(channel => {
@@ -272,5 +280,9 @@ export class MovingHead3d implements IFixture3d {
 
         // this.spotLightBeam.material.uniforms.viewVector.value =
         //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);
+    }
+
+    getUid(): string {
+        return this.movingHead.uuid;
     }
 }

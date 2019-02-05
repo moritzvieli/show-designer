@@ -13,6 +13,8 @@ import 'three/examples/js/loaders/GLTFLoader';
 import * as STATS from 'three/examples/js/libs/stats.min';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SceneService } from '../services/scene.service';
+import { Effect } from '../models/effect';
 
 declare var THREEx: any;
 
@@ -39,7 +41,8 @@ export class PreviewComponent implements AfterViewInit {
 
   constructor(
     private fixtureService: FixtureService,
-    private animationService: AnimationService) {
+    private animationService: AnimationService,
+    private sceneService: SceneService) {
 
     this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
       if (fixture instanceof MovingHead) {
@@ -98,7 +101,30 @@ export class PreviewComponent implements AfterViewInit {
 
     // Update the 3d objects
     this.fixtures3d.forEach((element, index) => {
-      element.update(timeMillis, index);
+      // Get all effects with this fixture for better performance, than run the update for each effect
+      // separately on each fixture
+      let effects: Effect[] = [];
+
+      for(let effect of this.sceneService.getCurrentScene().effects) {
+        for(let fixture of effect.fixtures) {
+          if(fixture.uuid == element.getUid()) {
+            effects.push(effect);
+            break;
+          }
+        }
+      }
+
+      // Get the base settings for this fixture
+      let sceneFixture: Fixture;
+
+      for(let sceneFixtureSettings of this.sceneService.getCurrentScene().sceneFixtureSettingsList) {
+        if(sceneFixtureSettings.fixture.uuid == element.getUid()) {
+          sceneFixture = sceneFixtureSettings.settings;
+          break;
+        }
+      }
+
+      element.update(timeMillis, index, effects, sceneFixture);
     });
 
     this.rendererStats.update(this.renderer);

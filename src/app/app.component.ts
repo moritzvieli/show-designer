@@ -1,4 +1,3 @@
-import { EffectService } from './services/effect.service';
 import { UuidService } from './services/uuid.service';
 import { EffectCurve } from './models/effect-curve';
 import { MovingHead } from './models/moving-head';
@@ -10,6 +9,8 @@ import { Effect } from './models/effect';
 
 import Split from 'split.js';
 import { EffectPanTilt } from './models/effect-pan-tilt';
+import { SceneService } from './services/scene.service';
+import { SceneFixtureSettings } from './models/scene-fixture-settings';
 
 declare var iro: any;
 
@@ -32,7 +33,7 @@ export class AppComponent implements AfterViewInit {
   constructor(
     public fixtureService: FixtureService,
     private uuidService: UuidService,
-    private effectService: EffectService) { }
+    private sceneService: SceneService) { }
 
   private onResize() {
     if (this.previewComponent) {
@@ -94,25 +95,28 @@ export class AppComponent implements AfterViewInit {
 
     this.fixtureService.fixtures.forEach(fixture => {
       if (fixture.isSelected) {
-        if (fixture instanceof MovingHead) {
-          fixture.colorR = color.rgb.r;
-          fixture.colorG = color.rgb.g;
-          fixture.colorB = color.rgb.b;
+        for (let sceneFixtureSettings of this.sceneService.getCurrentScene().sceneFixtureSettingsList) {
+          if (sceneFixtureSettings.fixture.uuid == fixture.uuid) {
+            let settings: any = sceneFixtureSettings.settings;
+            settings.colorR = color.rgb.r;
+            settings.colorG = color.rgb.g;
+            settings.colorB = color.rgb.b;
+          }
         }
       }
     });
   }
 
   addCurveEffect() {
-    let effect = new EffectCurve(this.uuidService, this.fixtureService, this.effectService);
+    let effect = new EffectCurve(this.uuidService, this.fixtureService);
     this.selectedEffect = effect;
-    this.effectService.effects.push(effect);
+    this.sceneService.getCurrentScene().effects.push(effect);
   }
 
   addPanTiltEffect() {
-    let effect = new EffectPanTilt(this.uuidService, this.fixtureService, this.effectService);
+    let effect = new EffectPanTilt(this.uuidService, this.fixtureService);
     this.selectedEffect = effect;
-    this.effectService.effects.push(effect);
+    this.sceneService.getCurrentScene().effects.push(effect);
   }
 
   openEffect(effect: Effect, event: any) {
@@ -121,14 +125,13 @@ export class AppComponent implements AfterViewInit {
       this.fixtureService.fixtures.forEach(fixture => {
         let effectSelected = false;
 
-        for (var i = 0; i < fixture.effects.length; i++) {
-          if (fixture.effects[i].uuid == effect.uuid) {
+        for (let effectFixture of effect.fixtures) {
+          if (effectFixture.uuid == fixture.uuid) {
             effectSelected = true;
-            break;
           }
         }
 
-        if(effectSelected) {
+        if (effectSelected) {
           fixture.isSelected = true;
         } else {
           fixture.isSelected = false;
@@ -143,25 +146,41 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
+  createDynamicClass<T>(Clazz: { new(): T }) {
+    return new Clazz();
+  }
+
+  private addSceneFixtureSettings(fixture: Fixture) {
+    // Add the base settings for this new fixture to all scenes
+    for (let scene of this.sceneService.scenes) {
+      let sceneFixtureSettings = new SceneFixtureSettings();
+      sceneFixtureSettings.fixture = fixture;
+      // Create a new instance of fixture
+      sceneFixtureSettings.settings = new (fixture.constructor as any);
+      scene.sceneFixtureSettingsList.push(sceneFixtureSettings);
+    }
+  }
+
   addMovingHead() {
-    let movingHead = new MovingHead();
+    let movingHead = new MovingHead(this.uuidService);
     movingHead.positionY = 30;
     movingHead.isSelected = true;
 
     if (this.selectedEffect) {
-      movingHead.effects.push(this.selectedEffect);
+      this.selectedEffect.fixtures.push(movingHead);
     }
 
     this.fixtureService.addFixture(movingHead);
+    this.addSceneFixtureSettings(movingHead);
   }
 
   selectFixture(event, item: Fixture) {
     if (item.isSelected) {
       // Delete current effect
       if (this.selectedEffect) {
-        for (var i = 0; i < item.effects.length; i++) {
-          if (item.effects[i].uuid == this.selectedEffect.uuid) {
-            item.effects.splice(i, 1);
+        for (var i = 0; i < this.selectedEffect.fixtures.length; i++) {
+          if (this.selectedEffect.fixtures[i].uuid == item.uuid) {
+            this.selectedEffect.fixtures.splice(i, 1);
             break;
           }
         }
@@ -169,11 +188,24 @@ export class AppComponent implements AfterViewInit {
     } else {
       // Add current effect
       if (this.selectedEffect) {
-        item.effects.push(this.selectedEffect);
+        this.selectedEffect.fixtures.push(item);
       }
     }
 
     item.isSelected = !item.isSelected;
+  }
+
+  play() {
+    let audio = new Audio();
+    audio.src = "../../assets/test.mp3";
+    audio.load();
+    audio.play();
+    audio.volume = 0.1;
+    audio.currentTime = 12;
+    console.log(audio.currentTime);
+    setTimeout(() => {
+      console.log(audio.currentTime);
+    }, 5500);
   }
 
 }
