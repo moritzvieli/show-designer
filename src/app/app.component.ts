@@ -4,13 +4,16 @@ import { MovingHead } from './models/moving-head';
 import { FixtureService } from './services/fixture.service';
 import { Fixture } from './models/fixture';
 import { PreviewComponent } from './preview/preview.component';
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Effect } from './models/effect';
 
 import Split from 'split.js';
 import { EffectPanTilt } from './models/effect-pan-tilt';
 import { SceneService } from './services/scene.service';
 import { SceneFixtureSettings } from './models/scene-fixture-settings';
+import WaveSurfer from 'wavesurfer.js';
+import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
+import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 
 declare var iro: any;
 
@@ -29,6 +32,9 @@ export class AppComponent implements AfterViewInit {
 
   @ViewChild(PreviewComponent)
   previewComponent: PreviewComponent;
+
+  @ViewChild('waveWrapper')
+  waveWrapper: ElementRef;
 
   constructor(
     public fixtureService: FixtureService,
@@ -196,16 +202,40 @@ export class AppComponent implements AfterViewInit {
   }
 
   play() {
-    let audio = new Audio();
-    audio.src = "../../assets/test.mp3";
-    audio.load();
-    audio.play();
-    audio.volume = 0.1;
-    audio.currentTime = 12;
-    console.log(audio.currentTime);
-    setTimeout(() => {
-      console.log(audio.currentTime);
-    }, 5500);
+    var wavesurfer = WaveSurfer.create({
+        container: '#waveform',
+        waveColor: 'white',
+        progressColor: 'gray',
+        height: 1,
+        plugins: [
+          CursorPlugin.create({
+              showTime: true,
+              opacity: 1,
+              customShowTimeStyle: {
+                  'background-color': '#000',
+                  color: '#fff',
+                  padding: '2px',
+                  'font-size': '10px'
+              }
+          }),
+          RegionsPlugin.create({})
+      ]
+    });
+    wavesurfer.setHeight(this.waveWrapper.nativeElement.clientHeight);
+    wavesurfer.load('../../assets/test.mp3');
+
+    wavesurfer.zoom(130);
+
+    // let audio = new Audio();
+    // audio.src = "../../assets/test.mp3";
+    // audio.load();
+    // audio.play();
+    // audio.volume = 0.1;
+    // audio.currentTime = 12;
+    // console.log(audio.currentTime);
+    // setTimeout(() => {
+    //   console.log(audio.currentTime);
+    // }, 5500);
   }
 
 }

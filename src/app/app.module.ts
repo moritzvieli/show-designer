@@ -1,5 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import { PreviewComponent } from './preview/preview.component';
@@ -22,7 +25,15 @@ import { SceneComponent } from './scene/scene/scene.component';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     FormsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
     NgxBootstrapSliderModule,
     AccordionModule.forRoot(),
     PopoverModule.forRoot(),
@@ -35,3 +46,7 @@ import { SceneComponent } from './scene/scene/scene.component';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
+}

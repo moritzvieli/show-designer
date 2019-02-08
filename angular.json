@@ -32,7 +32,9 @@
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/bootstrap-slider/dist/bootstrap-slider.min.js",
               "src/assets/js/threex.rendererstats.js",
-              "src/assets/js/iro.js"
+              "src/assets/js/iro.js",
+              "node_modules/wavesurfer.js/dist/wavesurfer.min.js",
+              "node_modules/wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js"
             ]
           },
           "configurations": {
