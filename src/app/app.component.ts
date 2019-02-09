@@ -99,6 +99,10 @@ export class AppComponent implements AfterViewInit {
     this.addPanTiltEffect();
 
     this.onResize();
+
+    this.addMovingHead();
+    this.addMovingHead();
+    this.addMovingHead();
   }
 
   changeColor(color: any) {

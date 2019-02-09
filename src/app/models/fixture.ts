@@ -1,4 +1,5 @@
 import { UuidService } from '../services/uuid.service';
+
 export enum Positioning {
     topFront,
     topBack,

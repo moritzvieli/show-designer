@@ -34,6 +34,14 @@ export class PreviewComponent implements AfterViewInit {
   private stats: any = STATS();
   private rendererStats = new THREEx.RendererStats();
 
+  private stageWidth = 600;
+  private stageDepth = 600;
+  private stageHeight = 350;
+
+  private stageFloorHeight = 30;
+  private stageCeilingHeight = 5;
+  private stagePillarWidth = 20;
+
   private fixtures3d: IFixture3d[] = [];
 
   @ViewChild('canvas')
@@ -96,7 +104,7 @@ export class PreviewComponent implements AfterViewInit {
     }
 
     // Update the positions
-    this.updateStagePosition(Positioning.topFront, -22, 13, 32, 32, 15, 15);
+    this.updateStagePosition(Positioning.topFront, -this.stageWidth / 2, this.stageWidth / 2, this.stageHeight + this.stageFloorHeight, this.stageHeight + this.stageFloorHeight, this.stageDepth / 2 - 70, this.stageDepth / 2 - 70);
     // TODO All other stage positioning options
 
     // Update the 3d objects
@@ -105,9 +113,9 @@ export class PreviewComponent implements AfterViewInit {
       // separately on each fixture
       let effects: Effect[] = [];
 
-      for(let effect of this.sceneService.getCurrentScene().effects) {
-        for(let fixture of effect.fixtures) {
-          if(fixture.uuid == element.getUid()) {
+      for (let effect of this.sceneService.getCurrentScene().effects) {
+        for (let fixture of effect.fixtures) {
+          if (fixture.uuid == element.getUid()) {
             effects.push(effect);
             break;
           }
@@ -117,8 +125,8 @@ export class PreviewComponent implements AfterViewInit {
       // Get the base settings for this fixture
       let sceneFixture: Fixture;
 
-      for(let sceneFixtureSettings of this.sceneService.getCurrentScene().sceneFixtureSettingsList) {
-        if(sceneFixtureSettings.fixture.uuid == element.getUid()) {
+      for (let sceneFixtureSettings of this.sceneService.getCurrentScene().sceneFixtureSettingsList) {
+        if (sceneFixtureSettings.fixture.uuid == element.getUid()) {
           sceneFixture = sceneFixtureSettings.settings;
           break;
         }
@@ -201,8 +209,8 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private setupCamera() {
-    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 1000);
-    this.camera.position.set(-60, 8, 70);
+    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000);
+    this.camera.position.set(-600, 80, 700);
   }
 
   private setupControls() {
@@ -212,22 +220,25 @@ export class PreviewComponent implements AfterViewInit {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.25;
     this.controls.screenSpacePanning = false;
-    this.controls.minDistance = 70;
-    this.controls.zoom = 100;
-    this.controls.maxDistance = 200
+    this.controls.minDistance = 700;
+    this.controls.zoom = 1000;
+    this.controls.maxDistance = 2000
     this.controls.maxPolarAngle = Math.PI / 2;
-    this.controls.target = new THREE.Vector3(0, 20, 0);
-    this.controls.rotation = 10;
+    this.controls.target = new THREE.Vector3(0, 200, 0);
+    this.controls.rotation = 100;
   }
 
   private setupFloor() {
-    let geometry = new THREE.BoxGeometry(20, 0.1, 20, 20, 1, 20);
+    let width = 4000;
+    let height = 1;
+
+    let geometry = new THREE.BoxGeometry(width, height, width);
 
     let texture = new THREE.TextureLoader().load('./assets/textures/planks.jpg');
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(10, 10);
-    let floorMaterial = new THREE.MeshBasicMaterial({ map: texture });
+    //let floorMaterial = new THREE.MeshBasicMaterial({ map: texture });
 
     // let material = new THREE.MeshLambertMaterial({
     //   color: 0x0d0d0d,
@@ -237,10 +248,9 @@ export class PreviewComponent implements AfterViewInit {
     let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
 
     let floor = new THREE.Mesh(geometry.clone(), material);
-    floor.receiveShadow = true
-    floor.castShadow = true
-    floor.scale.multiplyScalar(200)
-    floor.position.set(0, -geometry.parameters.height / 2 * 200, 0)
+    floor.receiveShadow = true;
+    floor.castShadow = false;
+    floor.position.set(0, -height / 2, 0);
     this.scene.add(floor);
   }
 
@@ -263,47 +273,97 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private setupStage() {
-    // Add a floor
-    this.setupFloor();
-
     // Load the stage
-    this.loadScene('stage').subscribe((scene) => {
-      // TODO Too heavy for the stage?
-      // let path = './assets/textures/SwedishRoyalCastle/';
-      // let format = '.jpg';
-      // let urls = [
-      //   path + 'px' + format, path + 'nx' + format,
-      //   path + 'py' + format, path + 'ny' + format,
-      //   path + 'pz' + format, path + 'nz' + format
-      // ];
+    // this.loadScene('stage').subscribe((scene) => {
+    //   // TODO Too heavy for the stage?
+    //   // let path = './assets/textures/SwedishRoyalCastle/';
+    //   // let format = '.jpg';
+    //   // let urls = [
+    //   //   path + 'px' + format, path + 'nx' + format,
+    //   //   path + 'py' + format, path + 'ny' + format,
+    //   //   path + 'pz' + format, path + 'nz' + format
+    //   // ];
 
-      // var reflectionCube = new THREE.CubeTextureLoader().load(urls);
+    //   // var reflectionCube = new THREE.CubeTextureLoader().load(urls);
 
-      // let material = new THREE.MeshStandardMaterial({
-      //   color: 0xffffff,
-      //   roughness: 0.07,
-      //   metalness: 1,
-      //   envMap: reflectionCube,
-      //   envMapIntensity: 1.4
-      // });
+    //   // let material = new THREE.MeshStandardMaterial({
+    //   //   color: 0xffffff,
+    //   //   roughness: 0.07,
+    //   //   metalness: 1,
+    //   //   envMap: reflectionCube,
+    //   //   envMapIntensity: 1.4
+    //   // });
 
-      // let material = new THREE.MeshLambertMaterial({
-      //   color: 0x0d0d0d,
-      //   emissive: 0x0d0d0d
-      // });
-      
-      let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
+    //   // let material = new THREE.MeshLambertMaterial({
+    //   //   color: 0x0d0d0d,
+    //   //   emissive: 0x0d0d0d
+    //   // });
 
-      //let material = new THREE.MeshPhongMaterial( { color: 0x0d0d0d, dithering: true } );
+    //   let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
 
-      scene.children.forEach(element => {
-        element.material = material;
-      });
+    //   //let material = new THREE.MeshPhongMaterial( { color: 0x0d0d0d, dithering: true } );
 
-      scene.scale.multiplyScalar(3)
+    //   scene.children.forEach(element => {
+    //     element.material = material;
+    //   });
 
-      this.scene.add(scene);
-    });
+    //   scene.scale.multiplyScalar(3)
+
+    //   this.scene.add(scene);
+    // });
+
+    // Global floor has a height of 1
+    let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
+    var geometry;
+    let mesh;
+
+    // Floor
+    geometry = new THREE.BoxBufferGeometry(this.stageWidth, this.stageFloorHeight, this.stageDepth);
+    mesh = new THREE.Mesh(geometry.clone(), material);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    mesh.position.set(0, this.stageFloorHeight / 2, 0);
+    this.scene.add(mesh);
+
+    // Pillar front left
+    geometry = new THREE.BoxBufferGeometry(this.stagePillarWidth, this.stageHeight, this.stagePillarWidth);
+    mesh = new THREE.Mesh(geometry.clone(), material);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    mesh.position.set(-this.stageWidth / 2 + this.stagePillarWidth / 2, this.stageHeight / 2 + this.stageFloorHeight, this.stageWidth / 2 - this.stagePillarWidth / 2);
+    this.scene.add(mesh);
+
+    // Pillar front right
+    geometry = new THREE.BoxBufferGeometry(this.stagePillarWidth, this.stageHeight, this.stagePillarWidth);
+    mesh = new THREE.Mesh(geometry.clone(), material);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    mesh.position.set(this.stageWidth / 2 - this.stagePillarWidth / 2, this.stageHeight / 2 + this.stageFloorHeight, this.stageWidth / 2 - this.stagePillarWidth / 2);
+    this.scene.add(mesh);
+
+    // Pillar back left
+    geometry = new THREE.BoxBufferGeometry(this.stagePillarWidth, this.stageHeight, this.stagePillarWidth);
+    mesh = new THREE.Mesh(geometry.clone(), material);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    mesh.position.set(-this.stageWidth / 2 + this.stagePillarWidth / 2, this.stageHeight / 2 + this.stageFloorHeight, -this.stageWidth / 2 + this.stagePillarWidth / 2);
+    this.scene.add(mesh);
+
+    // Pillar back right
+    geometry = new THREE.BoxBufferGeometry(this.stagePillarWidth, this.stageHeight, this.stagePillarWidth);
+    mesh = new THREE.Mesh(geometry.clone(), material);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    mesh.position.set(this.stageWidth / 2 - this.stagePillarWidth / 2, this.stageHeight / 2 + this.stageFloorHeight, -this.stageWidth / 2 + this.stagePillarWidth / 2);
+    this.scene.add(mesh);
+
+    // Ceiling
+    geometry = new THREE.BoxBufferGeometry(this.stageWidth, this.stageCeilingHeight, this.stageDepth);
+    mesh = new THREE.Mesh(geometry.clone(), material);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    mesh.position.set(0, this.stageHeight + this.stageCeilingHeight / 2 + this.stageFloorHeight, 0);
+    this.scene.add(mesh);
   }
 
   private setupStats() {
@@ -322,8 +382,11 @@ export class PreviewComponent implements AfterViewInit {
     this.scene = new THREE.Scene();
 
     // Add a little bit of ambient light
-    let ambient = new THREE.AmbientLight(0xffffff, 0.1);
+    let ambient = new THREE.AmbientLight(0xffffff, 0.8);
     this.scene.add(ambient);
+
+    // Add a floor
+    this.setupFloor();
 
     // Create the stage
     this.setupStage();

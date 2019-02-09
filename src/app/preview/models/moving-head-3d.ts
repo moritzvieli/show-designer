@@ -2,6 +2,7 @@ import { EffectChannel, Effect } from './../../models/effect';
 import { IFixture3d } from './i-fixture-3d';
 import { MovingHead } from '../../models/moving-head';
 import * as THREE from 'three';
+import { TabHeadingDirective } from 'ngx-bootstrap';
 
 export class MovingHead3d implements IFixture3d {
     movingHead: MovingHead;
@@ -20,6 +21,8 @@ export class MovingHead3d implements IFixture3d {
     private spotLightHelper: THREE.SpotLightHelper;
     private shadowCameraHelper: THREE.CameraHelper;
     private spotLightBeam: THREE.Mesh;
+
+    private pointLight: THREE.PointLight;
 
     private lastBeamAngleDegrees: number;
     private lastSelected: boolean;
@@ -152,7 +155,7 @@ export class MovingHead3d implements IFixture3d {
 
         // Add the spotlight
         this.spotLight = new THREE.SpotLight(0xffffff, 1);
-        this.spotLight.angle = 0.244;;
+        this.spotLight.angle = 0.244;
         this.spotLight.penumbra = 0.5;
         this.spotLight.decay = 2;
         this.spotLight.distance = 200;
@@ -177,6 +180,11 @@ export class MovingHead3d implements IFixture3d {
         this.spotLight.position.set(0, -1.4, 0);
         spotLightTarget.position.set(0, -10, 0);
 
+        // Add the point light for the surrounding light
+        this.pointLight = new THREE.PointLight(0xffffff, 5, 1000);
+        this.spotlightGroup.add(this.pointLight);
+        this.pointLight.position.set(0, -1.4, 0);
+
         // Add the light beam
         this.createSpotLightBeam();
 
@@ -192,6 +200,9 @@ export class MovingHead3d implements IFixture3d {
         this.objectGroup.add(this.armGroup);
         this.objectGroup.add(socket);
         socket.position.set(0, 1.2, 0);
+
+        // A moving head has about 32 cm in width
+        this.objectGroup.scale.multiplyScalar(9);
 
         scene.add(this.objectGroup);
     }
@@ -240,7 +251,7 @@ export class MovingHead3d implements IFixture3d {
         });
 
         // Update the position
-        this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY, this.movingHead.positionZ);
+        this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY - 13, this.movingHead.positionZ);
 
         // Calculate the y/x rotation in radiants based on pan/tilt (0-255) respecting the max pan/tilt
         this.armGroup.rotation.y = THREE.Math.degToRad(this.movingHead.maxPanDegrees * this.movingHead.pan / 255) - THREE.Math.degToRad(this.movingHead.maxPanDegrees / 2);
@@ -277,6 +288,7 @@ export class MovingHead3d implements IFixture3d {
         this.spotLight.color = color;
         //this.spotLightBeam.material.color = color;
         this.spotLightBeam.material.uniforms.glowColor.value = color;
+        this.pointLight.color = color;
 
         // this.spotLightBeam.material.uniforms.viewVector.value =
         //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);
