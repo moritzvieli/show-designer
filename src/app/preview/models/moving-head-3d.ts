@@ -252,7 +252,7 @@ export class MovingHead3d implements IFixture3d {
         });
 
         // Update the position
-        switch ((this.movingHead.positioning) {
+        switch (this.movingHead.positioning) {
             case Positioning.topFront: {
                 this.objectGroup.rotation.x = THREE.Math.degToRad(0);
                 this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY - 13, this.movingHead.positionZ);

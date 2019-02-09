@@ -6,6 +6,9 @@ import { Injectable } from '@angular/core';
 })
 export class EffectService {
 
+  // The currently selected effect
+  selectedEffect: Effect;
+
   constructor() { }
 
 }

@@ -1,9 +1,9 @@
 import { AnimationService } from './../../services/animation.service';
 import { FixtureService } from './../../services/fixture.service';
-import { Observable, Subscription, timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { EffectCurve } from './../../models/effect-curve';
 import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
-import { EffectChannel, Effect } from '../../models/effect';
+import { EffectChannel } from '../../models/effect';
 
 @Component({
   selector: 'app-effect-curve',

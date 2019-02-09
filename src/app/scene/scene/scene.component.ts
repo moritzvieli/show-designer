@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SceneService } from 'src/app/services/scene.service';
 import { Scene } from 'src/app/models/scene';
 import { FixtureService } from 'src/app/services/fixture.service';
-import { SceneFixtureSettings } from 'src/app/models/scene-fixture-settings';
+import { SceneFixtureProperties } from 'src/app/models/scene-fixture-properties';
 
 @Component({
   selector: 'app-scene',
@@ -23,13 +23,13 @@ export class SceneComponent implements OnInit {
     let scene: Scene = new Scene();
     scene.name = 'Test 1';
 
-    // Add the base settings for each fixture
+    // Add the base properties for each fixture
     for(let fixture of this.fixtureService.fixtures) {
-      let sceneFixtureSettings = new SceneFixtureSettings();
-      sceneFixtureSettings.fixture = fixture;
+      let sceneFixtureProperties = new SceneFixtureProperties();
+      sceneFixtureProperties.fixture = fixture;
       // Create a new instance of fixture
-      sceneFixtureSettings.settings = new (fixture.constructor as any);
-      scene.sceneFixtureSettingsList.push(sceneFixtureSettings);
+      sceneFixtureProperties.properties = new (fixture.constructor as any);
+      scene.sceneFixturePropertiesList.push(sceneFixtureProperties);
     }
 
     this.sceneService.scenes.push(scene);

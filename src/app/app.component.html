@@ -48,257 +48,58 @@
   </div>
 
   <div id="row2" class="split split-vertical clearfix px-3">
-    <div id="effects" class="split split-horizontal h-100">
+    <div id="properties" class="split split-horizontal h-100">
 
       <div class="row h-100">
+
+        <!-- Menu for the settings, properties and effects-->
         <div class="col col-auto pr-0">
           <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a class="nav-link px-3 active" id="v-pills-home-tab" popover="Properties" container="body" placement="right"
-              triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home"
+            <a class="nav-link px-3 active" id="v-pills-properties-tab" popover="Properties" container="body" placement="right"
+              triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-properties" role="tab" aria-controls="v-pills-properties"
               aria-selected="true">
-              <i class="fa fa-cog fa-fw" aria-hidden="true"></i>
+              <i class="fa fa-sliders fa-fw" aria-hidden="true"></i>
             </a>
-            <a class="nav-link px-3" id="v-pills-profile-tab" popover="Effects" container="body" placement="right"
-              triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile"
+            <a class="nav-link px-3" id="v-pills-effects-tab" popover="Effects" container="body" placement="right"
+              triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-effects" role="tab" aria-controls="v-pills-effects"
               aria-selected="false">
               <i class="fa fa-magic fa-fw" aria-hidden="true"></i>
             </a>
+            <a class="nav-link px-3" id="v-pills-settings-tab" popover="Settings" container="body" placement="right"
+              triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings"
+              aria-selected="true">
+              <i class="fa fa-cog fa-fw" aria-hidden="true"></i>
+            </a>
           </div>
         </div>
 
+        <!-- Content for the setting, properties and effects -->
         <div class="col pl-0">
           <div class="tab-content h-100" id="v-pills-tabContent">
-            <div class="tab-pane h-100 show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-              <div class="card border-secondary h-100 panel">
-                <div class="card-body h-100">
-
-                  <div class="row m-0 h-100">
-
-                    <!-- Mapping -->
-                    <div class="col col-auto p-0 mr-3">
-                      <div class="card border-secondary h-100">
-                        <div class="card-header">
-                          DMX Mapping
-                        </div>
-
-                        <div class="card-body h-100">
-
-                          <div>
-                            First channel
-                          </div>
-                          <div>
-                            <select class="mt-2" style="width: 50px;">
-                              <option>1</option>
-                              <option>2</option>
-                              <option>512</option>
-                            </select>
-                          </div>
-
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Position -->
-                    <div class="col col-auto p-0 mr-3">
-                      <div class="card border-secondary h-100">
-                        <div class="card-header">
-                          Position
-                        </div>
-
-                        <div class="card-body h-100">
-                          <div>
-                            <select class="mb-2" style="width: 140px;" [(ngModel)]="selectedPositioning" (change)="changePosition($event.target.value)">
-                              <option value="topFront">Front Top</option>
-                              <option value="bottomFront">Front Bottom</option>
-                              <option value="topBack">Back Top</option>
-                              <option value="bottomBack">Back Bottom</option>
-                              <option value="manual">Manual</option>
-                            </select>
-                          </div>
-
-                          <div *ngIf="selectedPositioning == 'manual'">
-                            <div class="d-flex">
-                              <div class="my-auto" style="width: 17px; float: left;">
-                                X
-                              </div>
-                              <div class="my-auto" style="float: left;">
-                                <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="-3" [max]="3"
-                                  [step]="0.001" (change)="changeSlider($event)"></mv-slider>
-                              </div>
-                              <div class="my-auto">
-                                <input type="text" class="slider-input">
-                              </div>
-                            </div>
-
-                            <div class="d-flex">
-                              <div class="my-auto" style="width: 17px; float: left;">
-                                Y
-                              </div>
-                              <div class="my-auto" style="float: left;">
-                                <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="-3" [max]="3"
-                                  [step]="0.001" (change)="changeSlider($event)"></mv-slider>
-                              </div>
-                              <div class="my-auto">
-                                <input type="text" class="slider-input">
-                              </div>
-                            </div>
-
-                            <div class="d-flex">
-                              <div class="my-auto" style="width: 17px; float: left;">
-                                Z
-                              </div>
-                              <div class="my-auto" style="float: left;">
-                                <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'" [value]="0" [min]="-3"
-                                  [max]="3" [step]="0.001" (change)="changeSlider($event)"></mv-slider>
-                              </div>
-                              <div class="my-auto">
-                                <input type="text" class="slider-input">
-                              </div>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Color -->
-                    <div class="col col-auto p-0 mr-3">
-                      <div class="card border-secondary h-100">
-                        <div class="card-header">
-                          <div class="my-auto" style="float: left;">
-                            Color
-                          </div>
-                          <div class="pull-right">
-                            <input type="text" [(ngModel)]="color" style="width: 58px; text-align: center; font-size: 12px; font-family: monospace;">
-                          </div>
-                        </div>
-
-                        <div class="card-body h-100">
-
-                          <div id="color-picker-container"></div>
-
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-
-                </div>
-              </div>
+            <div class="tab-pane h-100 show active" id="v-pills-properties" role="tabpanel" aria-labelledby="v-pills-home-tab">
+              <app-fixture-property></app-fixture-property>
             </div>
-            <div class="tab-pane h-100" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-
-              <div class="card border-secondary h-100 panel">
-                <div class="card-body h-100">
-
-                  <accordion [closeOthers]="true">
-                    <accordion-group *ngFor="let item of sceneService.getCurrentScene().effects; let i = index"
-                      [isOpen]="selectedEffect == item" (isOpenChange)="openEffect(item, $event)">
-
-                      <button class="btn btn-link btn-block clearfix" accordion-heading>
-                        <div class="pull-left float-left">
-                          <i *ngIf="item.constructor.name == 'EffectCurve'" class="fa fa-area-chart fa-fw" aria-hidden="true"></i>
-                          <i *ngIf="item.constructor.name == 'EffectPanTilt'" class="fa fa-arrows-alt fa-fw"
-                            aria-hidden="true"></i>
-                          {{ item.constructor.name }}
-                        </div>
-                      </button>
-
-                      <div *ngIf="item.constructor.name == 'EffectCurve'">
-                        <app-effect-curve [curve]="item" [isSelected]="item == selectedEffect"></app-effect-curve>
-                      </div>
-
-                      <div *ngIf="item.constructor.name == 'EffectPanTilt'">
-                        <app-effect-pan-tilt></app-effect-pan-tilt>
-                      </div>
-
-                    </accordion-group>
-                  </accordion>
-
-                  <div class="d-flex mx-auto">
-                    <div class="dropdown show d-flex">
-                      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-plus" aria-hidden="true"></i> Add new effect
-                      </a>
-
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="#" (click)="addCurveEffect()">
-                          <i class="fa fa-area-chart fa-fw" aria-hidden="true"></i> Curve</a>
-                        <a class="dropdown-item" href="#" (click)="addPanTiltEffect()">
-                          <i class="fa fa-arrows-alt fa-fw" aria-hidden="true"></i> Pan/Tilt</a>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
+            <div class="tab-pane h-100" id="v-pills-effects" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+              <app-effect></app-effect>
+            </div>
+            <div class="tab-pane h-100 show" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-home-tab">
+              <app-fixture-settings></app-fixture-settings>
             </div>
           </div>
         </div>
+
       </div>
-
-
     </div>
 
+    <!-- Fixtures -->
     <div id="fixtures" class="split split-horizontal h-100" style="overflow-y: scroll;">
-      <div class="card border-secondary h-100 panel">
-        <div class="card-header">
-          Fixtures
-        </div>
-
-        <div class="card-body h-100">
-
-          <!-- List of fixtures -->
-          <div class="list-group list-group-flush" [sortablejs]="fixtureService.fixtures">
-            <div class="list-group-item" *ngFor="let item of fixtureService.fixtures" [class.active]="item.isSelected">
-              <div class="row" (click)="selectFixture($event, item)" style="cursor: pointer;">
-                <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
-                  <i class="fa fa-bars" aria-hidden="true"></i>
-                </div>
-                <div style="width: 20px;">
-                  <i *ngIf="item.isSelected" class="fa fa-check" aria-hidden="true"></i>
-                </div>
-                {{ item.name }}
-              </div>
-            </div>
-          </div>
-
-          <!-- Add a new fixture -->
-          <div class="d-flex mx-auto mt-3">
-            <div class="dropdown show d-flex" style="width: 100%">
-              <a class="btn btn-secondary dropdown-toggle w-100" href="#" role="button" id="dropdownMenuLink"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-plus" aria-hidden="true"></i> Add New Fixture
-              </a>
-
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="#" (click)="addMovingHead()">
-                  <i class="fa fa-arrows-alt" aria-hidden="true"></i> Moving Head</a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
+      <app-fixture></app-fixture>
     </div>
   </div>
 
   <!-- Timeline -->
   <div id="row3" class="split split-vertical clearfix px-3 pb-3" style="padding-bottom: 20px;">
-    <div class="card border-secondary h-100">
-      <div class="card-body h-100 d-flex" style="flex-flow: column;">
-
-        <div class="btn-group clearfix" role="group" aria-label="Basic example">
-          <button type="button" class="btn btn-secondary" (click)="play()"><i class="fa fa-play" aria-hidden="true"></i></button>
-        </div>
-
-        <div #waveWrapper style="flex: 2; background-color: black; position: relative;">
-          <div id="waveform"></div>
-        </div>
-
-      </div>
-    </div>
+    <app-timeline></app-timeline>
   </div>
 
 </div>

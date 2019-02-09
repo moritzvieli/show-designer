@@ -124,12 +124,12 @@ export class PreviewComponent implements AfterViewInit {
         }
       }
 
-      // Get the base settings for this fixture
+      // Get the base properties for this fixture
       let sceneFixture: Fixture;
 
-      for (let sceneFixtureSettings of this.sceneService.getCurrentScene().sceneFixtureSettingsList) {
-        if (sceneFixtureSettings.fixture.uuid == element.getUid()) {
-          sceneFixture = sceneFixtureSettings.settings;
+      for (let sceneFixtureProperties of this.sceneService.getCurrentScene().sceneFixturePropertiesList) {
+        if (sceneFixtureProperties.fixture.uuid == element.getUid()) {
+          sceneFixture = sceneFixtureProperties.properties;
           break;
         }
       }

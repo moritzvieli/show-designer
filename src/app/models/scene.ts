@@ -1,5 +1,5 @@
 import { Effect } from "./effect";
-import { SceneFixtureSettings } from "./scene-fixture-settings";
+import { SceneFixtureProperties } from "./scene-fixture-properties";
 
 export class Scene {
 
@@ -7,6 +7,6 @@ export class Scene {
     name: string;
     position: number;
     effects: Effect[] = [];
-    sceneFixtureSettingsList: SceneFixtureSettings[] = []; 
+    sceneFixturePropertiesList: SceneFixtureProperties[] = []; 
 
 }

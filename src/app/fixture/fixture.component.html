@@ -1,0 +1,39 @@
+<div class="card border-secondary h-100 panel">
+  <div class="card-header">
+    Fixtures
+  </div>
+
+  <div class="card-body h-100">
+
+    <!-- List of fixtures -->
+    <div class="list-group list-group-flush" [sortablejs]="fixtureService.fixtures">
+      <div class="list-group-item" *ngFor="let item of fixtureService.fixtures" [class.active]="item.isSelected">
+        <div class="row" (click)="selectFixture($event, item)" style="cursor: pointer;">
+          <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+          </div>
+          <div style="width: 20px;">
+            <i *ngIf="item.isSelected" class="fa fa-check" aria-hidden="true"></i>
+          </div>
+          {{ item.name }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Add a new fixture -->
+    <div class="d-flex mx-auto mt-3">
+      <div class="dropdown show d-flex" style="width: 100%">
+        <a class="btn btn-secondary dropdown-toggle w-100" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-plus" aria-hidden="true"></i> Add New Fixture
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item" href="#" (click)="addMovingHead()">
+            <i class="fa fa-arrows-alt" aria-hidden="true"></i> Moving Head</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

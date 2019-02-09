@@ -11,9 +11,16 @@ import { NgxBootstrapSliderModule } from 'ngx-bootstrap-slider';
 import { AccordionModule, PopoverModule } from 'ngx-bootstrap';
 import { SortablejsModule } from 'angular-sortablejs';
 import { FormsModule } from '@angular/forms';
-import { EffectCurveComponent } from './effects/effect-curve/effect-curve.component';
-import { EffectPanTiltComponent } from './effects/effect-pan-tilt/effect-pan-tilt.component';
+import { EffectCurveComponent } from './effect/effect-curve/effect-curve.component';
+import { EffectPanTiltComponent } from './effect/effect-pan-tilt/effect-pan-tilt.component';
 import { SceneComponent } from './scene/scene/scene.component';
+import { TimelineComponent } from './timeline/timeline.component';
+import { FixturePropertyColorComponent } from './fixture/fixture-property/fixture-property-color/fixture-property-color.component';
+import { FixtureComponent } from './fixture/fixture.component';
+import { FixtureSettingsPositionComponent } from './fixture/fixture-settings/fixture-settings-position/fixture-settings-position.component';
+import { FixturePropertyComponent } from './fixture/fixture-property/fixture-property.component';
+import { FixtureSettingsComponent } from './fixture/fixture-settings/fixture-settings.component';
+import { EffectComponent } from './effect/effect.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +28,14 @@ import { SceneComponent } from './scene/scene/scene.component';
     PreviewComponent,
     EffectCurveComponent,
     EffectPanTiltComponent,
-    SceneComponent
+    SceneComponent,
+    TimelineComponent,
+    FixturePropertyColorComponent,
+    FixtureComponent,
+    FixtureSettingsPositionComponent,
+    FixturePropertyComponent,
+    FixtureSettingsComponent,
+    EffectComponent
   ],
   imports: [
     BrowserModule,
