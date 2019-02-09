@@ -2,7 +2,7 @@ import { UuidService } from './services/uuid.service';
 import { EffectCurve } from './models/effect-curve';
 import { MovingHead } from './models/moving-head';
 import { FixtureService } from './services/fixture.service';
-import { Fixture } from './models/fixture';
+import { Fixture, Positioning } from './models/fixture';
 import { PreviewComponent } from './preview/preview.component';
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Effect } from './models/effect';
@@ -36,6 +36,8 @@ export class AppComponent implements AfterViewInit {
 
   @ViewChild('waveWrapper')
   waveWrapper: ElementRef;
+
+  selectedPositioning: string = Positioning[Positioning.topFront];
 
   constructor(
     public fixtureService: FixtureService,
@@ -118,6 +120,16 @@ export class AppComponent implements AfterViewInit {
             settings.colorB = color.rgb.b;
           }
         }
+      }
+    });
+  }
+
+  changePosition(positioningStr: string) {
+    let positioning: Positioning = Positioning[positioningStr];
+
+    this.fixtureService.fixtures.forEach(fixture => {
+      if (fixture.isSelected) {
+        fixture.positioning = positioning;
       }
     });
   }

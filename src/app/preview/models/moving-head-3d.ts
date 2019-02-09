@@ -3,6 +3,7 @@ import { IFixture3d } from './i-fixture-3d';
 import { MovingHead } from '../../models/moving-head';
 import * as THREE from 'three';
 import { TabHeadingDirective } from 'ngx-bootstrap';
+import { Positioning } from 'src/app/models/fixture';
 
 export class MovingHead3d implements IFixture3d {
     movingHead: MovingHead;
@@ -123,7 +124,7 @@ export class MovingHead3d implements IFixture3d {
         //     path + 'pz' + format, path + 'nz' + format
         // ];
 
-       // var reflectionCube = new THREE.CubeTextureLoader().load(urls);
+        // var reflectionCube = new THREE.CubeTextureLoader().load(urls);
 
         // this.material = new THREE.MeshStandardMaterial({
         //     color: 0xffffff,
@@ -136,7 +137,7 @@ export class MovingHead3d implements IFixture3d {
         this.material = new THREE.MeshLambertMaterial({
             color: 0x0d0d0d,
             emissive: 0x0d0d0d
-          });
+        });
 
         this.selectedMaterial = new THREE.MeshLambertMaterial({
             color: 0xff00ff,
@@ -251,7 +252,28 @@ export class MovingHead3d implements IFixture3d {
         });
 
         // Update the position
-        this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY - 13, this.movingHead.positionZ);
+        switch ((this.movingHead.positioning) {
+            case Positioning.topFront: {
+                this.objectGroup.rotation.x = THREE.Math.degToRad(0);
+                this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY - 13, this.movingHead.positionZ);
+                break;
+            }
+            case Positioning.bottomFront: {
+                this.objectGroup.rotation.x = THREE.Math.degToRad(180);
+                this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY + 13, this.movingHead.positionZ);
+                break;
+            }
+            case Positioning.topBack: {
+                this.objectGroup.rotation.x = THREE.Math.degToRad(0);
+                this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY - 13, this.movingHead.positionZ);
+                break;
+            }
+            case Positioning.bottomBack: {
+                this.objectGroup.rotation.x = THREE.Math.degToRad(180);
+                this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY + 13, this.movingHead.positionZ);
+                break;
+            }
+        }
 
         // Calculate the y/x rotation in radiants based on pan/tilt (0-255) respecting the max pan/tilt
         this.armGroup.rotation.y = THREE.Math.degToRad(this.movingHead.maxPanDegrees * this.movingHead.pan / 255) - THREE.Math.degToRad(this.movingHead.maxPanDegrees / 2);
@@ -265,7 +287,7 @@ export class MovingHead3d implements IFixture3d {
         }
 
         // Update the material
-        if(this.lastSelected != this.movingHead.isSelected) {
+        if (this.lastSelected != this.movingHead.isSelected) {
             if (this.movingHead.isSelected) {
                 this.socket.material = this.selectedMaterial;
                 this.arm.material = this.selectedMaterial;

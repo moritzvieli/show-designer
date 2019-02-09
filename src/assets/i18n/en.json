@@ -12,6 +12,7 @@
     },
     "navigation": {
         "file": "File",
+        "settings": "Settings",
         "help": "Help" 
     }
 }
