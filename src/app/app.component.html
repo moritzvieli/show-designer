@@ -8,14 +8,10 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-        <a class="nav-link" routerLink="/play" routerLinkActive="active">{{ 'navigation.start' | translate }}</a>
+        <a class="nav-link" routerLink="/play" routerLinkActive="active">{{ 'navigation.file' | translate }}</a>
       </li>
       <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-        <a class="nav-link" routerLink="/editor" routerLinkActive="active">{{ 'navigation.compositions' | translate
-          }}</a>
-      </li>
-      <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-        <a class="nav-link" routerLink="/settings" routerLinkActive="active">{{ 'navigation.settings' | translate }}</a>
+        <a class="nav-link" routerLink="/settings" routerLinkActive="active">{{ 'navigation.help' | translate }}</a>
       </li>
     </ul>
   </div>
@@ -33,7 +29,7 @@
   <div id="row1" class="split split-vertical clearfix pt-3 pl-3">
 
     <!-- Scene selection -->
-    <div id="scenes" class="split split-horizontal">
+    <div id="scenes" class="split split-horizontal h-100" style="overflow-y: scroll;">
       <app-scene></app-scene>
     </div>
 
@@ -240,7 +236,7 @@
 
     </div>
 
-    <div id="fixtures" class="split split-horizontal h-100">
+    <div id="fixtures" class="split split-horizontal h-100" style="overflow-y: scroll;">
       <div class="card border-secondary h-100 panel">
         <div class="card-header">
           Fixtures

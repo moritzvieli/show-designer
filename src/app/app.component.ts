@@ -14,6 +14,7 @@ import { SceneFixtureSettings } from './models/scene-fixture-settings';
 import WaveSurfer from 'wavesurfer.js';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var iro: any;
 
@@ -39,7 +40,11 @@ export class AppComponent implements AfterViewInit {
   constructor(
     public fixtureService: FixtureService,
     private uuidService: UuidService,
-    private sceneService: SceneService) { }
+    private sceneService: SceneService,
+    private translateService: TranslateService) {
+
+    this.translateService.use('en');
+  }
 
   private onResize() {
     if (this.previewComponent) {
