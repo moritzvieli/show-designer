@@ -5,6 +5,11 @@
 $enable-rounded: false;
 $spacer: 0.8rem;
 
+$theme-colors: (
+  warning: $orange,
+  danger: $orange
+) !default;
+
 /* Add bootstrap */
 @import "../node_modules/bootstrap/scss/bootstrap";
 
@@ -55,7 +60,9 @@ input, select {
 }
 
 .list-group-item {
-    padding: 0.3rem 0.75rem;
+    padding: 0.3rem 1.25rem;
+    border-left: none;
+    border-right: none;
 }
 
 .card-header {

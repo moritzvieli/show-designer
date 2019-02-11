@@ -112,7 +112,7 @@ export class EffectCurveComponent implements OnInit {
     // Draw the current value
     this.drawCurrentValue(this.animationService.timeMillis % durationMillis, 5, width, durationMillis, maxValue);
 
-    // Draw the phasing values, if required
+    // Draw the phasing values (chase), if required
     let phasingCount = 0;
 
     if (this.curve.phasingMillis > 0) {

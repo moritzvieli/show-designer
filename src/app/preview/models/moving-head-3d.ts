@@ -20,7 +20,6 @@ export class MovingHead3d implements IFixture3d {
     private objectGroup: THREE.Object3D = new THREE.Object3D();
     private spotLight: THREE.SpotLight;
     private spotLightHelper: THREE.SpotLightHelper;
-    private shadowCameraHelper: THREE.CameraHelper;
     private spotLightBeam: THREE.Mesh;
 
     private pointLight: THREE.PointLight;
@@ -159,19 +158,12 @@ export class MovingHead3d implements IFixture3d {
         this.spotLight.angle = 0.244;
         this.spotLight.penumbra = 0.5;
         this.spotLight.decay = 2;
-        this.spotLight.distance = 200;
-        this.spotLight.castShadow = true;
-        this.spotLight.shadow.mapSize.width = 1024;
-        this.spotLight.shadow.mapSize.height = 1024;
-        this.spotLight.shadow.camera.near = 10;
-        this.spotLight.shadow.camera.far = 200;
-        this.spotLight.intensity = 3;
+        this.spotLight.distance = 60000;
+        this.spotLight.castShadow = false;
+        this.spotLight.intensity = 10;
 
         this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
         //scene.add(this.spotLightHelper);
-
-        this.shadowCameraHelper = new THREE.CameraHelper(this.spotLight.shadow.camera);
-        //scene.add(this.shadowCameraHelper);
 
         let spotLightTarget = new THREE.Object3D();
         this.spotLight.target = spotLightTarget;
@@ -182,7 +174,7 @@ export class MovingHead3d implements IFixture3d {
         spotLightTarget.position.set(0, -10, 0);
 
         // Add the point light for the surrounding light
-        this.pointLight = new THREE.PointLight(0xffffff, 5, 1000);
+        this.pointLight = new THREE.PointLight(0xffffff, 2, 1000);
         this.spotlightGroup.add(this.pointLight);
         this.pointLight.position.set(0, -1.4, 0);
 
@@ -303,7 +295,6 @@ export class MovingHead3d implements IFixture3d {
 
         // Update the light helpers
         this.spotLightHelper.update();
-        this.shadowCameraHelper.update();
 
         var color = new THREE.Color("rgb(" + this.movingHead.colorR + ", " + this.movingHead.colorG + ", " + this.movingHead.colorB + ")");
 

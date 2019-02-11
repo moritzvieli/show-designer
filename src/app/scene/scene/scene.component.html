@@ -1,11 +1,17 @@
-<div class="card border-secondary panel h-100" style="overflow: scroll">
-  <div class="card-header">
-    Scenes
+<div class="card border-secondary panel h-100">
+  <div class="card-header d-flex">
+    <div>
+        Scenes
+    </div>
+    <div class="ml-auto">
+        <a href="#" class="btn btn-secondary m-0, p-0" (click)="removeScene(); false;"><i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i></a>
+        <a href="#" class="btn btn-secondary m-0, p-0" (click)="addScene(); false;"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
+    </div>
   </div>
-  <div class="card-body border-secondary">
+  <div class="card-body border-secondary p-0">
 
     <!-- List of scenes -->
-    <div class="list-group list-group-flush" [sortablejs]="sceneService.scenes">
+    <div class="list-group" [sortablejs]="sceneService.scenes">
       <div class="list-group-item" *ngFor="let scene of sceneService.scenes; let i = index" [class.active]="sceneService.getCurrentScene() == scene">
         <div class="row" (click)="selectScene($event, i)" style="cursor: pointer;">
           <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
@@ -14,12 +20,6 @@
           {{ scene.name }}
         </div>
       </div>
-    </div>
-
-    <!-- Add a new scene -->
-    <div class="d-flex mx-auto mt-3">
-      <button type="button" class="btn btn-secondary w-100" (click)="addScene()"><i class="fa fa-plus" aria-hidden="true"></i>
-        Add New Scene</button>
     </div>
 
   </div>

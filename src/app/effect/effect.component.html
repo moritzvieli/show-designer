@@ -2,7 +2,7 @@
   <div class="card-body h-100">
 
     <accordion [closeOthers]="true">
-      <accordion-group *ngFor="let item of sceneService.getCurrentScene().effects; let i = index" [isOpen]="selectedEffect == item"
+      <accordion-group *ngFor="let item of sceneService.getCurrentScene().effects; let i = index" [isOpen]="effectService.selectedEffect == item"
         (isOpenChange)="openEffect(item, $event)">
 
         <button class="btn btn-link btn-block clearfix" accordion-heading>

@@ -1,13 +1,30 @@
 <div class="card border-secondary h-100 panel">
-  <div class="card-header">
-    Fixtures
+  <div class="card-header d-flex">
+    <div>
+      Fixtures
+    </div>
+    <div class="ml-auto">
+        <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectNone(); false;"><i class="fa fa-square-o fa-fw"
+          aria-hidden="true"></i></a>
+        <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectAll(); false;"><i class="fa fa-check-square-o fa-fw"
+          aria-hidden="true"></i></a>
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="removeScene(); false;"><i class="fa fa-minus-circle fa-fw"
+          aria-hidden="true"></i></a>
+      <a href="#" class="btn btn-secondary m-0, p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
+          class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
+
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <a class="dropdown-item" href="#" (click)="addMovingHead()">
+          <i class="fa fa-arrows-alt" aria-hidden="true"></i> Moving Head</a>
+      </div>
+    </div>
   </div>
 
-  <div class="card-body h-100">
+  <div class="card-body h-100 p-0">
 
     <!-- List of fixtures -->
-    <div class="list-group list-group-flush" [sortablejs]="fixtureService.fixtures">
-      <div class="list-group-item" *ngFor="let item of fixtureService.fixtures" [class.active]="item.isSelected">
+    <div class="list-group" [sortablejs]="fixtureService.fixtures">
+      <div class="list-group-item" *ngFor="let item of fixtureService.fixtures">
         <div class="row" (click)="selectFixture($event, item)" style="cursor: pointer;">
           <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
             <i class="fa fa-bars" aria-hidden="true"></i>
@@ -16,21 +33,6 @@
             <i *ngIf="item.isSelected" class="fa fa-check" aria-hidden="true"></i>
           </div>
           {{ item.name }}
-        </div>
-      </div>
-    </div>
-
-    <!-- Add a new fixture -->
-    <div class="d-flex mx-auto mt-3">
-      <div class="dropdown show d-flex" style="width: 100%">
-        <a class="btn btn-secondary dropdown-toggle w-100" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fa fa-plus" aria-hidden="true"></i> Add New Fixture
-        </a>
-
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <a class="dropdown-item" href="#" (click)="addMovingHead()">
-            <i class="fa fa-arrows-alt" aria-hidden="true"></i> Moving Head</a>
         </div>
       </div>
     </div>

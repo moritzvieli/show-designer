@@ -13,13 +13,15 @@ export class TimelineComponent implements OnInit {
   @ViewChild('waveWrapper')
   waveWrapper: ElementRef;
 
+  waveSurfer: WaveSurfer;
+
   constructor() { }
 
   ngOnInit() {
   }
 
   play() {
-    var wavesurfer = WaveSurfer.create({
+    this.waveSurfer = WaveSurfer.create({
       container: '#waveform',
       waveColor: 'white',
       progressColor: 'gray',
@@ -38,10 +40,10 @@ export class TimelineComponent implements OnInit {
         RegionsPlugin.create({})
       ]
     });
-    wavesurfer.setHeight(this.waveWrapper.nativeElement.clientHeight);
-    wavesurfer.load('../../assets/test.mp3');
+    this.waveSurfer.setHeight(this.waveWrapper.nativeElement.clientHeight);
+    this.waveSurfer.load('../../assets/test.mp3');
 
-    wavesurfer.zoom(130);
+    //wavesurfer.zoom(130);
 
     // let audio = new Audio();
     // audio.src = "../../assets/test.mp3";
@@ -53,6 +55,18 @@ export class TimelineComponent implements OnInit {
     // setTimeout(() => {
     //   console.log(audio.currentTime);
     // }, 5500);
+  }
+
+  addRegion() {
+    this.waveSurfer.addRegion({
+      start: 2, // time in seconds
+      end: 5, // time in seconds
+      color: 'rgba(253, 126, 20, 0.5)'
+    });
+  }
+
+  removeRegion() {
+    
   }
 
 }

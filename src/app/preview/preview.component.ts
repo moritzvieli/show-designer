@@ -204,8 +204,7 @@ export class PreviewComponent implements AfterViewInit {
     this.canvas.appendChild(this.renderer.domElement);
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.enabled = false;
     this.renderer.gammaInput = true;
     this.renderer.gammaOutput = true;
   }
@@ -250,7 +249,7 @@ export class PreviewComponent implements AfterViewInit {
     let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
 
     let floor = new THREE.Mesh(geometry.clone(), material);
-    floor.receiveShadow = true;
+    floor.receiveShadow = false;
     floor.castShadow = false;
     floor.position.set(0, -height / 2, 0);
     this.scene.add(floor);
@@ -322,48 +321,48 @@ export class PreviewComponent implements AfterViewInit {
     // Floor
     geometry = new THREE.BoxBufferGeometry(this.stageWidth, this.stageFloorHeight, this.stageDepth);
     mesh = new THREE.Mesh(geometry.clone(), material);
-    mesh.receiveShadow = true;
-    mesh.castShadow = true;
+    mesh.receiveShadow = false;
+    mesh.castShadow = false;
     mesh.position.set(0, this.stageFloorHeight / 2, 0);
     this.scene.add(mesh);
 
     // Pillar front left
     geometry = new THREE.BoxBufferGeometry(this.stagePillarWidth, this.stageHeight, this.stagePillarWidth);
     mesh = new THREE.Mesh(geometry.clone(), material);
-    mesh.receiveShadow = true;
-    mesh.castShadow = true;
+    mesh.receiveShadow = false;
+    mesh.castShadow = false;
     mesh.position.set(-this.stageWidth / 2 + this.stagePillarWidth / 2, this.stageHeight / 2 + this.stageFloorHeight, this.stageWidth / 2 - this.stagePillarWidth / 2);
     this.scene.add(mesh);
 
     // Pillar front right
     geometry = new THREE.BoxBufferGeometry(this.stagePillarWidth, this.stageHeight, this.stagePillarWidth);
     mesh = new THREE.Mesh(geometry.clone(), material);
-    mesh.receiveShadow = true;
-    mesh.castShadow = true;
+    mesh.receiveShadow = false;
+    mesh.castShadow = false;
     mesh.position.set(this.stageWidth / 2 - this.stagePillarWidth / 2, this.stageHeight / 2 + this.stageFloorHeight, this.stageWidth / 2 - this.stagePillarWidth / 2);
     this.scene.add(mesh);
 
     // Pillar back left
     geometry = new THREE.BoxBufferGeometry(this.stagePillarWidth, this.stageHeight, this.stagePillarWidth);
     mesh = new THREE.Mesh(geometry.clone(), material);
-    mesh.receiveShadow = true;
-    mesh.castShadow = true;
+    mesh.receiveShadow = false;
+    mesh.castShadow = false;
     mesh.position.set(-this.stageWidth / 2 + this.stagePillarWidth / 2, this.stageHeight / 2 + this.stageFloorHeight, -this.stageWidth / 2 + this.stagePillarWidth / 2);
     this.scene.add(mesh);
 
     // Pillar back right
     geometry = new THREE.BoxBufferGeometry(this.stagePillarWidth, this.stageHeight, this.stagePillarWidth);
     mesh = new THREE.Mesh(geometry.clone(), material);
-    mesh.receiveShadow = true;
-    mesh.castShadow = true;
+    mesh.receiveShadow = false;
+    mesh.castShadow = false;
     mesh.position.set(this.stageWidth / 2 - this.stagePillarWidth / 2, this.stageHeight / 2 + this.stageFloorHeight, -this.stageWidth / 2 + this.stagePillarWidth / 2);
     this.scene.add(mesh);
 
     // Ceiling
     geometry = new THREE.BoxBufferGeometry(this.stageWidth, this.stageCeilingHeight, this.stageDepth);
     mesh = new THREE.Mesh(geometry.clone(), material);
-    mesh.receiveShadow = true;
-    mesh.castShadow = true;
+    mesh.receiveShadow = false;
+    mesh.castShadow = false;
     mesh.position.set(0, this.stageHeight + this.stageCeilingHeight / 2 + this.stageFloorHeight, 0);
     this.scene.add(mesh);
   }

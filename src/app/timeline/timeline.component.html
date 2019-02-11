@@ -1,11 +1,36 @@
 <div class="card border-secondary h-100">
   <div class="card-body h-100 d-flex" style="flex-flow: column;">
 
-    <div class="btn-group clearfix" role="group" aria-label="Basic example">
-      <button type="button" class="btn btn-secondary" (click)="play()"><i class="fa fa-play" aria-hidden="true"></i></button>
+    <div class="d-flex pb-3">
+      <div class="btn-group mr-3 my-auto" role="group" style="float: left;">
+        <a href="#" class="btn btn-primary m-0 p-1" (click)="rewind(); false;"><i class="fa fa-step-backward fa-fw"
+            aria-hidden="true"></i></a>
+        <a href="#" class="btn btn-primary m-0 p-1" (click)="play(); false;"><i class="fa fa-play fa-fw"
+            aria-hidden="true"></i></a>
+      </div>
+
+      <div class="my-auto mr-3">
+        00:00:00
+      </div>
+
+      <div class="my-auto mr-3 ml-auto" style="float: left;">
+        <i class="fa fa-search-minus mr-1" aria-hidden="true"></i>
+        <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="-3" [max]="3" [step]="0.001"
+          (change)="changeSlider($event)"></mv-slider><i class="fa fa-search-plus ml-1" aria-hidden="true"></i>
+      </div>
+
+      <div class="my-auto mr-3">
+        <input type="text"> - <input type="text">
+      </div>
+
+      <a href="#" class="btn btn-secondary m-0 p-1 mr-3" (click)="removeRegion(); false;"><i class="fa fa-minus-circle "
+          aria-hidden="true"></i> Remove region</a>
+
+      <a href="#" class="btn btn-secondary m-0 p-1" (click)="addRegion(); false;"><i class="fa fa-plus-circle "
+          aria-hidden="true"></i> Add region</a>
     </div>
 
-    <div #waveWrapper style="flex: 2; background-color: black; position: relative;">
+    <div #waveWrapper style="flex: 2; position: relative;">
       <div id="waveform"></div>
     </div>
 
