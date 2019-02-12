@@ -5,12 +5,14 @@
       <div class="btn-group mr-3 my-auto" role="group" style="float: left;">
         <a href="#" class="btn btn-primary m-0 p-1" (click)="rewind(); false;"><i class="fa fa-step-backward fa-fw"
             aria-hidden="true"></i></a>
-        <a href="#" class="btn btn-primary m-0 p-1" (click)="play(); false;"><i class="fa fa-play fa-fw"
-            aria-hidden="true"></i></a>
+        <a *ngIf="timelineService.playState == 'paused'" href="#" class="btn btn-primary m-0 p-1" (click)="play(); false;"><i
+            class="fa fa-play fa-fw" aria-hidden="true"></i></a>
+        <a *ngIf="timelineService.playState == 'playing'" href="#" class="btn btn-primary m-0 p-1" (click)="pause(); false;"><i
+            class="fa fa-pause fa-fw" aria-hidden="true"></i></a>
       </div>
 
       <div class="my-auto mr-3">
-        00:00:00
+        00:00:00.000
       </div>
 
       <div class="my-auto mr-3 ml-auto" style="float: left;">

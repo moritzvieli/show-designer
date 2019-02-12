@@ -36,13 +36,11 @@ export class FixturePropertyColorComponent implements OnInit {
 
     this.fixtureService.fixtures.forEach(fixture => {
       if (fixture.isSelected) {
-        for (let sceneFixtureProperties of this.sceneService.getCurrentScene().sceneFixturePropertiesList) {
-          if (sceneFixtureProperties.fixture.uuid == fixture.uuid) {
-            let properties: any = sceneFixtureProperties.properties;
-            properties.colorR = color.rgb.r;
-            properties.colorG = color.rgb.g;
-            properties.colorB = color.rgb.b;
-          }
+        for(let sceneFixtureProperties of this.sceneService.getSelectedScenesFixtureProperties(fixture)) {
+          let properties: any = sceneFixtureProperties.properties;
+          properties.colorR = color.rgb.r;
+          properties.colorG = color.rgb.g;
+          properties.colorB = color.rgb.b;
         }
       }
     });

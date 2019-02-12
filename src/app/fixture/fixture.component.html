@@ -4,14 +4,14 @@
       Fixtures
     </div>
     <div class="ml-auto">
-        <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectNone(); false;"><i class="fa fa-square-o fa-fw"
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectNone(); false;"><i class="fa fa-square-o fa-fw"
           aria-hidden="true"></i></a>
-        <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectAll(); false;"><i class="fa fa-check-square-o fa-fw"
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectAll(); false;"><i class="fa fa-check-square-o fa-fw"
           aria-hidden="true"></i></a>
       <a href="#" class="btn btn-secondary m-0, p-0" (click)="removeScene(); false;"><i class="fa fa-minus-circle fa-fw"
           aria-hidden="true"></i></a>
-      <a href="#" class="btn btn-secondary m-0, p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-          class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
+      <a href="#" class="btn btn-secondary m-0, p-0" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
 
       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
         <a class="dropdown-item" href="#" (click)="addMovingHead()">
@@ -25,14 +25,20 @@
     <!-- List of fixtures -->
     <div class="list-group" [sortablejs]="fixtureService.fixtures">
       <div class="list-group-item" *ngFor="let item of fixtureService.fixtures">
-        <div class="row" (click)="selectFixture($event, item)" style="cursor: pointer;">
+        <div class="row d-flex" (click)="selectFixture($event, item)" style="cursor: pointer;"
+          [class.fixture-inactive]="!fixtureHasPropertiesSet(item)">
           <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div style="width: 20px;">
             <i *ngIf="item.isSelected" class="fa fa-check" aria-hidden="true"></i>
           </div>
-          {{ item.name }}
+          <div>
+            {{ item.name }}
+          </div>
+          <div class="ml-auto" *ngIf="fixtureHasPropertiesSet(item)">
+            <i class="fa fa-eye-slash" aria-hidden="true" (click)="fixtureDeleteProperties(item)"></i>
+          </div>
         </div>
       </div>
     </div>

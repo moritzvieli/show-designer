@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Scene } from '../models/scene';
+import { Subject } from 'rxjs';
+import { Fixture } from '../models/fixture';
+import { SceneFixtureProperties } from '../models/scene-fixture-properties';
 
 @Injectable({
   providedIn: 'root'
@@ -8,16 +11,80 @@ export class SceneService {
 
   // Make sure we always have at least one scene (don't allow deletion of the last scene)
   scenes: Scene[] = [];
-  currentSceneIndex: number = 0;
+
+  // Fires, when the current scene has changed
+  currentSceneChanged: Subject<void> = new Subject<void>();
 
   constructor() {
     let scene = new Scene();
     scene.name = 'Main';
+    scene.isSelected = true;
     this.scenes.push(scene);
   }
 
-  getCurrentScene(): Scene {
-    return this.scenes[this.currentSceneIndex];
+  getSelectedScenes(): Scene[] {
+    let selectedScenes: Scene[] = [];
+
+    for (let scene of this.scenes) {
+      if (scene.isSelected) {
+        selectedScenes.push(scene);
+      }
+    }
+
+    return selectedScenes;
+  }
+
+  private sceneIsActiveInTime(scene: Scene, timeMillis: number): boolean {
+    // Return true, if the specified scene is active during the specified time
+    for(let region of scene.scenePlaybackRegionList){
+      if(region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  getScenesInTime(timeMillis: number): Scene[] {
+    // Return all scenes which should be active during the specified time
+    let activeScenes: Scene[] = [];
+
+    for (let scene of this.scenes) {
+      if (this.sceneIsActiveInTime(scene, timeMillis)) {
+        activeScenes.push(scene);
+      }
+    }
+
+    return activeScenes;
+  }
+
+  getSelectedScenesFixtureProperties(fixture: Fixture): SceneFixtureProperties[] {
+    let sceneFixturePropertiesList: SceneFixtureProperties[] = []
+
+    // Get the scene fixture properties for the provided fixture or create the entries
+    for (let scene of this.getSelectedScenes()) {
+      let fixturePropertyFound: boolean = false;
+
+      for (let sceneFixtureProperties of scene.sceneFixturePropertiesList) {
+        if (sceneFixtureProperties.fixture.uuid == fixture.uuid) {
+          fixturePropertyFound = true;
+          sceneFixturePropertiesList.push(sceneFixtureProperties);
+          break;
+        }
+      }
+
+      if (!fixturePropertyFound) {
+        // No existing entry -> create a new one
+        let sceneFixtureProperties = new SceneFixtureProperties();
+        sceneFixtureProperties.fixture = fixture;
+        // Create a new instance of fixture
+        sceneFixtureProperties.properties = new (fixture.constructor as any);
+        scene.sceneFixturePropertiesList.push(sceneFixtureProperties);
+        sceneFixturePropertiesList.push(sceneFixtureProperties);
+      }
+    }
+
+    return sceneFixturePropertiesList;
   }
 
 }

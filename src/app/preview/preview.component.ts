@@ -5,7 +5,7 @@ import { MovingHead3d } from './models/moving-head-3d';
 import { FixtureService } from '../services/fixture.service';
 import { MovingHead } from '../models/moving-head';
 import { Fixture } from '../models/fixture';
-import { Component, AfterViewInit, ViewChild, ElementRef, HostListener, Input } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import * as THREE from 'three';
 import './js/EnableThreeExamples';
 import 'three/examples/js/controls/OrbitControls';
@@ -15,6 +15,8 @@ import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SceneService } from '../services/scene.service';
 import { Effect } from '../models/effect';
+import { TimelineService } from '../services/timeline.service';
+import { Scene } from '../models/scene';
 
 declare var THREEx: any;
 
@@ -50,7 +52,8 @@ export class PreviewComponent implements AfterViewInit {
   constructor(
     private fixtureService: FixtureService,
     private animationService: AnimationService,
-    private sceneService: SceneService) {
+    private sceneService: SceneService,
+    private timelineService: TimelineService) {
 
     this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
       if (fixture instanceof MovingHead) {
@@ -97,6 +100,20 @@ export class PreviewComponent implements AfterViewInit {
   private animate(timeMillis) {
     this.stats.begin();
 
+    // All relevant scenes
+    let scenes: Scene[];
+
+    if(this.timelineService.playState == 'playing') {
+      // Overwrite the current time with the playing time, if we're in playback mode
+      timeMillis = this.timelineService.waveSurfer.getCurrentTime() * 1000;
+
+      // Only respect scenes with a current region
+      scenes = this.sceneService.getScenesInTime(timeMillis);
+    } else {
+      // Respect all selected scenes
+      scenes = this.sceneService.getSelectedScenes();
+    }
+
     this.animationService.timeMillis = timeMillis;
 
     if (this.controls) {
@@ -109,28 +126,34 @@ export class PreviewComponent implements AfterViewInit {
     this.updateStagePosition(Positioning.topBack, -this.stageWidth / 2, this.stageWidth / 2, this.stageHeight + this.stageFloorHeight, this.stageHeight + this.stageFloorHeight, -this.stageDepth / 2 + 70, -this.stageDepth / 2 + 70);
     this.updateStagePosition(Positioning.bottomBack, -this.stageWidth / 2, this.stageWidth / 2, this.stageFloorHeight, this.stageFloorHeight, -this.stageDepth / 2 + 70, -this.stageDepth / 2 + 70);
 
-    // Update the 3d objects
+    // Update the 3d objects. Effects and base properties are stacked bottom-up: Higher elements have priority 
+    // and will overwrite settings from the elements below.
     this.fixtures3d.forEach((element, index) => {
       // Get all effects with this fixture for better performance, than run the update for each effect
-      // separately on each fixture
+      // separately on each fixture.
       let effects: Effect[] = [];
+      let sceneFixture: Fixture;
 
-      for (let effect of this.sceneService.getCurrentScene().effects) {
-        for (let fixture of effect.fixtures) {
-          if (fixture.uuid == element.getUid()) {
-            effects.push(effect);
+      // Loop backwards to overwrite properties with lower priority
+      for(let i = scenes.length - 1; i >= 0; i--) {
+        let scene = this.sceneService.getSelectedScenes()[i];
+
+        // Base properties
+        for (let sceneFixtureProperties of scene.sceneFixturePropertiesList) {
+          if (sceneFixtureProperties.fixture.uuid == element.getUid()) {
+            sceneFixture = sceneFixtureProperties.properties;
             break;
           }
         }
-      }
 
-      // Get the base properties for this fixture
-      let sceneFixture: Fixture;
-
-      for (let sceneFixtureProperties of this.sceneService.getCurrentScene().sceneFixturePropertiesList) {
-        if (sceneFixtureProperties.fixture.uuid == element.getUid()) {
-          sceneFixture = sceneFixtureProperties.properties;
-          break;
+        // Effects
+        for (let effect of scene.effects) {
+          for (let fixture of effect.fixtures) {
+            if (fixture.uuid == element.getUid()) {
+              effects.push(effect);
+              break;
+            }
+          }
         }
       }
 

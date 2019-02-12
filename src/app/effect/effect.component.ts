@@ -28,13 +28,17 @@ export class EffectComponent implements OnInit {
   addCurveEffect() {
     let effect = new EffectCurve(this.uuidService, this.fixtureService);
     this.effectService.selectedEffect = effect;
-    this.sceneService.getCurrentScene().effects.push(effect);
+    for(let scene of this.sceneService.getSelectedScenes()) {
+      scene.effects.push(effect);
+    }
   }
 
   addPanTiltEffect() {
     let effect = new EffectPanTilt(this.uuidService, this.fixtureService);
     this.effectService.selectedEffect = effect;
-    this.sceneService.getCurrentScene().effects.push(effect);
+    for(let scene of this.sceneService.getSelectedScenes()) {
+      scene.effects.push(effect);
+    }
   }
 
   openEffect(effect: Effect, event: any) {
