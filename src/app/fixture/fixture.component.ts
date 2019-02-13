@@ -29,6 +29,9 @@ export class FixtureComponent implements OnInit {
     let movingHead = new MovingHead(this.uuidService);
     movingHead.positionY = 30;
     movingHead.isSelected = true;
+    movingHead.colorR = 255;
+    movingHead.colorG = 255;
+    movingHead.colorB = 255;
 
     if (this.effectService.selectedEffect) {
       this.effectService.selectedEffect.fixtures.push(movingHead);

@@ -46,9 +46,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           CursorPlugin.create({
             showTime: true,
             opacity: 1,
+            color: 'white',
             customShowTimeStyle: {
-              'background-color': '#000',
-              color: '#fff',
+              'background-color': '#fff',
+              color: 'black',
               padding: '2px',
               'font-size': '10px'
             }

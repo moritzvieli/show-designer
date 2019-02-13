@@ -3,6 +3,7 @@ import { Scene } from '../models/scene';
 import { Subject } from 'rxjs';
 import { Fixture } from '../models/fixture';
 import { SceneFixtureProperties } from '../models/scene-fixture-properties';
+import { ScenePlaybackRegion } from '../models/scene-playback-region';
 
 @Injectable({
   providedIn: 'root'
@@ -34,15 +35,15 @@ export class SceneService {
     return selectedScenes;
   }
 
-  private sceneIsActiveInTime(scene: Scene, timeMillis: number): boolean {
+  getCurrentPlaybackRegion(scene: Scene, timeMillis: number): ScenePlaybackRegion {
     // Return true, if the specified scene is active during the specified time
     for(let region of scene.scenePlaybackRegionList){
       if(region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
-        return true;
+        return region;
       }
     }
 
-    return false;
+    return undefined;
   }
 
   getScenesInTime(timeMillis: number): Scene[] {
@@ -50,7 +51,7 @@ export class SceneService {
     let activeScenes: Scene[] = [];
 
     for (let scene of this.scenes) {
-      if (this.sceneIsActiveInTime(scene, timeMillis)) {
+      if (this.getCurrentPlaybackRegion(scene, timeMillis)) {
         activeScenes.push(scene);
       }
     }

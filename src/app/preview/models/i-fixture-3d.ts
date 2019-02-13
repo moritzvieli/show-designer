@@ -4,8 +4,11 @@ import { Fixture } from "src/app/models/fixture";
 export interface IFixture3d {
 
     // Update the animation of this fixture, respecting its index (e.g. used for phasing-effects)
-    update(timeMillis: number, fixtureIndex: number, effects: Effect[], sceneFixture: Fixture): void;
+    getFixtureStateAtMillis(timeMillis: number, fixture: Fixture, fixtureIndex: number, effects: Effect[], baseProperties: Fixture, fadeProperties: Fixture, fadePercentage: number): Fixture;
 
-    getUid(): string;
+    // Apply the properties of the base fixture to the preview
+    updatePreview(fixture: Fixture): void;
+
+    getFixture(): Fixture;
 
 }

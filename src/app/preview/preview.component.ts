@@ -17,6 +17,7 @@ import { SceneService } from '../services/scene.service';
 import { Effect } from '../models/effect';
 import { TimelineService } from '../services/timeline.service';
 import { Scene } from '../models/scene';
+import { ScenePlaybackRegion } from '../models/scene-playback-region';
 
 declare var THREEx: any;
 
@@ -97,20 +98,92 @@ export class PreviewComponent implements AfterViewInit {
     });
   }
 
-  private animate(timeMillis) {
+  private getFixtureStateAtMillis(scenes: Scene[], timeMillis: number, fixture3d: IFixture3d, fixtureIndex: number): Fixture {
+    // Get the state of a fixture at a given time
+
+    // Get all effects with this fixture for better performance, than run the update for each effect
+    // separately on each fixture.
+    let effects: Effect[] = [];
+
+    // Start with the default initial settings of the fixture (dark, lights off, etc.)
+    let baseProperties = new (fixture3d.getFixture().constructor as any);
+
+    // Loop through each relevant scene and calculate the state of the fixture.
+    // Loop backwards to overwrite properties with lower priority.
+    for (let i = scenes.length - 1; i >= 0; i--) {
+      let scene = scenes[i];
+
+      // Get the relevant base properties, if there are any
+      for (let sceneFixtureProperties of scene.sceneFixturePropertiesList) {
+        if (sceneFixtureProperties.fixture.uuid == fixture3d.getFixture().uuid) {
+          baseProperties = sceneFixtureProperties.properties;
+          break;
+        }
+      }
+
+      // Collect all relevant effects
+      for (let effect of scene.effects) {
+        for (let effectFixture of effect.fixtures) {
+          if (effectFixture.uuid == fixture3d.getFixture().uuid) {
+            effects.push(effect);
+            break;
+          }
+        }
+      }
+
+      // Calculate the previous state or the state after this region to apply fading, if required
+
+      // Create a virtual fixture to compute the fade-in/-out effect
+      let fadeFixture: Fixture;
+
+      // How much does the fading impact the current region? 0 = nothing, 1 = full
+      let fadePercentage: number = 0;
+
+      if (this.timelineService.playState == 'playing' && (scene.fadeInMillis > 0 || scene.fadeOutMillis > 0)) {
+        // Get the current region, this fixture is being being playing on
+        let currentRegion: ScenePlaybackRegion = this.sceneService.getCurrentPlaybackRegion(scene, timeMillis);
+
+        if (currentRegion) {
+          if (timeMillis < currentRegion.startMillis + scene.fadeInMillis) {
+            // We are being faded in
+
+            // Calculate the fadeFixture one step before this region
+            fadeFixture = this.getFixtureStateAtMillis(this.sceneService.getScenesInTime(currentRegion.startMillis - 1), currentRegion.startMillis - 1, fixture3d, fixtureIndex);
+
+            fadePercentage = 1 - ((timeMillis - currentRegion.startMillis) / scene.fadeInMillis);
+          } else if (timeMillis > currentRegion.endMillis - scene.fadeOutMillis) {
+            // We are being faded out
+
+            // Calculate the fadeFixture one step after this region
+            fadeFixture = this.getFixtureStateAtMillis(this.sceneService.getScenesInTime(currentRegion.endMillis + 1), currentRegion.endMillis + 1, fixture3d, fixtureIndex);
+
+            fadePercentage = 1 - (currentRegion.endMillis - timeMillis) / scene.fadeOutMillis;
+          }
+        }
+      }
+
+      // We now got the base properties, a set of effects and maybe a fade to take into account
+      // -> calculate the state for this scene out of it and use the result as new baseproperties for following scenes
+      baseProperties = fixture3d.getFixtureStateAtMillis(timeMillis, fixture3d.getFixture(), fixtureIndex, effects, baseProperties, fadeFixture, fadePercentage);
+    }
+
+    return baseProperties;
+  }
+
+  private animate(timeMillis: number) {
     this.stats.begin();
 
     // All relevant scenes
     let scenes: Scene[];
 
-    if(this.timelineService.playState == 'playing') {
+    if (this.timelineService.playState == 'playing') {
       // Overwrite the current time with the playing time, if we're in playback mode
       timeMillis = this.timelineService.waveSurfer.getCurrentTime() * 1000;
 
-      // Only respect scenes with a current region
+      // Only use scenes with a current region
       scenes = this.sceneService.getScenesInTime(timeMillis);
     } else {
-      // Respect all selected scenes
+      // Use all selected scenes
       scenes = this.sceneService.getSelectedScenes();
     }
 
@@ -128,40 +201,15 @@ export class PreviewComponent implements AfterViewInit {
 
     // Update the 3d objects. Effects and base properties are stacked bottom-up: Higher elements have priority 
     // and will overwrite settings from the elements below.
-    this.fixtures3d.forEach((element, index) => {
-      // Get all effects with this fixture for better performance, than run the update for each effect
-      // separately on each fixture.
-      let effects: Effect[] = [];
-      let sceneFixture: Fixture;
+    for (let i = 0; i < this.fixtures3d.length; i++) {
+      let fixture3d = this.fixtures3d[i];
 
-      // Loop backwards to overwrite properties with lower priority
-      for(let i = scenes.length - 1; i >= 0; i--) {
-        let scene = this.sceneService.getSelectedScenes()[i];
+      let fixtureState = this.getFixtureStateAtMillis(scenes, timeMillis, fixture3d, i);
 
-        // Base properties
-        for (let sceneFixtureProperties of scene.sceneFixturePropertiesList) {
-          if (sceneFixtureProperties.fixture.uuid == element.getUid()) {
-            sceneFixture = sceneFixtureProperties.properties;
-            break;
-          }
-        }
-
-        // Effects
-        for (let effect of scene.effects) {
-          for (let fixture of effect.fixtures) {
-            if (fixture.uuid == element.getUid()) {
-              effects.push(effect);
-              break;
-            }
-          }
-        }
-      }
-
-      element.update(timeMillis, index, effects, sceneFixture);
-    });
+      fixture3d.updatePreview(fixtureState);
+    }
 
     this.rendererStats.update(this.renderer);
-
     this.render();
 
     this.stats.end();
@@ -417,13 +465,13 @@ export class PreviewComponent implements AfterViewInit {
 
     // TODO
     var lights = [];
-    lights[0] = new THREE.PointLight(0xffffff, 1, 0);
-    lights[1] = new THREE.PointLight(0xffffff, 1, 0);
-    lights[2] = new THREE.PointLight(0xffffff, 1, 0);
+    lights[0] = new THREE.PointLight(0xffffff, 0.5, 0);
+    lights[1] = new THREE.PointLight(0xffffff, 0.5, 0);
+    lights[2] = new THREE.PointLight(0xffffff, 0.5, 0);
 
-    lights[0].position.set(0, 200, 0);
-    lights[1].position.set(100, 200, 100);
-    lights[2].position.set(- 100, - 200, - 100);
+    lights[0].position.set(0, 2000, 0);
+    lights[1].position.set(1000, 2000, 1000);
+    lights[2].position.set(- 1000, - 2000, - 1000);
 
     this.scene.add(lights[0]);
     this.scene.add(lights[1]);

@@ -2,7 +2,7 @@ import { EffectChannel, Effect } from './../../models/effect';
 import { IFixture3d } from './i-fixture-3d';
 import { MovingHead } from '../../models/moving-head';
 import * as THREE from 'three';
-import { Positioning } from 'src/app/models/fixture';
+import { Positioning, Fixture } from 'src/app/models/fixture';
 
 export class MovingHead3d implements IFixture3d {
     movingHead: MovingHead;
@@ -35,9 +35,9 @@ export class MovingHead3d implements IFixture3d {
             'varying vec3	vVertexNormal;',
 
             'void main(){',
-            '	vVertexNormal	= normalize(normalMatrix * normal);',
+            '	vVertexNormal = normalize(normalMatrix * normal);',
 
-            '	vVertexWorldPosition	= (modelMatrix * vec4(position, 1.0)).xyz;',
+            '	vVertexWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;',
 
             '	// set gl_Position',
             '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
@@ -48,6 +48,7 @@ export class MovingHead3d implements IFixture3d {
             'uniform vec3	glowColor;',
             'uniform float	coeficient;',
             'uniform float	power;',
+            'uniform float	opacity;',
 
             'varying vec3	vVertexNormal;',
             'varying vec3	vVertexWorldPosition;',
@@ -57,32 +58,36 @@ export class MovingHead3d implements IFixture3d {
             '	vec3 viewCameraToVertex	= (viewMatrix * vec4(worldCameraToVertex, 0.0)).xyz;',
             '	viewCameraToVertex	= normalize(viewCameraToVertex);',
             '	float intensity		= pow(coeficient + dot(vVertexNormal, viewCameraToVertex), power);',
-            '	gl_FragColor		= vec4(glowColor, intensity);',
+            '	gl_FragColor		= vec4(glowColor, intensity * opacity);',
             '}',
         ].join('\n')
 
         // create custom material from the shader code above
-        //   that is within specially labeled script tags
+        // that is within specially labeled script tags
         var material = new THREE.ShaderMaterial({
             uniforms: {
                 coeficient: {
-                    type: "f",
+                    type: 'f',
                     value: 0.3
                 },
                 power: {
-                    type: "f",
+                    type: 'f',
                     value: 1.3
                 },
-                glowColor: {
-                    type: "c",
-                    value: new THREE.Color('white')
+                opacity: {
+                    type: 'f',
+                    value: 1.0
                 },
+                glowColor: {
+                    type: 'c',
+                    value: new THREE.Color('white')
+                }
             },
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
-            //blending	: THREE.AdditiveBlending,
+            //blending: THREE.AdditiveBlending,
             transparent: true,
-            depthWrite: true,
+            depthWrite: true
         });
 
         return material;
@@ -203,46 +208,79 @@ export class MovingHead3d implements IFixture3d {
         return this.objectGroup;
     }
 
-    public update(timeMillis: number, fixtureIndex: number, effects: Effect[], sceneFixture: MovingHead): void {
-        // Apply the scene base settings
-        if (sceneFixture) {
-            this.movingHead.colorR = sceneFixture.colorR;
-            this.movingHead.colorG = sceneFixture.colorG;
-            this.movingHead.colorB = sceneFixture.colorB;
+    public getFixtureStateAtMillis(timeMillis: number, fixture: MovingHead, fixtureIndex: number, effects: Effect[], baseProperties: MovingHead, fadeProperties: MovingHead, fadePercentage: number) {
+        let calculatedFixture: MovingHead = new MovingHead(undefined);
 
-            this.movingHead.pan = sceneFixture.pan;
-            this.movingHead.tilt = sceneFixture.tilt;
+        // Update the fixture settings
+        // Apply the scene base settings
+        // TODO Do it more elegant with an array of properties
+        if (baseProperties) {
+            calculatedFixture.colorR = baseProperties.colorR;
+            calculatedFixture.colorG = baseProperties.colorG;
+            calculatedFixture.colorB = baseProperties.colorB;
+
+            calculatedFixture.pan = baseProperties.pan;
+            calculatedFixture.tilt = baseProperties.tilt;
         }
 
         // Process the effects
-        for(let effect of effects) {
+        // TODO Do it more elegant with an array of properties
+        for (let effect of effects) {
             let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
 
-            for(let channel of effect.channels) {
+            for (let channel of effect.channels) {
                 switch (channel) {
                     case EffectChannel.colorR: {
-                        this.movingHead.colorR = Math.round(value);
+                        calculatedFixture.colorR = value;
                         break;
                     }
                     case EffectChannel.colorG: {
-                        this.movingHead.colorG = Math.round(value);
+                        calculatedFixture.colorG = value;
                         break;
                     }
                     case EffectChannel.colorB: {
-                        this.movingHead.colorB = Math.round(value);
+                        calculatedFixture.colorB = value;
                         break;
                     }
                     case EffectChannel.pan: {
-                        this.movingHead.pan = value;
+                        calculatedFixture.pan = value;
                         break;
                     }
                     case EffectChannel.tilt: {
-                        this.movingHead.tilt = value;
+                        calculatedFixture.tilt = value;
                         break;
                     }
                 }
             }
         }
+
+        // Apply the fade if needed
+        // TODO
+        if(fadePercentage > 0) {
+            calculatedFixture.colorR = calculatedFixture.colorR * (1 - fadePercentage) + fadeProperties.colorR * fadePercentage;
+            calculatedFixture.colorG = calculatedFixture.colorG * (1 - fadePercentage) + fadeProperties.colorG * fadePercentage;
+            calculatedFixture.colorB = calculatedFixture.colorB * (1 - fadePercentage) + fadeProperties.colorB * fadePercentage;
+
+            calculatedFixture.pan = calculatedFixture.pan * (1 - fadePercentage) + fadeProperties.pan * fadePercentage;
+            calculatedFixture.tilt = calculatedFixture.tilt * (1 - fadePercentage) + fadeProperties.tilt * fadePercentage;
+        }
+
+        calculatedFixture.colorR = Math.round(calculatedFixture.colorR);
+        calculatedFixture.colorG = Math.round(calculatedFixture.colorG);
+        calculatedFixture.colorB = Math.round(calculatedFixture.colorB);
+
+        return calculatedFixture;
+    }
+
+    public updatePreview(fixture: MovingHead): void {
+        // Apply the settings from the provided fixture to the preview
+        // TODO Do it more elegant with an array of properties
+        this.movingHead.colorR = fixture.colorR;
+        this.movingHead.colorG = fixture.colorG;
+        this.movingHead.colorB = fixture.colorB;
+
+        this.movingHead.pan = fixture.pan;
+        this.movingHead.tilt = fixture.tilt;
 
         // Update the position
         switch (this.movingHead.positioning) {
@@ -302,13 +340,15 @@ export class MovingHead3d implements IFixture3d {
         this.spotLight.color = color;
         //this.spotLightBeam.material.color = color;
         this.spotLightBeam.material.uniforms.glowColor.value = color;
+        // Don't show a black light beam
+        this.spotLightBeam.material.uniforms.opacity.value = Math.max(this.movingHead.colorR, this.movingHead.colorG, this.movingHead.colorB) / 255;
         this.pointLight.color = color;
 
         // this.spotLightBeam.material.uniforms.viewVector.value =
         //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);
     }
 
-    getUid(): string {
-        return this.movingHead.uuid;
+    getFixture(): Fixture {
+        return this.movingHead;
     }
 }

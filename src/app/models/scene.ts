@@ -10,6 +10,8 @@ export class Scene {
     effects: Effect[] = [];
     sceneFixturePropertiesList: SceneFixtureProperties[] = [];
     scenePlaybackRegionList: ScenePlaybackRegion[] = [];
+    fadeInMillis: number = 2000;
+    fadeOutMillis: number = 2000;
 
     isSelected: boolean;
 

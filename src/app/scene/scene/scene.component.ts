@@ -23,6 +23,8 @@ export class SceneComponent implements OnInit {
     scene.name = 'Test 1';
 
     this.sceneService.scenes.push(scene);
+
+    this.selectScene(undefined, this.sceneService.scenes.length - 1);
   }
 
   selectScene(event: any, index: number) {
