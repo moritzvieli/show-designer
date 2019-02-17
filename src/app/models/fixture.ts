@@ -14,6 +14,9 @@ export class Fixture {
     name: string;
     isSelected: boolean = false;
 
+    dmxFirstChannel: number = 5;
+    dmxChannelCount: number = 16;
+
     // Only relevant when positioning = manual
     positionX: number = 0;
     positionY: number = 0;

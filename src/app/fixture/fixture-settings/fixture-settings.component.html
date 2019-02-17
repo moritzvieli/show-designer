@@ -15,17 +15,10 @@
             DMX Mapping
           </div>
 
-          <div class="card-body h-100">
+          <div class="card-body h-100" style="width: 480px;">
 
-            <div>
-              First channel
-            </div>
-            <div>
-              <select class="mt-2" style="width: 50px;">
-                <option>1</option>
-                <option>2</option>
-                <option>512</option>
-              </select>
+            <div *ngFor="let channel of dmxChannels; let i = index;" class="dmx-channel" [class.dmx-channel-occupied]="channelOccupied(i)" [class.dmx-channel-occupied-start]="channelOccupiedStart(i)" [class.dmx-channel-occupied-end]="channelOccupiedEnd(i)">
+              <div class="m-auto" style="font-size: 11px;"><small>{{ (i + 1) }}</small></div>
             </div>
 
           </div>
