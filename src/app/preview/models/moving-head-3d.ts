@@ -208,79 +208,47 @@ export class MovingHead3d implements IFixture3d {
         return this.objectGroup;
     }
 
-    public getFixtureStateAtMillis(timeMillis: number, fixture: MovingHead, fixtureIndex: number, effects: Effect[], baseProperties: MovingHead, fadeProperties: MovingHead, fadePercentage: number) {
+    public getFixtureStateAtMillis(timeMillis: number, fixture: MovingHead, fixtureIndex: number, effects: Effect[], baseProperties: MovingHead, fadeProperties: MovingHead, fadePercentage: number): Fixture {
         let calculatedFixture: MovingHead = new MovingHead(undefined);
 
         // Update the fixture settings
         // Apply the scene base settings
-        // TODO Do it more elegant with an array of properties
         if (baseProperties) {
-            calculatedFixture.colorR = baseProperties.colorR;
-            calculatedFixture.colorG = baseProperties.colorG;
-            calculatedFixture.colorB = baseProperties.colorB;
-
-            calculatedFixture.pan = baseProperties.pan;
-            calculatedFixture.tilt = baseProperties.tilt;
-        }
-
-        // Process the effects
-        // TODO Do it more elegant with an array of properties
-        for (let effect of effects) {
-            let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
-
-            for (let channel of effect.channels) {
-                switch (channel) {
-                    case EffectChannel.colorR: {
-                        calculatedFixture.colorR = value;
-                        break;
-                    }
-                    case EffectChannel.colorG: {
-                        calculatedFixture.colorG = value;
-                        break;
-                    }
-                    case EffectChannel.colorB: {
-                        calculatedFixture.colorB = value;
-                        break;
-                    }
-                    case EffectChannel.pan: {
-                        calculatedFixture.pan = value;
-                        break;
-                    }
-                    case EffectChannel.tilt: {
-                        calculatedFixture.tilt = value;
-                        break;
-                    }
+            for (let property in calculatedFixture) {
+                if (calculatedFixture.hasOwnProperty(property)) {
+                    calculatedFixture[property] = baseProperties[property];
                 }
             }
         }
 
-        // Apply the fade if needed
-        // TODO
-        if(fadePercentage > 0) {
-            calculatedFixture.colorR = calculatedFixture.colorR * (1 - fadePercentage) + fadeProperties.colorR * fadePercentage;
-            calculatedFixture.colorG = calculatedFixture.colorG * (1 - fadePercentage) + fadeProperties.colorG * fadePercentage;
-            calculatedFixture.colorB = calculatedFixture.colorB * (1 - fadePercentage) + fadeProperties.colorB * fadePercentage;
+        // Process the effects
+        for (let effect of effects) {
+            let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
 
-            calculatedFixture.pan = calculatedFixture.pan * (1 - fadePercentage) + fadeProperties.pan * fadePercentage;
-            calculatedFixture.tilt = calculatedFixture.tilt * (1 - fadePercentage) + fadeProperties.tilt * fadePercentage;
+            for (let channel of effect.channels) {
+                calculatedFixture[EffectChannel[channel]] = value;
+            }
         }
 
-        calculatedFixture.colorR = Math.round(calculatedFixture.colorR);
-        calculatedFixture.colorG = Math.round(calculatedFixture.colorG);
-        calculatedFixture.colorB = Math.round(calculatedFixture.colorB);
+        // Apply the fade if needed
+        if (fadePercentage > 0) {
+            for (let property in calculatedFixture) {
+                if (calculatedFixture.hasOwnProperty(property)) {
+                    calculatedFixture[property] = calculatedFixture[property] * (1 - fadePercentage) + fadeProperties[property] * fadePercentage;
+                }
+            }
+        }
 
         return calculatedFixture;
     }
 
     public updatePreview(fixture: MovingHead): void {
         // Apply the settings from the provided fixture to the preview
-        // TODO Do it more elegant with an array of properties
-        this.movingHead.colorR = fixture.colorR;
-        this.movingHead.colorG = fixture.colorG;
-        this.movingHead.colorB = fixture.colorB;
-
-        this.movingHead.pan = fixture.pan;
-        this.movingHead.tilt = fixture.tilt;
+        for (let property in this.movingHead) {
+            if (this.movingHead.hasOwnProperty(property) && fixture[property]) {
+                this.movingHead[property] = fixture[property];
+            }
+        }
 
         // Update the position
         switch (this.movingHead.positioning) {
@@ -335,10 +303,15 @@ export class MovingHead3d implements IFixture3d {
         // Update the light helpers
         this.spotLightHelper.update();
 
+        // Apply the colores
+        // Colors need to be rounded for the 3d preview
+        this.movingHead.colorR = Math.round(this.movingHead.colorR);
+        this.movingHead.colorG = Math.round(this.movingHead.colorG);
+        this.movingHead.colorB = Math.round(this.movingHead.colorB);
+
         var color = new THREE.Color("rgb(" + this.movingHead.colorR + ", " + this.movingHead.colorG + ", " + this.movingHead.colorB + ")");
 
         this.spotLight.color = color;
-        //this.spotLightBeam.material.color = color;
         this.spotLightBeam.material.uniforms.glowColor.value = color;
         // Don't show a black light beam
         this.spotLightBeam.material.uniforms.opacity.value = Math.max(this.movingHead.colorR, this.movingHead.colorG, this.movingHead.colorB) / 255;
