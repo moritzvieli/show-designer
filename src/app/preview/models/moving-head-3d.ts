@@ -7,8 +7,6 @@ import { Positioning, Fixture } from 'src/app/models/fixture';
 export class MovingHead3d implements IFixture3d {
     movingHead: MovingHead;
 
-    private scene: THREE.scene;
-
     private socket: THREE.Mesh;
     private arm: THREE.Mesh;
     private head: THREE.Mesh;
@@ -111,9 +109,8 @@ export class MovingHead3d implements IFixture3d {
         this.spotLightBeam.rotation.x = Math.PI / 2;
     }
 
-    constructor(movingHead: MovingHead, scene: THREE.scene, camera: THREE.camera, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
+    constructor(movingHead: MovingHead, scene: THREE.scene, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
         this.movingHead = movingHead;
-        this.scene = scene;
         this.socket = socket;
         this.arm = arm;
         this.head = head;
@@ -208,7 +205,7 @@ export class MovingHead3d implements IFixture3d {
         return this.objectGroup;
     }
 
-    public getFixtureStateAtMillis(timeMillis: number, fixture: MovingHead, fixtureIndex: number, effects: Effect[], baseProperties: MovingHead, fadeProperties: MovingHead, fadePercentage: number): Fixture {
+    public getFixtureStateAtMillis(timeMillis: number, fixtureIndex: number, effects: Effect[], baseProperties: MovingHead, fadeProperties: MovingHead, fadePercentage: number): Fixture {
         let calculatedFixture: MovingHead = new MovingHead(undefined);
 
         // Update the fixture settings
@@ -248,6 +245,27 @@ export class MovingHead3d implements IFixture3d {
             if (this.movingHead.hasOwnProperty(property) && fixture[property]) {
                 this.movingHead[property] = fixture[property];
             }
+        }
+
+        // Apply default settings, if nothing is set
+        if(!fixture.colorR) {
+            this.movingHead.colorR = 0;
+        }
+
+        if(!fixture.colorG) {
+            this.movingHead.colorG = 0;
+        }
+
+        if(!fixture.colorB) {
+            this.movingHead.colorB = 0;
+        }
+
+        if(!fixture.pan) {
+            this.movingHead.pan = 127;
+        }
+
+        if(!fixture.tilt) {
+            this.movingHead.tilt = 127;
         }
 
         // Update the position
@@ -303,7 +321,7 @@ export class MovingHead3d implements IFixture3d {
         // Update the light helpers
         this.spotLightHelper.update();
 
-        // Apply the colores
+        // Apply the colors
         // Colors need to be rounded for the 3d preview
         this.movingHead.colorR = Math.round(this.movingHead.colorR);
         this.movingHead.colorG = Math.round(this.movingHead.colorG);

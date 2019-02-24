@@ -3,13 +3,15 @@ import { UuidService } from '../services/uuid.service';
 
 export class MovingHead extends Fixture {
 
-    colorR: number = 0;
-    colorG: number = 0;
-    colorB: number = 0;
+    // Properties
+    colorR: number = undefined;
+    colorG: number = undefined;
+    colorB: number = undefined;
 
-    pan: number = 127;
-    tilt: number = 127;
+    pan: number = undefined;
+    tilt: number = undefined;
 
+    // Settings
     maxPanDegrees: number = 540;
     maxTiltDegrees: number = 270;
 

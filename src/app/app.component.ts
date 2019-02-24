@@ -2,6 +2,8 @@ import { PreviewComponent } from './preview/preview.component';
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import Split from 'split.js';
 import { TranslateService } from '@ngx-translate/core';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,8 @@ export class AppComponent implements AfterViewInit {
   previewComponent: PreviewComponent;
 
   constructor(
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private modalService: BsModalService
   ) {
 
     this.translateService.use('en');
@@ -54,6 +57,10 @@ export class AppComponent implements AfterViewInit {
     });
 
     this.onResize();
+  }
+
+  openFixturePool() {
+    let bsModalRef = this.modalService.show(FixturePoolComponent, {class: 'modal-lg'});
   }
 
 }

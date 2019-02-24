@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppComponent } from './app.component';
 import { PreviewComponent } from './preview/preview.component';
@@ -21,6 +22,7 @@ import { FixtureSettingsPositionComponent } from './fixture/fixture-settings/fix
 import { FixturePropertyComponent } from './fixture/fixture-property/fixture-property.component';
 import { FixtureSettingsComponent } from './fixture/fixture-settings/fixture-settings.component';
 import { EffectComponent } from './effect/effect.component';
+import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 
 @NgModule({
   declarations: [
@@ -35,12 +37,14 @@ import { EffectComponent } from './effect/effect.component';
     FixtureSettingsPositionComponent,
     FixturePropertyComponent,
     FixtureSettingsComponent,
-    EffectComponent
+    EffectComponent,
+    FixturePoolComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ModalModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -55,6 +59,9 @@ import { EffectComponent } from './effect/effect.component';
       animation: 300,
       handle: '.list-sort-handle'
     }),
+  ],
+  entryComponents: [
+    FixturePoolComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

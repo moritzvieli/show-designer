@@ -94,6 +94,11 @@ input, select {
     background-color: $gray-800;
 }
 
+/* Make the modal appear in front of the threejs debug information boxes */
+.modal {
+    z-index: 10001;
+}
+
 /* Style the splitters */
 .gutter.gutter-horizontal {
     cursor: ew-resize;
@@ -193,4 +198,8 @@ input, select {
     fill: steelblue;
     stroke: #fff;
     stroke-width: 3px;
+}
+
+.property-deactivated {
+    opacity: 0.2;
 }

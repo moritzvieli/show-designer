@@ -63,7 +63,7 @@ export class PreviewComponent implements AfterViewInit {
           this.loadMesh('moving_head_arm'),
           this.loadMesh('moving_head_head')
         ).pipe(map(([socket, arm, head]) => {
-          this.fixtures3d.push(new MovingHead3d(fixture, this.scene, this.camera, socket, arm, head));
+          this.fixtures3d.push(new MovingHead3d(fixture, this.scene, socket, arm, head));
         })).subscribe();
       }
     });
@@ -115,12 +115,17 @@ export class PreviewComponent implements AfterViewInit {
 
       // Get the relevant base properties, if there are any
       for (let sceneFixtureProperties of scene.sceneFixturePropertiesList) {
-        if (sceneFixtureProperties.fixture.uuid == fixture3d.getFixture().uuid) {
-          baseProperties = sceneFixtureProperties.properties;
+        if (sceneFixtureProperties.fixture.uuid == fixture3d.getFixture().uuid && sceneFixtureProperties.active) {
+          // Apply all activated properties (!= undefined)
+          for (let property in sceneFixtureProperties.properties) {
+            if (sceneFixtureProperties.properties.hasOwnProperty(property) && sceneFixtureProperties.properties[property]) {
+              baseProperties[property] = sceneFixtureProperties.properties[property];
+            }
+          }
           break;
         }
       }
-
+ 
       // Collect all relevant effects
       for (let effect of scene.effects) {
         for (let effectFixture of effect.fixtures) {
@@ -164,7 +169,7 @@ export class PreviewComponent implements AfterViewInit {
 
       // We now got the base properties, a set of effects and maybe a fade to take into account
       // -> calculate the state for this scene out of it and use the result as new baseproperties for following scenes
-      baseProperties = fixture3d.getFixtureStateAtMillis(timeMillis, fixture3d.getFixture(), fixtureIndex, effects, baseProperties, fadeFixture, fadePercentage);
+      baseProperties = fixture3d.getFixtureStateAtMillis(timeMillis, fixtureIndex, effects, baseProperties, fadeFixture, fadePercentage);
     }
 
     return baseProperties;
@@ -233,7 +238,7 @@ export class PreviewComponent implements AfterViewInit {
         './assets/models/' + name + '.gltf',
 
         // Called when the resource is loaded
-        function (gltf) {
+        function (gltf: any) {
           let model = gltf.scene.children[0];
           model.geometry.center();
           model.position.set(0, 0, 0);
@@ -243,10 +248,10 @@ export class PreviewComponent implements AfterViewInit {
         },
 
         // Called while loading is progressing
-        function (xhr) { },
+        function (xhr: any) { },
 
         // // Called when loading has errors
-        function (error) {
+        function (error: any) {
           observer.error(error);
         }
       );

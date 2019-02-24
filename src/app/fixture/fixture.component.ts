@@ -25,13 +25,13 @@ export class FixtureComponent implements OnInit {
     this.addMovingHead();
   }
 
+  deleteFixture() {
+    // TODO Also delete the all sceneFixtureProperties for all scenes, if any
+  }
+
   addMovingHead() {
     let movingHead = new MovingHead(this.uuidService);
-    movingHead.positionY = 30;
     movingHead.isSelected = true;
-    movingHead.colorR = 255;
-    movingHead.colorG = 255;
-    movingHead.colorB = 255;
 
     if (this.effectService.selectedEffect) {
       this.effectService.selectedEffect.fixtures.push(movingHead);
@@ -40,48 +40,37 @@ export class FixtureComponent implements OnInit {
     this.fixtureService.addFixture(movingHead);
   }
 
-  selectFixture(event, item: Fixture) {
-    if (this.effectService.selectedEffect) {
-      if (item.isSelected) {
-        // Delete current effect
-        for (var i = 0; i < this.effectService.selectedEffect.fixtures.length; i++) {
-          if (this.effectService.selectedEffect.fixtures[i].uuid == item.uuid) {
+  selectFixture(event: any, fixture: Fixture) {
+    if (fixture.isSelected) {
+      // Delete current scene effects
+      if (this.effectService.selectedEffect) {
+        for (let i = 0; i < this.effectService.selectedEffect.fixtures.length; i++) {
+          if (this.effectService.selectedEffect.fixtures[i].uuid == fixture.uuid) {
             this.effectService.selectedEffect.fixtures.splice(i, 1);
             break;
           }
         }
-      } else {
-        // Add current effect
-        this.effectService.selectedEffect.fixtures.push(item);
       }
 
-      item.isSelected = !item.isSelected;
-    }
-  }
-
-  fixtureHasPropertiesSet(fixture: Fixture) {
-    for (let scene of this.sceneService.getSelectedScenes()) {
-      for (let fixtureProperty of scene.sceneFixturePropertiesList) {
+      // Deactivate current base properties
+      for (let fixtureProperty of this.sceneService.getSelectedScenesFixtureProperties(fixture)) {
         if (fixtureProperty.fixture.uuid == fixture.uuid) {
-          return true;
+          fixtureProperty.active = false;
         }
+      }
+    } else {
+      // Add current scene effects
+      if (this.effectService.selectedEffect) {
+        this.effectService.selectedEffect.fixtures.push(fixture);
+      }
+
+      // Activate current base properties
+      for (let fixtureProperty of this.sceneService.getSelectedScenesFixtureProperties(fixture)) {
+        fixtureProperty.active = true;
       }
     }
 
-    return false;
-  }
-
-  fixtureDeleteProperties(fixture: Fixture) {
-    for (let scene of this.sceneService.getSelectedScenes()) {
-      for (let i = 0; scene.sceneFixturePropertiesList.length; i++) {
-        if (scene.sceneFixturePropertiesList[i].fixture.uuid == fixture.uuid) {
-          scene.sceneFixturePropertiesList.splice(i, 1);
-          break;
-        }
-      }
-    }
-
-    return false;
+    fixture.isSelected = !fixture.isSelected;
   }
 
 }

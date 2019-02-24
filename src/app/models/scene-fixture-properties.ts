@@ -3,6 +3,9 @@ import { Fixture } from "./fixture";
 // The initial properties of a fixture in a scene
 export class SceneFixtureProperties {
 
+    // Temporarily deactivate these properties (e.g. by deselecting the fixture)
+    active: boolean = true;
+
     // The fixture holding the properties
     properties: Fixture;
 
