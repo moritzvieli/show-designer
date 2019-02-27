@@ -23,6 +23,7 @@ import { FixturePropertyComponent } from './fixture/fixture-property/fixture-pro
 import { FixtureSettingsComponent } from './fixture/fixture-settings/fixture-settings.component';
 import { EffectComponent } from './effect/effect.component';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
+import { PresetComponent } from './preset/preset.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
     FixturePropertyComponent,
     FixtureSettingsComponent,
     EffectComponent,
-    FixturePoolComponent
+    FixturePoolComponent,
+    PresetComponent
   ],
   imports: [
     BrowserModule,
