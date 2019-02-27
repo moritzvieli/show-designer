@@ -31,7 +31,6 @@ export class FixtureComponent implements OnInit {
 
   addMovingHead() {
     let movingHead = new MovingHead(this.uuidService);
-    movingHead.isSelected = true;
 
     if (this.effectService.selectedEffect) {
       this.effectService.selectedEffect.fixtures.push(movingHead);

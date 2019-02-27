@@ -2,8 +2,10 @@ import { PreviewComponent } from './preview/preview.component';
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import Split from 'split.js';
 import { TranslateService } from '@ngx-translate/core';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
+import { SceneService } from './services/scene.service';
+import { FixtureService } from './services/fixture.service';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +14,16 @@ import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 })
 export class AppComponent implements AfterViewInit {
 
+  currentTab: string = 'properties';
+
   @ViewChild(PreviewComponent)
   previewComponent: PreviewComponent;
 
   constructor(
     private translateService: TranslateService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private sceneService: SceneService,
+    private fixtureService: FixtureService
   ) {
 
     this.translateService.use('en');
@@ -43,14 +49,14 @@ export class AppComponent implements AfterViewInit {
     });
 
     Split(['#scenes', '#preview'], {
-      sizes: [30, 70],
+      sizes: [20, 80],
       snapOffset: 0,
       gutterSize: gutterSize,
       onDrag: this.onResize.bind(this)
     });
 
-    Split(['#properties', '#fixtures'], {
-      sizes: [80, 20],
+    Split(['#properties', '#presets', '#fixtures'], {
+      sizes: [70, 15, 15],
       snapOffset: 0,
       gutterSize: gutterSize,
       onDrag: this.onResize.bind(this)
@@ -59,8 +65,27 @@ export class AppComponent implements AfterViewInit {
     this.onResize();
   }
 
+  openTab(tab: string) {
+    if (tab == 'properties' && this.currentTab != 'properties') {
+      // TODO Also do this on scene switching
+
+      // Update the fixture-selection (if only one scene is selected)
+      if (this.sceneService.getSelectedScenes().length == 1) {
+        for (let scene of this.sceneService.getSelectedScenes()) {
+          for (let fixture of this.fixtureService.fixtures) {
+            fixture.isSelected = this.sceneService.hasfixturePropertiesInScene(scene, fixture);
+          }
+        }
+      }
+    }
+
+    // TODO settings selection?
+
+    this.currentTab = tab;
+  }
+
   openFixturePool() {
-    let bsModalRef = this.modalService.show(FixturePoolComponent, {class: 'modal-lg'});
+    let bsModalRef = this.modalService.show(FixturePoolComponent, { class: 'modal-lg' });
   }
 
 }

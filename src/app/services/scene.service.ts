@@ -59,6 +59,16 @@ export class SceneService {
     return activeScenes;
   }
 
+  hasfixturePropertiesInScene(scene: Scene, fixture: Fixture) {
+    for (let sceneFixtureProperties of scene.sceneFixturePropertiesList) {
+      if (sceneFixtureProperties.fixture.uuid == fixture.uuid) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   getSelectedScenesFixtureProperties(fixture: Fixture): SceneFixtureProperties[] {
     let sceneFixturePropertiesList: SceneFixtureProperties[] = []
 
