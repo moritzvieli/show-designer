@@ -48,14 +48,14 @@ export class AppComponent implements AfterViewInit {
       onDrag: this.onResize.bind(this)
     });
 
-    Split(['#scenes', '#preview'], {
+    Split(['#fixtures', '#preview'], {
       sizes: [20, 80],
       snapOffset: 0,
       gutterSize: gutterSize,
       onDrag: this.onResize.bind(this)
     });
 
-    Split(['#properties', '#presets', '#fixtures'], {
+    Split(['#properties', '#presets', '#scenes'], {
       sizes: [70, 15, 15],
       snapOffset: 0,
       gutterSize: gutterSize,
