@@ -2,9 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Fixture } from '../models/fixture';
 import { EffectService } from '../services/effect.service';
 import { FixtureService } from '../services/fixture.service';
-import { MovingHead } from '../models/moving-head';
 import { UuidService } from '../services/uuid.service';
 import { SceneService } from '../services/scene.service';
+import { FixtureTemplate, FixtureType } from '../models/fixture-template';
+import { FixtureMode } from '../models/fixture-mode';
+import { FixtureProperty, FixturePropertyType } from '../models/fixture-property';
+import { FixturePropertyRange } from '../models/fixture-property-range';
 
 @Component({
   selector: 'app-fixture',
@@ -20,27 +23,72 @@ export class FixtureComponent implements OnInit {
     private sceneService: SceneService) { }
 
   ngOnInit() {
-    this.addMovingHead();
-    this.addMovingHead();
-    this.addMovingHead();
+    // TODO Remove this test part
+    let fixtureMode = new FixtureMode();
+    fixtureMode.channelCount = 6;
+
+    let fixtureProperty = new FixtureProperty();
+    fixtureProperty.type = FixturePropertyType.colorRed;
+    fixtureMode.fixtureProperties.push(fixtureProperty);
+    fixtureProperty = new FixtureProperty();
+    fixtureProperty.type = FixturePropertyType.colorGreen;
+    fixtureMode.fixtureProperties.push(fixtureProperty);
+    fixtureProperty = new FixtureProperty();
+    fixtureProperty.type = FixturePropertyType.colorBlue;
+    fixtureMode.fixtureProperties.push(fixtureProperty);
+
+    fixtureProperty = new FixtureProperty();
+    fixtureProperty.type = FixturePropertyType.pan;
+    fixtureMode.fixtureProperties.push(fixtureProperty);
+    fixtureProperty = new FixtureProperty();
+    fixtureProperty.type = FixturePropertyType.tilt;
+    fixtureMode.fixtureProperties.push(fixtureProperty);
+
+    fixtureProperty = new FixtureProperty();
+    fixtureProperty.type = FixturePropertyType.custom;
+    fixtureMode.fixtureProperties.push(fixtureProperty);
+
+    let fixturePropertyRange = new FixturePropertyRange(this.uuidService);
+    fixturePropertyRange.name = 'Closed';
+    fixturePropertyRange.channelFrom = 0;
+    fixturePropertyRange.channelTo = 99;
+    fixtureProperty.fixturePropertyRanges.push(fixturePropertyRange);
+
+    fixturePropertyRange = new FixturePropertyRange(this.uuidService);
+    fixturePropertyRange.name = 'Strobe';
+    fixturePropertyRange.channelFrom = 100;
+    fixturePropertyRange.channelTo = 255;
+    fixturePropertyRange.useSlider = true;
+    fixtureProperty.fixturePropertyRanges.push(fixturePropertyRange);
+
+    let fixtureTemplate = new FixtureTemplate(this.uuidService);
+    fixtureTemplate.type = FixtureType.movingHead;
+    fixtureTemplate.manufacturer = 'Stairville';
+    fixtureTemplate.name = 'MH2018';
+    fixtureTemplate.fixtureModes.push(fixtureMode);
+
+    let fixture = new Fixture(this.uuidService);
+    fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
+    fixture.firstChannel = 1;
+    this.fixtureService.addFixture(fixture);
+
+    fixture = new Fixture(this.uuidService);
+    fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
+    fixture.firstChannel = 7;
+    this.fixtureService.addFixture(fixture);
+
+    fixture = new Fixture(this.uuidService);
+    fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
+    fixture.firstChannel = 13;
+    this.fixtureService.addFixture(fixture);
   }
 
   deleteFixture() {
     // TODO Also delete the all sceneFixtureProperties for all scenes, if any
   }
 
-  addMovingHead() {
-    let movingHead = new MovingHead(this.uuidService);
-
-    if (this.effectService.selectedEffect) {
-      this.effectService.selectedEffect.fixtures.push(movingHead);
-    }
-
-    this.fixtureService.addFixture(movingHead);
-  }
-
   selectFixture(event: any, fixture: Fixture) {
-    if (fixture.isSelected) {
+    if (this.fixtureService.fixtureIsSelected(fixture)) {
       // Delete current scene effects
       if (this.effectService.selectedEffect) {
         for (let i = 0; i < this.effectService.selectedEffect.fixtures.length; i++) {
@@ -69,7 +117,7 @@ export class FixtureComponent implements OnInit {
       }
     }
 
-    fixture.isSelected = !fixture.isSelected;
+    this.fixtureService.switchFixtureSelection(fixture);
   }
 
 }

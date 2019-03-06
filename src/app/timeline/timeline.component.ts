@@ -158,7 +158,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           start: scenePlaybackRegion.startMillis / 1000, // time in seconds
           end: scenePlaybackRegion.endMillis / 1000, // time in seconds
           color: 'rgba(0, 0, 0, 0)',
-          data: { handled: true }
+          data: { handled: true },
+          attributes: { preset: true, name: 'Preset 1' } // TODO
         });
 
         this.connectRegion(waveSurferRegion, scenePlaybackRegion);

@@ -215,3 +215,46 @@ input, select {
     // Also see: https://stackoverflow.com/questions/14962468/flexbox-and-vertical-scroll-in-a-full-height-app-using-newer-flexbox-api
     height: 0;
 }
+
+/* Wavesurfer */
+.wavesurfer-region[data-region-preset="true"] {
+    height: 50% !important;
+    top: 50% !important;
+}
+
+.wavesurfer-region[data-region-name]:after {
+    content: attr(data-region-name);
+    margin-left: 20px;
+}
+
+/* Wavesurfer region handles */
+.wavesurfer-handle {
+    width: 10px !important;
+    max-width: 10px !important;
+    border: 1px solid #ddd;
+    background: rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+  
+.wavesurfer-handle-end {
+    margin-left: -10px;
+}
+  
+.wavesurfer-handle:before,
+.wavesurfer-handle:after {
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: 1;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    height: 4px;
+    left: 5%;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+  
+.wavesurfer-handle:before {
+    margin-top: -3px;
+}

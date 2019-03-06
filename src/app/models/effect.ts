@@ -1,5 +1,5 @@
 import { UuidService } from "../services/uuid.service";
-import { Fixture } from "./fixture";
+import { FixturePropertyType } from "./fixture-property";
 
 export enum EffectChannel
 {
@@ -13,9 +13,8 @@ export enum EffectChannel
 export class Effect {
 
     uuid: string;
-    channels: EffectChannel[] = [];
+    fixturePropertyTypes: FixturePropertyType[] = [];
     paused: boolean = false;
-    fixtures: Fixture[] = [];
 
     constructor(private uuidService: UuidService) {
         this.uuid = this.uuidService.getUuid();
