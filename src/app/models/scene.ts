@@ -8,7 +8,7 @@ export class Scene {
     name: string;
 
     // All contained presets
-    presets: Preset[] = [];
+    presetUuids: string[] = [];
 
     // Regions, where the scene will be played
     scenePlaybackRegionList: ScenePlaybackRegion[] = [];

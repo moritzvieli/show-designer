@@ -23,14 +23,14 @@
   <div class="card-body h-100 p-0">
 
     <!-- List of fixtures -->
-    <div class="list-group" [sortablejs]="fixtureService.fixtures">
+    <div *ngIf="presetService.selectedPreset" class="list-group" [sortablejs]="fixtureService.fixtures">
       <div class="list-group-item" *ngFor="let item of fixtureService.fixtures">
         <div class="row d-flex" (click)="selectFixture($event, item)" style="cursor: pointer;">
           <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div style="width: 20px;">
-            <i *ngIf="item.isSelected" class="fa fa-check" aria-hidden="true"></i>
+            <i *ngIf="presetService.fixtureIsSelected(item)" class="fa fa-check" aria-hidden="true"></i>
           </div>
           <div>
             {{ item.name }}

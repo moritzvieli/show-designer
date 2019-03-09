@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Preset } from '../models/preset';
 import { Fixture } from '../models/fixture';
-import { FixturePropertyRange } from '../models/fixture-property-range';
 import { FixturePropertyType } from '../models/fixture-property';
 import { FixturePropertyValue } from '../models/fixture-property-value';
+import { EffectService } from './effect.service';
+import { PreviewService } from './preview.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,18 @@ export class PresetService {
   presets: Preset[] = [];
   selectedPreset: Preset;
 
-  constructor() { }
+  constructor(
+    private effectService: EffectService,
+    private previewService: PreviewService
+  ) { }
+
+  getPresetByUuid(uuid: string): Preset {
+    for (let preset of this.presets) {
+      if (preset.uuid = uuid) {
+        return preset;
+      }
+    }
+  }
 
   fixtureIsSelected(fixture: Fixture): boolean {
     if(!this.selectedPreset) {
@@ -91,6 +103,12 @@ export class PresetService {
   
       preset.fixturePropertyValues.push(fixturePropertyValue);
     }
+  }
+
+  selectPreset(index: number) {
+    this.effectService.selectedEffect = undefined;
+    this.selectedPreset = this.presets[index];
+    this.previewService.previewSelectionChanged.next();
   }
 
 }

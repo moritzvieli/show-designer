@@ -213,7 +213,7 @@ export class MovingHead3d extends Fixture3d {
     public updatePreview(propertyValues: FixturePropertyValue[]): void {
         super.updatePreview(propertyValues);
 
-        // Apply default settings, if nothing is set
+        // Apply default settings
         this.pan = 127;
         this.tilt = 127;
 

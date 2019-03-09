@@ -5,6 +5,7 @@ import { SceneService } from '../services/scene.service';
 import { ScenePlaybackRegion } from '../models/scene-playback-region';
 import WaveSurfer from 'wavesurfer.js';
 import { TimelineService } from '../services/timeline.service';
+import { PreviewService } from '../services/preview.service';
 
 @Component({
   selector: 'app-timeline',
@@ -24,9 +25,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   constructor(
     private sceneService: SceneService,
-    private timelineService: TimelineService
+    private timelineService: TimelineService,
+    private previewService: PreviewService
     ) {
-    sceneService.currentSceneChanged.subscribe(() => {
+      this.previewService.previewSelectionChanged.subscribe(() => {
       this.highlightedPlaybackRegion = undefined;
       this.drawRegions();
     });

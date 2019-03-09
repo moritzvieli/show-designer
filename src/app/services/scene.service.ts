@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Scene } from '../models/scene';
-import { Subject } from 'rxjs';
 import { ScenePlaybackRegion } from '../models/scene-playback-region';
 import { UuidService } from './uuid.service';
 import { EffectService } from './effect.service';
+import { Preset } from '../models/preset';
+import { PreviewService } from './preview.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,18 +18,30 @@ export class SceneService {
 
   multipleSelection: boolean = false;
 
-  // Fires, when the current scene has changed
-  currentSceneChanged: Subject<void> = new Subject<void>();
-
   constructor(
     private uuidService: UuidService,
-    private effectService: EffectService
+    private effectService: EffectService,
+    private previewService: PreviewService
   ) {
   }
 
   sceneIsSelected(scene: Scene): boolean {
     for (let selectedScene of this.selectedScenes) {
       if (selectedScene.uuid == scene.uuid) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  presetIsSelected(preset: Preset): boolean {
+    if(!this.selectedScenes || this.selectedScenes.length > 1) {
+      return false;
+    }
+
+    for (let uuid of this.selectedScenes[0].presetUuids) {
+      if (preset.uuid == uuid) {
         return true;
       }
     }
@@ -84,7 +97,7 @@ export class SceneService {
       this.selectedScenes.push(this.scenes[index]);
     }
 
-    this.currentSceneChanged.next();
+    this.previewService.previewSelectionChanged.next();
   }
 
   addScene(name?: string): void {

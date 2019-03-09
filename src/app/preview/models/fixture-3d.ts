@@ -19,6 +19,7 @@ export abstract class Fixture3d {
 
     // Apply the properties of the base fixture to the preview
     updatePreview(propertyValues: FixturePropertyValue[]) {
+        // Apply default settings
         this.colorRed = 0;
         this.colorGreen = 0;
         this.colorBlue = 0;
