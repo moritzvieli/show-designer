@@ -73,7 +73,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
       this.timelineService.waveSurfer.on('region-created', (region) => {
         // Region created by selection
-        if(this.sceneService.getSelectedScenes().length == 1) {
+        if(this.sceneService.selectedScenes && this.sceneService.selectedScenes.length == 1) {
           if (!region.data.handled) {
             this.addRegion(region);
           }
@@ -148,11 +148,11 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
     this.timelineService.waveSurfer.clearRegions();
 
-    if(this.sceneService.getSelectedScenes().length > 1) {
+    if(!this.sceneService.selectedScenes || this.sceneService.selectedScenes.length > 1) {
       return;
     }
 
-    for (let scene of this.sceneService.getSelectedScenes()) {
+    for (let scene of this.sceneService.selectedScenes) {
       for (let scenePlaybackRegion of scene.scenePlaybackRegionList) {
         let waveSurferRegion = this.timelineService.waveSurfer.addRegion({
           start: scenePlaybackRegion.startMillis / 1000, // time in seconds
@@ -190,7 +190,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    if(this.sceneService.getSelectedScenes().length != 1) {
+    if(!this.sceneService.selectedScenes || this.sceneService.selectedScenes.length != 1) {
       return;
     }
 
@@ -204,7 +204,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       scenePlaybackRegion.endMillis = this.timelineService.waveSurfer.getDuration() * 1000 / 3 * 2;
     }
 
-    this.sceneService.getSelectedScenes()[0].scenePlaybackRegionList.push(scenePlaybackRegion);
+    this.sceneService.selectedScenes[0].scenePlaybackRegionList.push(scenePlaybackRegion);
 
     this.highlightedPlaybackRegion = scenePlaybackRegion;
 

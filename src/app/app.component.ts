@@ -67,19 +67,8 @@ export class AppComponent implements AfterViewInit {
 
   openTab(tab: string) {
     if (tab == 'properties' && this.currentTab != 'properties') {
-      // TODO Also do this on scene switching
-
-      // Update the fixture-selection (if only one scene is selected)
-      if (this.sceneService.getSelectedScenes().length == 1) {
-        for (let scene of this.sceneService.getSelectedScenes()) {
-          for (let fixture of this.fixtureService.fixtures) {
-            fixture.isSelected = this.sceneService.hasfixturePropertiesInScene(scene, fixture);
-          }
-        }
-      }
+      // Nothing to do currently
     }
-
-    // TODO settings selection?
 
     this.currentTab = tab;
   }

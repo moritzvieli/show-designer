@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Fixture } from '../models/fixture';
-import { EffectService } from '../services/effect.service';
 import { FixtureService } from '../services/fixture.service';
 import { UuidService } from '../services/uuid.service';
-import { SceneService } from '../services/scene.service';
 import { FixtureTemplate, FixtureType } from '../models/fixture-template';
 import { FixtureMode } from '../models/fixture-mode';
 import { FixtureProperty, FixturePropertyType } from '../models/fixture-property';
 import { FixturePropertyRange } from '../models/fixture-property-range';
+import { PresetService } from '../services/preset.service';
+import { Universe } from '../models/universe';
+import { UniverseService } from '../services/universe.service';
 
 @Component({
   selector: 'app-fixture',
@@ -17,15 +18,18 @@ import { FixturePropertyRange } from '../models/fixture-property-range';
 export class FixtureComponent implements OnInit {
 
   constructor(
-    private effectService: EffectService,
     public fixtureService: FixtureService,
     private uuidService: UuidService,
-    private sceneService: SceneService) { }
+    private presetService: PresetService,
+    private universeService: UniverseService) { }
 
   ngOnInit() {
     // TODO Remove this test part
-    let fixtureMode = new FixtureMode();
+    let fixtureMode = new FixtureMode(this.uuidService);
     fixtureMode.channelCount = 6;
+
+    let universe = new Universe(this.uuidService);
+    this.universeService.universes.push(universe);
 
     let fixtureProperty = new FixtureProperty();
     fixtureProperty.type = FixturePropertyType.colorRed;
@@ -66,20 +70,30 @@ export class FixtureComponent implements OnInit {
     fixtureTemplate.manufacturer = 'Stairville';
     fixtureTemplate.name = 'MH2018';
     fixtureTemplate.fixtureModes.push(fixtureMode);
+    this.fixtureService.fixtureTemplates.push(fixtureTemplate);
 
     let fixture = new Fixture(this.uuidService);
     fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
     fixture.firstChannel = 1;
+    fixture.name = 'MH1';
+    fixture.modeUuid = fixtureMode.uuid;
+    fixture.universeUuid = universe.uuid;
     this.fixtureService.addFixture(fixture);
 
     fixture = new Fixture(this.uuidService);
     fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
     fixture.firstChannel = 7;
+    fixture.name = 'MH2';
+    fixture.modeUuid = fixtureMode.uuid;
+    fixture.universeUuid = universe.uuid;
     this.fixtureService.addFixture(fixture);
 
     fixture = new Fixture(this.uuidService);
     fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
     fixture.firstChannel = 13;
+    fixture.name = 'MH3';
+    fixture.modeUuid = fixtureMode.uuid;
+    fixture.universeUuid = universe.uuid;
     this.fixtureService.addFixture(fixture);
   }
 
@@ -88,36 +102,7 @@ export class FixtureComponent implements OnInit {
   }
 
   selectFixture(event: any, fixture: Fixture) {
-    if (this.fixtureService.fixtureIsSelected(fixture)) {
-      // Delete current scene effects
-      if (this.effectService.selectedEffect) {
-        for (let i = 0; i < this.effectService.selectedEffect.fixtures.length; i++) {
-          if (this.effectService.selectedEffect.fixtures[i].uuid == fixture.uuid) {
-            this.effectService.selectedEffect.fixtures.splice(i, 1);
-            break;
-          }
-        }
-      }
-
-      // Deactivate current base properties
-      for (let fixtureProperty of this.sceneService.getSelectedScenesFixtureProperties(fixture)) {
-        if (fixtureProperty.fixture.uuid == fixture.uuid) {
-          fixtureProperty.active = false;
-        }
-      }
-    } else {
-      // Add current scene effects
-      if (this.effectService.selectedEffect) {
-        this.effectService.selectedEffect.fixtures.push(fixture);
-      }
-
-      // Activate current base properties
-      for (let fixtureProperty of this.sceneService.getSelectedScenesFixtureProperties(fixture)) {
-        fixtureProperty.active = true;
-      }
-    }
-
-    this.fixtureService.switchFixtureSelection(fixture);
+    this.presetService.switchFixtureSelection(fixture);
   }
 
 }

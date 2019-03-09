@@ -1,11 +1,13 @@
 import { UuidService } from "../services/uuid.service";
-import { FixturePropertyType } from "./fixture-property";
 
 export enum EffectChannel
 {
-    colorR,
-    colorG,
-    colorB,
+    colorRed,
+    colorGreen,
+    colorBlue,
+    hue,
+    saturation,
+    dimmer,
     pan,
     tilt
 }
@@ -13,7 +15,7 @@ export enum EffectChannel
 export class Effect {
 
     uuid: string;
-    fixturePropertyTypes: FixturePropertyType[] = [];
+    effectChannel: EffectChannel;
     paused: boolean = false;
 
     constructor(private uuidService: UuidService) {

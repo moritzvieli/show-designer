@@ -1,11 +1,15 @@
 import { EffectChannel, Effect } from './../../models/effect';
-import { IFixture3d } from './i-fixture-3d';
-import { MovingHead } from '../../models/moving-head';
+import { Fixture3d } from './fixture-3d';
 import * as THREE from 'three';
 import { Positioning, Fixture } from 'src/app/models/fixture';
+import { FixtureTemplate } from 'src/app/models/fixture-template';
+import { FixturePropertyValue } from 'src/app/models/fixture-property-value';
+import { FixturePropertyType } from 'src/app/models/fixture-property';
 
-export class MovingHead3d implements IFixture3d {
-    movingHead: MovingHead;
+export class MovingHead3d extends Fixture3d {
+
+    private pan: number;
+    private tilt: number;
 
     private socket: THREE.Mesh;
     private arm: THREE.Mesh;
@@ -96,7 +100,7 @@ export class MovingHead3d implements IFixture3d {
             this.spotlightGroup.remove(this.spotLightBeam);
         }
 
-        let geometry = new THREE.CylinderGeometry(0.1, this.movingHead.beamAngleDegrees * 1.2, 100, 64, 20, false);
+        let geometry = new THREE.CylinderGeometry(0.1, this.fixtureTemplate.beamAngleDegrees * 1.2, 100, 64, 20, false);
         geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
         geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 
@@ -109,8 +113,9 @@ export class MovingHead3d implements IFixture3d {
         this.spotLightBeam.rotation.x = Math.PI / 2;
     }
 
-    constructor(movingHead: MovingHead, scene: THREE.scene, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
-        this.movingHead = movingHead;
+    constructor(fixture: Fixture, fixtureTemplate: FixtureTemplate, scene: THREE.scene, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
+        super(fixture, fixtureTemplate);
+
         this.socket = socket;
         this.arm = arm;
         this.head = head;
@@ -205,141 +210,93 @@ export class MovingHead3d implements IFixture3d {
         return this.objectGroup;
     }
 
-    public getFixtureStateAtMillis(timeMillis: number, fixtureIndex: number, effects: Effect[], baseProperties: MovingHead, fadeProperties: MovingHead, fadePercentage: number): Fixture {
-        let calculatedFixture: MovingHead = new MovingHead(undefined);
-
-        // Update the fixture settings
-        // Apply the scene base settings
-        if (baseProperties) {
-            for (let property in calculatedFixture) {
-                if (calculatedFixture.hasOwnProperty(property)) {
-                    calculatedFixture[property] = baseProperties[property];
-                }
-            }
-        }
-
-        // Process the effects
-        for (let effect of effects) {
-            let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
-
-            for (let channel of effect.channels) {
-                calculatedFixture[EffectChannel[channel]] = value;
-            }
-        }
-
-        // Apply the fade if needed
-        if (fadePercentage > 0) {
-            for (let property in calculatedFixture) {
-                if (calculatedFixture.hasOwnProperty(property)) {
-                    calculatedFixture[property] = calculatedFixture[property] * (1 - fadePercentage) + fadeProperties[property] * fadePercentage;
-                }
-            }
-        }
-
-        return calculatedFixture;
-    }
-
-    public updatePreview(fixture: MovingHead): void {
-        // Apply the settings from the provided fixture to the preview
-        for (let property in this.movingHead) {
-            if (this.movingHead.hasOwnProperty(property) && fixture[property]) {
-                this.movingHead[property] = fixture[property];
-            }
-        }
+    public updatePreview(propertyValues: FixturePropertyValue[]): void {
+        super.updatePreview(propertyValues);
 
         // Apply default settings, if nothing is set
-        if(!fixture.colorR) {
-            this.movingHead.colorR = 0;
-        }
+        this.pan = 127;
+        this.tilt = 127;
 
-        if(!fixture.colorG) {
-            this.movingHead.colorG = 0;
-        }
-
-        if(!fixture.colorB) {
-            this.movingHead.colorB = 0;
-        }
-
-        if(!fixture.pan) {
-            this.movingHead.pan = 127;
-        }
-
-        if(!fixture.tilt) {
-            this.movingHead.tilt = 127;
+        // Apply the known property values
+        for(let propetryValue of propertyValues) {
+            switch (propetryValue.fixturePropertyType) {
+                case FixturePropertyType.pan: {
+                    this.pan = propetryValue.value;
+                    break;
+                }
+                case FixturePropertyType.tilt: {
+                    this.tilt = propetryValue.value;
+                    break;
+                }
+                // TODO Apply pan/tilt fine values as well
+            }
         }
 
         // Update the position
-        switch (this.movingHead.positioning) {
+        switch (this.fixture.positioning) {
             case Positioning.topFront: {
                 this.objectGroup.rotation.x = THREE.Math.degToRad(0);
-                this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY - 13, this.movingHead.positionZ);
+                this.objectGroup.position.set(this.fixture.positionX, this.fixture.positionY - 13, this.fixture.positionZ);
                 break;
             }
             case Positioning.bottomFront: {
                 this.objectGroup.rotation.x = THREE.Math.degToRad(180);
-                this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY + 13, this.movingHead.positionZ);
+                this.objectGroup.position.set(this.fixture.positionX, this.fixture.positionY + 13, this.fixture.positionZ);
                 break;
             }
             case Positioning.topBack: {
                 this.objectGroup.rotation.x = THREE.Math.degToRad(0);
-                this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY - 13, this.movingHead.positionZ);
+                this.objectGroup.position.set(this.fixture.positionX, this.fixture.positionY - 13, this.fixture.positionZ);
                 break;
             }
             case Positioning.bottomBack: {
                 this.objectGroup.rotation.x = THREE.Math.degToRad(180);
-                this.objectGroup.position.set(this.movingHead.positionX, this.movingHead.positionY + 13, this.movingHead.positionZ);
+                this.objectGroup.position.set(this.fixture.positionX, this.fixture.positionY + 13, this.fixture.positionZ);
                 break;
             }
         }
 
         // Calculate the y/x rotation in radiants based on pan/tilt (0-255) respecting the max pan/tilt
-        this.armGroup.rotation.y = THREE.Math.degToRad(this.movingHead.maxPanDegrees * this.movingHead.pan / 255) - THREE.Math.degToRad(this.movingHead.maxPanDegrees / 2);
-        this.headGroup.rotation.x = THREE.Math.degToRad(this.movingHead.maxTiltDegrees * this.movingHead.tilt / 255) - THREE.Math.degToRad(this.movingHead.maxTiltDegrees / 2);
+        this.armGroup.rotation.y = THREE.Math.degToRad(this.fixtureTemplate.panRangeDegrees * this.pan / 255) - THREE.Math.degToRad(this.fixtureTemplate.panRangeDegrees / 2);
+        this.headGroup.rotation.x = THREE.Math.degToRad(this.fixtureTemplate.tiltRangeDegrees * this.tilt / 255) - THREE.Math.degToRad(this.fixtureTemplate.tiltRangeDegrees / 2);
 
         // Update the angle (only on change, because it's expensive)
-        if (this.lastBeamAngleDegrees != this.movingHead.beamAngleDegrees) {
-            this.spotLight.angle = THREE.Math.degToRad(this.movingHead.beamAngleDegrees);
+        if (this.lastBeamAngleDegrees != this.fixtureTemplate.beamAngleDegrees) {
+            this.spotLight.angle = THREE.Math.degToRad(this.fixtureTemplate.beamAngleDegrees);
             this.createSpotLightBeam();
-            this.lastBeamAngleDegrees = this.movingHead.beamAngleDegrees;
+            this.lastBeamAngleDegrees = this.fixtureTemplate.beamAngleDegrees;
         }
 
         // Update the material
-        if (this.lastSelected != this.movingHead.isSelected) {
-            if (this.movingHead.isSelected) {
-                this.socket.material = this.selectedMaterial;
-                this.arm.material = this.selectedMaterial;
-                this.head.material = this.selectedMaterial;
-            } else {
-                this.socket.material = this.material;
-                this.arm.material = this.material;
-                this.head.material = this.material;
-            }
+        // TODO
+        // if (this.lastSelected != this.movingHead.isSelected) {
+        //     if (this.movingHead.isSelected) {
+        //         this.socket.material = this.selectedMaterial;
+        //         this.arm.material = this.selectedMaterial;
+        //         this.head.material = this.selectedMaterial;
+        //     } else {
+        //         this.socket.material = this.material;
+        //         this.arm.material = this.material;
+        //         this.head.material = this.material;
+        //     }
 
-            this.lastSelected = this.movingHead.isSelected;
-        }
+        //     this.lastSelected = this.movingHead.isSelected;
+        // }
 
         // Update the light helpers
         this.spotLightHelper.update();
 
         // Apply the colors
-        // Colors need to be rounded for the 3d preview
-        this.movingHead.colorR = Math.round(this.movingHead.colorR);
-        this.movingHead.colorG = Math.round(this.movingHead.colorG);
-        this.movingHead.colorB = Math.round(this.movingHead.colorB);
-
-        var color = new THREE.Color("rgb(" + this.movingHead.colorR + ", " + this.movingHead.colorG + ", " + this.movingHead.colorB + ")");
+        var color = new THREE.Color("rgb(" + this.colorRed + ", " + this.colorGreen + ", " + this.colorBlue + ")");
 
         this.spotLight.color = color;
         this.spotLightBeam.material.uniforms.glowColor.value = color;
         // Don't show a black light beam
-        this.spotLightBeam.material.uniforms.opacity.value = Math.max(this.movingHead.colorR, this.movingHead.colorG, this.movingHead.colorB) / 255;
+        this.spotLightBeam.material.uniforms.opacity.value = Math.max(this.colorRed, this.colorGreen, this.colorBlue) / 255;
         this.pointLight.color = color;
 
         // this.spotLightBeam.material.uniforms.viewVector.value =
         //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);
     }
 
-    getFixture(): Fixture {
-        return this.movingHead;
-    }
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { EffectCurve } from '../models/effect-curve';
 import { UuidService } from '../services/uuid.service';
-import { SceneService } from '../services/scene.service';
 import { EffectService } from '../services/effect.service';
 import { EffectPanTilt } from '../models/effect-pan-tilt';
 import { FixtureService } from '../services/fixture.service';
 import { Effect } from '../models/effect';
+import { PresetService } from '../services/preset.service';
 
 @Component({
   selector: 'app-effect',
@@ -16,7 +16,7 @@ export class EffectComponent implements OnInit {
 
   constructor(
     private uuidService: UuidService,
-    private sceneService: SceneService,
+    private presetService: PresetService,
     public effectService: EffectService,
     private fixtureService: FixtureService
   ) { }
@@ -25,41 +25,24 @@ export class EffectComponent implements OnInit {
     this.addPanTiltEffect();
   }
 
-  addCurveEffect() {
-    let effect = new EffectCurve(this.uuidService, this.fixtureService);
+  private addEffect(effect: Effect) {
     this.effectService.selectedEffect = effect;
-    for(let scene of this.sceneService.getSelectedScenes()) {
-      scene.effects.push(effect);
+
+    if(this.presetService.selectedPreset) {
+      this.presetService.selectedPreset.effects.push(effect);
     }
+  }
+
+  addCurveEffect() {
+    this.addEffect(new EffectCurve(this.uuidService, this.fixtureService));
   }
 
   addPanTiltEffect() {
-    let effect = new EffectPanTilt(this.uuidService, this.fixtureService);
-    this.effectService.selectedEffect = effect;
-    for(let scene of this.sceneService.getSelectedScenes()) {
-      scene.effects.push(effect);
-    }
+    this.addEffect(new EffectPanTilt(this.uuidService, this.fixtureService));
   }
 
   openEffect(effect: Effect, event: any) {
-    // Select all fixtures with this effect and unselect all other
     if (event) {
-      this.fixtureService.fixtures.forEach(fixture => {
-        let effectSelected = false;
-
-        for (let effectFixture of effect.fixtures) {
-          if (effectFixture.uuid == fixture.uuid) {
-            effectSelected = true;
-          }
-        }
-
-        if (effectSelected) {
-          fixture.isSelected = true;
-        } else {
-          fixture.isSelected = false;
-        }
-      });
-
       this.effectService.selectedEffect = effect;
     } else {
       if (this.effectService.selectedEffect == effect) {

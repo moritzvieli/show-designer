@@ -1,16 +1,18 @@
 import { Fixture } from '../models/fixture';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { FixtureTemplate } from '../models/fixture-template';
+import { FixtureMode } from '../models/fixture-mode';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FixtureService {
 
+  fixtureTemplates: FixtureTemplate[] = [];
+
   fixtures: Fixture[] = [];
   fixtureAdded: Subject<Fixture> = new Subject<Fixture>();
-
-  selectedFixtures: Fixture[] = [];
 
   constructor() { }
 
@@ -19,27 +21,19 @@ export class FixtureService {
     this.fixtureAdded.next(fixture);
   }
 
-  fixtureIsSelected(fixture: Fixture): boolean {
-    for (let selectedFixture of this.selectedFixtures) {
-      if (selectedFixture.uuid == fixture.uuid) {
-        return true;
+  getModeByUuid(uuid: string, template: FixtureTemplate): FixtureMode {
+    for (let mode of template.fixtureModes) {
+      if (mode.uuid = uuid) {
+        return mode;
       }
     }
-
-    return false;
   }
 
-  switchFixtureSelection(fixture: Fixture) {
-    // Select a fixture if not yet selected or unselect it otherwise
-    if(this.fixtureIsSelected(fixture)) {
-      for (let i = 0; i < this.selectedFixtures.length; i++) {
-        if (this.selectedFixtures[i].uuid == fixture.uuid) {
-          this.selectedFixtures.splice(i, 1);
-          return;
-        }
+  getTemplateByUuid(uuid: string): FixtureTemplate {
+    for (let template of this.fixtureTemplates) {
+      if (template.uuid = uuid) {
+        return template;
       }
-    } else {
-      this.selectedFixtures.push(fixture);
     }
   }
 

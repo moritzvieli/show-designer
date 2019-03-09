@@ -1,6 +1,7 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { FixtureService } from 'src/app/services/fixture.service';
-import { SceneService } from 'src/app/services/scene.service';
+import { Component, OnInit } from '@angular/core';
+import { PresetService } from 'src/app/services/preset.service';
+import { FixturePropertyValue } from 'src/app/models/fixture-property-value';
+import { FixturePropertyType } from 'src/app/models/fixture-property';
 
 declare var iro: any;
 
@@ -17,8 +18,7 @@ export class FixturePropertyColorComponent implements OnInit {
   private colorPickerMounted: boolean = false;
 
   constructor(
-    private fixtureService: FixtureService,
-    private sceneService: SceneService
+    private presetService: PresetService
   ) { }
 
   ngOnInit() {
@@ -39,23 +39,20 @@ export class FixturePropertyColorComponent implements OnInit {
   }
 
   private updateFixtureColor(color: any) {
-    this.fixtureService.fixtures.forEach(fixture => {
-      if (fixture.isSelected) {
-        for (let sceneFixtureProperties of this.sceneService.getSelectedScenesFixtureProperties(fixture)) {
-          let properties: any = sceneFixtureProperties.properties;
-          
-          if (color) {
-            properties.colorR = color.rgb.r;
-            properties.colorG = color.rgb.g;
-            properties.colorB = color.rgb.b;
-          } else {
-            properties.colorR = undefined;
-            properties.colorG = undefined;
-            properties.colorB = undefined;
-          }
-        }
+    if(this.presetService.selectedPreset) {
+      if(color) {
+        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorRed, FixturePropertyType.colorRedFine, color.rgb.r);
+        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorGreen, FixturePropertyType.colorGreenFine, color.rgb.g);
+        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorBlue, FixturePropertyType.colorBlueFine, color.rgb.b);
+      } else {
+        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorRed);
+        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorRedFine);
+        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorGreen);
+        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorGreenFine);
+        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorBlue);
+        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorBlueFine);
       }
-    });
+    }
   }
 
   changeActive(active: boolean) {

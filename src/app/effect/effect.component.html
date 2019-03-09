@@ -1,9 +1,9 @@
 <div class="card border-secondary panel h-100">
-  <div class="card-body property-container" *ngIf="sceneService.getSelectedScenes().length == 1">
+  <div class="card-body property-container" *ngIf="presetService.selectedPreset">
 
     <div class="m-3">
       <accordion [closeOthers]="true">
-        <accordion-group *ngFor="let item of sceneService.getSelectedScenes()[0].effects; let i = index"
+        <accordion-group *ngFor="let item of presetService.selectedPreset.effects; let i = index"
           [isOpen]="effectService.selectedEffect == item" (isOpenChange)="openEffect(item, $event)">
 
           <button class="btn btn-link btn-block clearfix" accordion-heading>

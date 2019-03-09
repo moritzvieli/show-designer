@@ -1,9 +1,9 @@
 import { AnimationService } from './../../services/animation.service';
-import { FixtureService } from './../../services/fixture.service';
 import { Subscription, timer } from 'rxjs';
 import { EffectCurve } from './../../models/effect-curve';
 import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
 import { EffectChannel } from '../../models/effect';
+import { PresetService } from 'src/app/services/preset.service';
 
 @Component({
   selector: 'app-effect-curve',
@@ -42,7 +42,7 @@ export class EffectCurveComponent implements OnInit {
   @ViewChild('curveGrid') curveGrid: ElementRef;
 
   constructor(
-    private fixtureService: FixtureService,
+    private presetService: PresetService,
     private animationService: AnimationService) {
 
     //let channelEnum = EffectChannel;
@@ -116,7 +116,9 @@ export class EffectCurveComponent implements OnInit {
     let phasingCount = 0;
 
     if (this.curve.phasingMillis > 0) {
-      phasingCount = this.curve.fixtures.length;
+      if(this.presetService.selectedPreset) {
+        phasingCount = this.presetService.selectedPreset.fixtures.length;
+      }
     }
 
     for (let i = 1; i < phasingCount; i++) {
@@ -127,17 +129,18 @@ export class EffectCurveComponent implements OnInit {
   toggleChannel(event, channel: EffectChannel) {
     let enumChannel: any = Number(Object.keys(EffectChannel).find(key => EffectChannel[key] === channel));
 
-    if(event.currentTarget.checked) {
-      // Add the channel
-      this.curve.channels.push(enumChannel);
-    } else {
-      // Remove the channel
-      for(let i = 0; i < this.curve.channels.length; i++) {
-        if(this.curve.channels[i] == enumChannel) {
-          this.curve.channels.splice(i, 1);
-        }
-      }
-    }
+    // TODO
+    // if(event.currentTarget.checked) {
+    //   // Add the channel
+    //   this.curve.channels.push(enumChannel);
+    // } else {
+    //   // Remove the channel
+    //   for(let i = 0; i < this.curve.channels.length; i++) {
+    //     if(this.curve.channels[i] == enumChannel) {
+    //       this.curve.channels.splice(i, 1);
+    //     }
+    //   }
+    // }
   }
 
 }

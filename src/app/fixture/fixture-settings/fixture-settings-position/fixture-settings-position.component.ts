@@ -19,11 +19,13 @@ export class FixtureSettingsPositionComponent implements OnInit {
   changePosition(positioningStr: string) {
     let positioning: Positioning = Positioning[positioningStr];
 
-    this.fixtureService.fixtures.forEach(fixture => {
-      if (fixture.isSelected) {
-        fixture.positioning = positioning;
-      }
-    });
+    // TODO Update the position for which fixtures? Are selected fixtures for the setting tracked separately in the fixture service?
+    // --> Move the whole settings part into the library editor modal?
+    // this.fixtureService.fixtures.forEach(fixture => {
+    //   if (fixture.isSelected) {
+    //     fixture.positioning = positioning;
+    //   }
+    // });
   }
 
 }

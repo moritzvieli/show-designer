@@ -1,5 +1,5 @@
 import { UuidService } from '../services/uuid.service';
-import { Universe } from './universe';
+import { FixtureMode } from './fixture-mode';
 
 export enum Positioning {
     topFront,
@@ -14,8 +14,9 @@ export class Fixture {
     uuid: string;
     fixtureTemplateUuid: string;
     name: string;
-    universe: Universe;
+    universeUuid: string;
     firstChannel: number = 5;
+    modeUuid: string;
     positioning: Positioning = Positioning.topFront;
 
     // Only relevant when positioning = manual

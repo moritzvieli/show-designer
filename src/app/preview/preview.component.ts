@@ -1,9 +1,7 @@
 import { AnimationService } from './../services/animation.service';
 import { Positioning } from './../models/fixture';
-import { IFixture3d } from './models/i-fixture-3d';
 import { MovingHead3d } from './models/moving-head-3d';
 import { FixtureService } from '../services/fixture.service';
-import { MovingHead } from '../models/moving-head';
 import { Fixture } from '../models/fixture';
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import * as THREE from 'three';
@@ -14,10 +12,17 @@ import * as STATS from 'three/examples/js/libs/stats.min';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SceneService } from '../services/scene.service';
-import { Effect } from '../models/effect';
+import { EffectChannel } from '../models/effect';
 import { TimelineService } from '../services/timeline.service';
 import { Scene } from '../models/scene';
-import { ScenePlaybackRegion } from '../models/scene-playback-region';
+import { FixtureTemplate, FixtureType } from '../models/fixture-template';
+import { UniverseService } from '../services/universe.service';
+import { FixturePropertyValue } from '../models/fixture-property-value';
+import { Universe } from '../models/universe';
+import { FixtureMode } from '../models/fixture-mode';
+import { Fixture3d } from './models/fixture-3d';
+import { FixturePropertyType } from '../models/fixture-property';
+import { PresetService } from '../services/preset.service';
 
 declare var THREEx: any;
 
@@ -45,7 +50,7 @@ export class PreviewComponent implements AfterViewInit {
   private stageCeilingHeight = 5;
   private stagePillarWidth = 20;
 
-  private fixtures3d: IFixture3d[] = [];
+  private fixtures3d: Fixture3d[] = [];
 
   @ViewChild('canvas')
   private canvasRef: ElementRef;
@@ -54,16 +59,20 @@ export class PreviewComponent implements AfterViewInit {
     private fixtureService: FixtureService,
     private animationService: AnimationService,
     private sceneService: SceneService,
-    private timelineService: TimelineService) {
+    private timelineService: TimelineService,
+    private universeService: UniverseService,
+    private presetService: PresetService) {
 
     this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
-      if (fixture instanceof MovingHead) {
+      let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+
+      if (template.type == FixtureType.movingHead) {
         forkJoin(
           this.loadMesh('moving_head_socket'),
           this.loadMesh('moving_head_arm'),
           this.loadMesh('moving_head_head')
         ).pipe(map(([socket, arm, head]) => {
-          this.fixtures3d.push(new MovingHead3d(fixture, this.scene, socket, arm, head));
+          this.fixtures3d.push(new MovingHead3d(fixture, template, this.scene, socket, arm, head));
         })).subscribe();
       }
     });
@@ -98,99 +107,40 @@ export class PreviewComponent implements AfterViewInit {
     });
   }
 
-  private getFixtureStateAtMillis(scenes: Scene[], timeMillis: number, fixture3d: IFixture3d, fixtureIndex: number): Fixture {
-    // Get the state of a fixture at a given time
-
-    // Get all effects with this fixture for better performance, than run the update for each effect
-    // separately on each fixture.
-    let effects: Effect[] = [];
-
-    // Start with the default initial settings of the fixture (dark, lights off, etc.)
-    let baseProperties = new (fixture3d.getFixture().constructor as any);
-
-    // Loop through each relevant scene and calculate the state of the fixture.
-    // Loop backwards to overwrite properties with lower priority.
-    for (let i = scenes.length - 1; i >= 0; i--) {
-      let scene = scenes[i];
-
-      // Get the relevant base properties, if there are any
-      for (let sceneFixtureProperties of scene.sceneFixturePropertiesList) {
-        if (sceneFixtureProperties.fixture.uuid == fixture3d.getFixture().uuid && sceneFixtureProperties.active) {
-          // Apply all activated properties (!= undefined)
-          for (let property in sceneFixtureProperties.properties) {
-            if (sceneFixtureProperties.properties.hasOwnProperty(property) && sceneFixtureProperties.properties[property]) {
-              baseProperties[property] = sceneFixtureProperties.properties[property];
-            }
-          }
-          break;
-        }
+  private alreadyCalculatedFixture(fixtures: Fixture[], index: number): Fixture {
+    // Has this fixture already been calculated (same universe and dmx start address as a fixture before)
+    // --> return it
+    for (let i = 0; i < index; i++) {
+      if (fixtures[i].universeUuid == fixtures[index].universeUuid && fixtures[i].firstChannel == fixtures[index].firstChannel) {
+        return fixtures[i];
       }
- 
-      // Collect all relevant effects
-      for (let effect of scene.effects) {
-        for (let effectFixture of effect.fixtures) {
-          if (effectFixture.uuid == fixture3d.getFixture().uuid) {
-            effects.push(effect);
-            break;
-          }
-        }
-      }
-
-      // Calculate the previous state or the state after this region to apply fading, if required
-
-      // Create a virtual fixture to compute the fade-in/-out effect
-      let fadeFixture: Fixture;
-
-      // How much does the fading impact the current region? 0 = nothing, 1 = full
-      let fadePercentage: number = 0;
-
-      if (this.timelineService.playState == 'playing' && (scene.fadeInMillis > 0 || scene.fadeOutMillis > 0)) {
-        // Get the current region, this fixture is being being playing on
-        let currentRegion: ScenePlaybackRegion = this.sceneService.getCurrentPlaybackRegion(scene, timeMillis);
-
-        if (currentRegion) {
-          if (timeMillis < currentRegion.startMillis + scene.fadeInMillis) {
-            // We are being faded in
-
-            // Calculate the fadeFixture one step before this region
-            fadeFixture = this.getFixtureStateAtMillis(this.sceneService.getScenesInTime(currentRegion.startMillis - 1), currentRegion.startMillis - 1, fixture3d, fixtureIndex);
-
-            fadePercentage = 1 - ((timeMillis - currentRegion.startMillis) / scene.fadeInMillis);
-          } else if (timeMillis > currentRegion.endMillis - scene.fadeOutMillis) {
-            // We are being faded out
-
-            // Calculate the fadeFixture one step after this region
-            fadeFixture = this.getFixtureStateAtMillis(this.sceneService.getScenesInTime(currentRegion.endMillis + 1), currentRegion.endMillis + 1, fixture3d, fixtureIndex);
-
-            fadePercentage = 1 - (currentRegion.endMillis - timeMillis) / scene.fadeOutMillis;
-          }
-        }
-      }
-
-      // We now got the base properties, a set of effects and maybe a fade to take into account
-      // -> calculate the state for this scene out of it and use the result as new baseproperties for following scenes
-      baseProperties = fixture3d.getFixtureStateAtMillis(timeMillis, fixtureIndex, effects, baseProperties, fadeFixture, fadePercentage);
     }
 
-    return baseProperties;
+    return undefined;
+  }
+
+  private addEffectProperties(value: number, property: FixturePropertyType, propertyFine: FixturePropertyType): FixturePropertyValue[] {
+    let effectPropertyValues: FixturePropertyValue[] = [];
+    let effectPropertyValue: FixturePropertyValue;
+
+    effectPropertyValue = new FixturePropertyValue();
+    effectPropertyValue.fixturePropertyType = property;
+    effectPropertyValue.value = this.presetService.roundDmx(value);
+    effectPropertyValues.push(effectPropertyValue);
+
+    effectPropertyValue = new FixturePropertyValue();
+    effectPropertyValue.fixturePropertyType = propertyFine;
+    effectPropertyValue.value = this.presetService.getDmxFineValue(value);
+    effectPropertyValues.push(effectPropertyValue);
+
+    return effectPropertyValues;
   }
 
   private animate(timeMillis: number) {
     this.stats.begin();
 
-    // All relevant scenes
-    let scenes: Scene[];
-
-    if (this.timelineService.playState == 'playing') {
-      // Overwrite the current time with the playing time, if we're in playback mode
-      timeMillis = this.timelineService.waveSurfer.getCurrentTime() * 1000;
-
-      // Only use scenes with a current region
-      scenes = this.sceneService.getScenesInTime(timeMillis);
-    } else {
-      // Use all selected scenes
-      scenes = this.sceneService.getSelectedScenes();
-    }
+    // TODO Update effects and so on only 20 times per second according to the "real"
+    // refresh rate of the fixture?
 
     this.animationService.timeMillis = timeMillis;
 
@@ -204,14 +154,109 @@ export class PreviewComponent implements AfterViewInit {
     this.updateStagePosition(Positioning.topBack, -this.stageWidth / 2, this.stageWidth / 2, this.stageHeight + this.stageFloorHeight, this.stageHeight + this.stageFloorHeight, -this.stageDepth / 2 + 70, -this.stageDepth / 2 + 70);
     this.updateStagePosition(Positioning.bottomBack, -this.stageWidth / 2, this.stageWidth / 2, this.stageFloorHeight, this.stageFloorHeight, -this.stageDepth / 2 + 70, -this.stageDepth / 2 + 70);
 
-    // Update the 3d objects. Effects and base properties are stacked bottom-up: Higher elements have priority 
-    // and will overwrite settings from the elements below.
-    for (let i = 0; i < this.fixtures3d.length; i++) {
-      let fixture3d = this.fixtures3d[i];
+    // Get relevant scenes
+    let scenes: Scene[];
 
-      let fixtureState = this.getFixtureStateAtMillis(scenes, timeMillis, fixture3d, i);
+    if (this.timelineService.playState == 'playing') {
+      // Overwrite the current time with the playing time, if we're in playback mode
+      timeMillis = this.timelineService.waveSurfer.getCurrentTime() * 1000;
 
-      fixture3d.updatePreview(fixtureState);
+      // Only use scenes with a current region
+      scenes = this.sceneService.getScenesInTime(timeMillis);
+    } else {
+      // Use all selected scenes
+      scenes = this.sceneService.selectedScenes;
+    }
+
+    // #### CALCULATE THE DMX UNIVERSES. THE SAME CODE RUNS IN THE BACKEND. ####
+    // Reset all DMX universes
+    for (let universe of this.universeService.universes) {
+      universe.channelValues = [];
+      for (let i = 0; i < 512; i++) {
+        universe.channelValues.push(0);
+      }
+    }
+
+    // Loop over all relevant presets and calc the property values from the presets (properties and effects)
+    // Loop in reverse order to give higher elements a higher prio
+    let calculatedFixtures = new Map<string, FixturePropertyValue[]>();
+
+    for (let sceneIndex = scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
+      for (let presetIndex = scenes[sceneIndex].presets.length - 1; presetIndex >= 0; presetIndex--) {
+        // Translate the preset into DMX values in the corresponding universes
+
+        let preset = scenes[sceneIndex].presets[presetIndex];
+
+        for (let fixtureIndex = 0; fixtureIndex < preset.fixtures.length; fixtureIndex++) {
+          // Only relevant for the 3d-preview
+          let previewProperties: FixturePropertyValue[] = [];
+          let alreadyCalculatedFixture = this.alreadyCalculatedFixture(preset.fixtures, fixtureIndex);
+
+          if (alreadyCalculatedFixture) {
+            // Only relevant for the preview --> reuse all calculated values
+            previewProperties.concat(calculatedFixtures.get(alreadyCalculatedFixture.uuid));
+          } else {
+            let fixture = preset.fixtures[fixtureIndex];
+            let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+            let mode: FixtureMode = this.fixtureService.getModeByUuid(fixture.modeUuid, template);
+            let universe: Universe = this.universeService.getUniverseByUuid(fixture.universeUuid);
+
+            // Match all property values in this preset with the fixture properties
+            for (let fixturePropertyIndex = 0; fixturePropertyIndex < mode.fixtureProperties.length; fixturePropertyIndex++) {
+              for (let presetProperty of preset.fixturePropertyValues) {
+                if (mode.fixtureProperties[fixturePropertyIndex].type == presetProperty.fixturePropertyType) {
+                  presetProperty.value = this.presetService.roundDmx(presetProperty.value);
+                  universe.channelValues[fixture.firstChannel + fixturePropertyIndex] = presetProperty.value;
+                  previewProperties.push(presetProperty);
+                }
+              }
+            }
+
+            // Match all effect properties of this preset with the fixture properties
+            for (let effect of preset.effects) {
+              let effectPropertyValues: FixturePropertyValue[] = [];
+              let value = effect.getValueAtMillis(fixtureIndex);
+
+              switch (+effect.effectChannel) {
+                case EffectChannel.colorRed:
+                  effectPropertyValues.concat(this.addEffectProperties(value, FixturePropertyType.colorRed, FixturePropertyType.colorRedFine));
+                  break;
+                case EffectChannel.colorGreen:
+                  effectPropertyValues.concat(this.addEffectProperties(value, FixturePropertyType.colorGreen, FixturePropertyType.colorGreenFine));
+                  break;
+                case EffectChannel.colorBlue:
+                  effectPropertyValues.concat(this.addEffectProperties(value, FixturePropertyType.colorBlue, FixturePropertyType.colorBlueFine));
+                  break;
+                case EffectChannel.pan:
+                  effectPropertyValues.concat(this.addEffectProperties(value, FixturePropertyType.pan, FixturePropertyType.panFine));
+                  break;
+                case EffectChannel.tilt:
+                  effectPropertyValues.concat(this.addEffectProperties(value, FixturePropertyType.tilt, FixturePropertyType.tiltFine));
+                  break;
+              }
+
+              for (let fixturePropertyIndex = 0; fixturePropertyIndex < mode.fixtureProperties.length; fixturePropertyIndex++) {
+                for (let effectProperty of effectPropertyValues) {
+                  if (mode.fixtureProperties[fixturePropertyIndex].type == effectProperty.fixturePropertyType) {
+                    universe.channelValues[fixture.firstChannel + fixturePropertyIndex] = effectProperty.value;
+                    previewProperties.push(effectProperty);
+                  }
+                }
+              }
+            }
+
+            // Store the calculated values for subsequent fixtures on the same DMX address
+            calculatedFixtures.set(fixture.uuid, previewProperties);
+
+            // Apply the preview properties to the 3d fixture
+            for (let fixture3d of this.fixtures3d) {
+              if (fixture3d.fixture.uuid == fixture.uuid) {
+                fixture3d.updatePreview(previewProperties);
+              }
+            }
+          }
+        }
+      }
     }
 
     this.rendererStats.update(this.renderer);
@@ -329,24 +374,6 @@ export class PreviewComponent implements AfterViewInit {
     floor.castShadow = false;
     floor.position.set(0, -height / 2, 0);
     this.scene.add(floor);
-  }
-
-  public updateSlider(val) {
-    this.fixtures3d.forEach(element => {
-      if (element instanceof MovingHead3d) {
-        let movingHead3d = <MovingHead3d>element;
-        movingHead3d.movingHead.tilt = val;
-      }
-    });
-  }
-
-  public changePan(val) {
-    this.fixtures3d.forEach(element => {
-      if (element instanceof MovingHead3d) {
-        let movingHead3d = <MovingHead3d>element;
-        movingHead3d.movingHead.pan = val;
-      }
-    });
   }
 
   private setupStage() {

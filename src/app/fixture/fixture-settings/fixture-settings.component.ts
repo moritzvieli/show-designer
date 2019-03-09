@@ -23,7 +23,10 @@ export class FixtureSettingsComponent implements OnInit {
 
   channelOccupied(index: number): boolean {
     for(let fixture of this.fixtureService.fixtures) {
-      if(index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + fixture.dmxChannelCount) {
+      let template = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+      let mode = this.fixtureService.getModeByUuid(fixture.modeUuid, template);
+
+      if(index >= fixture.firstChannel && index < fixture.firstChannel + mode.channelCount) {
         return true;
       }
     }
@@ -33,7 +36,7 @@ export class FixtureSettingsComponent implements OnInit {
 
   channelOccupiedStart(index: number): boolean {
     for(let fixture of this.fixtureService.fixtures) {
-      if(index == fixture.dmxFirstChannel) {
+      if(index == fixture.firstChannel) {
         return true;
       }
     }
@@ -43,7 +46,10 @@ export class FixtureSettingsComponent implements OnInit {
 
   channelOccupiedEnd(index: number): boolean {
     for(let fixture of this.fixtureService.fixtures) {
-      if(index == fixture.dmxFirstChannel + fixture.dmxChannelCount - 1) {
+      let template = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+      let mode = this.fixtureService.getModeByUuid(fixture.modeUuid, template);
+
+      if(index == fixture.firstChannel + mode.channelCount - 1) {
         return true;
       }
     }
