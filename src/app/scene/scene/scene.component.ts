@@ -3,7 +3,6 @@ import { SceneService } from 'src/app/services/scene.service';
 import { PresetService } from 'src/app/services/preset.service';
 import { Preset } from 'src/app/models/preset';
 import { UuidService } from 'src/app/services/uuid.service';
-import { PreviewService } from 'src/app/services/preview.service';
 
 @Component({
   selector: 'app-scene',
@@ -15,8 +14,7 @@ export class SceneComponent implements OnInit {
   constructor(
     public sceneService: SceneService,
     private presetService: PresetService,
-    private uuidService: UuidService,
-    private previewService: PreviewService
+    private uuidService: UuidService
   ) {
     // Add a default scene and preset
     this.sceneService.addScene();
@@ -34,7 +32,7 @@ export class SceneComponent implements OnInit {
   }
 
   selectScene(event: any, index: number) {
-    this.previewService.previewPreset = false;
+    this.presetService.previewPreset = false;
     this.sceneService.selectScene(index);
   }
 

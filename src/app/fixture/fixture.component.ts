@@ -9,6 +9,7 @@ import { FixturePropertyRange } from '../models/fixture-property-range';
 import { PresetService } from '../services/preset.service';
 import { Universe } from '../models/universe';
 import { UniverseService } from '../services/universe.service';
+import { FixturePropertyValue } from '../models/fixture-property-value';
 
 @Component({
   selector: 'app-fixture',
@@ -72,12 +73,22 @@ export class FixtureComponent implements OnInit {
     fixtureTemplate.fixtureModes.push(fixtureMode);
     this.fixtureService.fixtureTemplates.push(fixtureTemplate);
 
+    let defaultValue: FixturePropertyValue;
+
     let fixture = new Fixture(this.uuidService);
     fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
     fixture.firstChannel = 1;
     fixture.name = 'MH1';
     fixture.modeUuid = fixtureMode.uuid;
     fixture.universeUuid = universe.uuid;
+    defaultValue = new FixturePropertyValue();
+    defaultValue.fixturePropertyType = FixturePropertyType.pan;
+    defaultValue.value = 127;
+    fixture.fixturePropertyValues.push(defaultValue);
+    defaultValue = new FixturePropertyValue();
+    defaultValue.fixturePropertyType = FixturePropertyType.tilt;
+    defaultValue.value = 127;
+    fixture.fixturePropertyValues.push(defaultValue);
     this.fixtureService.addFixture(fixture);
 
     fixture = new Fixture(this.uuidService);
@@ -86,6 +97,13 @@ export class FixtureComponent implements OnInit {
     fixture.name = 'MH2';
     fixture.modeUuid = fixtureMode.uuid;
     fixture.universeUuid = universe.uuid;
+    defaultValue.fixturePropertyType = FixturePropertyType.pan;
+    defaultValue.value = 127;
+    fixture.fixturePropertyValues.push(defaultValue);
+    defaultValue = new FixturePropertyValue();
+    defaultValue.fixturePropertyType = FixturePropertyType.tilt;
+    defaultValue.value = 127;
+    fixture.fixturePropertyValues.push(defaultValue);
     this.fixtureService.addFixture(fixture);
 
     fixture = new Fixture(this.uuidService);
@@ -94,6 +112,13 @@ export class FixtureComponent implements OnInit {
     fixture.name = 'MH3';
     fixture.modeUuid = fixtureMode.uuid;
     fixture.universeUuid = universe.uuid;
+    defaultValue.fixturePropertyType = FixturePropertyType.pan;
+    defaultValue.value = 127;
+    fixture.fixturePropertyValues.push(defaultValue);
+    defaultValue = new FixturePropertyValue();
+    defaultValue.fixturePropertyType = FixturePropertyType.tilt;
+    defaultValue.value = 127;
+    fixture.fixturePropertyValues.push(defaultValue);
     this.fixtureService.addFixture(fixture);
   }
 

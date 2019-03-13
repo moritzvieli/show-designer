@@ -214,8 +214,8 @@ export class MovingHead3d extends Fixture3d {
         super.updatePreview(propertyValues);
 
         // Apply default settings
-        this.pan = 127;
-        this.tilt = 127;
+        this.pan = 0;
+        this.tilt = 0;
 
         // Apply the known property values
         for(let propetryValue of propertyValues) {

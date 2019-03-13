@@ -4,7 +4,21 @@ import { ScenePlaybackRegion } from '../models/scene-playback-region';
 import { UuidService } from './uuid.service';
 import { EffectService } from './effect.service';
 import { Preset } from '../models/preset';
-import { PreviewService } from './preview.service';
+import { PresetService } from './preset.service';
+
+export class PresetRegionScene {
+
+  preset: Preset;
+  region: ScenePlaybackRegion;
+  scene: Scene;
+
+  constructor(preset: Preset, region: ScenePlaybackRegion, scene: Scene) {
+    this.preset = preset;
+    this.region = region;
+    this.scene = scene;
+  }
+
+}
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +35,7 @@ export class SceneService {
   constructor(
     private uuidService: UuidService,
     private effectService: EffectService,
-    private previewService: PreviewService
+    private presetService: PresetService
   ) {
   }
 
@@ -36,7 +50,7 @@ export class SceneService {
   }
 
   presetIsSelected(preset: Preset): boolean {
-    if(!this.selectedScenes || this.selectedScenes.length > 1) {
+    if (!this.selectedScenes || this.selectedScenes.length > 1) {
       return false;
     }
 
@@ -63,28 +77,28 @@ export class SceneService {
     }
   }
 
-  getCurrentPlaybackRegion(scene: Scene, timeMillis: number): ScenePlaybackRegion {
-    // Return true, if the specified scene is active during the specified time
-    for (let region of scene.scenePlaybackRegionList) {
-      if (region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
-        return region;
-      }
-    }
-
-    return undefined;
-  }
-
-  getScenesInTime(timeMillis: number): Scene[] {
+  getPresetsInTime(timeMillis: number): PresetRegionScene[] {
     // Return all scenes which should be active during the specified time
-    let activeScenes: Scene[] = [];
+    let activePresets: PresetRegionScene[] = [];
 
     for (let scene of this.scenes) {
-      if (this.getCurrentPlaybackRegion(scene, timeMillis)) {
-        activeScenes.push(scene);
+      for (let region of scene.scenePlaybackRegionList) {
+        if (region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
+          // This region is currently being played -> check all scene presets
+          for (let presetUuid of scene.presetUuids) {
+            let preset = this.presetService.getPresetByUuid(presetUuid);
+
+            if ((!preset.startMillis || preset.startMillis + region.startMillis <= timeMillis)
+              && (!preset.endMillis || preset.endMillis + region.startMillis >= timeMillis)) {
+
+              activePresets.push(new PresetRegionScene(preset, region, scene));
+            }
+          }
+        }
       }
     }
 
-    return activeScenes;
+    return activePresets;
   }
 
   selectScene(index: number) {
@@ -97,7 +111,7 @@ export class SceneService {
       this.selectedScenes.push(this.scenes[index]);
     }
 
-    this.previewService.previewSelectionChanged.next();
+    this.presetService.previewSelectionChanged.next();
   }
 
   addScene(name?: string): void {

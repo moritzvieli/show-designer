@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SceneService } from 'src/app/services/scene.service';
+import { PresetService } from 'src/app/services/preset.service';
 
 @Component({
   selector: 'app-fixture-property',
@@ -8,7 +8,9 @@ import { SceneService } from 'src/app/services/scene.service';
 })
 export class FixturePropertyComponent implements OnInit {
 
-  constructor(public sceneService: SceneService) { }
+  constructor(
+    public presetService: PresetService
+  ) { }
 
   ngOnInit() {
   }

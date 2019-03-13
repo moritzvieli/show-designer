@@ -18,6 +18,10 @@ export class Preset {
     // All related effects
     effects: Effect[] = [];
 
+    // Position offset, relative to the scene start (undefined = start/end of the scene itself)
+    startMillis: number;
+    endMillis: number;
+
     // Fading times
     fadeInMillis: number = 0;
     fadeOutMillis: number = 0;

@@ -1,5 +1,6 @@
 import { UuidService } from '../services/uuid.service';
 import { FixtureMode } from './fixture-mode';
+import { FixturePropertyValue } from './fixture-property-value';
 
 export enum Positioning {
     topFront,
@@ -18,6 +19,9 @@ export class Fixture {
     firstChannel: number = 5;
     modeUuid: string;
     positioning: Positioning = Positioning.topFront;
+
+    // Default channel values
+    fixturePropertyValues: FixturePropertyValue[] = [];
 
     // Only relevant when positioning = manual
     positionX: number = 0;

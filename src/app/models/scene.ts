@@ -1,5 +1,4 @@
 import { ScenePlaybackRegion } from "./scene-playback-region";
-import { Preset } from "./preset";
 import { UuidService } from "../services/uuid.service";
 
 export class Scene {
