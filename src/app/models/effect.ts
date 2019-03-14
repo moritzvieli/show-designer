@@ -15,7 +15,7 @@ export enum EffectChannel
 export class Effect {
 
     uuid: string;
-    effectChannel: EffectChannel;
+    effectChannels: EffectChannel[] = [];
     paused: boolean = false;
 
     constructor(private uuidService: UuidService) {

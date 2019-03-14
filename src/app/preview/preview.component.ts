@@ -14,6 +14,7 @@ import { map } from 'rxjs/operators';
 import { FixtureTemplate, FixtureType } from '../models/fixture-template';
 import { Fixture3d } from './models/fixture-3d';
 import { PreviewService } from '../services/preview.service';
+import { TimelineService } from '../services/timeline.service';
 
 declare var THREEx: any;
 
@@ -49,7 +50,8 @@ export class PreviewComponent implements AfterViewInit {
   constructor(
     private fixtureService: FixtureService,
     private animationService: AnimationService,
-    private previewService: PreviewService) {
+    private previewService: PreviewService,
+    private timelineService: TimelineService) {
 
     this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
       let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
@@ -98,6 +100,11 @@ export class PreviewComponent implements AfterViewInit {
   private animate(timeMillis: number) {
     this.stats.begin();
 
+    if (this.timelineService.playState == 'playing') {
+      // Overwrite the current time with the playing time, if we're in playback mode
+      timeMillis = this.timelineService.waveSurfer.getCurrentTime() * 1000;
+    }
+
     this.animationService.timeMillis = timeMillis;
 
     // Update the controls
@@ -111,9 +118,6 @@ export class PreviewComponent implements AfterViewInit {
     this.updateStagePosition(Positioning.topBack, -this.stageWidth / 2, this.stageWidth / 2, this.stageHeight + this.stageFloorHeight, this.stageHeight + this.stageFloorHeight, -this.stageDepth / 2 + 70, -this.stageDepth / 2 + 70);
     this.updateStagePosition(Positioning.bottomBack, -this.stageWidth / 2, this.stageWidth / 2, this.stageFloorHeight, this.stageFloorHeight, -this.stageDepth / 2 + 70, -this.stageDepth / 2 + 70);
 
-    // #### CALCULATE THE DMX UNIVERSES. THE SAME CODE RUNS IN THE BACKEND. ####
-    this.previewService.resetDmxUniverses();
-
     // Update all fixtures and apply the preview properties, if available
     // TODO Update the fixtures only 20 times per second according to the "real" refresh rate of the DMX interface?
     let calculatedFixtures = this.previewService.getFixturePropertyValues(timeMillis);
@@ -121,6 +125,8 @@ export class PreviewComponent implements AfterViewInit {
     for (let fixture3d of this.fixtures3d) {
       fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture.uuid) || []);
     }
+
+    //this.previewService.setUniverseValues(calculatedFixtures);
 
     // Update the statistics
     this.rendererStats.update(this.renderer);

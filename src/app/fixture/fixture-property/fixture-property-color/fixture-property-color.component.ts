@@ -41,16 +41,13 @@ export class FixturePropertyColorComponent implements OnInit {
   private updateFixtureColor(color: any) {
     if(this.presetService.selectedPreset) {
       if(color) {
-        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorRed, FixturePropertyType.colorRedFine, color.rgb.r);
-        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorGreen, FixturePropertyType.colorGreenFine, color.rgb.g);
-        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorBlue, FixturePropertyType.colorBlueFine, color.rgb.b);
+        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorRed, color.rgb.r);
+        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorGreen, color.rgb.g);
+        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorBlue, color.rgb.b);
       } else {
         this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorRed);
-        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorRedFine);
         this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorGreen);
-        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorGreenFine);
         this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorBlue);
-        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorBlueFine);
       }
     }
   }

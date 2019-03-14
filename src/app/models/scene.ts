@@ -13,8 +13,8 @@ export class Scene {
     scenePlaybackRegionList: ScenePlaybackRegion[] = [];
 
     // Fading times
-    fadeInMillis: number = 200;
-    fadeOutMillis: number = 200;
+    fadeInMillis: number = 2000;
+    fadeOutMillis: number = 2000;
 
     constructor(private uuidService: UuidService) {
         if (this.uuidService) {

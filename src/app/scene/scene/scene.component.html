@@ -18,6 +18,7 @@
     <!-- List of scenes -->
     <div class="list-group" [sortablejs]="sceneService.scenes">
       <div class="list-group-item" *ngFor="let scene of sceneService.scenes; let i = index"
+        [class.active-light]="presetService.previewPreset && sceneService.sceneIsSelected(scene)"
         [class.active]="!presetService.previewPreset && sceneService.sceneIsSelected(scene)">
         <div class="row d-flex" (click)="selectScene($event, i)" style="cursor: pointer;">
           <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">

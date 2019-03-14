@@ -29,6 +29,14 @@ export class FixtureService {
     }
   }
 
+  getFixtureByUuid(uuid: string): Fixture {
+    for (let fixture of this.fixtures) {
+      if (fixture.uuid = uuid) {
+        return fixture;
+      }
+    }
+  }
+
   getTemplateByUuid(uuid: string): FixtureTemplate {
     for (let template of this.fixtureTemplates) {
       if (template.uuid = uuid) {

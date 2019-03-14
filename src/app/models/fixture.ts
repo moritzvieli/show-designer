@@ -1,5 +1,4 @@
 import { UuidService } from '../services/uuid.service';
-import { FixtureMode } from './fixture-mode';
 import { FixturePropertyValue } from './fixture-property-value';
 
 export enum Positioning {

@@ -24,18 +24,21 @@ export abstract class Fixture3d {
         this.colorGreen = 0;
         this.colorBlue = 0;
 
-        for (let propetryValue of propertyValues) {
-            switch (propetryValue.fixturePropertyType) {
+        for (let propertyValue of propertyValues) {
+            switch (propertyValue.fixturePropertyType) {
                 case FixturePropertyType.colorGreen: {
-                    this.colorGreen = propetryValue.value;
+                    // Round needed for threejs
+                    this.colorGreen = Math.round(propertyValue.value);
                     break;
                 }
                 case FixturePropertyType.colorRed: {
-                    this.colorRed = propetryValue.value;
+                    // Round needed for threejs
+                    this.colorRed = Math.round(propertyValue.value);
                     break;
                 }
                 case FixturePropertyType.colorBlue: {
-                    this.colorBlue = propetryValue.value;
+                    // Round needed for threejs
+                    this.colorBlue = Math.round(propertyValue.value);
                     break;
                 }
             }

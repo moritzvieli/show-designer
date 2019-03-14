@@ -94,6 +94,11 @@ input, select {
     background-color: $gray-800;
 }
 
+.list-group-item.active-light {
+    background-color: #906542;
+    border-color: #906542;
+}
+
 /* Make the modal appear in front of the threejs debug information boxes */
 .modal {
     z-index: 10001;

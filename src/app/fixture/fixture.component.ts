@@ -97,6 +97,7 @@ export class FixtureComponent implements OnInit {
     fixture.name = 'MH2';
     fixture.modeUuid = fixtureMode.uuid;
     fixture.universeUuid = universe.uuid;
+    defaultValue = new FixturePropertyValue();
     defaultValue.fixturePropertyType = FixturePropertyType.pan;
     defaultValue.value = 127;
     fixture.fixturePropertyValues.push(defaultValue);
@@ -112,6 +113,7 @@ export class FixtureComponent implements OnInit {
     fixture.name = 'MH3';
     fixture.modeUuid = fixtureMode.uuid;
     fixture.universeUuid = universe.uuid;
+    defaultValue = new FixturePropertyValue();
     defaultValue.fixturePropertyType = FixturePropertyType.pan;
     defaultValue.value = 127;
     fixture.fixturePropertyValues.push(defaultValue);

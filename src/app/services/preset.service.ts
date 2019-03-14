@@ -58,7 +58,7 @@ export class PresetService {
       for (let i = 0; i < this.selectedPreset.fixtures.length; i++) {
         if (this.selectedPreset.fixtures[i].uuid == fixture.uuid) {
           this.selectedPreset.fixtures.splice(i, 1);
-          return;
+          break;
         }
       }
     } else {
@@ -91,25 +91,15 @@ export class PresetService {
     return 255 * (value - this.roundDmx(value)) / 100;
   }
 
-  setPropertyValue(preset: Preset, property: FixturePropertyType, propertyFine: FixturePropertyType, value: number) {
+  setPropertyValue(preset: Preset, property: FixturePropertyType, value: number) {
     // Delete existant properties with this type and set the new value
     this.deletePropertyValue(preset, property);
 
     let fixturePropertyValue = new FixturePropertyValue();
     fixturePropertyValue.fixturePropertyType = property;
-    fixturePropertyValue.value = this.roundDmx(value);
+    fixturePropertyValue.value = value;
 
     preset.fixturePropertyValues.push(fixturePropertyValue);
-
-    if(propertyFine) {
-      this.deletePropertyValue(preset, propertyFine);
-  
-      let fixturePropertyValue = new FixturePropertyValue();
-      fixturePropertyValue.fixturePropertyType = propertyFine;
-      fixturePropertyValue.value = this.getDmxFineValue(value);
-  
-      preset.fixturePropertyValues.push(fixturePropertyValue);
-    }
   }
 
   selectPreset(index: number) {
