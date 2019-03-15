@@ -60,7 +60,6 @@ export class PreviewService {
 
         for (let sceneIndex = scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
           for (let presetIndex = scenes[sceneIndex].presetUuids.length - 1; presetIndex >= 0; presetIndex--) {
-
             presets.push(new PresetRegionScene(this.presetService.getPresetByUuid(scenes[sceneIndex].presetUuids[presetIndex]), undefined, scenes[sceneIndex]));
           }
         }

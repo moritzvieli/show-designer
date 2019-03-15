@@ -50,7 +50,7 @@ export class SceneService {
   }
 
   presetIsSelected(preset: Preset): boolean {
-    if (!this.selectedScenes || this.selectedScenes.length > 1) {
+    if (!this.selectedScenes || this.selectedScenes.length != 1) {
       return false;
     }
 
@@ -112,6 +112,7 @@ export class SceneService {
     }
 
     this.presetService.previewSelectionChanged.next();
+    this.presetService.previewPreset = false;
   }
 
   addScene(name?: string): void {
@@ -129,7 +130,6 @@ export class SceneService {
     }
 
     this.scenes.splice(highestSelectedSceneIndex, 0, scene);
-
     this.selectScene(highestSelectedSceneIndex);
   }
 

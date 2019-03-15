@@ -23,7 +23,7 @@
   <div class="card-body h-100 p-0">
 
     <!-- List of fixtures -->
-    <div *ngIf="presetService.previewPreset && presetService.selectedPreset" class="list-group" [sortablejs]="fixtureService.fixtures">
+    <div *ngIf="presetService.selectedPreset" class="list-group" [sortablejs]="fixtureService.fixtures">
       <div class="list-group-item" *ngFor="let item of fixtureService.fixtures">
         <div class="row d-flex" (click)="selectFixture($event, item)" style="cursor: pointer;">
           <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">

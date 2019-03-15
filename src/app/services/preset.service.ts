@@ -28,7 +28,7 @@ export class PresetService {
 
   getPresetByUuid(uuid: string): Preset {
     for (let preset of this.presets) {
-      if (preset.uuid = uuid) {
+      if (preset.uuid == uuid) {
         return preset;
       }
     }
@@ -110,7 +110,7 @@ export class PresetService {
 
   addPreset(name?: string): void {
     let preset: Preset = new Preset(this.uuidService);
-    preset.name = name || 'Main';
+    preset.name = name || 'Preset x';
 
     // Insert the new preset before the highest currently selected preset
     let highestSelectedPresetIndex = 0;
@@ -123,7 +123,6 @@ export class PresetService {
     }
 
     this.presets.splice(highestSelectedPresetIndex, 0, preset);
-
     this.selectPreset(highestSelectedPresetIndex);
   }
 

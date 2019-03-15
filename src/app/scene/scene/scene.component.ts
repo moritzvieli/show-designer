@@ -32,7 +32,6 @@ export class SceneComponent implements OnInit {
   }
 
   selectScene(event: any, index: number) {
-    this.presetService.previewPreset = false;
     this.sceneService.selectScene(index);
   }
 
