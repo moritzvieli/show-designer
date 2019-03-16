@@ -99,6 +99,10 @@ input, select {
     border-color: #906542;
 }
 
+.inactive-list-item {
+    opacity: 0.3;
+}
+
 /* Make the modal appear in front of the threejs debug information boxes */
 .modal {
     z-index: 10001;
