@@ -120,10 +120,16 @@ export class PreviewComponent implements AfterViewInit {
 
     // Update all fixtures and apply the preview properties, if available
     // TODO Update the fixtures only 20 times per second according to the "real" refresh rate of the DMX interface?
-    let calculatedFixtures = this.previewService.getFixturePropertyValues(timeMillis);
+    let presets = this.previewService.getPresets(timeMillis);
+
+    let calculatedFixtures = this.previewService.getFixturePropertyValues(timeMillis, presets);
 
     for (let fixture3d of this.fixtures3d) {
+      // Update the fixture properties
       fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture.uuid) || []);
+
+      // Select the fixture, if required
+      fixture3d.isSelected = this.previewService.fixtureIsSelected(fixture3d.fixture.uuid, presets);
     }
 
     //this.previewService.setUniverseValues(calculatedFixtures);

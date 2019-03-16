@@ -41,4 +41,12 @@ export class PresetComponent implements OnInit {
     }
   }
 
+  addPreset() {
+    this.presetService.addPreset();
+
+    if(this.sceneService.selectedScenes && this.sceneService.selectedScenes.length == 1) {
+      this.sceneService.selectedScenes[0].presetUuids.push(this.presetService.selectedPreset.uuid);
+    }
+  }
+
 }

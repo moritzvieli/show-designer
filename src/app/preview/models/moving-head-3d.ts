@@ -1,4 +1,3 @@
-import { EffectChannel, Effect } from './../../models/effect';
 import { Fixture3d } from './fixture-3d';
 import * as THREE from 'three';
 import { Positioning, Fixture } from 'src/app/models/fixture';
@@ -29,7 +28,6 @@ export class MovingHead3d extends Fixture3d {
     private lastSelected: boolean;
 
     private material: THREE.MeshStandardMaterial;
-    private selectedMaterial: THREE.MeshLambertMaterial;
 
     private atmosphereMat() {
         var vertexShader = [
@@ -139,14 +137,11 @@ export class MovingHead3d extends Fixture3d {
         //     envMapIntensity: 1.4
         // });
 
+        // TODO Don't load the moving head again for each fixture
+
         this.material = new THREE.MeshLambertMaterial({
             color: 0x0d0d0d,
             emissive: 0x0d0d0d
-        });
-
-        this.selectedMaterial = new THREE.MeshLambertMaterial({
-            color: 0xff00ff,
-            emissive: 0xff00ff
         });
 
         socket.material = this.material;
@@ -268,20 +263,19 @@ export class MovingHead3d extends Fixture3d {
         }
 
         // Update the material
-        // TODO
-        // if (this.lastSelected != this.movingHead.isSelected) {
-        //     if (this.movingHead.isSelected) {
-        //         this.socket.material = this.selectedMaterial;
-        //         this.arm.material = this.selectedMaterial;
-        //         this.head.material = this.selectedMaterial;
-        //     } else {
-        //         this.socket.material = this.material;
-        //         this.arm.material = this.material;
-        //         this.head.material = this.material;
-        //     }
+        if (this.lastSelected != this.isSelected) {
+            if (this.isSelected) {
+                this.socket.material = this.selectedMaterial;
+                this.arm.material = this.selectedMaterial;
+                this.head.material = this.selectedMaterial;
+            } else {
+                this.socket.material = this.material;
+                this.arm.material = this.material;
+                this.head.material = this.material;
+            }
 
-        //     this.lastSelected = this.movingHead.isSelected;
-        // }
+            this.lastSelected = this.isSelected;
+        }
 
         // Update the light helpers
         this.spotLightHelper.update();

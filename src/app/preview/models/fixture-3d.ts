@@ -2,6 +2,7 @@ import { FixturePropertyValue } from "src/app/models/fixture-property-value";
 import { FixtureTemplate } from "src/app/models/fixture-template";
 import { Fixture } from "src/app/models/fixture";
 import { FixturePropertyType } from "src/app/models/fixture-property";
+import * as THREE from 'three';
 
 export abstract class Fixture3d {
 
@@ -12,9 +13,19 @@ export abstract class Fixture3d {
     colorGreen: number;
     colorBlue: number;
 
+    isSelected: boolean = false;
+
+    protected selectedMaterial: THREE.MeshLambertMaterial;
+
     constructor(fixture: Fixture, fixtureTemplate: FixtureTemplate) {
         this.fixture = fixture;
         this.fixtureTemplate = fixtureTemplate;
+
+        // TODO Don't create it for each fixture
+        this.selectedMaterial = new THREE.MeshLambertMaterial({
+            color: 0xff00ff,
+            emissive: 0xff00ff
+        });
     }
 
     // Apply the properties of the base fixture to the preview

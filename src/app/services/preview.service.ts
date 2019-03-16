@@ -41,7 +41,7 @@ export class PreviewService {
     return undefined;
   }
 
-  private getPresets(timeMillis: number): PresetRegionScene[] {
+  public getPresets(timeMillis: number): PresetRegionScene[] {
     // Get relevant presets in correct order to process with their corresponding scene, if available
     let presets: PresetRegionScene[] = [];
 
@@ -100,10 +100,9 @@ export class PreviewService {
     existingProperties.push(new FixturePropertyValue(propertyValue.fixturePropertyType, newValue));
   }
 
-  public getFixturePropertyValues(timeMillis: number): Map<string, FixturePropertyValue[]> {
+  public getFixturePropertyValues(timeMillis: number, presets: PresetRegionScene[]): Map<string, FixturePropertyValue[]> {
     // Loop over all relevant presets and calc the property values from the presets (properties and effects)
     let calculatedFixtures = new Map<string, FixturePropertyValue[]>();
-    let presets = this.getPresets(timeMillis);
 
     for (let fixtureIndex = 0; fixtureIndex < this.fixtureService.fixtures.length; fixtureIndex++) {
       let fixture = this.fixtureService.fixtures[fixtureIndex];
@@ -249,6 +248,18 @@ export class PreviewService {
         }
       }
     });
+  }
+
+  public fixtureIsSelected(uuid: string, presets: PresetRegionScene[]): boolean {
+    for(let preset of presets) {
+      for(let fixture of preset.preset.fixtures) {
+        if(fixture.uuid == uuid) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
 }

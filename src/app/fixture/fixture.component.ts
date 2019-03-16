@@ -130,6 +130,7 @@ export class FixtureComponent implements OnInit {
 
   selectFixture(event: any, fixture: Fixture) {
     this.presetService.switchFixtureSelection(fixture);
+    this.presetService.fixtureSelectionChanged.next();
   }
 
 }

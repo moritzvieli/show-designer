@@ -15,8 +15,11 @@ export class PresetService {
   presets: Preset[] = [];
   selectedPreset: Preset;
 
-  // Fires, when the current preview element has changed
+  // Fires, when the current preview element has changed (scene/preset)
   previewSelectionChanged: Subject<void> = new Subject<void>();
+
+  // Fires, when the fixture selection has changed
+  fixtureSelectionChanged: Subject<void> = new Subject<void>();
 
   // True = show the preset, false = show the selected scene
   previewPreset: boolean = true;
@@ -35,7 +38,7 @@ export class PresetService {
   }
 
   fixtureIsSelected(fixture: Fixture): boolean {
-    if(!this.selectedPreset) {
+    if (!this.selectedPreset) {
       return false;
     }
 
@@ -49,12 +52,12 @@ export class PresetService {
   }
 
   switchFixtureSelection(fixture: Fixture) {
-    if(!this.selectedPreset) {
+    if (!this.selectedPreset) {
       return;
     }
 
     // Select a fixture if not yet selected or unselect it otherwise
-    if(this.fixtureIsSelected(fixture)) {
+    if (this.fixtureIsSelected(fixture)) {
       for (let i = 0; i < this.selectedPreset.fixtures.length; i++) {
         if (this.selectedPreset.fixtures[i].uuid == fixture.uuid) {
           this.selectedPreset.fixtures.splice(i, 1);
@@ -67,8 +70,8 @@ export class PresetService {
   }
 
   deletePropertyValue(preset: Preset, property: FixturePropertyType) {
-    for(let i = 0; i < preset.fixturePropertyValues.length; i++) {
-      if(preset.fixturePropertyValues[i].fixturePropertyType == property) {
+    for (let i = 0; i < preset.fixturePropertyValues.length; i++) {
+      if (preset.fixturePropertyValues[i].fixturePropertyType == property) {
         preset.fixturePropertyValues.splice(i, 1);
       }
     }
