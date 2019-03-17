@@ -226,6 +226,10 @@ input, select {
 }
 
 /* Wavesurfer */
+.wavesurfer-region {
+    z-index: 5 !important;
+}
+
 .wavesurfer-region[data-region-preset="true"] {
     height: 50% !important;
     top: 50% !important;

@@ -182,10 +182,10 @@ export class PreviewService {
             // Match all effect properties of this preset with the fixture properties
             for (let effect of preset.preset.effects) {
               let effectPropertyValues: FixturePropertyValue[] = [];
-              let value = effect.getValueAtMillis(fixtureIndex);
+              let value = effect.getValueAtMillis(timeMillis);
 
               for (let effectChannel of effect.effectChannels) {
-                switch (+effectChannel) {
+                switch (effectChannel) {
                   case EffectChannel.colorRed:
                     effectPropertyValues.push(new FixturePropertyValue(FixturePropertyType.colorRed, value));
                     break;

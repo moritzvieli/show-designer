@@ -126,21 +126,20 @@ export class EffectCurveComponent implements OnInit {
     }
   }
 
-  toggleChannel(event, channel: EffectChannel) {
+  toggleChannel(event: any, channel: EffectChannel) {
     let enumChannel: any = Number(Object.keys(EffectChannel).find(key => EffectChannel[key] === channel));
 
-    // TODO
-    // if(event.currentTarget.checked) {
-    //   // Add the channel
-    //   this.curve.channels.push(enumChannel);
-    // } else {
-    //   // Remove the channel
-    //   for(let i = 0; i < this.curve.channels.length; i++) {
-    //     if(this.curve.channels[i] == enumChannel) {
-    //       this.curve.channels.splice(i, 1);
-    //     }
-    //   }
-    // }
+    if(event.currentTarget.checked) {
+      // Add the channel
+      this.curve.effectChannels.push(enumChannel);
+    } else {
+      // Remove the channel
+      for(let i = 0; i < this.curve.effectChannels.length; i++) {
+        if(this.curve.effectChannels[i] == enumChannel) {
+          this.curve.effectChannels.splice(i, 1);
+        }
+      }
+    }
   }
 
 }
