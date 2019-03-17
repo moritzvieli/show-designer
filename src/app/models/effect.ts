@@ -5,9 +5,10 @@ export enum EffectChannel
     colorRed,
     colorGreen,
     colorBlue,
-    hue,
-    saturation,
-    dimmer,
+    // TODO
+    // hue,
+    // saturation,
+    // dimmer,
     pan,
     tilt
 }
