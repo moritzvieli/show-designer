@@ -8,7 +8,7 @@ export enum EffectChannel
     // TODO
     // hue,
     // saturation,
-    // dimmer,
+    dimmer,
     pan,
     tilt
 }

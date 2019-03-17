@@ -41,13 +41,13 @@ export class FixturePropertyColorComponent implements OnInit {
   private updateFixtureColor(color: any) {
     if(this.presetService.selectedPreset) {
       if(color) {
-        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorRed, color.rgb.r);
-        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorGreen, color.rgb.g);
-        this.presetService.setPropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorBlue, color.rgb.b);
+        this.presetService.setPropertyValue(FixturePropertyType.colorRed, color.rgb.r);
+        this.presetService.setPropertyValue(FixturePropertyType.colorGreen, color.rgb.g);
+        this.presetService.setPropertyValue(FixturePropertyType.colorBlue, color.rgb.b);
       } else {
-        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorRed);
-        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorGreen);
-        this.presetService.deletePropertyValue(this.presetService.selectedPreset, FixturePropertyType.colorBlue);
+        this.presetService.deletePropertyValue(FixturePropertyType.colorRed);
+        this.presetService.deletePropertyValue(FixturePropertyType.colorGreen);
+        this.presetService.deletePropertyValue(FixturePropertyType.colorBlue);
       }
     }
   }

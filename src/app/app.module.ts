@@ -24,6 +24,8 @@ import { FixtureSettingsComponent } from './fixture/fixture-settings/fixture-set
 import { EffectComponent } from './effect/effect.component';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 import { PresetComponent } from './preset/preset.component';
+import { MasterDimmerComponent } from './master-dimmer/master-dimmer.component';
+import { FixturePropertyDimmerComponent } from './fixture/fixture-property/fixture-property-dimmer/fixture-property-dimmer.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { PresetComponent } from './preset/preset.component';
     FixtureSettingsComponent,
     EffectComponent,
     FixturePoolComponent,
-    PresetComponent
+    PresetComponent,
+    MasterDimmerComponent,
+    FixturePropertyDimmerComponent
   ],
   imports: [
     BrowserModule,

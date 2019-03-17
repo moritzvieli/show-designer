@@ -136,8 +136,12 @@ input, select {
 }
 
 /* Sliders */
-.slider-track {
+.slider-horizontal .slider-track {
     height: 2px !important;
+}
+
+.slider-vertical .slider-track {
+    width: 2px !important;
 }
 
 .slider-track, .slider-track-low, .slider-track-high, .slider-selection {

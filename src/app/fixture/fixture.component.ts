@@ -41,6 +41,9 @@ export class FixtureComponent implements OnInit {
     fixtureProperty = new FixtureProperty();
     fixtureProperty.type = FixturePropertyType.colorBlue;
     fixtureMode.fixtureProperties.push(fixtureProperty);
+    fixtureProperty = new FixtureProperty();
+    fixtureProperty.type = FixturePropertyType.dimmer;
+    fixtureMode.fixtureProperties.push(fixtureProperty);
 
     fixtureProperty = new FixtureProperty();
     fixtureProperty.type = FixturePropertyType.pan;

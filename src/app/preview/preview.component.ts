@@ -15,6 +15,7 @@ import { FixtureTemplate, FixtureType } from '../models/fixture-template';
 import { Fixture3d } from './models/fixture-3d';
 import { PreviewService } from '../services/preview.service';
 import { TimelineService } from '../services/timeline.service';
+import { MasterDimmerService } from '../services/master-dimmer.service';
 
 declare var THREEx: any;
 
@@ -51,10 +52,12 @@ export class PreviewComponent implements AfterViewInit {
     private fixtureService: FixtureService,
     private animationService: AnimationService,
     private previewService: PreviewService,
-    private timelineService: TimelineService) {
+    private timelineService: TimelineService,
+    private masterDimmerService: MasterDimmerService) {
 
     this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
       let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+      let mode = this.fixtureService.getModeByUuid(fixture.modeUuid, template);
 
       if (template.type == FixtureType.movingHead) {
         forkJoin(
@@ -62,7 +65,7 @@ export class PreviewComponent implements AfterViewInit {
           this.loadMesh('moving_head_arm'),
           this.loadMesh('moving_head_head')
         ).pipe(map(([socket, arm, head]) => {
-          this.fixtures3d.push(new MovingHead3d(fixture, template, this.scene, socket, arm, head));
+          this.fixtures3d.push(new MovingHead3d(fixture, template, mode, this.scene, socket, arm, head));
         })).subscribe();
       }
     });
@@ -126,13 +129,13 @@ export class PreviewComponent implements AfterViewInit {
 
     for (let fixture3d of this.fixtures3d) {
       // Update the fixture properties
-      fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture.uuid) || []);
+      fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture.uuid) || [], this.masterDimmerService.masterDimmerValue);
 
       // Select the fixture, if required
       fixture3d.isSelected = this.previewService.fixtureIsSelected(fixture3d.fixture.uuid, presets);
     }
 
-    //this.previewService.setUniverseValues(calculatedFixtures);
+    //this.previewService.setUniverseValues(calculatedFixtures, this.masterDimmerService.masterDimmerValue);
 
     // Update the statistics
     this.rendererStats.update(this.renderer);

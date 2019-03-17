@@ -201,6 +201,9 @@ export class PreviewService {
                   case EffectChannel.tilt:
                     effectPropertyValues.push(new FixturePropertyValue(FixturePropertyType.tilt, value));
                     break;
+                  case EffectChannel.dimmer:
+                    effectPropertyValues.push(new FixturePropertyValue(FixturePropertyType.dimmer, value));
+                    break;
                 }
               }
 
@@ -223,7 +226,7 @@ export class PreviewService {
     return calculatedFixtures;
   }
 
-  public setUniverseValues(properties: Map<string, FixturePropertyValue[]>) {
+  public setUniverseValues(properties: Map<string, FixturePropertyValue[]>, masterDimmerValue: number) {
     // Reset all DMX universes
     for (let universe of this.universeService.universes) {
       universe.channelValues = [];
@@ -244,6 +247,8 @@ export class PreviewService {
             // TODO Round the DMX value and set fine property, if available
 
             // TODO Set universe channel fixture.firstChannel + fixturePropertyIndex to property.value
+
+            // TODO apply the master dimmer value to dimmer channels
           }
         }
       }
@@ -251,9 +256,9 @@ export class PreviewService {
   }
 
   public fixtureIsSelected(uuid: string, presets: PresetRegionScene[]): boolean {
-    for(let preset of presets) {
-      for(let fixture of preset.preset.fixtures) {
-        if(fixture.uuid == uuid) {
+    for (let preset of presets) {
+      for (let fixture of preset.preset.fixtures) {
+        if (fixture.uuid == uuid) {
           return true;
         }
       }

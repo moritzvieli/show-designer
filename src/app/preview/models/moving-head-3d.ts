@@ -4,8 +4,12 @@ import { Positioning, Fixture } from 'src/app/models/fixture';
 import { FixtureTemplate } from 'src/app/models/fixture-template';
 import { FixturePropertyValue } from 'src/app/models/fixture-property-value';
 import { FixturePropertyType } from 'src/app/models/fixture-property';
+import { FixtureMode } from 'src/app/models/fixture-mode';
 
 export class MovingHead3d extends Fixture3d {
+
+    private readonly pontLightMaxIntensity: number = 2;
+    private readonly spotLightLightMaxIntensity: number = 10;
 
     private pan: number;
     private tilt: number;
@@ -111,8 +115,8 @@ export class MovingHead3d extends Fixture3d {
         this.spotLightBeam.rotation.x = Math.PI / 2;
     }
 
-    constructor(fixture: Fixture, fixtureTemplate: FixtureTemplate, scene: THREE.scene, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
-        super(fixture, fixtureTemplate);
+    constructor(fixture: Fixture, fixtureTemplate: FixtureTemplate, mode: FixtureMode, scene: THREE.scene, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
+        super(fixture, fixtureTemplate, mode);
 
         this.socket = socket;
         this.arm = arm;
@@ -205,15 +209,15 @@ export class MovingHead3d extends Fixture3d {
         return this.objectGroup;
     }
 
-    public updatePreview(propertyValues: FixturePropertyValue[]): void {
-        super.updatePreview(propertyValues);
+    public updatePreview(propertyValues: FixturePropertyValue[], masterDimmerValue: number): void {
+        super.updatePreview(propertyValues, masterDimmerValue);
 
         // Apply default settings
         this.pan = 0;
         this.tilt = 0;
 
         // Apply the known property values
-        for(let propetryValue of propertyValues) {
+        for (let propetryValue of propertyValues) {
             switch (propetryValue.fixturePropertyType) {
                 case FixturePropertyType.pan: {
                     this.pan = propetryValue.value;
@@ -283,11 +287,18 @@ export class MovingHead3d extends Fixture3d {
         // Apply the colors
         var color = new THREE.Color("rgb(" + this.colorRed + ", " + this.colorGreen + ", " + this.colorBlue + ")");
 
+        this.pointLight.color = color;
+
         this.spotLight.color = color;
         this.spotLightBeam.material.uniforms.glowColor.value = color;
-        // Don't show a black light beam
-        this.spotLightBeam.material.uniforms.opacity.value = Math.max(this.colorRed, this.colorGreen, this.colorBlue) / 255;
-        this.pointLight.color = color;
+
+        // Apply the dimmer value
+        // Take the color into account for the beam (don't show a black beam)
+        let intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue) / 255;
+        this.spotLightBeam.material.uniforms.opacity.value = Math.min(intensityColor, this.dimmer / 255);
+
+        this.spotLight.intensity = this.dimmer * this.spotLightLightMaxIntensity / 255;
+        this.pointLight.intensity = this.dimmer * this.pontLightMaxIntensity / 255;
 
         // this.spotLightBeam.material.uniforms.viewVector.value =
         //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);

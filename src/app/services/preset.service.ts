@@ -69,10 +69,10 @@ export class PresetService {
     }
   }
 
-  deletePropertyValue(preset: Preset, property: FixturePropertyType) {
-    for (let i = 0; i < preset.fixturePropertyValues.length; i++) {
-      if (preset.fixturePropertyValues[i].fixturePropertyType == property) {
-        preset.fixturePropertyValues.splice(i, 1);
+  deletePropertyValue(property: FixturePropertyType) {
+    for (let i = 0; i < this.selectedPreset.fixturePropertyValues.length; i++) {
+      if (this.selectedPreset.fixturePropertyValues[i].fixturePropertyType == property) {
+        this.selectedPreset.fixturePropertyValues.splice(i, 1);
       }
     }
   }
@@ -94,15 +94,23 @@ export class PresetService {
     return 255 * (value - this.roundDmx(value)) / 100;
   }
 
-  setPropertyValue(preset: Preset, property: FixturePropertyType, value: number) {
+  setPropertyValue(property: FixturePropertyType, value: number) {
     // Delete existant properties with this type and set the new value
-    this.deletePropertyValue(preset, property);
+    this.deletePropertyValue(property);
 
     let fixturePropertyValue = new FixturePropertyValue();
     fixturePropertyValue.fixturePropertyType = property;
     fixturePropertyValue.value = value;
 
-    preset.fixturePropertyValues.push(fixturePropertyValue);
+    this.selectedPreset.fixturePropertyValues.push(fixturePropertyValue);
+  }
+
+  getPropertyValue(property: FixturePropertyType) {
+    for(let propertyValue of this.selectedPreset.fixturePropertyValues) {
+      if(propertyValue.fixturePropertyType == property) {
+        return propertyValue.value;
+      }
+    }
   }
 
   selectPreset(index: number) {
