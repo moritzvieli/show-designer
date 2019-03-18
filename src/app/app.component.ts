@@ -4,8 +4,6 @@ import Split from 'split.js';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
-import { SceneService } from './services/scene.service';
-import { FixtureService } from './services/fixture.service';
 
 @Component({
   selector: 'app-root',
@@ -22,8 +20,6 @@ export class AppComponent implements AfterViewInit {
   constructor(
     private translateService: TranslateService,
     private modalService: BsModalService,
-    private sceneService: SceneService,
-    private fixtureService: FixtureService
   ) {
 
     this.translateService.use('en');
@@ -40,7 +36,7 @@ export class AppComponent implements AfterViewInit {
     let gutterSize: number = 12.8;
 
     Split(['#row1', '#row2', '#row3'], {
-      sizes: [50, 31, 19],
+      sizes: [50, 32, 18],
       direction: 'vertical',
       cursor: 'row-resize',
       snapOffset: 0,
@@ -56,7 +52,7 @@ export class AppComponent implements AfterViewInit {
     });
 
     Split(['#properties', '#fixtures', '#masterDimmer'], {
-      sizes: [80, 15, 5],
+      sizes: [78, 16, 6],
       snapOffset: 0,
       gutterSize: gutterSize,
       onDrag: this.onResize.bind(this)

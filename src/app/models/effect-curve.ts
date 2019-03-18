@@ -6,7 +6,7 @@ export class EffectCurve extends Effect {
 
     lengthMillis = 2500;
     phaseMillis = 0;
-    amplitude = 255;
+    amplitude = 100;
     position = 0;
     minValue = 0;
     maxValue = 255;

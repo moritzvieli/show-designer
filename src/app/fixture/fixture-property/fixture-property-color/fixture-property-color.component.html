@@ -1,9 +1,9 @@
-<div class="card border-secondary h-100">
+<div class="card border-secondary h-100" [class.property-deactivated]="!active">
   <div class="card-header">
     <div class="my-auto" style="float: left;">
       <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="active" [ngModel]="active" (ngModelChange)="changeActive($event)">
-        <label class="form-check-label" for="active">Color</label>
+        <input type="checkbox" class="form-check-input" id="propertyColorActive" [ngModel]="active" (ngModelChange)="changeActive($event)">
+        <label class="form-check-label" for="propertyColorActive">Color</label>
       </div>
     </div>
     <div class="pull-right">
@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <div class="card-body h-100" [class.property-deactivated]="!active">
+  <div class="card-body h-100">
 
     <div id="color-picker-container"></div>
 

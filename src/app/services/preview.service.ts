@@ -172,8 +172,6 @@ export class PreviewService {
             for (let fixturePropertyIndex = 0; fixturePropertyIndex < mode.fixtureProperties.length; fixturePropertyIndex++) {
               for (let presetProperty of preset.preset.fixturePropertyValues) {
                 if (mode.fixtureProperties[fixturePropertyIndex].type == presetProperty.fixturePropertyType) {
-                  presetProperty.value = this.presetService.roundDmx(presetProperty.value);
-
                   this.mixPropertyValue(properties, presetProperty, intensityPercentage);
                 }
               }
@@ -182,7 +180,7 @@ export class PreviewService {
             // Match all effect properties of this preset with the fixture properties
             for (let effect of preset.preset.effects) {
               let effectPropertyValues: FixturePropertyValue[] = [];
-              let value = effect.getValueAtMillis(timeMillis);
+              let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
 
               for (let effectChannel of effect.effectChannels) {
                 switch (effectChannel) {

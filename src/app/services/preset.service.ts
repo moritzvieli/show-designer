@@ -77,23 +77,6 @@ export class PresetService {
     }
   }
 
-  roundDmx(value: number): number {
-    if (value < 0) {
-      return 0;
-    }
-
-    if (value > 255) {
-      return 255;
-    }
-
-    return Math.round(value);
-  }
-
-  getDmxFineValue(value: number): number {
-    // Return the fine value for this value
-    return 255 * (value - this.roundDmx(value)) / 100;
-  }
-
   setPropertyValue(property: FixturePropertyType, value: number) {
     // Delete existant properties with this type and set the new value
     this.deletePropertyValue(property);

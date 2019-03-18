@@ -218,6 +218,7 @@ export class PreviewComponent implements AfterViewInit {
 
   private setupControls() {
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableKeys = false;
     this.controls.rotateSpeed = 0.05;
     this.controls.zoomSpeed = 1.2;
     this.controls.enableDamping = true;
