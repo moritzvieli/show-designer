@@ -1,0 +1,18 @@
+{
+    "misc": {
+        "save": "Speichern",
+        "cancel": "Abbrechen",
+        "finish": "Abschliessen",
+        "nav-next": "Weiter",
+        "nav-back": "Zurück"
+    },
+    "loading": {
+        "title": "Laden...",
+        "description": "Bitte warte, bis die App geladen ist." 
+    },
+    "navigation": {
+        "file": "Datei",
+        "settings": "Einstellungen",
+        "help": "Hilfe" 
+    }
+}

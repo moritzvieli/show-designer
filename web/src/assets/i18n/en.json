@@ -1,0 +1,18 @@
+{
+    "misc": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "finish": "Finish",
+        "nav-next": "Next",
+        "nav-back": "Back"
+    },
+    "loading": {
+        "title": "Loading...",
+        "description": "Please wait while the application is being loaded." 
+    },
+    "navigation": {
+        "file": "File",
+        "settings": "Settings",
+        "help": "Help" 
+    }
+}

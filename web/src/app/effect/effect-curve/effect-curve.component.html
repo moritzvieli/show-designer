@@ -1,0 +1,75 @@
+<div class="mr-3" style="float: left">
+  <canvas #curveGrid class="curve-grid" width="200" height="100" viewBox="150 -75 4850 5150" preserveAspectRatio="none"></canvas>
+</div>
+
+<div class="mr-4" style="float: left">
+  <div class="d-flex">
+    <div class="my-auto" style="width: 100px; float: left;">
+      Length
+    </div>
+    <div class="my-auto" style="float: left;">
+      <mv-slider (change)="redraw()" [(value)]="curve.lengthMillis" style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="500"
+        [max]="2500" [step]="1"></mv-slider>
+    </div>
+    <div class="my-auto">
+      <input type="text" class="slider-input" [(ngModel)]="curve.lengthMillis">
+    </div>
+  </div>
+
+  <div class="d-flex">
+    <div class="my-auto" style="width: 100px; float: left;">
+      Amplitude
+    </div>
+    <div class="my-auto" style="float: left;">
+      <mv-slider (change)="redraw()" [(value)]="curve.amplitude" style="width: 80px;" [tooltip]="'hide'" [min]="0" [max]="255"
+        [step]="1"></mv-slider>
+    </div>
+    <div class="my-auto">
+      <input type="text" class="slider-input" [(ngModel)]="curve.amplitude">
+    </div>
+  </div>
+
+  <div class="d-flex">
+    <div class="my-auto" style="width: 100px; float: left;">
+      Position
+    </div>
+    <div class="my-auto" style="float: left;">
+      <mv-slider (change)="redraw()" [(value)]="curve.position" style="width: 80px; height: 18px;" [tooltip]="'hide'" [min]="-255" [max]="255" [step]="1"></mv-slider>
+    </div>
+    <div class="my-auto">
+      <input type="text" class="slider-input" [(ngModel)]="curve.position">
+    </div>
+  </div>
+
+  <div class="d-flex">
+    <div class="my-auto" style="width: 100px; float: left;">
+      Phase
+    </div>
+    <div class="my-auto" style="float: left;">
+      <mv-slider (change)="redraw()" [(value)]="curve.phaseMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'" [min]="-1000" [max]="1000" [step]="1"></mv-slider>
+    </div>
+    <div class="my-auto">
+      <input type="text" class="slider-input" [(ngModel)]="curve.phaseMillis">
+    </div>
+  </div>
+
+  <div class="d-flex">
+    <div class="my-auto" style="width: 100px; float: left;">
+      Chase
+    </div>
+    <div class="my-auto" style="float: left;">
+      <mv-slider (change)="redraw()" [(value)]="curve.phasingMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'" [min]="0"
+        [max]="700" [step]="1"></mv-slider>
+    </div>
+    <div class="my-auto">
+      <input type="text" class="slider-input" [(ngModel)]="curve.phasingMillis">
+    </div>
+  </div>
+</div>
+
+<div class="h-100 p-2" style="overflow-y: scroll; width: 180px; height: 110px !important; background-color: #222; border: 1px solid white;">
+  <div *ngFor="let channel of channels" class="form-check">
+    <input type="checkbox" class="form-check-input" id="channel_{{ curve?.uuid + '_' + channel }}" (change)="toggleChannel($event, channel)">
+    <label class="form-check-label" for="channel_{{ curve?.uuid + '_' + channel }}">{{ channel }}</label>
+  </div>
+</div>
