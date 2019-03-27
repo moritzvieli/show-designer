@@ -26,105 +26,58 @@ export class FixtureComponent implements OnInit {
 
   ngOnInit() {
     // TODO Remove this test part
-    let fixtureMode = new FixtureMode(this.uuidService);
-    fixtureMode.channelCount = 6;
+    // let universe = new Universe(this.uuidService);
+    // this.universeService.universes.push(universe);
 
-    let universe = new Universe(this.uuidService);
-    this.universeService.universes.push(universe);
+    // let defaultValue: FixturePropertyValue;
 
-    let fixtureProperty = new FixtureProperty();
-    fixtureProperty.type = FixturePropertyType.colorRed;
-    fixtureMode.fixtureProperties.push(fixtureProperty);
-    fixtureProperty = new FixtureProperty();
-    fixtureProperty.type = FixturePropertyType.colorGreen;
-    fixtureMode.fixtureProperties.push(fixtureProperty);
-    fixtureProperty = new FixtureProperty();
-    fixtureProperty.type = FixturePropertyType.colorBlue;
-    fixtureMode.fixtureProperties.push(fixtureProperty);
-    fixtureProperty = new FixtureProperty();
-    fixtureProperty.type = FixturePropertyType.dimmer;
-    fixtureMode.fixtureProperties.push(fixtureProperty);
+    // let fixture = new Fixture(this.uuidService);
+    // fixture.fixtureTemplateUuid = this.fixtureService.getTemplates()[0].uuid;
+    // fixture.firstChannel = 1;
+    // fixture.name = 'MH1';
+    // fixture.modeUuid = fixtureMode.uuid;
+    // fixture.universeUuid = universe.uuid;
+    // defaultValue = new FixturePropertyValue();
+    // defaultValue.fixturePropertyType = FixturePropertyType.pan;
+    // defaultValue.value = 127;
+    // fixture.fixturePropertyValues.push(defaultValue);
+    // defaultValue = new FixturePropertyValue();
+    // defaultValue.fixturePropertyType = FixturePropertyType.tilt;
+    // defaultValue.value = 127;
+    // fixture.fixturePropertyValues.push(defaultValue);
+    // this.fixtureService.addFixture(fixture);
 
-    fixtureProperty = new FixtureProperty();
-    fixtureProperty.type = FixturePropertyType.pan;
-    fixtureMode.fixtureProperties.push(fixtureProperty);
-    fixtureProperty = new FixtureProperty();
-    fixtureProperty.type = FixturePropertyType.tilt;
-    fixtureMode.fixtureProperties.push(fixtureProperty);
+    // fixture = new Fixture(this.uuidService);
+    // fixture.fixtureTemplateUuid = this.fixtureService.getTemplates()[0].uuid;
+    // fixture.firstChannel = 7;
+    // fixture.name = 'MH2';
+    // fixture.modeUuid = fixtureMode.uuid;
+    // fixture.universeUuid = universe.uuid;
+    // defaultValue = new FixturePropertyValue();
+    // defaultValue.fixturePropertyType = FixturePropertyType.pan;
+    // defaultValue.value = 127;
+    // fixture.fixturePropertyValues.push(defaultValue);
+    // defaultValue = new FixturePropertyValue();
+    // defaultValue.fixturePropertyType = FixturePropertyType.tilt;
+    // defaultValue.value = 127;
+    // fixture.fixturePropertyValues.push(defaultValue);
+    // this.fixtureService.addFixture(fixture);
 
-    fixtureProperty = new FixtureProperty();
-    fixtureProperty.type = FixturePropertyType.custom;
-    fixtureMode.fixtureProperties.push(fixtureProperty);
-
-    let fixturePropertyRange = new FixturePropertyRange(this.uuidService);
-    fixturePropertyRange.name = 'Closed';
-    fixturePropertyRange.channelFrom = 0;
-    fixturePropertyRange.channelTo = 99;
-    fixtureProperty.fixturePropertyRanges.push(fixturePropertyRange);
-
-    fixturePropertyRange = new FixturePropertyRange(this.uuidService);
-    fixturePropertyRange.name = 'Strobe';
-    fixturePropertyRange.channelFrom = 100;
-    fixturePropertyRange.channelTo = 255;
-    fixturePropertyRange.useSlider = true;
-    fixtureProperty.fixturePropertyRanges.push(fixturePropertyRange);
-
-    let fixtureTemplate = new FixtureTemplate(this.uuidService);
-    fixtureTemplate.type = FixtureType.movingHead;
-    fixtureTemplate.manufacturer = 'Stairville';
-    fixtureTemplate.name = 'MH2018';
-    fixtureTemplate.fixtureModes.push(fixtureMode);
-    this.fixtureService.fixtureTemplates.push(fixtureTemplate);
-
-    let defaultValue: FixturePropertyValue;
-
-    let fixture = new Fixture(this.uuidService);
-    fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
-    fixture.firstChannel = 1;
-    fixture.name = 'MH1';
-    fixture.modeUuid = fixtureMode.uuid;
-    fixture.universeUuid = universe.uuid;
-    defaultValue = new FixturePropertyValue();
-    defaultValue.fixturePropertyType = FixturePropertyType.pan;
-    defaultValue.value = 127;
-    fixture.fixturePropertyValues.push(defaultValue);
-    defaultValue = new FixturePropertyValue();
-    defaultValue.fixturePropertyType = FixturePropertyType.tilt;
-    defaultValue.value = 127;
-    fixture.fixturePropertyValues.push(defaultValue);
-    this.fixtureService.addFixture(fixture);
-
-    fixture = new Fixture(this.uuidService);
-    fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
-    fixture.firstChannel = 7;
-    fixture.name = 'MH2';
-    fixture.modeUuid = fixtureMode.uuid;
-    fixture.universeUuid = universe.uuid;
-    defaultValue = new FixturePropertyValue();
-    defaultValue.fixturePropertyType = FixturePropertyType.pan;
-    defaultValue.value = 127;
-    fixture.fixturePropertyValues.push(defaultValue);
-    defaultValue = new FixturePropertyValue();
-    defaultValue.fixturePropertyType = FixturePropertyType.tilt;
-    defaultValue.value = 127;
-    fixture.fixturePropertyValues.push(defaultValue);
-    this.fixtureService.addFixture(fixture);
-
-    fixture = new Fixture(this.uuidService);
-    fixture.fixtureTemplateUuid = fixtureTemplate.uuid;
-    fixture.firstChannel = 13;
-    fixture.name = 'MH3';
-    fixture.modeUuid = fixtureMode.uuid;
-    fixture.universeUuid = universe.uuid;
-    defaultValue = new FixturePropertyValue();
-    defaultValue.fixturePropertyType = FixturePropertyType.pan;
-    defaultValue.value = 127;
-    fixture.fixturePropertyValues.push(defaultValue);
-    defaultValue = new FixturePropertyValue();
-    defaultValue.fixturePropertyType = FixturePropertyType.tilt;
-    defaultValue.value = 127;
-    fixture.fixturePropertyValues.push(defaultValue);
-    this.fixtureService.addFixture(fixture);
+    // fixture = new Fixture(this.uuidService);
+    // fixture.fixtureTemplateUuid = this.fixtureService.getTemplates()[0].uuid;
+    // fixture.firstChannel = 13;
+    // fixture.name = 'MH3';
+    // fixture.modeUuid = fixtureMode.uuid;
+    // fixture.universeUuid = universe.uuid;
+    // defaultValue = new FixturePropertyValue();
+    // defaultValue.fixturePropertyType = FixturePropertyType.pan;
+    // defaultValue.value = 127;
+    // fixture.fixturePropertyValues.push(defaultValue);
+    // defaultValue = new FixturePropertyValue();
+    // defaultValue.fixturePropertyType = FixturePropertyType.tilt;
+    // defaultValue.value = 127;
+    // fixture.fixturePropertyValues.push(defaultValue);
+    // this.fixtureService.addFixture(fixture);
   }
 
   deleteFixture() {

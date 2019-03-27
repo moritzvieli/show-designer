@@ -10,9 +10,11 @@ CREATE TABLE manufacturer (
 );
 
 CREATE TABLE fixture (
+    uuid VARCHAR(200) NOT NULL,
     name VARCHAR(200) NOT NULL,
     manufacturer_short_name VARCHAR(200) NOT NULL,
+    main_category VARCHAR(200) NOT NULL,
     object TEXT,
-    PRIMARY KEY(name, manufacturer_short_name),
+    PRIMARY KEY(uuid),
     FOREIGN KEY(manufacturer_short_name) REFERENCES manufacturer(short_name)
 );

@@ -26,6 +26,7 @@ import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 import { PresetComponent } from './preset/preset.component';
 import { MasterDimmerComponent } from './master-dimmer/master-dimmer.component';
 import { FixturePropertyDimmerComponent } from './fixture/fixture-property/fixture-property-dimmer/fixture-property-dimmer.component';
+import { AppHttpInterceptor } from './app-http-interceptor/app-http-interceptor';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,14 @@ import { FixturePropertyDimmerComponent } from './fixture/fixture-property/fixtu
   entryComponents: [
     FixturePoolComponent
   ],
-  providers: [],
+  providers: [
+    AppHttpInterceptor,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AppHttpInterceptor,
+      multi: true
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

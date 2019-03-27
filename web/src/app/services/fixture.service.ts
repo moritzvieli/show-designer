@@ -1,20 +1,22 @@
 import { Fixture } from '../models/fixture';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Observable, of, forkJoin } from 'rxjs';
 import { FixtureTemplate } from '../models/fixture-template';
 import { FixtureMode } from '../models/fixture-mode';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FixtureService {
 
-  fixtureTemplates: FixtureTemplate[] = [];
+  private fixtureTemplates: FixtureTemplate[] = [];
 
   fixtures: Fixture[] = [];
   fixtureAdded: Subject<Fixture> = new Subject<Fixture>();
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   addFixture(fixture: Fixture) {
     this.fixtures.push(fixture);
@@ -37,12 +39,49 @@ export class FixtureService {
     }
   }
 
-  getTemplateByUuid(uuid: string): FixtureTemplate {
-    for (let template of this.fixtureTemplates) {
-      if (template.uuid = uuid) {
-        return template;
+  private getCachedTemplate(uuid: string): FixtureTemplate {
+    for (let fixtureTemplate of this.fixtureTemplates) {
+      if (fixtureTemplate.uuid == uuid) {
+        return fixtureTemplate;
       }
     }
+  }
+
+  getSearchTemplates(): Observable<FixtureTemplate[]> {
+    return this.http.get('fixture-search').pipe(map((response: Array<Object>) => {
+      let searchTemplates: FixtureTemplate[] = [];
+
+      for (let template of response) {
+        searchTemplates.push(new FixtureTemplate(template));
+      }
+
+      return searchTemplates;
+    }));
+  }
+
+  getTemplate(uuid: string): Observable<FixtureTemplate> {
+    let existingTemplate = this.getCachedTemplate(uuid);
+
+    if (existingTemplate) {
+      return of(existingTemplate);
+    }
+
+    // Get the metadata and the template
+    return forkJoin(
+      this.http.get('fixture-search?uuid=' + uuid),
+      this.http.get('fixture?uuid=' + uuid)
+    ).pipe(map(result => {
+      let existingTemplate = this.getCachedTemplate(uuid);
+
+      if (existingTemplate) {
+        return existingTemplate;
+      }
+console.log(result);
+      // let fixtureTemplate = new FixtureTemplate(uuid, result[0].manufacturerShortName);
+      // this.fixtureTemplates.push(fixtureTemplate);
+
+      //return fixtureTemplate;
+    }));
   }
 
 }

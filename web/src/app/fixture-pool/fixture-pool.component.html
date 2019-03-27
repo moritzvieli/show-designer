@@ -1,14 +1,123 @@
 <div class="modal-header">
-  <h4 class="modal-title pull-left">{{title}}</h4>
+  <h4 class="modal-title pull-left">{{ 'fixture-pool.title' | translate }}</h4>
   <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
-  <!-- <ul *ngIf="list.length">
-    <li *ngFor="let item of list">{{item}}</li>
-  </ul> -->
+  <div class="row">
+    <div class="col-6">
+      <!-- Create a new template -->
+      <a class="btn btn-primary mb-3 btn btn-primary btn-block" href="#" role="button" (click)="createSet(); false">
+        <i class="fa fa-plus" aria-hidden="true"></i> {{ 'fixture-pool.create-template' | translate }}
+      </a>
+
+      <!-- Search for template -->
+      <input type="text" class="form-control input-block mb-3" id="searchSet"
+        placeholder="{{ 'fixture-pool.search-templates' | translate }}" (input)="filterTemplates($event.target.value)">
+
+      <!-- Templates -->
+      <div class="card border-secondary" style="height: 200px;">
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            <a *ngIf="loadingTemplates"
+              class="list-group-item list-group-item-action flex-column align-items-start d-flex">
+              <p class="mb-0 mx-auto">
+                <i class="fa fa-spinner fa-pulse fa-fw"></i>
+              </p>
+            </a>
+
+            <div class="list-group-item" *ngFor="let template of filteredTemplates">
+              <div class="row">
+                <div class="col-10 col-auto my-auto">
+                  <p class="mb-0">{{ template.manufacturerName }} - {{ template.name }}</p>
+                </div>
+                <div class="col-2 my-auto">
+                  <a class="btn btn-primary btn-sm float-right" href="#" role="button"
+                    (click)="addFixture(template); false">
+                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <!-- Fixtures -->
+      <div class="card border-secondary" style="height: 300px;">
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            <div class="list-group-item" *ngFor="let template of filteredTemplates">
+              <div class="row">
+                <div class="col-10 col-auto my-auto">
+                  <p class="mb-0">{{ template.manufacturerName }} - {{ template.name }}</p>
+                </div>
+                <div class="col-2 my-auto">
+                  <a class="btn btn-primary btn-sm float-right" href="#" role="button"
+                    (click)="addFixture(template); false">
+                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col">
+      <!-- Tab navigation -->
+      <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="compositions-tab" data-toggle="tab" href="#settings" role="tab">
+            <i class="fa fa-cog" aria-hidden="true"></i> {{ 'fixture-pool.settings' | translate }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="sets-tab" data-toggle="tab" href="#dmx" role="tab">
+            <i class="icon-ola" aria-hidden="true"></i> {{ 'fixture-pool.dmx' | translate }}
+          </a>
+        </li>
+      </ul>
+
+      <!-- Tab content -->
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane show active" id="settings" role="tabpanel">
+          <!-- TODO -->
+        </div>
+        <div class="tab-pane" id="dmx" role="tabpanel">
+
+          <div class="form-group row">
+            <label class="col-lg-3 col-form-label">{{ 'settings.midi-device-in' | translate }}</label>
+            <div class="col-lg-9 d-flex">
+              <!-- <select class="custom-select" [ngModel]="settings?.midiInDevice?.id"
+            (ngModelChange)="settings.midiInDevice = $event">
+            <option *ngFor="let midiDevice of midiInDevices" [ngValue]="midiDevice.id">{{ midiDevice.name }}</option>
+          </select> -->
+              <select class="custom-select">
+                <option>Universe 1</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- DMX mapping -->
+          <div>
+            <div *ngFor="let channel of dmxChannels; let i = index;" class="dmx-channel"
+              [class.dmx-channel-occupied]="channelOccupied(i)"
+              [class.dmx-channel-occupied-start]="channelOccupiedStart(i)"
+              [class.dmx-channel-occupied-end]="channelOccupiedEnd(i)">
+              <div class="m-auto" style="font-size: 11px;"><small>{{ (i + 1) }}</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">{{closeBtnName}}</button>
+  <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">{{ 'misc.ok' | translate }}</button>
 </div>

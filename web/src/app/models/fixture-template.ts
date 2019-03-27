@@ -1,4 +1,3 @@
-import { UuidService } from '../services/uuid.service';
 import { FixtureMode } from './fixture-mode';
 
 export enum FixtureType {
@@ -30,9 +29,12 @@ export enum BeamPositionType {
 export class FixtureTemplate {
 
     uuid: string;
-    type: FixtureType;
-    manufacturer: string;
     name: string;
+    manufacturerShortName: string;
+    manufacturerName: string;
+    categories: string[];
+
+    shortName: string;
     beamType: BeamType = BeamType.spot;
     beamAngleDegrees: number = 14;
     beamPositionType: BeamPositionType = BeamPositionType.single;
@@ -48,10 +50,18 @@ export class FixtureTemplate {
     // All available fixture modes
     fixtureModes: FixtureMode[] = [];
 
-    constructor(private uuidService: UuidService) {
-        if (this.uuidService) {
-            this.uuid = this.uuidService.getUuid();
+    constructor(metaData: any, data?: any) {
+        this.uuid = metaData.uuid;
+        this.name = metaData.name;
+        this.manufacturerName = metaData.manufacturerName;
+        this.manufacturerShortName = metaData.manufacturerShortName;
+
+        if(!data) {
+        	return;
         }
+
+        this.categories = data.categories || [];
+
     }
 
 }

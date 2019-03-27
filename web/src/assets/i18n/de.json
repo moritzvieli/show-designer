@@ -4,7 +4,8 @@
         "cancel": "Abbrechen",
         "finish": "Abschliessen",
         "nav-next": "Weiter",
-        "nav-back": "Zurück"
+        "nav-back": "Zurück",
+        "ok": "OK"
     },
     "loading": {
         "title": "Laden...",
@@ -14,5 +15,12 @@
         "file": "Datei",
         "settings": "Einstellungen",
         "help": "Hilfe" 
+    },
+    "fixture-pool": {
+        "title": "Fixture Pool",
+        "create-template": "Vorlage erstellen",
+        "search-templates": "Vorlagen suchen",
+        "settings": "Einstellungen",
+        "dmx": "DMX Übersicht"
     }
 }

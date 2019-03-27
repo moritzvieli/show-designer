@@ -70,7 +70,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   openFixturePool() {
-    let bsModalRef = this.modalService.show(FixturePoolComponent, { class: 'modal-lg' });
+    let bsModalRef = this.modalService.show(FixturePoolComponent, { class: 'modal-full' });
   }
 
 }

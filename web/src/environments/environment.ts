@@ -3,7 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  name: "dev",
+
+  // Local backend
+  localBackend: "https://rocketshow.net/show-designer",
+
+  debug: true
 };
 
 /*
