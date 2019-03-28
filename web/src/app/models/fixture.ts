@@ -1,5 +1,4 @@
 import { UuidService } from '../services/uuid.service';
-import { FixturePropertyValue } from './fixture-property-value';
 import { FixtureTemplate } from './fixture-template';
 
 export enum Positioning {
@@ -17,11 +16,8 @@ export class Fixture {
     name: string;
     dmxUniverseUuid: string;
     dmxFirstChannel: number = 5;
-    modeName: string;
+    modeShortName: string;
     positioning: Positioning = Positioning.topFront;
-
-    // Default channel values
-    fixturePropertyValues: FixturePropertyValue[] = [];
 
     // Only relevant when positioning = manual
     positionX: number = 0;
@@ -35,6 +31,10 @@ export class Fixture {
 
         this.fixtureTemplateUuid = template.uuid;
         this.name = template.manufacturerName + ' - '  + template.name;
+
+        if(template.modes && template.modes.length > 0) {
+            this.modeShortName = template.modes[0].shortName;
+        }
     }
 
 }

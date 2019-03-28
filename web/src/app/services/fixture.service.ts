@@ -5,6 +5,7 @@ import { FixtureTemplate } from '../models/fixture-template';
 import { FixtureMode } from '../models/fixture-mode';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { FixtureChannel } from '../models/fixture-channel';
 
 @Injectable({
   providedIn: 'root'
@@ -53,10 +54,10 @@ export class FixtureService {
 
   loadTemplateByUuid(uuid: string): Observable<void> {
     let loadedTemplate = this.getTemplateByUuid(uuid);
-    
-    if(loadedTemplate) {
+
+    if (loadedTemplate) {
       // This template is already loaded
-      return;
+      return of(undefined);
     }
 
     // Load the metadata and the template
@@ -71,6 +72,28 @@ export class FixtureService {
 
   getTemplateByFixture(fixture: Fixture) {
     return this.getTemplateByUuid(fixture.fixtureTemplateUuid);
+  }
+
+  getChannelsByFixture(fixture: Fixture): FixtureChannel[] {
+    let template = this.getTemplateByFixture(fixture);
+
+    for (let mode of template.modes) {
+      if (mode.shortName == fixture.modeShortName) {
+        let channels: FixtureChannel[] = [];
+
+        for (let modeChannel of mode.channels) {
+          for (let availableChannel in template.availableChannels) {
+            if (modeChannel == availableChannel) {
+              channels.push(template.availableChannels[availableChannel]);
+            }
+          }
+        }
+
+        return channels;
+      }
+    }
+
+    return [];
   }
 
 }

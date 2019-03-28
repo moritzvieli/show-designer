@@ -2,9 +2,8 @@ import { Fixture3d } from './fixture-3d';
 import * as THREE from 'three';
 import { Positioning, Fixture } from 'src/app/models/fixture';
 import { FixtureTemplate } from 'src/app/models/fixture-template';
-import { FixturePropertyValue } from 'src/app/models/fixture-property-value';
-import { FixturePropertyType } from 'src/app/models/fixture-property';
-import { FixtureMode } from 'src/app/models/fixture-mode';
+import { FixtureCapabilityValue } from 'src/app/models/fixture-capability-value';
+import { FixtureCapabilityType } from 'src/app/models/fixture-capability';
 
 export class MovingHead3d extends Fixture3d {
 
@@ -115,8 +114,8 @@ export class MovingHead3d extends Fixture3d {
         this.spotLightBeam.rotation.x = Math.PI / 2;
     }
 
-    constructor(fixture: Fixture, fixtureTemplate: FixtureTemplate, mode: FixtureMode, scene: THREE.scene, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
-        super(fixture, fixtureTemplate, mode);
+    constructor(fixtureService, fixture: Fixture, scene: THREE.scene, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
+        super(fixtureService, fixture);
 
         this.socket = socket;
         this.arm = arm;
@@ -209,25 +208,24 @@ export class MovingHead3d extends Fixture3d {
         return this.objectGroup;
     }
 
-    public updatePreview(propertyValues: FixturePropertyValue[], masterDimmerValue: number): void {
-        super.updatePreview(propertyValues, masterDimmerValue);
+    public updatePreview(capabilityValues: FixtureCapabilityValue[], masterDimmerValue: number): void {
+        super.updatePreview(capabilityValues, masterDimmerValue);
 
         // Apply default settings
         this.pan = 0;
         this.tilt = 0;
 
         // Apply the known property values
-        for (let propetryValue of propertyValues) {
-            switch (propetryValue.fixturePropertyType) {
-                case FixturePropertyType.pan: {
-                    this.pan = propetryValue.value;
+        for (let capabilityValue of capabilityValues) {
+            switch (capabilityValue.type) {
+                case FixtureCapabilityType.Pan: {
+                    this.pan = capabilityValue.value;
                     break;
                 }
-                case FixturePropertyType.tilt: {
-                    this.tilt = propetryValue.value;
+                case FixtureCapabilityType.Tilt: {
+                    this.tilt = capabilityValue.value;
                     break;
                 }
-                // TODO Apply pan/tilt fine values as well
             }
         }
 

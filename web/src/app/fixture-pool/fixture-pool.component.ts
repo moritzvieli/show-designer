@@ -59,11 +59,25 @@ export class FixturePoolComponent implements OnInit {
     }
   }
 
+  private getNextFreeDmxChannel(): number {
+    let minDmxChannel = 1;
+
+    for(let fixture of this.fixtureService.fixtures) {
+      if(fixture.dmxFirstChannel + this.fixtureService.getChannelsByFixture(fixture).length > minDmxChannel) {
+        minDmxChannel = fixture.dmxFirstChannel + this.fixtureService.getChannelsByFixture(fixture).length;
+      }
+    }
+
+    return minDmxChannel;
+  }
+
   addFixture(template: FixtureTemplate) {
-    // Load the template details, if not already done
+    // Load the template details, if not already done. There is only a
+    // minimal template passed from the search.
     this.fixtureService.loadTemplateByUuid(template.uuid).subscribe(() => {
-      let fixture = new Fixture(this.uuidService, template);
-      this.fixtureService.fixtures.push(fixture);
+      let fixture = new Fixture(this.uuidService, this.fixtureService.getTemplateByUuid(template.uuid));
+      fixture.dmxFirstChannel = this.getNextFreeDmxChannel();
+      this.fixtureService.addFixture(fixture);
       this.selectedFixture = fixture;
     });
   }

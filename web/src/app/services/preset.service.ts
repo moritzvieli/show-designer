@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Preset } from '../models/preset';
 import { Fixture } from '../models/fixture';
-import { FixturePropertyType } from '../models/fixture-property';
-import { FixturePropertyValue } from '../models/fixture-property-value';
 import { EffectService } from './effect.service';
 import { UuidService } from './uuid.service';
 import { Subject } from 'rxjs';
+import { FixtureCapabilityType } from '../models/fixture-capability';
+import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 
 @Injectable({
   providedIn: 'root'
@@ -69,29 +69,41 @@ export class PresetService {
     }
   }
 
-  deletePropertyValue(property: FixturePropertyType) {
-    for (let i = 0; i < this.selectedPreset.fixturePropertyValues.length; i++) {
-      if (this.selectedPreset.fixturePropertyValues[i].fixturePropertyType == property) {
-        this.selectedPreset.fixturePropertyValues.splice(i, 1);
+  private capabilityValueMatchesTypeAndOptions(capabilityValue: FixtureCapabilityValue, capabilityType: FixtureCapabilityType, options: any = {}) {
+    if(capabilityValue.type == capabilityType 
+      && (!options.color || capabilityValue.color == options.color)) {
+
+      return true;
+    }
+
+    return false;
+  }
+
+  deleteCapabilityValue(capabilityType: FixtureCapabilityType, options: any = {}) {
+    for (let i = 0; i < this.selectedPreset.capabilityValues.length; i++) {
+      if (this.capabilityValueMatchesTypeAndOptions(this.selectedPreset.capabilityValues[i], capabilityType, options)) {
+        this.selectedPreset.capabilityValues.splice(i, 1);
+        return;
       }
     }
   }
 
-  setPropertyValue(property: FixturePropertyType, value: number) {
+  setCapabilityValue(capabilityType: FixtureCapabilityType, value: number, options: any = {}) {
     // Delete existant properties with this type and set the new value
-    this.deletePropertyValue(property);
+    this.deleteCapabilityValue(capabilityType, options);
 
-    let fixturePropertyValue = new FixturePropertyValue();
-    fixturePropertyValue.fixturePropertyType = property;
-    fixturePropertyValue.value = value;
+    let fixtureCapabilityValue = new FixtureCapabilityValue();
+    fixtureCapabilityValue.type = capabilityType;
+    fixtureCapabilityValue.color = options.color;
+    fixtureCapabilityValue.value = value;
 
-    this.selectedPreset.fixturePropertyValues.push(fixturePropertyValue);
+    this.selectedPreset.capabilityValues.push(fixtureCapabilityValue);
   }
 
-  getPropertyValue(property: FixturePropertyType) {
-    for(let propertyValue of this.selectedPreset.fixturePropertyValues) {
-      if(propertyValue.fixturePropertyType == property) {
-        return propertyValue.value;
+  getCapabilityValue(capabilityType: FixtureCapabilityType, options: any = {}) {
+    for (let capabilityValue of this.selectedPreset.capabilityValues) {
+      if (this.capabilityValueMatchesTypeAndOptions(capabilityValue, capabilityType, options)) {
+        return capabilityValue.value;
       }
     }
   }

@@ -7,7 +7,7 @@ export const environment = {
   name: "dev",
 
   // Local backend
-  localBackend: "https://rocketshow.net/show-designer",
+  localBackend: "https://rocketshow.net/designer",
 
   debug: true
 };

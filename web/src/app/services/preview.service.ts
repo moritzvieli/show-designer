@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Universe } from '../models/universe';
-import { FixturePropertyValue } from '../models/fixture-property-value';
-import { FixturePropertyType } from '../models/fixture-property';
 import { Fixture } from '../models/fixture';
 import { PresetService } from './preset.service';
 import { FixtureService } from './fixture.service';
@@ -11,6 +9,9 @@ import { UniverseService } from './universe.service';
 import { FixtureTemplate } from '../models/fixture-template';
 import { FixtureMode } from '../models/fixture-mode';
 import { EffectChannel } from '../models/effect';
+import { FixtureCapabilityValue } from '../models/fixture-capability-value';
+import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture-capability';
+import { Preset } from '../models/preset';
 
 @Injectable({
   providedIn: 'root'
@@ -31,8 +32,8 @@ export class PreviewService {
     for (let i = 0; i < fixtureIndex; i++) {
       let calculatedFixture = fixtures[i];
 
-      if (calculatedFixture.universeUuid == fixtures[fixtureIndex].universeUuid
-        && calculatedFixture.firstChannel == fixtures[fixtureIndex].firstChannel) {
+      if (calculatedFixture.dmxUniverseUuid == fixtures[fixtureIndex].dmxUniverseUuid
+        && calculatedFixture.dmxFirstChannel == fixtures[fixtureIndex].dmxFirstChannel) {
 
         return calculatedFixture;
       }
@@ -59,8 +60,14 @@ export class PreviewService {
         let scenes = this.sceneService.selectedScenes;
 
         for (let sceneIndex = scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
-          for (let presetIndex = scenes[sceneIndex].presetUuids.length - 1; presetIndex >= 0; presetIndex--) {
-            presets.push(new PresetRegionScene(this.presetService.getPresetByUuid(scenes[sceneIndex].presetUuids[presetIndex]), undefined, scenes[sceneIndex]));
+          for (let presetIndex = this.presetService.presets.length - 1; presetIndex >= 0; presetIndex--) {
+            for (let presetUuid of scenes[sceneIndex].presetUuids) {
+              // Loop over the presets in the preset service to retain the preset order
+              if (presetUuid == this.presetService.presets[presetIndex].uuid) {
+                presets.push(new PresetRegionScene(this.presetService.presets[presetIndex], undefined, scenes[sceneIndex]));
+                break;
+              }
+            }
           }
         }
       }
@@ -69,17 +76,27 @@ export class PreviewService {
     return presets;
   }
 
-  private mixPropertyValue(existingProperties: FixturePropertyValue[], propertyValue: FixturePropertyValue, intensityPercentage: number) {
-    let newValue: number = propertyValue.value;
+  private capabilityValuesEqual(capability1: FixtureCapabilityValue, capbability2: FixtureCapabilityValue) {
+    if (capability1.type == capbability2.type
+      && (!capability1.color || capbability2.color == capability1.color)) {
+
+      return true;
+    }
+
+    return false;
+  }
+
+  private mixCapabilityValue(existingCapabilityValues: FixtureCapabilityValue[], capabilityValue: FixtureCapabilityValue, intensityPercentage: number) {
+    let newValue: number = capabilityValue.value;
     let existingValue: number = 0;
 
     if (intensityPercentage < 1) {
       // We need to mix a possibly existing value (or the default value 0) with the new value (fading)
 
       // Get the existant value for this property
-      for (let existingPropertyValue of existingProperties) {
-        if (existingPropertyValue.fixturePropertyType == propertyValue.fixturePropertyType) {
-          existingValue = existingPropertyValue.value;
+      for (let existingCapabilityValue of existingCapabilityValues) {
+        if (this.capabilityValuesEqual(existingCapabilityValue, capabilityValue)) {
+          existingValue = existingCapabilityValue.value;
           break;
         }
       }
@@ -89,40 +106,78 @@ export class PreviewService {
     }
 
     // Remove the existant value, if available
-    for (let i = 0; i < existingProperties.length; i++) {
-      if (existingProperties[i].fixturePropertyType == propertyValue.fixturePropertyType) {
-        existingProperties.splice(i, 1);
+    for (let i = 0; i < existingCapabilityValues.length; i++) {
+      if (this.capabilityValuesEqual(existingCapabilityValues[i], capabilityValue)) {
+        existingCapabilityValues.splice(i, 1);
         break;
       }
     }
 
     // Add the new value
-    existingProperties.push(new FixturePropertyValue(propertyValue.fixturePropertyType, newValue));
+    existingCapabilityValues.push(new FixtureCapabilityValue(capabilityValue.type, newValue, { color: capabilityValue.color }));
   }
 
-  public getFixturePropertyValues(timeMillis: number, presets: PresetRegionScene[]): Map<string, FixturePropertyValue[]> {
-    // Loop over all relevant presets and calc the property values from the presets (properties and effects)
-    let calculatedFixtures = new Map<string, FixturePropertyValue[]>();
+  // Get the fixture index inside the passed preset (used for chasing)
+  private getFixtureIndex(preset: Preset, fixtureUuid: string): number {
+    let index = 0;
+
+    // Loop over the global fixtures to retain the order
+    for (let fixture of this.fixtureService.fixtures) {
+      for (let presetFixture of preset.fixtures) {
+        if (presetFixture.uuid == fixture.uuid) {
+          if(fixture.uuid == fixtureUuid) {
+            return index;
+          }
+
+          index++;
+          break;
+        }
+      }
+    }
+
+    // Not found in the preset
+    return undefined;
+  }
+
+  public getFixturePropertyValues(timeMillis: number, presets: PresetRegionScene[]): Map<string, FixtureCapabilityValue[]> {
+    // Loop over all relevant presets and calc the property values from the presets (capabilities and effects)
+    let calculatedFixtures = new Map<string, FixtureCapabilityValue[]>();
 
     for (let fixtureIndex = 0; fixtureIndex < this.fixtureService.fixtures.length; fixtureIndex++) {
       let fixture = this.fixtureService.fixtures[fixtureIndex];
 
       // Only relevant for the 3d-preview
-      // All properties of the current fixture
-      let properties: FixturePropertyValue[] = [];
+      // All capabilities of the current fixture
+      let capabilities: FixtureCapabilityValue[] = [];
 
       let alreadyCalculatedFixture = this.alreadyCalculatedFixture(this.fixtureService.fixtures, fixtureIndex);
 
       if (alreadyCalculatedFixture) {
         // Only relevant for the preview --> reuse all calculated values
-        properties = Object.assign([], calculatedFixtures.get(alreadyCalculatedFixture.uuid));
+        capabilities = Object.assign([], calculatedFixtures.get(alreadyCalculatedFixture.uuid));
       } else {
+        let channels = this.fixtureService.getChannelsByFixture(fixture);
+
         // Apply the fixture default channels
-        properties = Object.assign([], fixture.fixturePropertyValues);
+        for (let channel of channels) {
+          if (channel.defaultValue) {
+            let type = channel.capability.type;
+            let value = 0;
+
+            if (channel.defaultValue.endsWith('%')) {
+              // Percentage value
+              let percentage = Number.parseInt(channel.defaultValue.replace('%', ''));
+              value = 255 / 100 * percentage;
+            } else {
+              // DMX value
+              value = Number.parseInt(channel.defaultValue);
+            }
+
+            this.mixCapabilityValue(capabilities, new FixtureCapabilityValue(type, value, { color: channel.capability.color }), 1);
+          }
+        }
 
         for (let preset of presets) {
-          let fixtureIndex: number = undefined;
-
           // When fading is in progress (on preset or scene-level), the current preset does not
           // fully cover underlying values.
           // -> 0 = no covering at all, 1 = fully cover (no fading)
@@ -156,59 +211,52 @@ export class PreviewService {
           }
 
           // Search for this fixture in the preset and get it's preset-specific index (for chasing effects)
-          for (let i = 0; i < preset.preset.fixtures.length; i++) {
-            if (preset.preset.fixtures[i].uuid == fixture.uuid) {
-              fixtureIndex = i;
-              break;
-            }
-          }
+          let fixtureIndex = this.getFixtureIndex(preset.preset, fixture.uuid);
 
           if (fixtureIndex >= 0) {
             // This fixture is also in the preset
-            let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
-            let mode: FixtureMode = this.fixtureService.getModeByUuid(fixture.modeUuid, template);
 
-            // Match all property values in this preset with the fixture properties
-            for (let fixturePropertyIndex = 0; fixturePropertyIndex < mode.fixtureProperties.length; fixturePropertyIndex++) {
-              for (let presetProperty of preset.preset.fixturePropertyValues) {
-                if (mode.fixtureProperties[fixturePropertyIndex].type == presetProperty.fixturePropertyType) {
-                  this.mixPropertyValue(properties, presetProperty, intensityPercentage);
+            // Match all capability values in this preset with the fixture capabilities
+            for (let fixtureCapabilityIndex = 0; fixtureCapabilityIndex < channels.length; fixtureCapabilityIndex++) {
+              for (let presetCapability of preset.preset.capabilityValues) {
+                if (channels[fixtureCapabilityIndex].capability.type == presetCapability.type) {
+                  this.mixCapabilityValue(capabilities, presetCapability, intensityPercentage);
                 }
               }
             }
 
-            // Match all effect properties of this preset with the fixture properties
+            // Match all effect capabilities of this preset with the fixture capabilities
             for (let effect of preset.preset.effects) {
-              let effectPropertyValues: FixturePropertyValue[] = [];
+              let effectCapabilityValues: FixtureCapabilityValue[] = [];
               let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
 
               for (let effectChannel of effect.effectChannels) {
                 switch (effectChannel) {
-                  case EffectChannel.colorRed:
-                    effectPropertyValues.push(new FixturePropertyValue(FixturePropertyType.colorRed, value));
-                    break;
-                  case EffectChannel.colorGreen:
-                    effectPropertyValues.push(new FixturePropertyValue(FixturePropertyType.colorGreen, value));
-                    break;
-                  case EffectChannel.colorBlue:
-                    effectPropertyValues.push(new FixturePropertyValue(FixturePropertyType.colorBlue, value));
+                  case EffectChannel.dimmer:
+                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.Intensity, value));
                     break;
                   case EffectChannel.pan:
-                    effectPropertyValues.push(new FixturePropertyValue(FixturePropertyType.pan, value));
+                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.Pan, value));
                     break;
                   case EffectChannel.tilt:
-                    effectPropertyValues.push(new FixturePropertyValue(FixturePropertyType.tilt, value));
+                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.Tilt, value));
                     break;
-                  case EffectChannel.dimmer:
-                    effectPropertyValues.push(new FixturePropertyValue(FixturePropertyType.dimmer, value));
+                  case EffectChannel.colorRed:
+                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.ColorIntensity, value, { color: FixtureCapabilityColor.Red }));
+                    break;
+                  case EffectChannel.colorGreen:
+                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.ColorIntensity, value, { color: FixtureCapabilityColor.Green }));
+                    break;
+                  case EffectChannel.colorBlue:
+                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.ColorIntensity, value, { color: FixtureCapabilityColor.Blue }));
                     break;
                 }
               }
 
-              for (let fixturePropertyIndex = 0; fixturePropertyIndex < mode.fixtureProperties.length; fixturePropertyIndex++) {
-                for (let effectProperty of effectPropertyValues) {
-                  if (mode.fixtureProperties[fixturePropertyIndex].type == effectProperty.fixturePropertyType) {
-                    this.mixPropertyValue(properties, effectProperty, intensityPercentage);
+              for (let fixtureCapabilityIndex = 0; fixtureCapabilityIndex < channels.length; fixtureCapabilityIndex++) {
+                for (let effectCapability of effectCapabilityValues) {
+                  if (channels[fixtureCapabilityIndex].capability.type == effectCapability.type) {
+                    this.mixCapabilityValue(capabilities, effectCapability, intensityPercentage);
                   }
                 }
               }
@@ -218,13 +266,13 @@ export class PreviewService {
       }
 
       // Store the calculated values for subsequent fixtures on the same DMX address
-      calculatedFixtures.set(fixture.uuid, properties);
+      calculatedFixtures.set(fixture.uuid, capabilities);
     }
 
     return calculatedFixtures;
   }
 
-  public setUniverseValues(properties: Map<string, FixturePropertyValue[]>, masterDimmerValue: number) {
+  public setUniverseValues(values: Map<string, FixtureCapabilityValue[]>, masterDimmerValue: number) {
     // Reset all DMX universes
     for (let universe of this.universeService.universes) {
       universe.channelValues = [];
@@ -233,15 +281,15 @@ export class PreviewService {
       }
     }
 
-    properties.forEach((properties: FixturePropertyValue[], fixtureUuid: string) => {
+    values.forEach((capabilities: FixtureCapabilityValue[], fixtureUuid: string) => {
       let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-      let universe: Universe = this.universeService.getUniverseByUuid(fixture.universeUuid);
+      let universe: Universe = this.universeService.getUniverseByUuid(fixture.dmxUniverseUuid);
       let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
-      let mode: FixtureMode = this.fixtureService.getModeByUuid(fixture.modeUuid, template);
+      let channels = this.fixtureService.getChannelsByFixture(fixture);
 
-      for (let fixturePropertyIndex = 0; fixturePropertyIndex < mode.fixtureProperties.length; fixturePropertyIndex++) {
-        for (let property of properties) {
-          if (mode.fixtureProperties[fixturePropertyIndex].type == property.fixturePropertyType) {
+      for (let fixtureCapabilityIndex = 0; fixtureCapabilityIndex < channels.length; fixtureCapabilityIndex++) {
+        for (let capability of capabilities) {
+          if (channels[fixtureCapabilityIndex].capability.type == capability.type) {
             // TODO Round the DMX value and set fine property, if available
 
             // TODO Set universe channel fixture.firstChannel + fixturePropertyIndex to property.value

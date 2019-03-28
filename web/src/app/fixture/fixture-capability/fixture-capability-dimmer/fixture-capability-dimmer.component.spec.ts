@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FixturePropertyDimmerComponent } from './fixture-property-dimmer.component';
+import { FixtureCapabilityDimmerComponent } from './fixture-capability-dimmer.component';
 
 describe('FixturePropertyDimmerComponent', () => {
-  let component: FixturePropertyDimmerComponent;
-  let fixture: ComponentFixture<FixturePropertyDimmerComponent>;
+  let component: FixtureCapabilityDimmerComponent;
+  let fixture: ComponentFixture<FixtureCapabilityDimmerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FixturePropertyDimmerComponent ]
+      declarations: [ FixtureCapabilityDimmerComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FixturePropertyDimmerComponent);
+    fixture = TestBed.createComponent(FixtureCapabilityDimmerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

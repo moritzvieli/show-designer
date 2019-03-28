@@ -1,7 +1,7 @@
 import { Effect } from "./effect";
 import { Fixture } from "./fixture";
-import { FixturePropertyValue } from "./fixture-property-value";
 import { UuidService } from "../services/uuid.service";
+import { FixtureCapabilityValue } from "./fixture-capability-value";
 
 export class Preset {
 
@@ -13,7 +13,7 @@ export class Preset {
 
     // All properties. Also add the fine properties (16-bit values), if calculated.
     // The fixtures will pick up the corresponding values, if available.
-    fixturePropertyValues: FixturePropertyValue[] = [];
+    capabilityValues: FixtureCapabilityValue[] = [];
 
     // All related effects
     effects: Effect[] = [];

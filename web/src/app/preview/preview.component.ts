@@ -57,15 +57,14 @@ export class PreviewComponent implements AfterViewInit {
 
     this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
       let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
-      let mode = this.fixtureService.getModeByUuid(fixture.modeUuid, template);
 
-      if (template.type == FixtureType.movingHead) {
+      if (template.categories[0] == FixtureType['Moving Head']) {
         forkJoin(
           this.loadMesh('moving_head_socket'),
           this.loadMesh('moving_head_arm'),
           this.loadMesh('moving_head_head')
         ).pipe(map(([socket, arm, head]) => {
-          this.fixtures3d.push(new MovingHead3d(fixture, template, mode, this.scene, socket, arm, head));
+          this.fixtures3d.push(new MovingHead3d(fixtureService, fixture, this.scene, socket, arm, head));
         })).subscribe();
       }
     });

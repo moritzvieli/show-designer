@@ -1,16 +1,23 @@
 import { FixtureMode } from './fixture-mode';
+import { FixtureChannel } from './fixture-channel';
 
 export enum FixtureType {
-    par,
-    movingHead,
-    scanner,
-    blinder,
-    laser,
-    ledStripMatrix,
-    ledBar,
-    strobe,
-    fogMachine,
-    custom
+    Blinder,
+    'Color Changer',
+    Dimmer,
+    Effect,
+    Fan,
+    Flower,
+    Hazer,
+    Laser,
+    Matrix,
+    'Moving Head',
+    'Pixel Bar',
+    Scanner,
+    Smoke,
+    Stand,
+    Strobe,
+    Other
 }
 
 export enum BeamType {
@@ -32,7 +39,8 @@ export class FixtureTemplate {
     name: string;
     manufacturerShortName: string;
     manufacturerName: string;
-    categories: string[];
+    categories: FixtureType[] = [];
+    availableChannels: any = {};
 
     shortName: string;
     beamType: BeamType = BeamType.spot;
@@ -56,17 +64,30 @@ export class FixtureTemplate {
         this.manufacturerName = metaData.manufacturerName;
         this.manufacturerShortName = metaData.manufacturerShortName;
 
-        if(!data) {
-        	return;
+        if (!data) {
+            return;
         }
 
-        this.categories = data.categories || [];
+        if(data.categories) {
+            for(let category of data.categories) {
+                this.categories.push(FixtureType[<string>category]);
+            }
+        }
 
-        if(data.modes) {
-            for(let mode of data.modes) {
+        if (data.modes) {
+            for (let mode of data.modes) {
                 this.modes.push(new FixtureMode(mode));
             }
         }
+
+        if (data.availableChannels) {
+            for (let property in data.availableChannels) {
+                let fixtureChannel = new FixtureChannel(data.availableChannels[property]);
+                this.availableChannels[property] = fixtureChannel;
+            }
+        }
+
+        console.log(this);
     }
 
 }

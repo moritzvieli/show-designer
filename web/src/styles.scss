@@ -257,20 +257,12 @@ input[type="checkbox"].bigcheck:checked + span.bigcheck-target:after {
   stroke-width: 3px;
 }
 
-.property {
+.capability {
   overflow: visible;
 }
 
-.property-deactivated {
+.capability-deactivated {
   opacity: 0.4;
-}
-
-.property-container {
-  padding: 0 !important;
-
-  // Required to fix vertical scroll in Chrome and Firefox.
-  // Also see: https://stackoverflow.com/questions/14962468/flexbox-and-vertical-scroll-in-a-full-height-app-using-newer-flexbox-api
-  height: 0;
 }
 
 /* Wavesurfer */

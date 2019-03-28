@@ -105,10 +105,10 @@
             <div class="form-group row">
               <label class="col-lg-3 col-form-label">{{ 'fixture-pool.mode' | translate }}</label>
               <div class="col-lg-9 d-flex">
-                <select class="custom-select" [ngModel]="selectedFixture.modeName"
-                  (ngModelChange)="selectedFixture.modeName = $event">
+                <select class="custom-select" [ngModel]="selectedFixture.modeShortName"
+                  (ngModelChange)="selectedFixture.modeShortName = $event">
                   <option *ngFor="let mode of fixtureService.getTemplateByFixture(selectedFixture).modes"
-                    [ngValue]="mode.name">
+                    [ngValue]="mode.shortName">
                     {{ mode.name }}</option>
                 </select>
               </div>

@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MasterDimmerService } from '../services/master-dimmer.service';
-import { DmxService } from '../services/dmx.service';
 
 @Component({
   selector: 'app-master-dimmer',
@@ -11,18 +10,23 @@ export class MasterDimmerComponent implements OnInit {
 
   constructor(
     public masterDimmerService: MasterDimmerService,
-    private dmxService: DmxService
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
   }
 
   setValue(value: any) {
-    if(!this.dmxService.isValidDmxValue(value)) {
-      return;
+    if(isNaN(value)){
+      return false;
+    }
+
+    if(value < 0 || value > 1) {
+      return false;
     }
 
     this.masterDimmerService.masterDimmerValue = value;
+    this.changeDetectorRef.detectChanges();
   }
 
   getValue(): number {

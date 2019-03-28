@@ -1,12 +1,8 @@
-import { FixtureProperty } from "./fixture-property";
-
 export class FixtureMode {
 
     name: string;
-    channelCount: number;
-
-    // All available fixture properties (= channels)
-    fixtureProperties: FixtureProperty[] = [];
+    shortName: string;
+    channels: string[] = [];
 
     constructor(data?: any) {
         if(!data) {
@@ -14,6 +10,11 @@ export class FixtureMode {
         }
 
         this.name = data.name;
+        this.shortName = data.shortName;
+
+        if(data.channels) {
+            this.channels = data.channels;
+        }
     }
 
 }

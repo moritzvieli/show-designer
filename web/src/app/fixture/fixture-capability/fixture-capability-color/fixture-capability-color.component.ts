@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { PresetService } from 'src/app/services/preset.service';
-import { FixturePropertyValue } from 'src/app/models/fixture-property-value';
-import { FixturePropertyType } from 'src/app/models/fixture-property';
+import { FixtureCapabilityType, FixtureCapabilityColor } from 'src/app/models/fixture-capability';
 
 declare var iro: any;
 
 @Component({
-  selector: 'app-fixture-property-color',
-  templateUrl: './fixture-property-color.component.html',
-  styleUrls: ['./fixture-property-color.component.css']
+  selector: 'app-fixture-capability-color',
+  templateUrl: './fixture-capability-color.component.html',
+  styleUrls: ['./fixture-capability-color.component.css']
 })
-export class FixturePropertyColorComponent implements OnInit {
+export class FixtureCapabilityColorComponent implements OnInit {
 
   color: string = '#fff';
   colorPicker: any;
@@ -41,13 +40,13 @@ export class FixturePropertyColorComponent implements OnInit {
   private updateFixtureColor(color: any) {
     if(this.presetService.selectedPreset) {
       if(color) {
-        this.presetService.setPropertyValue(FixturePropertyType.colorRed, color.rgb.r);
-        this.presetService.setPropertyValue(FixturePropertyType.colorGreen, color.rgb.g);
-        this.presetService.setPropertyValue(FixturePropertyType.colorBlue, color.rgb.b);
+        this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.r, { color: FixtureCapabilityColor.Red });
+        this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.g, { color: FixtureCapabilityColor.Green });
+        this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.b, { color: FixtureCapabilityColor.Blue });
       } else {
-        this.presetService.deletePropertyValue(FixturePropertyType.colorRed);
-        this.presetService.deletePropertyValue(FixturePropertyType.colorGreen);
-        this.presetService.deletePropertyValue(FixturePropertyType.colorBlue);
+        this.presetService.deleteCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Red });
+        this.presetService.deleteCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Green });
+        this.presetService.deleteCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Blue });
       }
     }
   }

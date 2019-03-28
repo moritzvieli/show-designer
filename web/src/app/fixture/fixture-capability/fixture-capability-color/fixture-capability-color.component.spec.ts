@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FixturePropertyColorComponent } from './fixture-property-color.component';
+import { FixtureCapabilityColorComponent } from './fixture-capability-color.component';
 
 describe('ColorComponent', () => {
-  let component: FixturePropertyColorComponent;
-  let fixture: ComponentFixture<FixturePropertyColorComponent>;
+  let component: FixtureCapabilityColorComponent;
+  let fixture: ComponentFixture<FixtureCapabilityColorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FixturePropertyColorComponent ]
+      declarations: [ FixtureCapabilityColorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FixturePropertyColorComponent);
+    fixture = TestBed.createComponent(FixtureCapabilityColorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,10 +1,9 @@
-import { FixturePropertyValue } from "src/app/models/fixture-property-value";
 import { FixtureTemplate } from "src/app/models/fixture-template";
 import { Fixture } from "src/app/models/fixture";
-import { FixturePropertyType } from "src/app/models/fixture-property";
+import { FixtureCapabilityValue } from "src/app/models/fixture-capability-value";
+import { FixtureCapabilityType, FixtureCapabilityColor } from "src/app/models/fixture-capability";
 import * as THREE from 'three';
 import { FixtureService } from "src/app/services/fixture.service";
-import { FixtureMode } from "src/app/models/fixture-mode";
 
 export abstract class Fixture3d {
 
@@ -22,9 +21,9 @@ export abstract class Fixture3d {
 
     protected selectedMaterial: THREE.MeshLambertMaterial;
 
-    constructor(fixture: Fixture, fixtureTemplate: FixtureTemplate, mode: FixtureMode) {
+    constructor(private fixtureService: FixtureService, fixture: Fixture) {
         this.fixture = fixture;
-        this.fixtureTemplate = fixtureTemplate;
+        this.fixtureTemplate = fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
 
         // TODO Don't create it for each fixture
         this.selectedMaterial = new THREE.MeshLambertMaterial({
@@ -33,8 +32,8 @@ export abstract class Fixture3d {
         });
 
         // Evaluate, whether this fixture supports a dimmer
-        for(let property of mode.fixtureProperties) {
-            if(property.type == FixturePropertyType.dimmer) {
+        for (let channel of this.fixtureService.getChannelsByFixture(fixture)) {
+            if (channel.capability.type == FixtureCapabilityType.Intensity) {
                 this.fixtureSupportsDimmer = true;
                 break;
             }
@@ -42,35 +41,37 @@ export abstract class Fixture3d {
     }
 
     // Apply the properties of the base fixture to the preview
-    updatePreview(propertyValues: FixturePropertyValue[], masterDimmerValue: number) {
+    updatePreview(capabilityValues: FixtureCapabilityValue[], masterDimmerValue: number) {
         // Apply default settings
         this.colorRed = 0;
         this.colorGreen = 0;
         this.colorBlue = 0;
 
-        if(this.fixtureSupportsDimmer) {
+        if (this.fixtureSupportsDimmer) {
             this.dimmer = 255 * masterDimmerValue;
         }
 
-        for (let propertyValue of propertyValues) {
-            switch (propertyValue.fixturePropertyType) {
-                case FixturePropertyType.colorGreen: {
-                    // Round needed for threejs
-                    this.colorGreen = Math.round(propertyValue.value);
+        for (let capabilityValue of capabilityValues) {
+            switch (capabilityValue.type) {
+                case FixtureCapabilityType.ColorIntensity: {
+                    switch (capabilityValue.color) {
+                        case FixtureCapabilityColor.Red:
+                            // Round needed for threejs
+                            this.colorRed = Math.round(capabilityValue.value);
+                            break;
+                        case FixtureCapabilityColor.Green:
+                            // Round needed for threejs
+                            this.colorGreen = Math.round(capabilityValue.value);
+                            break;
+                        case FixtureCapabilityColor.Blue:
+                            // Round needed for threejs
+                            this.colorBlue = Math.round(capabilityValue.value);
+                            break;
+                    }
                     break;
                 }
-                case FixturePropertyType.colorRed: {
-                    // Round needed for threejs
-                    this.colorRed = Math.round(propertyValue.value);
-                    break;
-                }
-                case FixturePropertyType.colorBlue: {
-                    // Round needed for threejs
-                    this.colorBlue = Math.round(propertyValue.value);
-                    break;
-                }
-                case FixturePropertyType.dimmer: {
-                    this.dimmer = propertyValue.value * masterDimmerValue;
+                case FixtureCapabilityType.Intensity: {
+                    this.dimmer = capabilityValue.value * masterDimmerValue;
                     break;
                 }
             }

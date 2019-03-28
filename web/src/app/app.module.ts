@@ -16,16 +16,16 @@ import { EffectCurveComponent } from './effect/effect-curve/effect-curve.compone
 import { EffectPanTiltComponent } from './effect/effect-pan-tilt/effect-pan-tilt.component';
 import { SceneComponent } from './scene/scene/scene.component';
 import { TimelineComponent } from './timeline/timeline.component';
-import { FixturePropertyColorComponent } from './fixture/fixture-property/fixture-property-color/fixture-property-color.component';
+import { FixtureCapabilityColorComponent } from './fixture/fixture-capability/fixture-capability-color/fixture-capability-color.component';
 import { FixtureComponent } from './fixture/fixture.component';
 import { FixtureSettingsPositionComponent } from './fixture/fixture-settings/fixture-settings-position/fixture-settings-position.component';
-import { FixturePropertyComponent } from './fixture/fixture-property/fixture-property.component';
+import { FixtureCapabilityComponent } from './fixture/fixture-capability/fixture-capability.component';
 import { FixtureSettingsComponent } from './fixture/fixture-settings/fixture-settings.component';
 import { EffectComponent } from './effect/effect.component';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 import { PresetComponent } from './preset/preset.component';
 import { MasterDimmerComponent } from './master-dimmer/master-dimmer.component';
-import { FixturePropertyDimmerComponent } from './fixture/fixture-property/fixture-property-dimmer/fixture-property-dimmer.component';
+import { FixtureCapabilityDimmerComponent } from './fixture/fixture-capability/fixture-capability-dimmer/fixture-capability-dimmer.component';
 import { AppHttpInterceptor } from './app-http-interceptor/app-http-interceptor';
 
 @NgModule({
@@ -36,16 +36,16 @@ import { AppHttpInterceptor } from './app-http-interceptor/app-http-interceptor'
     EffectPanTiltComponent,
     SceneComponent,
     TimelineComponent,
-    FixturePropertyColorComponent,
+    FixtureCapabilityColorComponent,
     FixtureComponent,
     FixtureSettingsPositionComponent,
-    FixturePropertyComponent,
+    FixtureCapabilityComponent,
     FixtureSettingsComponent,
     EffectComponent,
     FixturePoolComponent,
     PresetComponent,
     MasterDimmerComponent,
-    FixturePropertyDimmerComponent
+    FixtureCapabilityDimmerComponent
   ],
   imports: [
     BrowserModule,

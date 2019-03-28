@@ -1,10 +1,10 @@
-<div class="card border-secondary h-100" [class.property-deactivated]="getValue() == undefined">
+<div class="card border-secondary h-100" [class.capability-deactivated]="getValue() == undefined">
   <div class="card-header">
     <div class="my-auto">
       <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="propertyDimmerActive" [ngModel]="getValue() != undefined"
+        <input type="checkbox" class="form-check-input" id="capabilityDimmerActive" [ngModel]="getValue() != undefined"
           (ngModelChange)="changeActive($event)">
-        <label class="form-check-label" for="propertyDimmerActive">
+        <label class="form-check-label" for="capabilityDimmerActive">
           <i class="icon-dimmer"></i>
         </label>
       </div>
