@@ -1,5 +1,6 @@
 import { UuidService } from '../services/uuid.service';
 import { FixturePropertyValue } from './fixture-property-value';
+import { FixtureTemplate } from './fixture-template';
 
 export enum Positioning {
     topFront,
@@ -14,9 +15,9 @@ export class Fixture {
     uuid: string;
     fixtureTemplateUuid: string;
     name: string;
-    universeUuid: string;
-    firstChannel: number = 5;
-    modeUuid: string;
+    dmxUniverseUuid: string;
+    dmxFirstChannel: number = 5;
+    modeName: string;
     positioning: Positioning = Positioning.topFront;
 
     // Default channel values
@@ -27,10 +28,13 @@ export class Fixture {
     positionY: number = 0;
     positionZ: number = 0;
 
-    constructor(private uuidService: UuidService) {
+    constructor(private uuidService: UuidService, template: FixtureTemplate) {
         if (this.uuidService) {
             this.uuid = this.uuidService.getUuid();
         }
+
+        this.fixtureTemplateUuid = template.uuid;
+        this.name = template.manufacturerName + ' - '  + template.name;
     }
 
 }

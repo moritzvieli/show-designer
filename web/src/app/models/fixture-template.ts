@@ -48,7 +48,7 @@ export class FixtureTemplate {
     tiltOffsetDegrees: number = 0;
 
     // All available fixture modes
-    fixtureModes: FixtureMode[] = [];
+    modes: FixtureMode[] = [];
 
     constructor(metaData: any, data?: any) {
         this.uuid = metaData.uuid;
@@ -62,6 +62,11 @@ export class FixtureTemplate {
 
         this.categories = data.categories || [];
 
+        if(data.modes) {
+            for(let mode of data.modes) {
+                this.modes.push(new FixtureMode(mode));
+            }
+        }
     }
 
 }

@@ -8,26 +8,6 @@
         <app-fixture-settings-position></app-fixture-settings-position>
       </div>
 
-      <!-- DMX mapping -->
-      <div class="col col-auto p-0 my-3 ml-3 mr-3">
-        <div class="card border-secondary">
-          <div class="card-header">
-            DMX Mapping
-          </div>
-
-          <div class="card-body property" style="width: 480px;">
-
-            <div *ngFor="let channel of dmxChannels; let i = index;" class="dmx-channel"
-              [class.dmx-channel-occupied]="channelOccupied(i)"
-              [class.dmx-channel-occupied-start]="channelOccupiedStart(i)"
-              [class.dmx-channel-occupied-end]="channelOccupiedEnd(i)">
-              <div class="m-auto" style="font-size: 11px;"><small>{{ (i + 1) }}</small></div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
     </div>
 
   </div>

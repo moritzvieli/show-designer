@@ -21,6 +21,8 @@
         "create-template": "Vorlage erstellen",
         "search-templates": "Vorlagen suchen",
         "settings": "Einstellungen",
-        "dmx": "DMX Übersicht"
+        "dmx": "DMX Übersicht",
+        "fixture-name": "Fixture Name",
+        "mode": "Modus"
     }
 }

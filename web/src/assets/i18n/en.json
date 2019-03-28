@@ -21,6 +21,8 @@
         "create-template": "Create template",
         "search-templates": "Search templates",
         "settings": "Settings",
-        "dmx": "DMX overview"
+        "dmx": "DMX overview",
+        "fixture-name": "Fixture name",
+        "mode": "Mode"
     }
 }

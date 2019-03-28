@@ -21,40 +21,4 @@ export class FixtureSettingsComponent implements OnInit {
   ngOnInit() {
   }
 
-  channelOccupied(index: number): boolean {
-    for(let fixture of this.fixtureService.fixtures) {
-      let template = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
-      let mode = this.fixtureService.getModeByUuid(fixture.modeUuid, template);
-
-      if(index >= fixture.firstChannel && index < fixture.firstChannel + mode.channelCount) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  channelOccupiedStart(index: number): boolean {
-    for(let fixture of this.fixtureService.fixtures) {
-      if(index == fixture.firstChannel) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  channelOccupiedEnd(index: number): boolean {
-    for(let fixture of this.fixtureService.fixtures) {
-      let template = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
-      let mode = this.fixtureService.getModeByUuid(fixture.modeUuid, template);
-
-      if(index == fixture.firstChannel + mode.channelCount - 1) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
 }

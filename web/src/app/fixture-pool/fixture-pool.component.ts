@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 import { FixtureTemplate } from '../models/fixture-template';
 import { FixtureService } from '../services/fixture.service';
+import { Fixture } from '../models/fixture';
+import { UuidService } from '../services/uuid.service';
 
 @Component({
   selector: 'app-fixture-pool',
@@ -17,9 +19,12 @@ export class FixturePoolComponent implements OnInit {
 
   dmxChannels: number[] = [];
 
+  selectedFixture: Fixture;
+
   constructor(
     public bsModalRef: BsModalRef,
-    private fixtureService: FixtureService
+    public fixtureService: FixtureService,
+    private uuidService: UuidService
   ) { }
 
   ngOnInit() {
@@ -55,11 +60,24 @@ export class FixturePoolComponent implements OnInit {
   }
 
   addFixture(template: FixtureTemplate) {
-    
+    // Load the template details, if not already done
+    this.fixtureService.loadTemplateByUuid(template.uuid).subscribe(() => {
+      let fixture = new Fixture(this.uuidService, template);
+      this.fixtureService.fixtures.push(fixture);
+      this.selectedFixture = fixture;
+    });
   }
 
-  removeFixture(template: FixtureTemplate) {
-    
+  removeFixture(fixture: Fixture) {
+    for(let i = 0; i < this.fixtureService.fixtures.length; i ++) {
+      if(this.fixtureService.fixtures[i].uuid == fixture.uuid) {
+        this.fixtureService.fixtures.splice(i, 1);
+      }
+    }
+
+    if(!this.selectedFixture && this.fixtureService.fixtures && this.fixtureService.fixtures.length > 0) {
+      this.selectedFixture = this.fixtureService.fixtures[0];
+    }
   }
 
   channelOccupied(index: number): boolean {
@@ -77,7 +95,7 @@ export class FixturePoolComponent implements OnInit {
 
   channelOccupiedStart(index: number): boolean {
     for(let fixture of this.fixtureService.fixtures) {
-      if(index == fixture.firstChannel) {
+      if(index == fixture.dmxFirstChannel) {
         return true;
       }
     }
@@ -96,6 +114,12 @@ export class FixturePoolComponent implements OnInit {
     // }
 
     return false;
+  }
+
+  ok() {
+    // TODO Load all required templates
+
+    this.bsModalRef.hide()
   }
 
 }
