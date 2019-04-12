@@ -74,26 +74,42 @@ export class FixtureService {
     return this.getTemplateByUuid(fixture.fixtureTemplateUuid);
   }
 
-  getChannelsByFixture(fixture: Fixture): FixtureChannel[] {
+  getModeByFixture(fixture: Fixture): FixtureMode {
     let template = this.getTemplateByFixture(fixture);
 
     for (let mode of template.modes) {
       if (mode.shortName == fixture.modeShortName) {
-        let channels: FixtureChannel[] = [];
+        return mode;
+      }
+    }
+  }
 
-        for (let modeChannel of mode.channels) {
-          for (let availableChannel in template.availableChannels) {
-            if (modeChannel == availableChannel) {
-              channels.push(template.availableChannels[availableChannel]);
-            }
+  getChannelsByFixture(fixture: Fixture): FixtureChannel[] {
+    let template = this.getTemplateByFixture(fixture);
+    let mode = this.getModeByFixture(fixture);
+
+    if (!mode) {
+      return [];
+    }
+
+    let channels: FixtureChannel[] = [];
+
+    for (let modeChannel of mode.channels) {
+      if (modeChannel) {
+        for (let availableChannelName in template.availableChannels) {
+          let availableChannel: FixtureChannel = template.availableChannels[availableChannelName];
+
+          if (modeChannel == availableChannelName || availableChannel.fineChannelAliases.indexOf(modeChannel) > -1) {
+            channels.push(availableChannel);
           }
         }
-
-        return channels;
+      } else {
+        // null may be passed as a placeholder for an undefined channel
+        channels.push(null);
       }
     }
 
-    return [];
+    return channels;
   }
 
 }

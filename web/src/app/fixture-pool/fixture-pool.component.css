@@ -5,10 +5,19 @@
   border: 1px solid white;
   margin-left: -1px;
   margin-bottom: -1px;
+  padding-bottom: 2px;
+}
+
+.dmx-channel-text {
+  opacity: 0;
+}
+
+.dmx-channel-text-visible {
+  opacity: 1;
 }
 
 .dmx-channel-occupied {
-  background-color: #fd7e14;
+  background-color: #63462e;
   border-left: none;
   border-right: none;
   cursor: move;
@@ -16,8 +25,18 @@
 
 .dmx-channel-occupied-start {
   border-left: 1px solid white;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 .dmx-channel-occupied-end {
   border-right: 1px solid white;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.dmx-channel-overlapped {
+  background-color:red;
+  border: 1px solid red;
+  cursor: move;
 }

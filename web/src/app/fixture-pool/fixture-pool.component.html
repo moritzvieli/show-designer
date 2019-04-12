@@ -35,7 +35,7 @@
                 <div class="col-2 my-auto">
                   <a class="btn btn-primary btn-sm float-right" href="#" role="button"
                     (click)="addFixture(template); false">
-                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                    <i class="fa fa-plus" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -109,7 +109,7 @@
                   (ngModelChange)="selectedFixture.modeShortName = $event">
                   <option *ngFor="let mode of fixtureService.getTemplateByFixture(selectedFixture).modes"
                     [ngValue]="mode.shortName">
-                    {{ mode.name }}</option>
+                    {{ mode.name }} - {{ mode.channels.length }} {{ 'fixture-pool.channels' | translate }}</option>
                 </select>
               </div>
             </div>
@@ -117,17 +117,25 @@
           </div>
         </div>
         <div class="tab-pane" id="dmx" role="tabpanel">
-
+          <!-- DMX universe overview-->
           <div class="form-group row">
-            <label class="col-lg-3 col-form-label">{{ 'settings.midi-device-in' | translate }}</label>
-            <div class="col-lg-9 d-flex">
+            <label class="col-lg-2 col-form-label">{{ 'fixture-pool.universe' | translate }}</label>
+            <div class="col d-flex">
               <!-- <select class="custom-select" [ngModel]="settings?.midiInDevice?.id"
-            (ngModelChange)="settings.midiInDevice = $event">
-            <option *ngFor="let midiDevice of midiInDevices" [ngValue]="midiDevice.id">{{ midiDevice.name }}</option>
-          </select> -->
+                (ngModelChange)="settings.midiInDevice = $event">
+                <option *ngFor="let midiDevice of midiInDevices" [ngValue]="midiDevice.id">{{ midiDevice.name }}</option>
+              </select> -->
               <select class="custom-select">
                 <option>Universe 1</option>
               </select>
+            </div>
+            <div class="col-auto flex-grow"></div>
+            <div class="col-lg-3 d-flex">
+              <div class="form-check my-auto ml-auto">
+                <input type="checkbox" class="form-check-input" id="showChannelNumbers" [ngModel]="showChannelNumbers"
+                  (ngModelChange)="showChannelNumbers = $event">
+                <label class="form-check-label" for="showChannelNumbers">Show channels</label>
+              </div>
             </div>
           </div>
 
@@ -136,8 +144,15 @@
             <div *ngFor="let channel of dmxChannels; let i = index;" class="dmx-channel"
               [class.dmx-channel-occupied]="channelOccupied(i)"
               [class.dmx-channel-occupied-start]="channelOccupiedStart(i)"
-              [class.dmx-channel-occupied-end]="channelOccupiedEnd(i)">
-              <div class="m-auto" style="font-size: 11px;"><small>{{ (i + 1) }}</small></div>
+              [class.dmx-channel-occupied-end]="channelOccupiedEnd(i)"
+              [class.dmx-channel-overlapped]="channelOverlapped(i)"
+              (mousedown)="channelMouseDown($event)"
+              (mouseover)="channelMouseOver($event)"
+              [attr.data-index]="i">
+              <div class="d-flex w-100 dmx-channel-text" [attr.data-index]="i" [class.dmx-channel-text-visible]="showChannelNumbers">
+                <div class="m-auto" style="font-size: 11px" [attr.data-index]="i"><small [attr.data-index]="i">{{ (i + 1) }}</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>

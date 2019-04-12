@@ -12,6 +12,7 @@ import { EffectChannel } from '../models/effect';
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture-capability';
 import { Preset } from '../models/preset';
+import { FixtureChannel } from '../models/fixture-channel';
 
 @Injectable({
   providedIn: 'root'
@@ -160,17 +161,17 @@ export class PreviewService {
 
         // Apply the fixture default channels
         for (let channel of channels) {
-          if (channel.defaultValue) {
+          if (channel && channel.defaultValue) {
             let type = channel.capability.type;
             let value = 0;
 
-            if (channel.defaultValue.endsWith('%')) {
+            if (isNaN(<any>channel.defaultValue) && (<string>channel.defaultValue).endsWith('%')) {
               // Percentage value
-              let percentage = Number.parseInt(channel.defaultValue.replace('%', ''));
+              let percentage = Number.parseInt((<string>channel.defaultValue).replace('%', ''));
               value = 255 / 100 * percentage;
             } else {
               // DMX value
-              value = Number.parseInt(channel.defaultValue);
+              value = Number.parseInt(<any>channel.defaultValue);
             }
 
             this.mixCapabilityValue(capabilities, new FixtureCapabilityValue(type, value, { color: channel.capability.color }), 1);
@@ -219,7 +220,7 @@ export class PreviewService {
             // Match all capability values in this preset with the fixture capabilities
             for (let fixtureCapabilityIndex = 0; fixtureCapabilityIndex < channels.length; fixtureCapabilityIndex++) {
               for (let presetCapability of preset.preset.capabilityValues) {
-                if (channels[fixtureCapabilityIndex].capability.type == presetCapability.type) {
+                if (channels[fixtureCapabilityIndex] && channels[fixtureCapabilityIndex].capability.type == presetCapability.type) {
                   this.mixCapabilityValue(capabilities, presetCapability, intensityPercentage);
                 }
               }
@@ -289,7 +290,9 @@ export class PreviewService {
 
       for (let fixtureCapabilityIndex = 0; fixtureCapabilityIndex < channels.length; fixtureCapabilityIndex++) {
         for (let capability of capabilities) {
-          if (channels[fixtureCapabilityIndex].capability.type == capability.type) {
+          let channel: FixtureChannel = channels[fixtureCapabilityIndex];
+
+          if (channel && channel.capability.type == capability.type) {
             // TODO Round the DMX value and set fine property, if available
 
             // TODO Set universe channel fixture.firstChannel + fixturePropertyIndex to property.value

@@ -23,6 +23,8 @@
         "settings": "Einstellungen",
         "dmx": "DMX Übersicht",
         "fixture-name": "Fixture Name",
-        "mode": "Modus"
+        "mode": "Modus",
+        "channels": "Kanäle",
+        "universe": "Universum"
     }
 }
