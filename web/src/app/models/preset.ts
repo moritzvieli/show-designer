@@ -8,21 +8,22 @@ export class Preset {
     uuid: string;
     name: string;
 
-    // All related fixtures
+    // all related fixtures
     fixtures: Fixture[] = [];
 
-    // All properties. Also add the fine properties (16-bit values), if calculated.
+    // all properties. Also add the fine properties (16-bit values), if calculated.
     // The fixtures will pick up the corresponding values, if available.
     capabilityValues: FixtureCapabilityValue[] = [];
 
-    // All related effects
+    // all related effects
     effects: Effect[] = [];
 
-    // Position offset, relative to the scene start (undefined = start/end of the scene itself)
+    // position offset, relative to the scene start
+    // (undefined = start/end of the scene itself)
     startMillis: number;
     endMillis: number;
 
-    // Fading times
+    // fading times
     fadeInMillis: number = 0;
     fadeOutMillis: number = 0;
 

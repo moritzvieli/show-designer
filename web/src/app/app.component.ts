@@ -4,6 +4,7 @@ import Split from 'split.js';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
+import { TimelineComponent } from './timeline/timeline.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,9 @@ export class AppComponent implements AfterViewInit {
   @ViewChild(PreviewComponent)
   previewComponent: PreviewComponent;
 
+  @ViewChild(TimelineComponent)
+  timelineComponent: TimelineComponent;
+
   constructor(
     private translateService: TranslateService,
     private modalService: BsModalService,
@@ -28,6 +32,10 @@ export class AppComponent implements AfterViewInit {
   private onResize() {
     if (this.previewComponent) {
       this.previewComponent.onResize();
+    }
+
+    if (this.timelineComponent) {
+      this.timelineComponent.onResize();
     }
   }
 
