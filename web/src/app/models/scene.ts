@@ -6,6 +6,8 @@ export class Scene {
     uuid: string;
     name: string;
 
+    color: string;
+
     // All contained presets
     presetUuids: string[] = [];
 
@@ -20,6 +22,8 @@ export class Scene {
         if (this.uuidService) {
             this.uuid = this.uuidService.getUuid();
         }
+
+        this.color = '#' + Math.random().toString(16).slice(2, 8).toUpperCase();;
     }
 
 }

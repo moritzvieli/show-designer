@@ -16,6 +16,9 @@
         "settings": "Einstellungen",
         "help": "Hilfe" 
     },
+    "scene": {
+        "title": "Szenen"
+    },
     "fixture-pool": {
         "title": "Fixture Pool",
         "create-template": "Vorlage erstellen",

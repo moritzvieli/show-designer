@@ -16,6 +16,9 @@
         "settings": "Settings",
         "help": "Help" 
     },
+    "scene": {
+        "title": "Scenes"
+    },
     "fixture-pool": {
         "title": "Fixture pool",
         "create-template": "Create template",

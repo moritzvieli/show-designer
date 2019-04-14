@@ -266,10 +266,17 @@ input[type="checkbox"].bigcheck:checked + span.bigcheck-target:after {
 }
 
 /* Wavesurfer */
+
+/* Display the regions in front of the played part*/
 .wavesurfer-region {
   z-index: 5 !important;
 }
 
+.wavesurfer-region[data-region-selected="true"] {
+  z-index: 6 !important;
+}
+
+/* Style the presets */
 .wavesurfer-region[data-region-preset="true"] {
   height: 50% !important;
   top: 50% !important;
@@ -280,7 +287,7 @@ input[type="checkbox"].bigcheck:checked + span.bigcheck-target:after {
   margin-left: 20px;
 }
 
-/* Wavesurfer region handles */
+/* Wavesurfer region handle */
 .wavesurfer-handle {
   width: 10px !important;
   max-width: 10px !important;

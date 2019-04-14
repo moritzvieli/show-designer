@@ -1,5 +1,5 @@
 <div class="card border-secondary h-100">
-  <div class="card-body h-100 d-flex" style="flex-flow: column;">
+  <div class="card-body h-100 d-flex" style="flex-flow: column; overflow: unset;">
 
     <div class="d-flex pb-3">
       <div class="btn-group mr-3 my-auto" role="group" style="float: left;">
@@ -24,7 +24,8 @@
       </div>
 
       <div class="my-auto mr-3">
-        <input type="text" [value]="selectedPlaybackRegion?.startMillis"> - <input type="text" [value]="selectedPlaybackRegion?.endMillis">
+        <input type="text" [value]="selectedPlaybackRegion?.startMillis"> - <input type="text"
+          [value]="selectedPlaybackRegion?.endMillis">
       </div>
 
       <a href="#" class="btn btn-secondary m-0 p-1 mr-3" (click)="removeRegion(); false;"><i class="fa fa-minus-circle "
@@ -34,6 +35,9 @@
           aria-hidden="true"></i> Add scene</a>
     </div>
 
+    <div>
+      <div id="waveform-timeline"> </div>
+    </div>
     <div #waveWrapper style="flex: 2; position: relative;">
       <div id="waveform"></div>
     </div>

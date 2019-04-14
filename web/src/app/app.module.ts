@@ -14,7 +14,7 @@ import { SortablejsModule } from 'angular-sortablejs';
 import { FormsModule } from '@angular/forms';
 import { EffectCurveComponent } from './effect/effect-curve/effect-curve.component';
 import { EffectPanTiltComponent } from './effect/effect-pan-tilt/effect-pan-tilt.component';
-import { SceneComponent } from './scene/scene/scene.component';
+import { SceneComponent } from './scene/scene.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { FixtureCapabilityColorComponent } from './fixture/fixture-capability/fixture-capability-color/fixture-capability-color.component';
 import { FixtureComponent } from './fixture/fixture.component';
