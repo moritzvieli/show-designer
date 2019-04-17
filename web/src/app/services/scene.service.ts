@@ -29,6 +29,13 @@ export class SceneService {
   scenes: Scene[] = [];
 
   selectedScenes: Scene[] = [];
+  sceneColors: string[] = [
+    '#945fda',
+    '#61da5f',
+    '#5fc3da',
+    '#dad65f',
+    '#da5f5f'
+  ];
 
   multipleSelection: boolean = false;
 
@@ -118,6 +125,12 @@ export class SceneService {
   addScene(name?: string): void {
     let scene: Scene = new Scene(this.uuidService);
     scene.name = name || 'Main';
+
+    if (this.scenes.length <= this.sceneColors.length) {
+      scene.color = this.sceneColors[this.scenes.length];
+    } else {
+      scene.color = '#' + Math.random().toString(16).slice(2, 8).toUpperCase();
+    }
 
     // Insert the new scene before the highest currently selected scene
     let highestSelectedSceneIndex = 0;

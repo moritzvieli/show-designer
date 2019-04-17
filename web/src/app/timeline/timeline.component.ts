@@ -38,7 +38,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   ) {
     this.presetService.previewSelectionChanged.subscribe(() => {
       this.selectedPlaybackRegion = undefined;
-      this.drawRegions();
+      this.updateRegionSelection();
     });
   }
 
@@ -94,7 +94,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
             dragSelection: {
               slop: 5
             },
-            color: 'rgba(' + this.hexToRgb(this.sceneService.selectedScenes[0].color).r + ', ' + this.hexToRgb(this.sceneService.selectedScenes[0].color).g + ', ' + this.hexToRgb(this.sceneService.selectedScenes[0].color).b + ', ' + this.intensityHighlighted + ')'
+            color: '#fff'
           }),
           TimeLinePlugin.create({
             container: "#waveform-timeline",
@@ -103,7 +103,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           })
         ]
       });
-      this.timelineService.waveSurfer.load('../../assets/test.mp3');
+      this.timelineService.waveSurfer.load('../../assets/test.wav');
 
       this.timelineService.waveSurfer.on('ready', () => {
         setTimeout(() => {
@@ -111,7 +111,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           this.updateCurrentTime();
           this.changeDetectorRef.detectChanges();
           this.onResize();
-          this.drawRegions();
+          this.drawAllRegions();
         }, 0);
       });
 
@@ -205,7 +205,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     } : null;
   }
 
-  private updateRegionColors() {
+  private updateRegionSelection() {
     if (!this.timelineService.waveSurfer) {
       return;
     }
@@ -214,8 +214,15 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       let region: any = this.timelineService.waveSurfer.regions.list[key];
       let intensity = this.intensity;
 
+      region.drag = false;
+      region.resize = false;
+      region.attributes.selectable = false;
+
       if (this.sceneService.sceneIsSelected(region.scene)) {
         intensity = this.intensitySelectedScene;
+        region.drag = true;
+        region.resize = true;
+        region.attributes.selectable = true;
       }
 
       region.attributes.selected = false;
@@ -240,7 +247,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       this.selectedPlaybackRegion = scenePlaybackRegion;
     }
 
-    this.updateRegionColors();
+    this.updateRegionSelection();
   }
 
   private connectRegion(waveSurferRegion: any, scene: Scene, scenePlaybackRegion: ScenePlaybackRegion, preset?: Preset) {
@@ -249,7 +256,9 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     waveSurferRegion.preset = preset;
 
     waveSurferRegion.on('click', () => {
-      this.setSelectedRegion(scenePlaybackRegion);
+      if(this.sceneService.sceneIsSelected(scene)) {
+        this.setSelectedRegion(scenePlaybackRegion);
+      }
     });
 
     waveSurferRegion.on('update', (x) => {
@@ -265,52 +274,53 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private drawRegions() {
+  private drawRegion(scenePlaybackRegion: ScenePlaybackRegion, scene: Scene) {
     // draw the regions of the currently selected scene
     if (!this.isWaveSurferReady()) {
       return;
     }
 
-    // TODO also draw the regions of the other scenes in their respective color, but
-    // with lower intensity
-    this.timelineService.waveSurfer.clearRegions();
-
     if (!this.sceneService.selectedScenes || this.sceneService.selectedScenes.length > 1) {
       return;
     }
 
-    for (let scene of this.sceneService.selectedScenes) {
+    // add the playback region
+    const waveSurferRegion = this.timelineService.waveSurfer.addRegion({
+      start: scenePlaybackRegion.startMillis / 1000,
+      end: scenePlaybackRegion.endMillis / 1000,
+      color: '#fff',
+      data: { handled: true }
+    });
+    this.connectRegion(waveSurferRegion, scene, scenePlaybackRegion);
+
+    // add all presets
+    // TODO
+    // for (let presetUuid of scene.presetUuids) {
+    //   const preset = this.presetService.getPresetByUuid(presetUuid);
+
+    //   let waveSurferRegion = this.timelineService.waveSurfer.addRegion({
+    //     start: (scenePlaybackRegion.startMillis + (preset.startMillis ? preset.startMillis : 0)) / 1000,
+    //     end: (scenePlaybackRegion.startMillis + (preset.endMillis ? preset.endMillis : scenePlaybackRegion.endMillis - scenePlaybackRegion.startMillis)) / 1000,
+    //     color: '#fff',
+    //     data: { handled: true },
+    //     // TODO
+    //     attributes: {
+    //       preset: true,
+    //       name: 'Preset 1'
+    //     }
+    //   });
+    //   this.connectRegion(waveSurferRegion, scene, scenePlaybackRegion, preset);
+    // }
+
+    this.updateRegionSelection();
+  }
+
+  drawAllRegions() {
+    for (let scene of this.sceneService.scenes) {
       for (let scenePlaybackRegion of scene.scenePlaybackRegionList) {
-        // add the playback region
-        const waveSurferRegion = this.timelineService.waveSurfer.addRegion({
-          start: scenePlaybackRegion.startMillis / 1000,
-          end: scenePlaybackRegion.endMillis / 1000,
-          color: 'rgba(0, 0, 0, 0)',
-          data: { handled: true }
-        });
-        this.connectRegion(waveSurferRegion, scene, scenePlaybackRegion);
-
-        // add all presets
-        for (let presetUuid of scene.presetUuids) {
-          const preset = this.presetService.getPresetByUuid(presetUuid);
-
-          let waveSurferRegion = this.timelineService.waveSurfer.addRegion({
-            start: (scenePlaybackRegion.startMillis + (preset.startMillis ? preset.startMillis : 0)) / 1000,
-            end: (scenePlaybackRegion.startMillis + (preset.endMillis ? preset.endMillis : scenePlaybackRegion.endMillis - scenePlaybackRegion.startMillis)) / 1000,
-            color: 'rgba(0, 0, 0, 0)',
-            data: { handled: true },
-            // TODO
-            attributes: {
-              preset: true,
-              name: 'Preset 1'
-            }
-          });
-          this.connectRegion(waveSurferRegion, scene, scenePlaybackRegion, preset);
-        }
+        this.drawRegion(scenePlaybackRegion, scene);
       }
     }
-
-    this.updateRegionColors();
   }
 
   play() {
@@ -353,10 +363,12 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     this.selectedPlaybackRegion = scenePlaybackRegion;
 
     if (waveSurferRegion) {
+      waveSurferRegion.color = 'rgba(' + this.hexToRgb(this.sceneService.selectedScenes[0].color).r + ', ' + this.hexToRgb(this.sceneService.selectedScenes[0].color).g + ', ' + this.hexToRgb(this.sceneService.selectedScenes[0].color).b + ', ' + this.intensityHighlighted + ')';
+      waveSurferRegion.attributes.selectable = true;
       this.connectRegion(waveSurferRegion, this.sceneService.selectedScenes[0], scenePlaybackRegion);
-      this.updateRegionColors();
+      this.updateRegionSelection();
     } else {
-      this.drawRegions();
+      this.drawRegion(scenePlaybackRegion, this.sceneService.selectedScenes[0]);
     }
   }
 

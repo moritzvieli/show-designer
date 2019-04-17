@@ -28,6 +28,11 @@ body {
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* Enable a column taking up the left space */
 .flex-grow {
   flex: 1 0;
@@ -294,10 +299,17 @@ input[type="checkbox"].bigcheck:checked + span.bigcheck-target:after {
   border: 1px solid #ddd;
   background: rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+  opacity: 0;
+  cursor: unset !important;
 }
 
 .wavesurfer-handle-end {
   margin-left: -10px;
+}
+
+.wavesurfer-region[data-region-selectable="true"] .wavesurfer-handle {
+  opacity: 1;
+  cursor: pointer;
 }
 
 .wavesurfer-handle:before,
