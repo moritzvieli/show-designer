@@ -70,6 +70,113 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     }
   }
 
+  formatTimeCallback(seconds: number, pxPerSec: number) {
+    if (this.timelineService.gridType == 'musical') {
+      return 'x';
+    }
+
+
+
+
+
+    let minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+
+    // fill up seconds with zeroes
+    let secondsStr = Math.round(seconds).toString();
+
+    if (pxPerSec >= 25 * 10) {
+      secondsStr = seconds.toFixed(2);
+    } else if (pxPerSec >= 25 * 1) {
+      secondsStr = seconds.toFixed(1);
+    }
+
+    if (minutes > 0) {
+      if (seconds < 10) {
+        secondsStr = '0' + secondsStr;
+      }
+
+      return `${minutes}:${secondsStr}`;
+    }
+
+    return secondsStr;
+  }
+
+  timeInterval(pxPerSec: number) {
+    if (this.timelineService.gridType == 'musical') {
+      return 60 / this.timelineService.beatsPerMinute;
+    }
+
+
+
+
+    let retval = 1;
+
+    if (pxPerSec >= 25 * 100) {
+      retval = 0.01;
+    } else if (pxPerSec >= 25 * 40) {
+      retval = 0.025;
+    } else if (pxPerSec >= 25 * 10) {
+      retval = 0.1;
+    } else if (pxPerSec >= 25 * 4) {
+      retval = 0.25;
+    } else if (pxPerSec >= 25) {
+      retval = 1;
+    } else if (pxPerSec * 5 >= 25) {
+      retval = 5;
+    } else if (pxPerSec * 15 >= 25) {
+      retval = 15;
+    } else {
+      retval = Math.ceil(0.5 / pxPerSec) * 60;
+    }
+
+    return retval;
+  }
+
+  primaryLabelInterval(pxPerSec: number) {
+    if (this.timelineService.gridType == 'musical') {
+      return this.timelineService.timeSignatureUpper / this.timelineService.timeSignatureLower * this.timelineService.gridResolution;
+    }
+    
+
+
+
+
+    let retval = 1;
+
+    if (pxPerSec >= 25 * 100) {
+      retval = 10;
+    } else if (pxPerSec >= 25 * 40) {
+      retval = 4;
+    } else if (pxPerSec >= 25 * 10) {
+      retval = 10;
+    } else if (pxPerSec >= 25 * 4) {
+      retval = 4;
+    } else if (pxPerSec >= 25) {
+      retval = 1;
+    } else if (pxPerSec * 5 >= 25) {
+      retval = 5;
+    } else if (pxPerSec * 15 >= 25) {
+      retval = 15;
+    } else {
+      retval = Math.ceil(0.5 / pxPerSec) * 60;
+    }
+
+    return retval;
+  }
+
+  secondaryLabelInterval(pxPerSec: number) {
+    if (this.timelineService.gridType == 'musical') {
+      return 0;
+    }
+
+
+
+
+    // draw one every 10s as an example
+    return Math.floor(10 / this.timeInterval(pxPerSec));
+  }
+
   ngAfterViewInit() {
     setTimeout(() => {
       this.timelineService.waveSurfer = WaveSurfer.create({
@@ -80,15 +187,15 @@ export class TimelineComponent implements OnInit, AfterViewInit {
         height: 1,
         plugins: [
           CursorPlugin.create({
-            showTime: true,
+            // showTime: true,
             opacity: 1,
             color: 'white',
-            customShowTimeStyle: {
-              'background-color': '#fff',
-              color: 'black',
-              padding: '2px',
-              'font-size': '10px'
-            }
+            // customShowTimeStyle: {
+            //   'background-color': '#fff',
+            //   color: 'black',
+            //   padding: '2px',
+            //   'font-size': '10px'
+            // }
           }),
           RegionsPlugin.create({
             dragSelection: {
@@ -99,11 +206,17 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           TimeLinePlugin.create({
             container: "#waveform-timeline",
             primaryFontColor: '#fff',
-            secondaryFontColor: '#fff'
+            secondaryFontColor: '#fff',
+            offset: this.timelineService.gridOffsetMillis / 1000,
+            formatTimeCallback: this.formatTimeCallback.bind(this),
+            timeInterval: this.timeInterval.bind(this),
+            primaryLabelInterval: this.primaryLabelInterval.bind(this),
+            secondaryLabelInterval: this.secondaryLabelInterval.bind(this),
           })
         ]
       });
       this.timelineService.waveSurfer.load('../../assets/test.wav');
+
 
       this.timelineService.waveSurfer.on('ready', () => {
         setTimeout(() => {
@@ -112,6 +225,63 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           this.changeDetectorRef.detectChanges();
           this.onResize();
           this.drawAllRegions();
+
+          // scroll wavesurfer in sync with the timeline
+          this.timelineService.waveSurfer.timeline.wrapper.addEventListener('scroll', () => {
+            this.timelineService.waveSurfer.drawer.wrapper.scrollLeft = this.timelineService.waveSurfer.timeline.wrapper.scrollLeft;
+            
+            // Set the scroll position of the timeline to the same position as the wavesurfer,
+            // because the timeline is larger than wavesurfer and might get out of sync.
+            // This way, if wavesurfer cannot scroll any further, we reset the position
+            // of the timeline as well.
+            this.timelineService.waveSurfer.timeline.wrapper.scrollLeft = this.timelineService.waveSurfer.drawer.wrapper.scrollLeft;
+          });
+
+          // display the cursor also on the timeline
+          this.timelineService.waveSurfer.timeline.wrapper.addEventListener('mouseenter', () => {
+            this.timelineService.waveSurfer.cursor.showCursor();
+          });
+          this.timelineService.waveSurfer.timeline.wrapper.addEventListener('mouseleave', () => {
+            this.timelineService.waveSurfer.cursor.hideCursor();
+          });
+          this.timelineService.waveSurfer.timeline.wrapper.addEventListener('mousemove', (e: any) => {
+            const bbox = this.timelineService.waveSurfer.container.getBoundingClientRect();
+            let x = e.clientX - bbox.left;
+            this.timelineService.waveSurfer.cursor.updateCursorPosition(x, 0);
+          });
+
+          // seek on timeline-click
+          this.timelineService.waveSurfer.timeline.wrapper.addEventListener('click', (e: any) => {
+            // taken from wavesurfer -> drawer -> handleEvent
+            const clientX = e.targetTouches
+                ? e.targetTouches[0].clientX
+                : e.clientX;
+            const bbox = this.timelineService.waveSurfer.timeline.wrapper.getBoundingClientRect();
+    
+            const nominalWidth = this.timelineService.waveSurfer.timeline.drawer.width;
+            const parentWidth = this.timelineService.waveSurfer.timeline.drawer.getWidth();
+    
+            let progress: number;
+
+            if (!this.timelineService.waveSurfer.timeline.drawer.params.fillParent && nominalWidth < parentWidth) {
+                progress =
+                    (this.timelineService.waveSurfer.timeline.drawer.params.rtl ? bbox.right - clientX : clientX - bbox.left) *
+                        (this.timelineService.waveSurfer.timeline.drawer.params.pixelRatio / nominalWidth) || 0;
+    
+                if (progress > 1) {
+                    progress = 1;
+                }
+            } else {
+                progress =
+                    ((this.timelineService.waveSurfer.timeline.drawer.params.rtl
+                        ? bbox.right - clientX
+                        : clientX - bbox.left) +
+                        this.timelineService.waveSurfer.timeline.wrapper.scrollLeft) /
+                        this.timelineService.waveSurfer.timeline.wrapper.scrollWidth || 0;
+            }
+
+            setTimeout(() => this.timelineService.waveSurfer.seekTo(progress), 0);
+          });
         }, 0);
       });
 
@@ -256,7 +426,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     waveSurferRegion.preset = preset;
 
     waveSurferRegion.on('click', () => {
-      if(this.sceneService.sceneIsSelected(scene)) {
+      if (this.sceneService.sceneIsSelected(scene)) {
         this.setSelectedRegion(scenePlaybackRegion);
       }
     });
@@ -268,9 +438,17 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     });
 
     waveSurferRegion.on('update-end', () => {
-      // TODO snap to grid
-      waveSurferRegion.start = waveSurferRegion.start - 10;
-      waveSurferRegion.updateRender();
+      if (this.timelineService.snapToGrid) {
+        if (this.timelineService.gridType == 'musical') {
+          // TODO
+          waveSurferRegion.start = waveSurferRegion.start - 10;
+
+
+          waveSurferRegion.updateRender();
+        } else if (this.timelineService.gridType == 'time') {
+          // TODO
+        }
+      }
     });
   }
 

@@ -18,7 +18,7 @@
 
       <div class="my-auto mr-3 ml-auto" style="float: left;">
         <i (click)="applyZoom(zoom - 5)" class="fa fa-search-minus mr-3" aria-hidden="true"></i>
-        <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="zoom" [min]="0" [max]="100" [step]="1"
+        <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="zoom" [min]="0" [max]="200" [step]="1"
           (change)="applyZoom($event.newValue)"></mv-slider>
         <i (click)="applyZoom(zoom + 5)" class="fa fa-search-plus ml-3" aria-hidden="true"></i>
       </div>
