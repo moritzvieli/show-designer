@@ -80,27 +80,14 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
 
 
-    let minutes = Math.floor(seconds / 60);
-    seconds = seconds % 60;
+    // calculate minutes and seconds from seconds count
+    const minutes: number = Math.round(seconds / 60);
+    seconds = Math.round(seconds % 60);
 
     // fill up seconds with zeroes
-    let secondsStr = Math.round(seconds).toString();
-
-    if (pxPerSec >= 25 * 10) {
-      secondsStr = seconds.toFixed(2);
-    } else if (pxPerSec >= 25 * 1) {
-      secondsStr = seconds.toFixed(1);
-    }
-
-    if (minutes > 0) {
-      if (seconds < 10) {
-        secondsStr = '0' + secondsStr;
-      }
-
-      return `${minutes}:${secondsStr}`;
-    }
-
-    return secondsStr;
+    let secondsStr = seconds < 10 ? '0' + seconds : seconds;
+    console.log('aaa', `${minutes}:${secondsStr}`);
+    return `${minutes}:${secondsStr}`;
   }
 
   timeInterval(pxPerSec: number) {
@@ -215,6 +202,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     setTimeout(() => {
+      // TODO what if I change the grid type?
       this.timelineService.waveSurfer = WaveSurfer.create({
         container: '#waveform',
         waveColor: 'white',
@@ -253,7 +241,6 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
 
       this.timelineService.waveSurfer.on('ready', () => {
-        console.log(this.timelineService.waveSurfer);
         setTimeout(() => {
           this.duration = this.msToTime(this.timelineService.waveSurfer.getDuration() * 1000);
           this.updateCurrentTime();
@@ -396,7 +383,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   applyZoom(zoom: any) {
-    if(zoom < 0 || zoom > 200) {
+    if (zoom < 0 || zoom > 200) {
       return;
     }
 
@@ -512,8 +499,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     });
     this.connectRegion(waveSurferRegion, scene, scenePlaybackRegion);
 
-    // add all presets
-    // TODO
+    // TODO show the all presets
     // for (let presetUuid of scene.presetUuids) {
     //   const preset = this.presetService.getPresetByUuid(presetUuid);
 
