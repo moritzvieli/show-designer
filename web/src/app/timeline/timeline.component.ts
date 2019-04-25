@@ -29,6 +29,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   public currentTime: string;
   public duration: string;
   private timeUpdateSubscription: Subscription;
+  private timelineClicking: boolean = false;
 
   constructor(
     private sceneService: SceneService,
@@ -72,7 +73,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   formatTimeCallback(seconds: number, pxPerSec: number) {
     if (this.timelineService.gridType == 'musical') {
-      return 'x';
+      return Math.round(seconds / this.timelineService.timeSignatureUpper / (60 / this.timelineService.beatsPerMinute));
     }
 
 
@@ -137,7 +138,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     if (this.timelineService.gridType == 'musical') {
       return this.timelineService.timeSignatureUpper / this.timelineService.timeSignatureLower * this.timelineService.gridResolution;
     }
-    
+
 
 
 
@@ -177,31 +178,64 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     return Math.floor(10 / this.timeInterval(pxPerSec));
   }
 
+  private seeekWithTimeline(e: any) {
+    // taken from wavesurfer -> drawer -> handleEvent
+    const clientX = e.targetTouches
+      ? e.targetTouches[0].clientX
+      : e.clientX;
+    const bbox = this.timelineService.waveSurfer.timeline.wrapper.getBoundingClientRect();
+
+    const nominalWidth = this.timelineService.waveSurfer.timeline.drawer.width;
+    const parentWidth = this.timelineService.waveSurfer.timeline.drawer.getWidth();
+
+    let progress: number;
+
+    if (!this.timelineService.waveSurfer.timeline.drawer.params.fillParent && nominalWidth < parentWidth) {
+      progress =
+        (this.timelineService.waveSurfer.timeline.drawer.params.rtl ? bbox.right - clientX : clientX - bbox.left) *
+        (this.timelineService.waveSurfer.timeline.drawer.params.pixelRatio / nominalWidth) || 0;
+
+      if (progress > 1) {
+        progress = 1;
+      }
+    } else {
+      progress =
+        ((this.timelineService.waveSurfer.timeline.drawer.params.rtl
+          ? bbox.right - clientX
+          : clientX - bbox.left) +
+          this.timelineService.waveSurfer.timeline.wrapper.scrollLeft) /
+        this.timelineService.waveSurfer.timeline.wrapper.scrollWidth || 0;
+    }
+
+    setTimeout(() => {
+      this.timelineService.waveSurfer.seekTo(progress);
+      this.changeDetectorRef.detectChanges();
+    }, 0);
+  }
+
   ngAfterViewInit() {
     setTimeout(() => {
       this.timelineService.waveSurfer = WaveSurfer.create({
         container: '#waveform',
-        waveColor: '#cecece',
+        waveColor: 'white',
         progressColor: 'white',
         //barWidth: 2,
         height: 1,
+        interact: false,
         plugins: [
           CursorPlugin.create({
             // showTime: true,
             opacity: 1,
-            color: 'white',
-            // customShowTimeStyle: {
-            //   'background-color': '#fff',
-            //   color: 'black',
-            //   padding: '2px',
-            //   'font-size': '10px'
-            // }
+            color: '#fd7e14',
+            hideOnBlur: false /* don't show/hide the cursor on the wave (only on the timeline) */
           }),
           RegionsPlugin.create({
             dragSelection: {
               slop: 5
             },
-            color: '#fff'
+            color: '#fff',
+            snapToGridInterval: 60 / this.timelineService.beatsPerMinute,
+            snapToGridOffset: this.timelineService.gridOffsetMillis / 1000
           }),
           TimeLinePlugin.create({
             container: "#waveform-timeline",
@@ -219,6 +253,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
 
       this.timelineService.waveSurfer.on('ready', () => {
+        console.log(this.timelineService.waveSurfer);
         setTimeout(() => {
           this.duration = this.msToTime(this.timelineService.waveSurfer.getDuration() * 1000);
           this.updateCurrentTime();
@@ -229,7 +264,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           // scroll wavesurfer in sync with the timeline
           this.timelineService.waveSurfer.timeline.wrapper.addEventListener('scroll', () => {
             this.timelineService.waveSurfer.drawer.wrapper.scrollLeft = this.timelineService.waveSurfer.timeline.wrapper.scrollLeft;
-            
+
             // Set the scroll position of the timeline to the same position as the wavesurfer,
             // because the timeline is larger than wavesurfer and might get out of sync.
             // This way, if wavesurfer cannot scroll any further, we reset the position
@@ -250,38 +285,27 @@ export class TimelineComponent implements OnInit, AfterViewInit {
             this.timelineService.waveSurfer.cursor.updateCursorPosition(x, 0);
           });
 
+          // hide the cursor on the wave initially. in combination with the param hideOnBlur = false,
+          // it will never be displayed on the wave now. we handle it on the timeline only.
+          this.timelineService.waveSurfer.cursor.hideCursor();
+
           // seek on timeline-click
-          this.timelineService.waveSurfer.timeline.wrapper.addEventListener('click', (e: any) => {
-            // taken from wavesurfer -> drawer -> handleEvent
-            const clientX = e.targetTouches
-                ? e.targetTouches[0].clientX
-                : e.clientX;
-            const bbox = this.timelineService.waveSurfer.timeline.wrapper.getBoundingClientRect();
-    
-            const nominalWidth = this.timelineService.waveSurfer.timeline.drawer.width;
-            const parentWidth = this.timelineService.waveSurfer.timeline.drawer.getWidth();
-    
-            let progress: number;
-
-            if (!this.timelineService.waveSurfer.timeline.drawer.params.fillParent && nominalWidth < parentWidth) {
-                progress =
-                    (this.timelineService.waveSurfer.timeline.drawer.params.rtl ? bbox.right - clientX : clientX - bbox.left) *
-                        (this.timelineService.waveSurfer.timeline.drawer.params.pixelRatio / nominalWidth) || 0;
-    
-                if (progress > 1) {
-                    progress = 1;
-                }
-            } else {
-                progress =
-                    ((this.timelineService.waveSurfer.timeline.drawer.params.rtl
-                        ? bbox.right - clientX
-                        : clientX - bbox.left) +
-                        this.timelineService.waveSurfer.timeline.wrapper.scrollLeft) /
-                        this.timelineService.waveSurfer.timeline.wrapper.scrollWidth || 0;
-            }
-
-            setTimeout(() => this.timelineService.waveSurfer.seekTo(progress), 0);
+          this.timelineService.waveSurfer.timeline.wrapper.addEventListener('mousedown', (e: any) => {
+            this.timelineClicking = true;
+            this.seeekWithTimeline(e);
           });
+
+          this.timelineService.waveSurfer.timeline.wrapper.addEventListener('mousemove', (e: any) => {
+            if (this.timelineClicking) {
+              this.seeekWithTimeline(e);
+            }
+          });
+
+          this.timelineService.waveSurfer.timeline.wrapper.addEventListener('mouseup', (e: any) => {
+            this.timelineClicking = false;
+          });
+
+          this.updateCurrentTime();
         }, 0);
       });
 
@@ -308,15 +332,41 @@ export class TimelineComponent implements OnInit, AfterViewInit {
         }
       });
 
-      this.timelineService.waveSurfer.on('region-updated', () => {
+      this.timelineService.waveSurfer.on('region-updated', (region: any) => {
         this.changeDetectorRef.detectChanges();
       });
     }, 0);
   }
 
   private updateCurrentTime() {
-    if (this.timelineService.waveSurfer) {
+    if (this.timelineService.waveSurfer && this.timelineService.waveSurfer.timeline.drawer) {
+      // display the current time
       this.currentTime = this.msToTime(this.timelineService.waveSurfer.getCurrentTime() * 1000);
+
+      // draw the current cursor on the timeline
+      let x: number = 0;
+      let duration: number = this.timelineService.waveSurfer.backend.getDuration();
+      let width: number =
+        this.timelineService.waveSurfer.params.fillParent && !this.timelineService.waveSurfer.params.scrollParent
+          ? this.timelineService.waveSurfer.timeline.drawer.getWidth()
+          : this.timelineService.waveSurfer.timeline.drawer.wrapper.scrollWidth * this.timelineService.waveSurfer.params.pixelRatio;
+
+      x = width / duration * this.timelineService.waveSurfer.getCurrentTime() - 2;
+
+      this.timelineService.waveSurfer.timeline.render();
+
+      this.timelineService.waveSurfer.timeline.canvases.forEach((canvas, i) => {
+        const leftOffset = i * this.timelineService.waveSurfer.timeline.maxCanvasWidth;
+
+        var ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#fd7e14';
+        ctx.beginPath();
+        ctx.moveTo(x - 12 - leftOffset, 20);
+        ctx.lineTo(x + 12 - leftOffset, 20);
+        ctx.lineTo(x - leftOffset, 45);
+        ctx.fill();
+      });
     }
   }
 
@@ -346,10 +396,15 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   applyZoom(zoom: any) {
+    if(zoom < 0 || zoom > 200) {
+      return;
+    }
+
     this.zoom = zoom;
     if (this.timelineService.waveSurfer) {
       setTimeout(() => {
         this.timelineService.waveSurfer.zoom(this.zoom);
+        this.updateCurrentTime();
       }, 0);
     }
   }
@@ -435,20 +490,6 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       this.setSelectedRegion(scenePlaybackRegion);
       scenePlaybackRegion.startMillis = waveSurferRegion.start * 1000;
       scenePlaybackRegion.endMillis = waveSurferRegion.end * 1000;
-    });
-
-    waveSurferRegion.on('update-end', () => {
-      if (this.timelineService.snapToGrid) {
-        if (this.timelineService.gridType == 'musical') {
-          // TODO
-          waveSurferRegion.start = waveSurferRegion.start - 10;
-
-
-          waveSurferRegion.updateRender();
-        } else if (this.timelineService.gridType == 'time') {
-          // TODO
-        }
-      }
     });
   }
 

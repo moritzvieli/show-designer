@@ -309,7 +309,7 @@ input[type="checkbox"].bigcheck:checked + span.bigcheck-target:after {
 
 .wavesurfer-region[data-region-selectable="true"] .wavesurfer-handle {
   opacity: 1;
-  cursor: pointer;
+  cursor: col-resize !important;
 }
 
 .wavesurfer-handle:before,
@@ -346,4 +346,9 @@ timeline::-webkit-scrollbar {
 /* Display the wavesurfer cursor over the timeline */
 cursor {
   top: -20px !important;
+}
+
+/* Change the progress line color */
+wave {
+  border-right-color: #fd7e14 !important;
 }
