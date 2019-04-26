@@ -243,7 +243,6 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       this.timelineService.waveSurfer.on('ready', () => {
         setTimeout(() => {
           this.duration = this.msToTime(this.timelineService.waveSurfer.getDuration() * 1000);
-          this.updateCurrentTime();
           this.changeDetectorRef.detectChanges();
           this.onResize();
           this.drawAllRegions();
@@ -331,6 +330,9 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       this.currentTime = this.msToTime(this.timelineService.waveSurfer.getCurrentTime() * 1000);
 
       // draw the current cursor on the timeline
+      // TODO redrawing the timeline each update is way to expensive.
+      // maybe as a better solution use an element, like the cursor inside Wavesurfer to
+      // display the progress?
       let x: number = 0;
       let duration: number = this.timelineService.waveSurfer.backend.getDuration();
       let width: number =
@@ -340,8 +342,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
       x = width / duration * this.timelineService.waveSurfer.getCurrentTime() - 2;
 
+      // update the timeline canvas
       this.timelineService.waveSurfer.timeline.render();
 
+      // draw the cursor on the timeline
       this.timelineService.waveSurfer.timeline.canvases.forEach((canvas, i) => {
         const leftOffset = i * this.timelineService.waveSurfer.timeline.maxCanvasWidth;
 

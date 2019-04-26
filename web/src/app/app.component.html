@@ -3,33 +3,24 @@
   style="border-bottom: 1px solid #444; height: 20px;">
 
   <!-- Menu buttons -->
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-        <a class="nav-link" routerLink="/play" routerLinkActive="active">{{ 'navigation.file' | translate }}</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          {{ 'navigation.settings' | translate }}
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#" (click)="openFixturePool()">Fixture pool</a>
-          <a class="dropdown-item" href="#">Stage</a>
-        </div>
-      </li>
-      <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-        <a class="nav-link" routerLink="/help" routerLinkActive="active">{{ 'navigation.help' | translate }}</a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Hamburger -->
-  <button class="navbar-toggler navbar-toggler-left ml-3" type="button" data-toggle="collapse"
-    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-    aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+      <a class="nav-link" routerLink="/play" routerLinkActive="active">{{ 'navigation.file' | translate }}</a>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{ 'navigation.settings' | translate }}
+      </a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+        <a class="dropdown-item" href="#" (click)="openFixturePool()">Fixture pool</a>
+        <a class="dropdown-item" href="#">Stage</a>
+      </div>
+    </li>
+    <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+      <a class="nav-link" routerLink="/help" routerLinkActive="active">{{ 'navigation.help' | translate }}</a>
+    </li>
+  </ul>
 </nav>
 
 <!-- 100 % height minus the menu bar above -->
