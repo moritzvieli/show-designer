@@ -76,17 +76,12 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       return Math.round(seconds / this.timelineService.timeSignatureUpper / (60 / this.timelineService.beatsPerMinute));
     }
 
-
-
-
-
     // calculate minutes and seconds from seconds count
-    const minutes: number = Math.round(seconds / 60);
-    seconds = Math.round(seconds % 60);
+    const minutes = parseInt(<any>(seconds / 60), 10);
+    seconds = parseInt(<any>(seconds % 60), 10);
 
     // fill up seconds with zeroes
-    let secondsStr = seconds < 10 ? '0' + seconds : seconds;
-    console.log('aaa', `${minutes}:${secondsStr}`);
+    const secondsStr = seconds < 10 ? '0' + seconds : seconds;
     return `${minutes}:${secondsStr}`;
   }
 
@@ -95,30 +90,14 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       return 60 / this.timelineService.beatsPerMinute;
     }
 
-
-
-
-    let retval = 1;
-
-    if (pxPerSec >= 25 * 100) {
-      retval = 0.01;
-    } else if (pxPerSec >= 25 * 40) {
-      retval = 0.025;
-    } else if (pxPerSec >= 25 * 10) {
-      retval = 0.1;
-    } else if (pxPerSec >= 25 * 4) {
-      retval = 0.25;
-    } else if (pxPerSec >= 25) {
-      retval = 1;
+    if (pxPerSec >= 25) {
+      return 1;
     } else if (pxPerSec * 5 >= 25) {
-      retval = 5;
+      return 5;
     } else if (pxPerSec * 15 >= 25) {
-      retval = 15;
-    } else {
-      retval = Math.ceil(0.5 / pxPerSec) * 60;
+      return 15;
     }
-
-    return retval;
+    return Math.ceil(0.5 / pxPerSec) * 60;
   }
 
   primaryLabelInterval(pxPerSec: number) {
@@ -126,31 +105,14 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       return this.timelineService.timeSignatureUpper / this.timelineService.timeSignatureLower * this.timelineService.gridResolution;
     }
 
-
-
-
-
-    let retval = 1;
-
-    if (pxPerSec >= 25 * 100) {
-      retval = 10;
-    } else if (pxPerSec >= 25 * 40) {
-      retval = 4;
-    } else if (pxPerSec >= 25 * 10) {
-      retval = 10;
-    } else if (pxPerSec >= 25 * 4) {
-      retval = 4;
-    } else if (pxPerSec >= 25) {
-      retval = 1;
+    if (pxPerSec >= 25) {
+      return 10;
     } else if (pxPerSec * 5 >= 25) {
-      retval = 5;
+      return 6;
     } else if (pxPerSec * 15 >= 25) {
-      retval = 15;
-    } else {
-      retval = Math.ceil(0.5 / pxPerSec) * 60;
+      return 4;
     }
-
-    return retval;
+    return 4;
   }
 
   secondaryLabelInterval(pxPerSec: number) {
@@ -158,11 +120,14 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       return 0;
     }
 
-
-
-
-    // draw one every 10s as an example
-    return Math.floor(10 / this.timeInterval(pxPerSec));
+    if (pxPerSec >= 25) {
+      return 5;
+    } else if (pxPerSec * 5 >= 25) {
+      return 2;
+    } else if (pxPerSec * 15 >= 25) {
+      return 2;
+    }
+    return 2;
   }
 
   private seeekWithTimeline(e: any) {
