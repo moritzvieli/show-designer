@@ -222,6 +222,10 @@ input[type="checkbox"].bigcheck:checked + span.bigcheck-target:after {
   height: 0;
 }
 
+accordion-group > div {
+  border: none !important;
+}
+
 /* Popover */
 .popover {
   background-color: white;

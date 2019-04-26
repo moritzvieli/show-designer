@@ -22,7 +22,6 @@ export class EffectComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.addPanTiltEffect();
   }
 
   private addEffect(effect: Effect) {
