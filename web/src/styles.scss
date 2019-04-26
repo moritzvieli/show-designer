@@ -214,6 +214,14 @@ input[type="checkbox"].bigcheck:checked + span.bigcheck-target:after {
   text-align: center;
 }
 
+.capability-container {
+  padding: 0 !important;
+
+  /* Required to fix vertical scroll in Chrome and Firefox.
+    Also see: https://stackoverflow.com/questions/14962468/flexbox-and-vertical-scroll-in-a-full-height-app-using-newer-flexbox-api */
+  height: 0;
+}
+
 /* Popover */
 .popover {
   background-color: white;

@@ -1,7 +1,0 @@
-.capability-container {
-    padding: 0 !important;
-  
-    /* Required to fix vertical scroll in Chrome and Firefox.
-    Also see: https://stackoverflow.com/questions/14962468/flexbox-and-vertical-scroll-in-a-full-height-app-using-newer-flexbox-api */
-    height: 0;
-  }
