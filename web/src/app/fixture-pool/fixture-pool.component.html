@@ -46,6 +46,12 @@
     </div>
     <div class="col-6">
       <!-- Fixtures -->
+      <div class="form-group row">
+        <label class="col-lg-2 col-form-label">{{ 'fixture-pool.universe' | translate }}</label>
+        <select class="custom-select">
+          <option>Universe 1</option>
+        </select>
+      </div>
       <div class="card border-secondary" style="height: 300px;">
         <div class="card-body p-0">
           <div class="list-group list-group-flush" [sortablejs]="fixtureService.fixtures">
@@ -76,21 +82,51 @@
       <!-- Tab navigation -->
       <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="compositions-tab" data-toggle="tab" href="#settings" role="tab">
-            <i class="fa fa-cog" aria-hidden="true"></i> {{ 'fixture-pool.settings' | translate }}
+          <a class="nav-link active" id="sets-tab" data-toggle="tab" href="#dmx" role="tab">
+            <i class="icon-ola" aria-hidden="true"></i> {{ 'fixture-pool.dmx' | translate }}
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="sets-tab" data-toggle="tab" href="#dmx" role="tab">
-            <i class="icon-ola" aria-hidden="true"></i> {{ 'fixture-pool.dmx' | translate }}
+          <a class="nav-link" id="compositions-tab" data-toggle="tab" href="#settings" role="tab">
+            <i class="fa fa-cog" aria-hidden="true"></i> {{ 'fixture-pool.settings' | translate }}
           </a>
         </li>
       </ul>
 
       <!-- Tab content -->
       <div class="tab-content" id="myTabContent">
-        <div class="tab-pane show active" id="settings" role="tabpanel">
-          <!-- Fixture settings -->
+        <!-- DMX universe overview-->
+        <div class="tab-pane show active" id="dmx" role="tabpanel">
+          <div class="form-group row">
+            <div class="col-auto flex-grow"></div>
+            <div class="col-lg-3 d-flex">
+              <div class="form-check my-auto ml-auto">
+                <input type="checkbox" class="form-check-input" id="showChannelNumbers" [ngModel]="showChannelNumbers"
+                  (ngModelChange)="showChannelNumbers = $event">
+                <label class="form-check-label" for="showChannelNumbers">Show channels</label>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div *ngFor="let channel of dmxChannels; let i = index;" class="dmx-channel"
+              [class.dmx-channel-occupied]="channelOccupied(i)"
+              [class.dmx-channel-occupied-start]="channelOccupiedStart(i)"
+              [class.dmx-channel-occupied-end]="channelOccupiedEnd(i)"
+              [class.dmx-channel-overlapped]="channelOverlapped(i)" (mousedown)="channelMouseDown($event)"
+              (mouseover)="channelMouseOver($event)" [attr.data-index]="i">
+              <div class="d-flex w-100 dmx-channel-text" [attr.data-index]="i"
+                [class.dmx-channel-text-visible]="showChannelNumbers">
+                <div class="m-auto" style="font-size: 11px" [attr.data-index]="i"><small
+                    [attr.data-index]="i">{{ (i + 1) }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fixture settings -->
+        <div class="tab-pane" id="settings" role="tabpanel">
           <div *ngIf="selectedFixture && fixtureService.getTemplateByFixture(selectedFixture)">
 
             <div class="form-group row">
@@ -114,46 +150,6 @@
               </div>
             </div>
 
-          </div>
-        </div>
-        <div class="tab-pane" id="dmx" role="tabpanel">
-          <!-- DMX universe overview-->
-          <div class="form-group row">
-            <label class="col-lg-2 col-form-label">{{ 'fixture-pool.universe' | translate }}</label>
-            <div class="col d-flex">
-              <!-- <select class="custom-select" [ngModel]="settings?.midiInDevice?.id"
-                (ngModelChange)="settings.midiInDevice = $event">
-                <option *ngFor="let midiDevice of midiInDevices" [ngValue]="midiDevice.id">{{ midiDevice.name }}</option>
-              </select> -->
-              <select class="custom-select">
-                <option>Universe 1</option>
-              </select>
-            </div>
-            <div class="col-auto flex-grow"></div>
-            <div class="col-lg-3 d-flex">
-              <div class="form-check my-auto ml-auto">
-                <input type="checkbox" class="form-check-input" id="showChannelNumbers" [ngModel]="showChannelNumbers"
-                  (ngModelChange)="showChannelNumbers = $event">
-                <label class="form-check-label" for="showChannelNumbers">Show channels</label>
-              </div>
-            </div>
-          </div>
-
-          <!-- DMX mapping -->
-          <div>
-            <div *ngFor="let channel of dmxChannels; let i = index;" class="dmx-channel"
-              [class.dmx-channel-occupied]="channelOccupied(i)"
-              [class.dmx-channel-occupied-start]="channelOccupiedStart(i)"
-              [class.dmx-channel-occupied-end]="channelOccupiedEnd(i)"
-              [class.dmx-channel-overlapped]="channelOverlapped(i)"
-              (mousedown)="channelMouseDown($event)"
-              (mouseover)="channelMouseOver($event)"
-              [attr.data-index]="i">
-              <div class="d-flex w-100 dmx-channel-text" [attr.data-index]="i" [class.dmx-channel-text-visible]="showChannelNumbers">
-                <div class="m-auto" style="font-size: 11px" [attr.data-index]="i"><small [attr.data-index]="i">{{ (i + 1) }}</small>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

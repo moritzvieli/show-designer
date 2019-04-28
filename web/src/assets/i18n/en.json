@@ -5,7 +5,10 @@
         "finish": "Finish",
         "nav-next": "Next",
         "nav-back": "Back",
-        "ok": "OK"
+        "ok": "OK",
+        "capabilities": "Capabilities",
+        "settings": "Settings",
+        "effects": "Effects"
     },
     "loading": {
         "title": "Loading...",
@@ -29,5 +32,20 @@
         "mode": "Mode",
         "channels": "channels",
         "universe": "Universe"
+    },
+    "composition": {
+        "new": "Create new composition..."
+    },
+    "timeline": {
+        "grid": "Grid",
+        "grid-type": "Type",
+        "grid-type-time-based": "Time based",
+        "grid-type-musical": "Musical",
+        "snap-to-grid": "Snap to grid",
+        "beats-per-minute": "BPM",
+        "time-signature": "Time signature",
+        "remove-region": "Remove selected region",
+        "add-region": "Add new region",
+        "remove-composition": "Remove composition"
     }
 }

@@ -15,11 +15,17 @@ export class TimelineService {
 
   snapToGrid: boolean = true;
   // time based or musical
-  gridType: string = 'time';
+  gridType: string = 'musical';
   // e.g. 1/1, 1/2, 1/4, etc.
   gridResolution: number = 8;
   gridOffsetMillis: number = 50;
 
   constructor() { }
+
+  updateGrid() {
+    console.log('TODO update grid');
+    // TODO
+
+  }
 
 }

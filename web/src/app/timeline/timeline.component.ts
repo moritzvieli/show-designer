@@ -10,6 +10,8 @@ import { PresetService } from '../services/preset.service';
 import { Subscription, timer } from 'rxjs';
 import { Scene } from '../models/scene';
 import { Preset } from '../models/preset';
+import { BsModalService } from 'ngx-bootstrap';
+import { TimelineGridComponent } from './timeline-grid/timeline-grid.component';
 
 @Component({
   selector: 'app-timeline',
@@ -35,7 +37,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     private sceneService: SceneService,
     private timelineService: TimelineService,
     private presetService: PresetService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private modalService: BsModalService
   ) {
     this.presetService.previewSelectionChanged.subscribe(() => {
       this.selectedPlaybackRegion = undefined;
@@ -175,6 +178,9 @@ export class TimelineComponent implements OnInit, AfterViewInit {
         //barWidth: 2,
         height: 1,
         interact: false,
+        // Use for timelines without sound. Wave will be displayed
+        // wrong, but should work for a dummy audio without any waves.
+        //duration: 400,
         plugins: [
           CursorPlugin.create({
             // showTime: true,
@@ -257,6 +263,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           });
 
           this.updateCurrentTime();
+
+          this.changeDetectorRef.detectChanges();
         }, 0);
       });
 
@@ -290,40 +298,46 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   private updateCurrentTime() {
-    if (this.timelineService.waveSurfer && this.timelineService.waveSurfer.timeline.drawer) {
-      // display the current time
-      this.currentTime = this.msToTime(this.timelineService.waveSurfer.getCurrentTime() * 1000);
-
-      // draw the current cursor on the timeline
-      // TODO redrawing the timeline each update is way to expensive.
-      // maybe as a better solution use an element, like the cursor inside Wavesurfer to
-      // display the progress?
-      let x: number = 0;
-      let duration: number = this.timelineService.waveSurfer.backend.getDuration();
-      let width: number =
-        this.timelineService.waveSurfer.params.fillParent && !this.timelineService.waveSurfer.params.scrollParent
-          ? this.timelineService.waveSurfer.timeline.drawer.getWidth()
-          : this.timelineService.waveSurfer.timeline.drawer.wrapper.scrollWidth * this.timelineService.waveSurfer.params.pixelRatio;
-
-      x = width / duration * this.timelineService.waveSurfer.getCurrentTime() - 2;
-
-      // update the timeline canvas
-      this.timelineService.waveSurfer.timeline.render();
-
-      // draw the cursor on the timeline
-      this.timelineService.waveSurfer.timeline.canvases.forEach((canvas, i) => {
-        const leftOffset = i * this.timelineService.waveSurfer.timeline.maxCanvasWidth;
-
-        var ctx = canvas.getContext('2d');
-
-        ctx.fillStyle = '#fd7e14';
-        ctx.beginPath();
-        ctx.moveTo(x - 12 - leftOffset, 20);
-        ctx.lineTo(x + 12 - leftOffset, 20);
-        ctx.lineTo(x - leftOffset, 45);
-        ctx.fill();
-      });
+    if (!this.timelineService.waveSurfer) {
+      return;
     }
+
+    // display the current time
+    this.currentTime = this.msToTime(this.timelineService.waveSurfer.getCurrentTime() * 1000);
+
+    if (!this.timelineService.waveSurfer.timeline.drawer) {
+      return;
+    }
+
+    // draw the current cursor on the timeline
+    // TODO redrawing the timeline each update is way to expensive.
+    // maybe as a better solution use an element, like the cursor inside Wavesurfer to
+    // display the progress?
+    let x: number = 0;
+    let duration: number = this.timelineService.waveSurfer.backend.getDuration();
+    let width: number =
+      this.timelineService.waveSurfer.params.fillParent && !this.timelineService.waveSurfer.params.scrollParent
+        ? this.timelineService.waveSurfer.timeline.drawer.getWidth()
+        : this.timelineService.waveSurfer.timeline.drawer.wrapper.scrollWidth * this.timelineService.waveSurfer.params.pixelRatio;
+
+    x = width / duration * this.timelineService.waveSurfer.getCurrentTime() - 2;
+
+    // update the timeline canvas
+    this.timelineService.waveSurfer.timeline.render();
+
+    // draw the cursor on the timeline
+    this.timelineService.waveSurfer.timeline.canvases.forEach((canvas, i) => {
+      const leftOffset = i * this.timelineService.waveSurfer.timeline.maxCanvasWidth;
+
+      var ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#fd7e14';
+      ctx.beginPath();
+      ctx.moveTo(x - 12 - leftOffset, 20);
+      ctx.lineTo(x + 12 - leftOffset, 20);
+      ctx.lineTo(x - leftOffset, 45);
+      ctx.fill();
+    });
   }
 
   private startTimeUpdater() {
@@ -547,7 +561,39 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   removeRegion() {
+    if (!this.selectedPlaybackRegion) {
+      return;
+    }
 
+    if (this.sceneService.selectedScenes.length != 1) {
+      return;
+    }
+
+    for (let i = 0; i < this.sceneService.selectedScenes[0].scenePlaybackRegionList.length; i++) {
+      if (this.sceneService.selectedScenes[0].scenePlaybackRegionList[i] == this.selectedPlaybackRegion) {
+        // remove the region from wavesurfer
+        for (let key of Object.keys(this.timelineService.waveSurfer.regions.list)) {
+          let region: any = this.timelineService.waveSurfer.regions.list[key];
+
+          if (region.scenePlaybackRegion == this.selectedPlaybackRegion) {
+            region.remove();
+          }
+        }
+
+        this.selectedPlaybackRegion = undefined;
+        this.sceneService.selectedScenes[0].scenePlaybackRegionList.splice(i, 1);
+
+        return;
+      }
+    }
+  }
+
+  openGridSettings() {
+    let bsModalRef = this.modalService.show(TimelineGridComponent, { keyboard: true, ignoreBackdropClick: false, class: '' });
+  }
+
+  removeComposition() {
+    // TODO confirm and delete composition
   }
 
   @HostListener('document:keypress', ['$event'])

@@ -3,6 +3,10 @@
 
     <div class="d-flex pb-3">
       <div class="btn-group mr-3 my-auto" role="group" style="float: left;">
+        <select class="custom-select" style="width: 150px; height: 30px;">
+          <option>The current Composition</option>
+          <option>{{ "composition.new" | translate }}</option>
+        </select>
         <a href="#" class="btn btn-primary m-0 p-1" (click)="rewind(); false;"><i class="fa fa-step-backward fa-fw"
             aria-hidden="true"></i></a>
         <a *ngIf="timelineService.playState == 'paused'" href="#" class="btn btn-primary m-0 p-1"
@@ -28,14 +32,21 @@
           [value]="selectedPlaybackRegion?.endMillis">
       </div>
 
-      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeRegion(); false;"><i class="fa fa-th"
-        aria-hidden="true"></i></a>
+      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="openGridSettings(); false;"
+        popover="{{ 'timeline.grid' | translate }}" container="body" placement="left"
+        triggers="mouseenter:mouseleave"><i class="fa fa-th" aria-hidden="true"></i></a>
 
-      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeRegion(); false;"><i class="fa fa-minus-circle"
-          aria-hidden="true"></i></a>
+      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeRegion(); false;"
+        popover="{{ 'timeline.remove-region' | translate }}" container="body" placement="left"
+        triggers="mouseenter:mouseleave"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>
 
-      <a href="#" class="btn btn-secondary m-0 py-1" (click)="addRegion(); false;"><i class="fa fa-plus-circle"
-          aria-hidden="true"></i></a>
+      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="addRegion(); false;"
+        popover="{{ 'timeline.add-region' | translate }}" container="body" placement="left"
+        triggers="mouseenter:mouseleave"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+
+      <a href="#" class="btn btn-secondary m-0 py-1" (click)="addRegion(); false;"
+        popover="{{ 'timeline.remove-composition' | translate }}" container="body" placement="left"
+        triggers="mouseenter:mouseleave"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
     </div>
 
     <div>

@@ -5,7 +5,10 @@
         "finish": "Abschliessen",
         "nav-next": "Weiter",
         "nav-back": "Zurück",
-        "ok": "OK"
+        "ok": "OK",
+        "capabilities": "Fähigkeiten",
+        "settings": "Einstellungen",
+        "effects": "Effekte"
     },
     "loading": {
         "title": "Laden...",
@@ -29,5 +32,20 @@
         "mode": "Modus",
         "channels": "Kanäle",
         "universe": "Universum"
+    },
+    "composition": {
+        "new": "Neue Komposition erstellen..."
+    },
+    "timeline": {
+        "grid": "Raster",
+        "grid-type": "Typ",
+        "grid-type-time-based": "Zeitbasiert",
+        "grid-type-musical": "Musikalisch",
+        "snap-to-grid": "Am Raster ausrichten",
+        "beats-per-minute": "BPM",
+        "time-signature": "Taktangabe",
+        "remove-region": "Selektierte Region entfernen",
+        "add-region": "Neue Region hinzufügen",
+        "remove-composition": "Komposition entfernen"
     }
 }
