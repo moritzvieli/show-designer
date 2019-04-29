@@ -9,25 +9,28 @@ import { ScenePlaybackRegion } from '../models/scene-playback-region';
 import { PresetService } from './preset.service';
 import { Scene } from '../models/scene';
 import { Preset } from '../models/preset';
+import { Composition } from '../models/composition';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TimelineService {
 
-  waveSurfer: WaveSurfer;
-  playState: string = 'paused';
+  public compositions: Composition[] = [];
 
-  beatsPerMinute: number = 178;
-  timeSignatureUpper: number = 6;
-  timeSignatureLower: number = 8;
+  public waveSurfer: WaveSurfer;
+  public playState: string = 'paused';
 
-  snapToGrid: boolean = true;
+  public beatsPerMinute: number = 178;
+  public timeSignatureUpper: number = 6;
+  public timeSignatureLower: number = 8;
+
+  public snapToGrid: boolean = true;
   // time based or musical
-  gridType: string = 'musical';
+  public gridType: string = 'musical';
   // e.g. 1/1, 1/2, 1/4, etc.
-  gridResolution: number = 8;
-  gridOffsetMillis: number = 50;
+  public gridResolution: number = 8;
+  public gridOffsetMillis: number = 50;
 
   public zoom = 0;
   private timeUpdateSubscription: Subscription;

@@ -28,6 +28,7 @@ import { MasterDimmerComponent } from './master-dimmer/master-dimmer.component';
 import { FixtureCapabilityDimmerComponent } from './fixture/fixture-capability/fixture-capability-dimmer/fixture-capability-dimmer.component';
 import { AppHttpInterceptor } from './app-http-interceptor/app-http-interceptor';
 import { TimelineGridComponent } from './timeline/timeline-grid/timeline-grid.component';
+import { CompositionSettingsComponent } from './timeline/composition-settings/composition-settings.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { TimelineGridComponent } from './timeline/timeline-grid/timeline-grid.co
     PresetComponent,
     MasterDimmerComponent,
     FixtureCapabilityDimmerComponent,
-    TimelineGridComponent
+    TimelineGridComponent,
+    CompositionSettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +73,8 @@ import { TimelineGridComponent } from './timeline/timeline-grid/timeline-grid.co
   ],
   entryComponents: [
     FixturePoolComponent,
-    TimelineGridComponent
+    TimelineGridComponent,
+    CompositionSettingsComponent
   ],
   providers: [
     AppHttpInterceptor,

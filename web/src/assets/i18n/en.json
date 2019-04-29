@@ -46,6 +46,7 @@
         "time-signature": "Time signature",
         "remove-region": "Remove selected region",
         "add-region": "Add new region",
-        "remove-composition": "Remove composition"
+        "remove-composition": "Remove composition",
+        "composition-settings": "Composition settings"
     }
 }

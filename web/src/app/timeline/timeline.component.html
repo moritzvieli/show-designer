@@ -3,9 +3,10 @@
 
     <div class="d-flex pb-3">
       <div class="btn-group mr-3 my-auto" role="group" style="float: left;">
-        <select class="custom-select" style="width: 150px; height: 30px;">
-          <option>The current Composition</option>
-          <option>{{ "composition.new" | translate }}</option>
+        <select class="custom-select" [ngModel]="selectedComposition"
+        (ngModelChange)="selectComposition($event)" style="width: 150px; height: 30px;">
+          <option *ngFor="let composition of timelineService.compositions" [value]="composition">{{ composition.name }}</option>
+          <option value="new">{{ "composition.new" | translate }}</option>
         </select>
         <a href="#" class="btn btn-primary m-0 p-1" (click)="rewind(); false;"><i class="fa fa-step-backward fa-fw"
             aria-hidden="true"></i></a>
@@ -16,15 +17,18 @@
       </div>
 
       <div class="my-auto mr-3">
-        <span style="width: 78px; text-align: left; display: inline-block; margin-left: 5px;">{{ timelineService.currentTime }}</span>
+        <span
+          style="width: 78px; text-align: left; display: inline-block; margin-left: 5px;">{{ timelineService.currentTime }}</span>
         <span style="display: inline-block;"></span>- {{ timelineService.duration }}
       </div>
 
       <div class="my-auto mr-3 ml-auto" style="float: left;">
-        <i (click)="timelineService.applyZoom(timelineService.zoom - 20)" class="fa fa-search-minus mr-3" aria-hidden="true"></i>
-        <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="timelineService.zoom" [min]="0" [max]="200" [step]="20"
-          (change)="timelineService.applyZoom($event.newValue)"></mv-slider>
-        <i (click)="timelineService.applyZoom(timelineService.zoom + 20)" class="fa fa-search-plus ml-3" aria-hidden="true"></i>
+        <i (click)="timelineService.applyZoom(timelineService.zoom - 20)" class="fa fa-search-minus mr-3"
+          aria-hidden="true"></i>
+        <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="timelineService.zoom" [min]="0" [max]="200"
+          [step]="20" (change)="timelineService.applyZoom($event.newValue)"></mv-slider>
+        <i (click)="timelineService.applyZoom(timelineService.zoom + 20)" class="fa fa-search-plus ml-3"
+          aria-hidden="true"></i>
       </div>
 
       <div class="my-auto mr-3">
@@ -44,9 +48,13 @@
         popover="{{ 'timeline.add-region' | translate }}" container="body" placement="left"
         triggers="mouseenter:mouseleave"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
 
-      <a href="#" class="btn btn-secondary m-0 py-1" (click)="addRegion(); false;"
+      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeComposition(); false;"
         popover="{{ 'timeline.remove-composition' | translate }}" container="body" placement="left"
         triggers="mouseenter:mouseleave"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+
+      <a href="#" class="btn btn-secondary m-0 py-1" (click)="compositionSettings(); false;"
+        popover="{{ 'timeline.composition-settings' | translate }}" container="body" placement="left"
+        triggers="mouseenter:mouseleave"><i class="fa fa-cog" aria-hidden="true"></i></a>
     </div>
 
     <div>

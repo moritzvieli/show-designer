@@ -46,6 +46,7 @@
         "time-signature": "Taktangabe",
         "remove-region": "Selektierte Region entfernen",
         "add-region": "Neue Region hinzufügen",
-        "remove-composition": "Komposition entfernen"
+        "remove-composition": "Komposition entfernen",
+        "composition-settings": "Kompositionseinstellungen"
     }
 }

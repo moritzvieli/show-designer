@@ -17,16 +17,6 @@ export class TimelineGridComponent implements OnInit {
   ngOnInit() {
   }
 
-  ok() {
-    // TODO apply the grid settings
-    this.bsModalRef.hide()
-  }
-
-  cancel() {
-    // TODO apply the grid settings
-    this.bsModalRef.hide()
-  }
-
   updateGrid() {
     this.timelineService.updateGrid();
   }

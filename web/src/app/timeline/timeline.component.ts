@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener, 
 import { TimelineService } from '../services/timeline.service';
 import { BsModalService } from 'ngx-bootstrap';
 import { TimelineGridComponent } from './timeline-grid/timeline-grid.component';
+import { CompositionSettingsComponent } from './composition-settings/composition-settings.component';
+import { Composition } from '../models/composition';
+import { UuidService } from '../services/uuid.service';
 
 @Component({
   selector: 'app-timeline',
@@ -13,10 +16,13 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   @ViewChild('waveWrapper')
   waveWrapper: ElementRef;
 
+  selectedComposition: Composition;
+
   constructor(
     public timelineService: TimelineService,
     private changeDetectorRef: ChangeDetectorRef,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private uuidService: UuidService
   ) {
     this.timelineService.waveSurferReady.subscribe(() => {
       this.onResize();
@@ -71,6 +77,30 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   removeComposition() {
     // TODO confirm and delete composition
+  }
+
+  private openCompositionSettings(composition: Composition) {
+    let bsModalRef = this.modalService.show(CompositionSettingsComponent, { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { composition: composition } });
+  }
+
+  compositionSettings() {
+    if (this.selectedComposition) {
+      this.openCompositionSettings(this.selectedComposition);
+    }
+  }
+
+  selectComposition(event: any) {
+    if (event == 'new') {
+      // create a new composition
+      let composition = new Composition(this.uuidService);
+      composition.name = 'New Composition';
+      this.timelineService.compositions.push(composition);
+      this.selectedComposition = composition;
+      this.openCompositionSettings(this.selectedComposition);
+      return;
+    }
+
+    this.selectedComposition = event;
   }
 
   @HostListener('document:keypress', ['$event'])
