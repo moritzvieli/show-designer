@@ -1,11 +1,12 @@
 import { Fixture } from '../models/fixture';
 import { Injectable } from '@angular/core';
-import { Subject, Observable, of, forkJoin } from 'rxjs';
 import { FixtureTemplate } from '../models/fixture-template';
 import { FixtureMode } from '../models/fixture-mode';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { FixtureChannel } from '../models/fixture-channel';
+import { ProjectService } from './project.service';
+import { Observable, forkJoin, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,18 +14,14 @@ import { FixtureChannel } from '../models/fixture-channel';
 export class FixtureService {
 
   private fixtureTemplates: FixtureTemplate[] = [];
-  fixtures: Fixture[] = [];
-  fixtureAdded: Subject<Fixture> = new Subject<Fixture>();
 
-  constructor(private http: HttpClient) { }
-
-  addFixture(fixture: Fixture) {
-    this.fixtures.push(fixture);
-    this.fixtureAdded.next(fixture);
-  }
+  constructor(
+    private http: HttpClient,
+    private projectService: ProjectService
+  ) { }
 
   getFixtureByUuid(uuid: string): Fixture {
-    for (let fixture of this.fixtures) {
+    for (let fixture of this.projectService.project.fixtures) {
       if (fixture.uuid = uuid) {
         return fixture;
       }

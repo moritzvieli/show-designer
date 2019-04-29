@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Fixture } from '../models/fixture';
-import { FixtureService } from '../services/fixture.service';
 import { PresetService } from '../services/preset.service';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-fixture',
@@ -11,8 +11,8 @@ import { PresetService } from '../services/preset.service';
 export class FixtureComponent implements OnInit {
 
   constructor(
-    public fixtureService: FixtureService,
-    private presetService: PresetService) { }
+    public projectService: ProjectService,
+    public presetService: PresetService) { }
 
   ngOnInit() {}
 
@@ -23,6 +23,14 @@ export class FixtureComponent implements OnInit {
   selectFixture(event: any, fixture: Fixture) {
     this.presetService.switchFixtureSelection(fixture);
     this.presetService.fixtureSelectionChanged.next();
+  }
+
+  selectAll() {
+    // TODO
+  }
+
+  selectNone() {
+    // TODO
   }
 
 }

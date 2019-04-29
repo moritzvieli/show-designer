@@ -4,7 +4,7 @@
       Presets
     </div>
     <div class="ml-auto">
-      <a href="#" class="btn btn-secondary m-0, p-0" (click)="removeScene(); false;"><i class="fa fa-minus-circle fa-fw"
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="removePreset(); false;"><i class="fa fa-minus-circle fa-fw"
           aria-hidden="true"></i></a>
       <a href="#" class="btn btn-secondary m-0, p-0" (click)="addPreset(); false;"><i
           class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
@@ -14,8 +14,8 @@
   <div class="card-body h-100 p-0">
 
     <!-- List of presets -->
-    <div class="list-group" [sortablejs]="presetService.presets">
-      <div class="list-group-item" *ngFor="let item of presetService.presets; let i = index" (click)="selectPreset(i)" 
+    <div class="list-group" [sortablejs]="projectService.project.presets">
+      <div class="list-group-item" *ngFor="let item of projectService.project.presets; let i = index" (click)="selectPreset(i)" 
         [class.active-light]="!presetService.previewPreset && item == presetService.selectedPreset"
         [class.active]="presetService.previewPreset && item == presetService.selectedPreset"
         [class.inactive-list-item]="!sceneService.presetIsSelected(item)">

@@ -3,16 +3,17 @@ import { Universe } from '../models/universe';
 import { Fixture } from '../models/fixture';
 import { PresetService } from './preset.service';
 import { FixtureService } from './fixture.service';
-import { SceneService, PresetRegionScene } from './scene.service';
+import { SceneService } from './scene.service';
 import { TimelineService } from './timeline.service';
 import { UniverseService } from './universe.service';
 import { FixtureTemplate } from '../models/fixture-template';
-import { FixtureMode } from '../models/fixture-mode';
 import { EffectChannel } from '../models/effect';
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture-capability';
 import { Preset } from '../models/preset';
 import { FixtureChannel } from '../models/fixture-channel';
+import { ProjectService } from './project.service';
+import { PresetRegionScene } from '../models/preset-region-scene';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,8 @@ export class PreviewService {
     private fixtureService: FixtureService,
     private sceneService: SceneService,
     private timelineService: TimelineService,
-    private universeService: UniverseService
+    private universeService: UniverseService,
+    private projectService: ProjectService
   ) { }
 
   private alreadyCalculatedFixture(fixtures: Fixture[], fixtureIndex: number): Fixture {
@@ -61,11 +63,11 @@ export class PreviewService {
         let scenes = this.sceneService.selectedScenes;
 
         for (let sceneIndex = scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
-          for (let presetIndex = this.presetService.presets.length - 1; presetIndex >= 0; presetIndex--) {
+          for (let presetIndex = this.projectService.project.presets.length - 1; presetIndex >= 0; presetIndex--) {
             for (let presetUuid of scenes[sceneIndex].presetUuids) {
               // Loop over the presets in the preset service to retain the preset order
-              if (presetUuid == this.presetService.presets[presetIndex].uuid) {
-                presets.push(new PresetRegionScene(this.presetService.presets[presetIndex], undefined, scenes[sceneIndex]));
+              if (presetUuid == this.projectService.project.presets[presetIndex].uuid) {
+                presets.push(new PresetRegionScene(this.projectService.project.presets[presetIndex], undefined, scenes[sceneIndex]));
                 break;
               }
             }
@@ -123,7 +125,7 @@ export class PreviewService {
     let index = 0;
 
     // Loop over the global fixtures to retain the order
-    for (let fixture of this.fixtureService.fixtures) {
+    for (let fixture of this.projectService.project.fixtures) {
       for (let presetFixture of preset.fixtures) {
         if (presetFixture.uuid == fixture.uuid) {
           if(fixture.uuid == fixtureUuid) {
@@ -144,14 +146,14 @@ export class PreviewService {
     // Loop over all relevant presets and calc the property values from the presets (capabilities and effects)
     let calculatedFixtures = new Map<string, FixtureCapabilityValue[]>();
 
-    for (let fixtureIndex = 0; fixtureIndex < this.fixtureService.fixtures.length; fixtureIndex++) {
-      let fixture = this.fixtureService.fixtures[fixtureIndex];
+    for (let fixtureIndex = 0; fixtureIndex < this.projectService.project.fixtures.length; fixtureIndex++) {
+      let fixture = this.projectService.project.fixtures[fixtureIndex];
 
       // Only relevant for the 3d-preview
       // All capabilities of the current fixture
       let capabilities: FixtureCapabilityValue[] = [];
 
-      let alreadyCalculatedFixture = this.alreadyCalculatedFixture(this.fixtureService.fixtures, fixtureIndex);
+      let alreadyCalculatedFixture = this.alreadyCalculatedFixture(this.projectService.project.fixtures, fixtureIndex);
 
       if (alreadyCalculatedFixture) {
         // Only relevant for the preview --> reuse all calculated values

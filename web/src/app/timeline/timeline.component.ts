@@ -5,6 +5,7 @@ import { TimelineGridComponent } from './timeline-grid/timeline-grid.component';
 import { CompositionSettingsComponent } from './composition-settings/composition-settings.component';
 import { Composition } from '../models/composition';
 import { UuidService } from '../services/uuid.service';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-timeline',
@@ -22,7 +23,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     public timelineService: TimelineService,
     private changeDetectorRef: ChangeDetectorRef,
     private modalService: BsModalService,
-    private uuidService: UuidService
+    private uuidService: UuidService,
+    public projectService: ProjectService
   ) {
     this.timelineService.waveSurferReady.subscribe(() => {
       this.onResize();
@@ -89,17 +91,16 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     }
   }
 
-  selectComposition(event: any) {
-    if (event == 'new') {
-      // create a new composition
-      let composition = new Composition(this.uuidService);
-      composition.name = 'New Composition';
-      this.timelineService.compositions.push(composition);
-      this.selectedComposition = composition;
-      this.openCompositionSettings(this.selectedComposition);
-      return;
-    }
+  addComposition() {
+    // create a new composition
+    let composition = new Composition(this.uuidService);
+    composition.name = 'New Composition';
+    this.projectService.project.compositions.push(composition);
+    this.selectedComposition = composition;
+    this.openCompositionSettings(this.selectedComposition);
+  }
 
+  selectComposition(event: any) {
     this.selectedComposition = event;
   }
 

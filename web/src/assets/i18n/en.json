@@ -47,6 +47,11 @@
         "remove-region": "Remove selected region",
         "add-region": "Add new region",
         "remove-composition": "Remove composition",
-        "composition-settings": "Composition settings"
+        "composition-settings": "Composition settings",
+        "no-compositions": "No compositions",
+        "composition-name": "Name",
+        "composition-sync-type": "Synchronisierung",
+        "composition-sync-type-none": "None",
+        "composition-sync-type-audio": "Audio"
     }
 }

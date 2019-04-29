@@ -16,7 +16,7 @@ export class EffectComponent implements OnInit {
 
   constructor(
     private uuidService: UuidService,
-    private presetService: PresetService,
+    public presetService: PresetService,
     public effectService: EffectService,
     private fixtureService: FixtureService
   ) { }

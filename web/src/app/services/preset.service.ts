@@ -6,13 +6,13 @@ import { UuidService } from './uuid.service';
 import { Subject } from 'rxjs';
 import { FixtureCapabilityType } from '../models/fixture-capability';
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
+import { ProjectService } from './project.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PresetService {
 
-  presets: Preset[] = [];
   selectedPreset: Preset;
 
   // Fires, when the current preview element has changed (scene/preset)
@@ -26,11 +26,12 @@ export class PresetService {
 
   constructor(
     private effectService: EffectService,
-    private uuidService: UuidService
+    private uuidService: UuidService,
+    private projectService: ProjectService
   ) { }
 
   getPresetByUuid(uuid: string): Preset {
-    for (let preset of this.presets) {
+    for (let preset of this.projectService.project.presets) {
       if (preset.uuid == uuid) {
         return preset;
       }
@@ -110,7 +111,7 @@ export class PresetService {
 
   selectPreset(index: number) {
     this.effectService.selectedEffect = undefined;
-    this.selectedPreset = this.presets[index];
+    this.selectedPreset = this.projectService.project.presets[index];
     this.previewSelectionChanged.next();
   }
 
@@ -121,14 +122,14 @@ export class PresetService {
     // Insert the new preset before the highest currently selected preset
     let highestSelectedPresetIndex = 0;
 
-    for (let i = 0; i < this.presets.length; i++) {
-      if (this.selectedPreset == this.presets[i]) {
+    for (let i = 0; i < this.projectService.project.presets.length; i++) {
+      if (this.selectedPreset == this.projectService.project.presets[i]) {
         highestSelectedPresetIndex = i;
         break;
       }
     }
 
-    this.presets.splice(highestSelectedPresetIndex, 0, preset);
+    this.projectService.project.presets.splice(highestSelectedPresetIndex, 0, preset);
     this.selectPreset(highestSelectedPresetIndex);
   }
 

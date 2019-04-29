@@ -9,14 +9,12 @@ import { ScenePlaybackRegion } from '../models/scene-playback-region';
 import { PresetService } from './preset.service';
 import { Scene } from '../models/scene';
 import { Preset } from '../models/preset';
-import { Composition } from '../models/composition';
+import { ProjectService } from './project.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TimelineService {
-
-  public compositions: Composition[] = [];
 
   public waveSurfer: WaveSurfer;
   public playState: string = 'paused';
@@ -47,6 +45,7 @@ export class TimelineService {
   constructor(
     private sceneService: SceneService,
     private presetService: PresetService,
+    private projectService: ProjectService
   ) {
     this.presetService.previewSelectionChanged.subscribe(() => {
       this.selectedPlaybackRegion = undefined;
@@ -560,7 +559,7 @@ export class TimelineService {
   }
   
   drawAllRegions() {
-    for (let scene of this.sceneService.scenes) {
+    for (let scene of this.projectService.project.scenes) {
       for (let scenePlaybackRegion of scene.scenePlaybackRegionList) {
         this.drawRegion(scenePlaybackRegion, scene);
       }

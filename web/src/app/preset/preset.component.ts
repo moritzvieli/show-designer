@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PresetService } from '../services/preset.service';
 import { SceneService } from '../services/scene.service';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-preset',
@@ -11,7 +12,8 @@ export class PresetComponent implements OnInit {
 
   constructor(
     public presetService: PresetService,
-    public sceneService: SceneService
+    public sceneService: SceneService,
+    public projectService: ProjectService
   ) { }
 
   ngOnInit() {
@@ -24,7 +26,7 @@ export class PresetComponent implements OnInit {
 
   activatePreset(active: boolean, index: number) {
     if (this.sceneService.selectedScenes && this.sceneService.selectedScenes.length == 1) {
-      let uuid = this.presetService.presets[index].uuid;
+      let uuid = this.projectService.project.presets[index].uuid;
 
       if (active) {
         // Activate a new uuid
@@ -47,6 +49,10 @@ export class PresetComponent implements OnInit {
     if(this.sceneService.selectedScenes && this.sceneService.selectedScenes.length == 1) {
       this.sceneService.selectedScenes[0].presetUuids.push(this.presetService.selectedPreset.uuid);
     }
+  }
+
+  removePreset() {
+    // TODO
   }
 
 }

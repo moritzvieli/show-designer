@@ -3,10 +3,13 @@ import { UuidService } from "../services/uuid.service";
 export class Composition {
 
     uuid: string;
-    name: string
+    name: string;
 
-    // free or audio
-    syncType: string;
+    // none or audio
+    syncType: string = 'audio';
+
+    // if no sync
+    durationMillis: number = 0;
 
     constructor(private uuidService: UuidService) {
         if (this.uuidService) {

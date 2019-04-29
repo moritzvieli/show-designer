@@ -4,6 +4,7 @@ import { FixtureTemplate } from '../models/fixture-template';
 import { FixtureService } from '../services/fixture.service';
 import { Fixture } from '../models/fixture';
 import { UuidService } from '../services/uuid.service';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-fixture-pool',
@@ -24,7 +25,8 @@ export class FixturePoolComponent implements OnInit {
   constructor(
     public bsModalRef: BsModalRef,
     public fixtureService: FixtureService,
-    private uuidService: UuidService
+    private uuidService: UuidService,
+    public projectService: ProjectService
   ) { }
 
   ngOnInit() {
@@ -66,7 +68,7 @@ export class FixturePoolComponent implements OnInit {
     for (let i = 0; i < 512; i++) {
       let occupiedChannels = 0;
 
-      for (let fixture of this.fixtureService.fixtures) {
+      for (let fixture of this.projectService.project.fixtures) {
         let mode = this.fixtureService.getModeByFixture(fixture);
 
         if (i >= fixture.dmxFirstChannel && i < fixture.dmxFirstChannel + mode.channels.length) {
@@ -104,7 +106,7 @@ export class FixturePoolComponent implements OnInit {
 
       if (firstChannel >= 0) {
         fixture.dmxFirstChannel = firstChannel;
-        this.fixtureService.addFixture(fixture);
+        this.projectService.addFixture(fixture);
         this.selectedFixture = fixture;
       } else {
         // TODO show a toast-error -> no free space anymore
@@ -114,19 +116,19 @@ export class FixturePoolComponent implements OnInit {
   }
 
   removeFixture(fixture: Fixture) {
-    for (let i = 0; i < this.fixtureService.fixtures.length; i++) {
-      if (this.fixtureService.fixtures[i].uuid == fixture.uuid) {
-        this.fixtureService.fixtures.splice(i, 1);
+    for (let i = 0; i < this.projectService.project.fixtures.length; i++) {
+      if (this.projectService.project.fixtures[i].uuid == fixture.uuid) {
+        this.projectService.project.fixtures.splice(i, 1);
       }
     }
 
-    if (!this.selectedFixture && this.fixtureService.fixtures && this.fixtureService.fixtures.length > 0) {
-      this.selectedFixture = this.fixtureService.fixtures[0];
+    if (!this.selectedFixture && this.projectService.project.fixtures && this.projectService.project.fixtures.length > 0) {
+      this.selectedFixture = this.projectService.project.fixtures[0];
     }
   }
 
   channelOccupied(index: number): boolean {
-    for (let fixture of this.fixtureService.fixtures) {
+    for (let fixture of this.projectService.project.fixtures) {
       let mode = this.fixtureService.getModeByFixture(fixture);
 
       if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
@@ -138,7 +140,7 @@ export class FixturePoolComponent implements OnInit {
   }
 
   channelOccupiedStart(index: number): boolean {
-    for (let fixture of this.fixtureService.fixtures) {
+    for (let fixture of this.projectService.project.fixtures) {
       if (index == fixture.dmxFirstChannel) {
         return true;
       }
@@ -148,7 +150,7 @@ export class FixturePoolComponent implements OnInit {
   }
 
   channelOccupiedEnd(index: number): boolean {
-    for (let fixture of this.fixtureService.fixtures) {
+    for (let fixture of this.projectService.project.fixtures) {
       let mode = this.fixtureService.getModeByFixture(fixture);
 
       if (index == fixture.dmxFirstChannel + mode.channels.length - 1) {
@@ -162,7 +164,7 @@ export class FixturePoolComponent implements OnInit {
   channelOverlapped(index: number): boolean {
     let count = 0;
 
-    for (let fixture of this.fixtureService.fixtures) {
+    for (let fixture of this.projectService.project.fixtures) {
       let mode = this.fixtureService.getModeByFixture(fixture);
 
       if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
@@ -182,7 +184,7 @@ export class FixturePoolComponent implements OnInit {
     const selectedIndex = event.target.dataset.index;
 
     // find a dragging fixture
-    for (let fixture of this.fixtureService.fixtures) {
+    for (let fixture of this.projectService.project.fixtures) {
       let mode = this.fixtureService.getModeByFixture(fixture);
 
       if (selectedIndex >= fixture.dmxFirstChannel && selectedIndex <= fixture.dmxFirstChannel + mode.channels.length - 1) {

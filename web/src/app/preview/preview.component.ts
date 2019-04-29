@@ -16,6 +16,7 @@ import { Fixture3d } from './models/fixture-3d';
 import { PreviewService } from '../services/preview.service';
 import { TimelineService } from '../services/timeline.service';
 import { MasterDimmerService } from '../services/master-dimmer.service';
+import { ProjectService } from '../services/project.service';
 
 declare var THREEx: any;
 
@@ -53,9 +54,10 @@ export class PreviewComponent implements AfterViewInit {
     private animationService: AnimationService,
     private previewService: PreviewService,
     private timelineService: TimelineService,
-    private masterDimmerService: MasterDimmerService) {
+    private masterDimmerService: MasterDimmerService,
+    private projectService: ProjectService) {
 
-    this.fixtureService.fixtureAdded.subscribe((fixture: Fixture) => {
+    this.projectService.fixtureAdded.subscribe((fixture: Fixture) => {
       let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
 
       if (template.categories[0] == FixtureType['Moving Head']) {
@@ -82,13 +84,13 @@ export class PreviewComponent implements AfterViewInit {
     let positionCount: number = 0; // Number of fixtures in the same position
     let positionIndex: number = 1;
 
-    this.fixtureService.fixtures.forEach((element, index) => {
+    this.projectService.project.fixtures.forEach((element, index) => {
       if (element.positioning == positioning) {
         positionCount++;
       }
     });
 
-    this.fixtureService.fixtures.forEach((element, index) => {
+    this.projectService.project.fixtures.forEach((element, index) => {
       if (element.positioning == positioning) {
         element.positionX = xMin + (xMax - xMin) / (positionCount + 1) * positionIndex;
         element.positionY = yMin + (yMax - yMin) / (positionCount + 1) * positionIndex;

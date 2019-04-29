@@ -1,32 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Scene } from '../models/scene';
-import { ScenePlaybackRegion } from '../models/scene-playback-region';
 import { UuidService } from './uuid.service';
 import { EffectService } from './effect.service';
 import { Preset } from '../models/preset';
 import { PresetService } from './preset.service';
-
-export class PresetRegionScene {
-
-  preset: Preset;
-  region: ScenePlaybackRegion;
-  scene: Scene;
-
-  constructor(preset: Preset, region: ScenePlaybackRegion, scene: Scene) {
-    this.preset = preset;
-    this.region = region;
-    this.scene = scene;
-  }
-
-}
+import { PresetRegionScene } from '../models/preset-region-scene';
+import { ProjectService } from './project.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SceneService {
-
-  // Make sure we always have at least one scene (don't allow deletion of the last scene)
-  scenes: Scene[] = [];
 
   selectedScenes: Scene[] = [];
   sceneColors: string[] = [
@@ -42,7 +26,8 @@ export class SceneService {
   constructor(
     private uuidService: UuidService,
     private effectService: EffectService,
-    private presetService: PresetService
+    private presetService: PresetService,
+    private projectService: ProjectService
   ) {
   }
 
@@ -88,7 +73,7 @@ export class SceneService {
     // Return all scenes which should be active during the specified time
     let activePresets: PresetRegionScene[] = [];
 
-    for (let scene of this.scenes) {
+    for (let scene of this.projectService.project.scenes) {
       for (let region of scene.scenePlaybackRegionList) {
         if (region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
           // This region is currently being played -> check all scene presets
@@ -112,10 +97,10 @@ export class SceneService {
     this.effectService.selectedEffect = undefined;
 
     if (this.multipleSelection) {
-      this.switchSceneSelection(this.scenes[index]);
+      this.switchSceneSelection(this.projectService.project.scenes[index]);
     } else {
       this.selectedScenes = [];
-      this.selectedScenes.push(this.scenes[index]);
+      this.selectedScenes.push(this.projectService.project.scenes[index]);
     }
 
     this.presetService.previewSelectionChanged.next();
@@ -126,8 +111,8 @@ export class SceneService {
     let scene: Scene = new Scene(this.uuidService);
     scene.name = name || 'Main';
 
-    if (this.scenes.length <= this.sceneColors.length) {
-      scene.color = this.sceneColors[this.scenes.length];
+    if (this.projectService.project.scenes.length <= this.sceneColors.length) {
+      scene.color = this.sceneColors[this.projectService.project.scenes.length];
     } else {
       scene.color = '#' + Math.random().toString(16).slice(2, 8).toUpperCase();
     }
@@ -135,14 +120,14 @@ export class SceneService {
     // Insert the new scene before the highest currently selected scene
     let highestSelectedSceneIndex = 0;
 
-    for (let i = 0; i < this.scenes.length; i++) {
-      if (this.sceneIsSelected(this.scenes[i])) {
+    for (let i = 0; i < this.projectService.project.scenes.length; i++) {
+      if (this.sceneIsSelected(this.projectService.project.scenes[i])) {
         highestSelectedSceneIndex = i;
         break;
       }
     }
 
-    this.scenes.splice(highestSelectedSceneIndex, 0, scene);
+    this.projectService.project.scenes.splice(highestSelectedSceneIndex, 0, scene);
     this.selectScene(highestSelectedSceneIndex);
   }
 

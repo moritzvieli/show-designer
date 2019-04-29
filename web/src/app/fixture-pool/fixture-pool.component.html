@@ -8,7 +8,7 @@
   <div class="row">
     <div class="col-6">
       <!-- Create a new template -->
-      <a class="btn btn-primary mb-3 btn btn-primary btn-block" href="#" role="button" (click)="createSet(); false">
+      <a class="btn btn-primary mb-3 btn btn-primary btn-block" href="#" role="button" (click)="todo(); false">
         <i class="fa fa-plus" aria-hidden="true"></i> {{ 'fixture-pool.create-template' | translate }}
       </a>
 
@@ -54,8 +54,8 @@
       </div>
       <div class="card border-secondary" style="height: 300px;">
         <div class="card-body p-0">
-          <div class="list-group list-group-flush" [sortablejs]="fixtureService.fixtures">
-            <div class="list-group-item" *ngFor="let fixture of fixtureService.fixtures"
+          <div class="list-group list-group-flush" [sortablejs]="projectService.project.fixtures">
+            <div class="list-group-item" *ngFor="let fixture of projectService.project.fixtures"
               [class.active]="fixture == selectedFixture" (click)="selectedFixture = fixture" style="cursor: pointer;">
               <div class="row">
                 <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
