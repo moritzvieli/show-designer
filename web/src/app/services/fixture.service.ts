@@ -13,8 +13,6 @@ import { Observable, forkJoin, of } from 'rxjs';
 })
 export class FixtureService {
 
-  private fixtureTemplates: FixtureTemplate[] = [];
-
   constructor(
     private http: HttpClient,
     private projectService: ProjectService
@@ -42,7 +40,7 @@ export class FixtureService {
   }
 
   getTemplateByUuid(uuid: string): FixtureTemplate {
-    for (let fixtureTemplate of this.fixtureTemplates) {
+    for (let fixtureTemplate of this.projectService.project.fixtureTemplates) {
       if (fixtureTemplate.uuid == uuid) {
         return fixtureTemplate;
       }
@@ -63,7 +61,7 @@ export class FixtureService {
       this.http.get('fixture?uuid=' + uuid)
     ).pipe(map(result => {
       let fixtureTemplate = new FixtureTemplate(result[0][0], result[1]);
-      this.fixtureTemplates.push(fixtureTemplate);
+      this.projectService.project.fixtureTemplates.push(fixtureTemplate);
     }));
   }
 

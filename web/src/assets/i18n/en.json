@@ -17,7 +17,13 @@
     "navigation": {
         "file": "File",
         "settings": "Settings",
-        "help": "Help" 
+        "help": "Help",
+        "fixture-pool": "Fixture pool",
+        "stage": "Stage",
+        "project-save": "Save",
+        "project-open": "Open",
+        "project-download": "Download",
+        "project-close": "Close"
     },
     "scene": {
         "title": "Scenes"

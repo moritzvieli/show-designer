@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 import { TimelineComponent } from './timeline/timeline.component';
+import { ProjectService } from './services/project.service';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent implements AfterViewInit {
   constructor(
     private translateService: TranslateService,
     private modalService: BsModalService,
+    private projectService: ProjectService
   ) {
 
     this.translateService.use('en');
@@ -79,6 +81,29 @@ export class AppComponent implements AfterViewInit {
 
   openFixturePool() {
     let bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
+  }
+
+  projectOpen() {
+    // TODO
+  }
+
+  projectClose() {
+    // TODO
+  }
+
+  projectSave() {
+    // TODO
+  }
+
+  projectDownload() {
+    let sJson = JSON.stringify(this.projectService.project, null, 2);
+    let element = document.createElement('a');
+    element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
+    element.setAttribute('download', this.projectService.project.name + '.json');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click(); // simulate click
+    document.body.removeChild(element);
   }
 
 }

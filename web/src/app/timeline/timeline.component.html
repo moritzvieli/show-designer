@@ -3,14 +3,17 @@
 
     <div class="d-flex pb-3">
       <div class="btn-group mr-3 my-auto" role="group" style="float: left;">
-        <a href="#" class="btn btn-primary m-0 p-1 mr-3"
-          (click)="addComposition(); false;"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
-        <select *ngIf="projectService.project.compositions.length > 0" class="custom-select mr-3" [ngModel]="selectedComposition" (ngModelChange)="selectComposition($event)"
+        <a href="#" class="btn btn-primary m-0 p-1 mr-3" (click)="addComposition(); false;"><i
+            class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
+        <select class="custom-select mr-3"
+          [ngModel]="selectedComposition" (ngModelChange)="selectComposition($event)"
           style="width: 150px; height: 30px;">
-          <option *ngFor="let composition of projectService.project.compositions" [value]="composition">{{ composition.name }}
+          <option *ngFor="let composition of projectService.project.compositions" [value]="composition">
+            {{ composition.name }}
+          <option *ngIf="projectService.project.compositions.length == 0" [value]="undefined">
+            - {{ 'timeline.no-compositions' | translate }} -
           </option>
         </select>
-        <div *ngIf="projectService.project.compositions.length == 0" class="my-auto mr-3">- {{ 'timeline.no-compositions' | translate }} -</div>
         <a href="#" class="btn btn-primary m-0 p-1" (click)="rewind(); false;"><i class="fa fa-step-backward fa-fw"
             aria-hidden="true"></i></a>
         <a *ngIf="timelineService.playState == 'paused'" href="#" class="btn btn-primary m-0 p-1"
