@@ -16,20 +16,20 @@
       </div>
 
       <div class="my-auto mr-3">
-        <span style="width: 78px; text-align: left; display: inline-block; margin-left: 5px;">{{ currentTime }}</span>
-        <span style="display: inline-block;"></span>- {{ duration }}
+        <span style="width: 78px; text-align: left; display: inline-block; margin-left: 5px;">{{ timelineService.currentTime }}</span>
+        <span style="display: inline-block;"></span>- {{ timelineService.duration }}
       </div>
 
       <div class="my-auto mr-3 ml-auto" style="float: left;">
-        <i (click)="applyZoom(zoom - 20)" class="fa fa-search-minus mr-3" aria-hidden="true"></i>
-        <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="zoom" [min]="0" [max]="200" [step]="20"
-          (change)="applyZoom($event.newValue)"></mv-slider>
-        <i (click)="applyZoom(zoom + 20)" class="fa fa-search-plus ml-3" aria-hidden="true"></i>
+        <i (click)="timelineService.applyZoom(timelineService.zoom - 20)" class="fa fa-search-minus mr-3" aria-hidden="true"></i>
+        <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="timelineService.zoom" [min]="0" [max]="200" [step]="20"
+          (change)="timelineService.applyZoom($event.newValue)"></mv-slider>
+        <i (click)="timelineService.applyZoom(timelineService.zoom + 20)" class="fa fa-search-plus ml-3" aria-hidden="true"></i>
       </div>
 
       <div class="my-auto mr-3">
-        <input type="text" [value]="selectedPlaybackRegion?.startMillis"> - <input type="text"
-          [value]="selectedPlaybackRegion?.endMillis">
+        <input type="text" [value]="timelineService.selectedPlaybackRegion?.startMillis"> - <input type="text"
+          [value]="timelineService.selectedPlaybackRegion?.endMillis">
       </div>
 
       <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="openGridSettings(); false;"
