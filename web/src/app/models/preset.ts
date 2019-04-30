@@ -1,6 +1,5 @@
 import { Effect } from "./effect";
 import { Fixture } from "./fixture";
-import { UuidService } from "../services/uuid.service";
 import { FixtureCapabilityValue } from "./fixture-capability-value";
 
 export class Preset {
@@ -27,10 +26,7 @@ export class Preset {
     fadeInMillis: number = 0;
     fadeOutMillis: number = 0;
 
-    constructor(private uuidService: UuidService) {
-        if (this.uuidService) {
-            this.uuid = this.uuidService.getUuid();
-        }
+    constructor() {
     }
 
 }

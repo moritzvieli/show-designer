@@ -99,7 +99,7 @@ export class AppComponent implements AfterViewInit {
     let sJson = JSON.stringify(this.projectService.project, null, 2);
     let element = document.createElement('a');
     element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
-    element.setAttribute('download', this.projectService.project.name + '.json');
+    element.setAttribute('download', this.projectService.project.name + '.rsd');
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click(); // simulate click

@@ -21,7 +21,8 @@ export class SceneComponent implements OnInit {
     // Add a default scene and preset
     this.sceneService.addScene();
 
-    let preset = new Preset(this.uuidService);
+    let preset = new Preset();
+    preset.uuid = this.uuidService.getUuid();
     preset.name = 'Preset';
     this.projectService.project.scenes[0].presetUuids.push(preset.uuid);
 

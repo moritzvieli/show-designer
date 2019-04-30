@@ -108,7 +108,8 @@ export class SceneService {
   }
 
   addScene(name?: string): void {
-    let scene: Scene = new Scene(this.uuidService);
+    let scene: Scene = new Scene();
+    scene.uuid = this.uuidService.getUuid();
     scene.name = name || 'Main';
 
     if (this.projectService.project.scenes.length <= this.sceneColors.length) {

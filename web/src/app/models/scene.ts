@@ -1,5 +1,4 @@
 import { ScenePlaybackRegion } from "./scene-playback-region";
-import { UuidService } from "../services/uuid.service";
 
 export class Scene {
 
@@ -18,10 +17,7 @@ export class Scene {
     fadeInMillis: number = 2000;
     fadeOutMillis: number = 2000;
 
-    constructor(private uuidService: UuidService) {
-        if (this.uuidService) {
-            this.uuid = this.uuidService.getUuid();
-        }
+    constructor() {
     }
 
 }

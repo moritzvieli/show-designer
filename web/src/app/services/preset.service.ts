@@ -116,7 +116,8 @@ export class PresetService {
   }
 
   addPreset(name?: string): void {
-    let preset: Preset = new Preset(this.uuidService);
+    let preset: Preset = new Preset();
+    preset.uuid = this.uuidService.getUuid();
     preset.name = name || 'Preset';
 
     // Insert the new preset before the highest currently selected preset

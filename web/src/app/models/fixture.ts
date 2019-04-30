@@ -1,4 +1,3 @@
-import { UuidService } from '../services/uuid.service';
 import { FixtureTemplate } from './fixture-template';
 
 export enum Positioning {
@@ -24,11 +23,7 @@ export class Fixture {
     positionY: number = 0;
     positionZ: number = 0;
 
-    constructor(private uuidService: UuidService, template: FixtureTemplate) {
-        if (this.uuidService) {
-            this.uuid = this.uuidService.getUuid();
-        }
-
+    constructor(template: FixtureTemplate) {
         this.fixtureTemplateUuid = template.uuid;
         this.name = template.manufacturerName + ' - '  + template.name;
 

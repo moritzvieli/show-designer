@@ -99,7 +99,8 @@ export class FixturePoolComponent implements OnInit {
     // Load the template details, if not already done. There is only a
     // minimal template passed from the search.
     this.fixtureService.loadTemplateByUuid(template.uuid).subscribe(() => {
-      const fixture = new Fixture(this.uuidService, this.fixtureService.getTemplateByUuid(template.uuid));
+      let fixture = new Fixture(this.fixtureService.getTemplateByUuid(template.uuid));
+      fixture.uuid = this.uuidService.getUuid();
       // TODO add the same mode as the last added fixture with the same template
       const mode = this.fixtureService.getModeByFixture(fixture);
       const firstChannel = this.getNextFreeDmxChannel(mode.channels.length);
