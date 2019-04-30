@@ -51,7 +51,7 @@ export class PreviewService {
 
     if (this.timelineService.playState == 'playing') {
       // Only use active presets in current regions
-      presets = this.sceneService.getPresetsInTime(timeMillis);
+      presets = this.timelineService.getPresetsInTime(timeMillis);
     } else {
       if (this.presetService.previewPreset) {
         // Only preview the selected preset

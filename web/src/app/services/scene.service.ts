@@ -4,7 +4,6 @@ import { UuidService } from './uuid.service';
 import { EffectService } from './effect.service';
 import { Preset } from '../models/preset';
 import { PresetService } from './preset.service';
-import { PresetRegionScene } from '../models/preset-region-scene';
 import { ProjectService } from './project.service';
 
 @Injectable({
@@ -27,7 +26,7 @@ export class SceneService {
     private uuidService: UuidService,
     private effectService: EffectService,
     private presetService: PresetService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
   ) {
   }
 
@@ -69,30 +68,6 @@ export class SceneService {
     }
   }
 
-  getPresetsInTime(timeMillis: number): PresetRegionScene[] {
-    // Return all scenes which should be active during the specified time
-    let activePresets: PresetRegionScene[] = [];
-
-    for (let scene of this.projectService.project.scenes) {
-      for (let region of scene.scenePlaybackRegionList) {
-        if (region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
-          // This region is currently being played -> check all scene presets
-          for (let presetUuid of scene.presetUuids) {
-            let preset = this.presetService.getPresetByUuid(presetUuid);
-
-            if ((!preset.startMillis || preset.startMillis + region.startMillis <= timeMillis)
-              && (!preset.endMillis || preset.endMillis + region.startMillis >= timeMillis)) {
-
-              activePresets.push(new PresetRegionScene(preset, region, scene));
-            }
-          }
-        }
-      }
-    }
-
-    return activePresets;
-  }
-
   selectScene(index: number) {
     this.effectService.selectedEffect = undefined;
 
@@ -130,6 +105,14 @@ export class SceneService {
 
     this.projectService.project.scenes.splice(highestSelectedSceneIndex, 0, scene);
     this.selectScene(highestSelectedSceneIndex);
+  }
+
+  getSceneByUuid(uuid: string): Scene {
+    for (let scene of this.projectService.project.scenes) {
+      if (scene.uuid == uuid) {
+        return scene;
+      }
+    }
   }
 
 }

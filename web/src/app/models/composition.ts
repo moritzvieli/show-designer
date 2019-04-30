@@ -1,4 +1,4 @@
-import { UuidService } from "../services/uuid.service";
+import { ScenePlaybackRegion } from "./scene-playback-region";
 
 export class Composition {
 
@@ -11,10 +11,10 @@ export class Composition {
     // if no sync
     durationMillis: number = 0;
 
-    constructor(private uuidService: UuidService) {
-        if (this.uuidService) {
-            this.uuid = this.uuidService.getUuid();
-        }
+    // Regions, where the scene will be played
+    scenePlaybackRegionList: ScenePlaybackRegion[] = [];
+
+    constructor() {
     }
 
 }

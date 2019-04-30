@@ -10,6 +10,8 @@ import { PresetService } from './preset.service';
 import { Scene } from '../models/scene';
 import { Preset } from '../models/preset';
 import { ProjectService } from './project.service';
+import { Composition } from '../models/composition';
+import { PresetRegionScene } from '../models/preset-region-scene';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,7 @@ export class TimelineService {
   public waveSurfer: WaveSurfer;
   public playState: string = 'paused';
 
+  // TODO move to the composition
   public beatsPerMinute: number = 178;
   public timeSignatureUpper: number = 6;
   public timeSignatureLower: number = 8;
@@ -41,6 +44,9 @@ export class TimelineService {
   public duration: string;
   public waveSurferReady: Subject<void> = new Subject();
   public detectChanges: Subject<void> = new Subject();
+
+  // the current composition
+  selectedComposition: Composition;
 
   constructor(
     private sceneService: SceneService,
@@ -268,6 +274,7 @@ export class TimelineService {
     }
 
     let scenePlaybackRegion: ScenePlaybackRegion = new ScenePlaybackRegion();
+    scenePlaybackRegion.sceneUuid = this.sceneService.selectedScenes[0].uuid;
 
     if (waveSurferRegion) {
       scenePlaybackRegion.startMillis = waveSurferRegion.start * 1000;
@@ -277,7 +284,7 @@ export class TimelineService {
       scenePlaybackRegion.endMillis = this.waveSurfer.getDuration() * 1000 / 3 * 2;
     }
 
-    this.sceneService.selectedScenes[0].scenePlaybackRegionList.push(scenePlaybackRegion);
+    this.selectedComposition.scenePlaybackRegionList.push(scenePlaybackRegion);
 
     this.selectedPlaybackRegion = scenePlaybackRegion;
 
@@ -539,8 +546,8 @@ export class TimelineService {
       return;
     }
 
-    for (let i = 0; i < this.sceneService.selectedScenes[0].scenePlaybackRegionList.length; i++) {
-      if (this.sceneService.selectedScenes[0].scenePlaybackRegionList[i] == this.selectedPlaybackRegion) {
+    for (let i = 0; i < this.selectedComposition.scenePlaybackRegionList.length; i++) {
+      if (this.selectedComposition.scenePlaybackRegionList[i] == this.selectedPlaybackRegion) {
         // remove the region from wavesurfer
         for (let key of Object.keys(this.waveSurfer.regions.list)) {
           let region: any = this.waveSurfer.regions.list[key];
@@ -551,18 +558,44 @@ export class TimelineService {
         }
 
         this.selectedPlaybackRegion = undefined;
-        this.sceneService.selectedScenes[0].scenePlaybackRegionList.splice(i, 1);
+        this.selectedComposition.scenePlaybackRegionList.splice(i, 1);
 
         return;
       }
     }
   }
-  
-  drawAllRegions() {
+
+  getPresetsInTime(timeMillis: number): PresetRegionScene[] {
+    // Return all scenes which should be active during the specified time
+    let activePresets: PresetRegionScene[] = [];
+
     for (let scene of this.projectService.project.scenes) {
-      for (let scenePlaybackRegion of scene.scenePlaybackRegionList) {
-        this.drawRegion(scenePlaybackRegion, scene);
+      for (let region of this.selectedComposition.scenePlaybackRegionList) {
+        if (region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
+          // This region is currently being played -> check all scene presets
+          for (let presetUuid of scene.presetUuids) {
+            let preset = this.presetService.getPresetByUuid(presetUuid);
+
+            if ((!preset.startMillis || preset.startMillis + region.startMillis <= timeMillis)
+              && (!preset.endMillis || preset.endMillis + region.startMillis >= timeMillis)) {
+
+              activePresets.push(new PresetRegionScene(preset, region, scene));
+            }
+          }
+        }
       }
+    }
+
+    return activePresets;
+  }
+
+  drawAllRegions() {
+    if(!this.selectedComposition) {
+      return;
+    }
+
+    for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegionList) {
+      this.drawRegion(scenePlaybackRegion, this.sceneService.getSceneByUuid(scenePlaybackRegion.sceneUuid));
     }
   }
 

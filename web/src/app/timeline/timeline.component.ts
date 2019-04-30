@@ -17,8 +17,6 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   @ViewChild('waveWrapper')
   waveWrapper: ElementRef;
 
-  selectedComposition: Composition;
-
   constructor(
     public timelineService: TimelineService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -86,22 +84,23 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   compositionSettings() {
-    if (this.selectedComposition) {
-      this.openCompositionSettings(this.selectedComposition);
+    if (this.timelineService.selectedComposition) {
+      this.openCompositionSettings(this.timelineService.selectedComposition);
     }
   }
 
   addComposition() {
     // create a new composition
-    let composition = new Composition(this.uuidService);
+    let composition = new Composition();
+    composition.uuid = this.uuidService.getUuid();
     composition.name = 'New Composition';
     this.projectService.project.compositions.push(composition);
-    this.selectedComposition = composition;
-    this.openCompositionSettings(this.selectedComposition);
+    this.timelineService.selectedComposition = composition;
+    this.openCompositionSettings(this.timelineService.selectedComposition);
   }
 
   selectComposition(event: any) {
-    this.selectedComposition = event;
+    this.timelineService.selectedComposition = event;
   }
 
   @HostListener('document:keypress', ['$event'])
