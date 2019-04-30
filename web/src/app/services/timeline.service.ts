@@ -273,6 +273,10 @@ export class TimelineService {
       return;
     }
 
+    if(!this.selectedComposition) {
+      return;
+    }
+
     let scenePlaybackRegion: ScenePlaybackRegion = new ScenePlaybackRegion();
     scenePlaybackRegion.sceneUuid = this.sceneService.selectedScenes[0].uuid;
 
