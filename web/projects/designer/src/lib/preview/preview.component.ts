@@ -5,10 +5,9 @@ import { FixtureService } from '../services/fixture.service';
 import { Fixture } from '../models/fixture';
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import * as THREE from 'three';
-import './js/EnableThreeExamples';
-import 'three/examples/js/controls/OrbitControls';
-import 'three/examples/js/loaders/GLTFLoader';
-import STATS from 'three/examples/js/libs/stats.min';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+// import STATS from 'three/examples/js/libs/stats.min';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FixtureTemplate, FixtureType } from '../models/fixture-template';
@@ -30,11 +29,11 @@ export class PreviewComponent implements AfterViewInit {
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
-  public controls: THREE.OrbitControls;
-  private loader = new THREE.GLTFLoader();
+  public controls: OrbitControls;
+  private loader = new GLTFLoader();
 
-  private stats: any = STATS();
-  private rendererStats = new THREEx.RendererStats();
+  // private stats: any = STATS();
+  // private rendererStats = new THREEx.RendererStats();
 
   private stageWidth = 600;
   private stageDepth = 600;
@@ -102,7 +101,7 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private animate(timeMillis: number) {
-    this.stats.begin();
+    // this.stats.begin();
 
     if (this.timelineService.playState == 'playing') {
       // Overwrite the current time with the playing time, if we're in playback mode
@@ -139,12 +138,12 @@ export class PreviewComponent implements AfterViewInit {
     //this.previewService.setUniverseValues(calculatedFixtures, this.masterDimmerService.masterDimmerValue);
 
     // Update the statistics
-    this.rendererStats.update(this.renderer);
+    // this.rendererStats.update(this.renderer);
 
     // Render the scene
     this.render();
 
-    this.stats.end();
+    // this.stats.end();
 
     requestAnimationFrame(this.animate.bind(this));
   }
@@ -177,7 +176,7 @@ export class PreviewComponent implements AfterViewInit {
         // Called while loading is progressing
         function (xhr: any) { },
 
-        // // Called when loading has errors
+        // Called when loading has errors
         function (error: any) {
           observer.error(error);
         }
@@ -186,7 +185,7 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private loadMesh(name: string): Observable<THREE.Mesh> {
-    return this.loadScene(name).pipe(map((scene: THREE.Scene) => {
+    return this.loadScene(name).pipe(map((scene: any) => {
       let model = scene.children[0];
       model.geometry.center();
       model.position.set(0, 0, 0);
@@ -218,7 +217,7 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private setupControls() {
-    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableKeys = false;
     this.controls.rotateSpeed = 0.05;
     this.controls.zoomSpeed = 1.2;
@@ -226,11 +225,11 @@ export class PreviewComponent implements AfterViewInit {
     this.controls.dampingFactor = 0.25;
     this.controls.screenSpacePanning = false;
     this.controls.minDistance = 700;
-    this.controls.zoom = 1000;
+    //this.controls.zoom = 1000;
     this.controls.maxDistance = 2000
     this.controls.maxPolarAngle = Math.PI / 2;
     this.controls.target = new THREE.Vector3(0, 200, 0);
-    this.controls.rotation = 100;
+    //this.controls.rotation = 100;
   }
 
   private setupFloor() {
@@ -354,14 +353,14 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private setupStats() {
-    this.rendererStats.domElement.style.position = 'absolute'
-    this.rendererStats.domElement.style.left = '0px'
-    this.rendererStats.domElement.style.bottom = '0px'
-    this.canvas.appendChild(this.rendererStats.domElement)
+    // this.rendererStats.domElement.style.position = 'absolute'
+    // this.rendererStats.domElement.style.left = '0px'
+    // this.rendererStats.domElement.style.bottom = '0px'
+    // this.canvas.appendChild(this.rendererStats.domElement)
 
-    this.stats.domElement.style.position = 'absolute'
-    this.stats.domElement.style.left = '0px'
-    this.canvas.appendChild(this.stats.domElement)
+    // this.stats.domElement.style.position = 'absolute'
+    // this.stats.domElement.style.left = '0px'
+    // this.canvas.appendChild(this.stats.domElement)
   }
 
   private setupScene() {

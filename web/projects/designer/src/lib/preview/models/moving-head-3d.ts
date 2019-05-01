@@ -113,7 +113,7 @@ export class MovingHead3d extends Fixture3d {
         this.spotLightBeam.rotation.x = Math.PI / 2;
     }
 
-    constructor(fixtureService, fixture: Fixture, scene: THREE.scene, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
+    constructor(fixtureService, fixture: Fixture, scene: any, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
         super(fixtureService, fixture);
 
         this.socket = socket;
@@ -141,7 +141,7 @@ export class MovingHead3d extends Fixture3d {
 
         // TODO Don't load the moving head again for each fixture
 
-        this.material = new THREE.MeshLambertMaterial({
+        (<any>this.material) = new THREE.MeshLambertMaterial({
             color: 0x0d0d0d,
             emissive: 0x0d0d0d
         });
@@ -287,12 +287,12 @@ export class MovingHead3d extends Fixture3d {
         this.pointLight.color = color;
 
         this.spotLight.color = color;
-        this.spotLightBeam.material.uniforms.glowColor.value = color;
+        (<any>this.spotLightBeam.material).uniforms.glowColor.value = color;
 
         // Apply the dimmer value
         // Take the color into account for the beam (don't show a black beam)
         let intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue) / 255;
-        this.spotLightBeam.material.uniforms.opacity.value = Math.min(intensityColor, this.dimmer / 255);
+        (<any>this.spotLightBeam.material).uniforms.opacity.value = Math.min(intensityColor, this.dimmer / 255);
 
         this.spotLight.intensity = this.dimmer * this.spotLightLightMaxIntensity / 255;
         this.pointLight.intensity = this.dimmer * this.pontLightMaxIntensity / 255;
