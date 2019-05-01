@@ -22,7 +22,7 @@
         "stage": "Stage",
         "project-save": "Save",
         "project-open": "Open",
-        "project-download": "Download",
+        "project-export": "Exportieren",
         "project-close": "Close"
     },
     "scene": {

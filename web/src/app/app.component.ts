@@ -95,14 +95,14 @@ export class AppComponent implements AfterViewInit {
     // TODO
   }
 
-  projectDownload() {
-    let sJson = JSON.stringify(this.projectService.project, null, 2);
+  projectExport() {
+    let json = JSON.stringify(this.projectService.project, null, 2);
     let element = document.createElement('a');
-    element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
+    element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(json));
     element.setAttribute('download', this.projectService.project.name + '.rsd');
     element.style.display = 'none';
     document.body.appendChild(element);
-    element.click(); // simulate click
+    element.click();
     document.body.removeChild(element);
   }
 

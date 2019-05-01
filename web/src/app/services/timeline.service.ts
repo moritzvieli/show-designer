@@ -288,7 +288,7 @@ export class TimelineService {
       scenePlaybackRegion.endMillis = this.waveSurfer.getDuration() * 1000 / 3 * 2;
     }
 
-    this.selectedComposition.scenePlaybackRegionList.push(scenePlaybackRegion);
+    this.selectedComposition.scenePlaybackRegions.push(scenePlaybackRegion);
 
     this.selectedPlaybackRegion = scenePlaybackRegion;
 
@@ -550,8 +550,8 @@ export class TimelineService {
       return;
     }
 
-    for (let i = 0; i < this.selectedComposition.scenePlaybackRegionList.length; i++) {
-      if (this.selectedComposition.scenePlaybackRegionList[i] == this.selectedPlaybackRegion) {
+    for (let i = 0; i < this.selectedComposition.scenePlaybackRegions.length; i++) {
+      if (this.selectedComposition.scenePlaybackRegions[i] == this.selectedPlaybackRegion) {
         // remove the region from wavesurfer
         for (let key of Object.keys(this.waveSurfer.regions.list)) {
           let region: any = this.waveSurfer.regions.list[key];
@@ -562,7 +562,7 @@ export class TimelineService {
         }
 
         this.selectedPlaybackRegion = undefined;
-        this.selectedComposition.scenePlaybackRegionList.splice(i, 1);
+        this.selectedComposition.scenePlaybackRegions.splice(i, 1);
 
         return;
       }
@@ -574,7 +574,7 @@ export class TimelineService {
     let activePresets: PresetRegionScene[] = [];
 
     for (let scene of this.projectService.project.scenes) {
-      for (let region of this.selectedComposition.scenePlaybackRegionList) {
+      for (let region of this.selectedComposition.scenePlaybackRegions) {
         if (region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
           // This region is currently being played -> check all scene presets
           for (let presetUuid of scene.presetUuids) {
@@ -598,7 +598,7 @@ export class TimelineService {
       return;
     }
 
-    for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegionList) {
+    for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegions) {
       this.drawRegion(scenePlaybackRegion, this.sceneService.getSceneByUuid(scenePlaybackRegion.sceneUuid));
     }
   }

@@ -12,7 +12,7 @@ export class Composition {
     durationMillis: number = 0;
 
     // Regions, where the scene will be played
-    scenePlaybackRegionList: ScenePlaybackRegion[] = [];
+    scenePlaybackRegions: ScenePlaybackRegion[] = [];
 
     constructor() {
     }
