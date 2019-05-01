@@ -17,11 +17,11 @@
       "dom"
     ],
     "paths": {
-      "designer": [
-        "dist/designer"
+      "@rocketshow/designer": [
+        "dist/rocketshow/designer"
       ],
-      "designer/*": [
-        "dist/designer/*"
+      "@rocketshow/designer/*": [
+        "dist/rocketshow/designer/*"
       ]
     }
   }

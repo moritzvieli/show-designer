@@ -2,6 +2,7 @@
 
 # compiled output
 /dist
+/projects/designer/dist
 /tmp
 /out-tsc
 

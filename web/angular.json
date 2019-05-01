@@ -24,17 +24,17 @@
             ],
             "styles": [
               "node_modules/font-awesome/css/font-awesome.css",
-              "src/assets/font/style.css",
               "node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css",
+              "projects/designer/assets/font/style.css",
               "src/styles.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/bootstrap-slider/dist/bootstrap-slider.min.js",
-              "src/assets/js/threex.rendererstats.js",
-              "src/assets/js/iro.js",
-              "node_modules/wavesurfer.js/dist/wavesurfer.min.js"
+              "node_modules/wavesurfer.js/dist/wavesurfer.min.js",
+              "projects/designer/assets/js/threex.rendererstats.js",
+              "projects/designer/assets/js/iro.js"
             ]
           },
           "configurations": {

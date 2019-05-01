@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Composition } from 'src/app/models/composition';
+import { Composition } from '../../models/composition';
 import { BsModalRef } from 'ngx-bootstrap';
 
 @Component({

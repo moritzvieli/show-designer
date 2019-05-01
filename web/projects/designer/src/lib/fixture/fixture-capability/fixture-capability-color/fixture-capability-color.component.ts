@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PresetService } from 'src/app/services/preset.service';
-import { FixtureCapabilityType, FixtureCapabilityColor } from 'src/app/models/fixture-capability';
+import { PresetService } from '../../../services/preset.service';
+import { FixtureCapabilityType, FixtureCapabilityColor } from '../../../models/fixture-capability';
 
 declare var iro: any;
 

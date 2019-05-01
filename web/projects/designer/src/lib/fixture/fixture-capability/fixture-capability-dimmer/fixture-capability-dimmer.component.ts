@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { PresetService } from 'src/app/services/preset.service';
-import { DmxService } from 'src/app/services/dmx.service';
-import { FixtureCapabilityType } from 'src/app/models/fixture-capability';
+import { PresetService } from '../../../services/preset.service';
+import { DmxService } from '../../../services/dmx.service';
+import { FixtureCapabilityType } from '../../../models/fixture-capability';
 
 @Component({
   selector: 'app-fixture-capability-dimmer',

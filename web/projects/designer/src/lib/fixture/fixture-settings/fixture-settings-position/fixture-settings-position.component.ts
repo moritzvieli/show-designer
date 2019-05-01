@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Positioning } from 'src/app/models/fixture';
-import { FixtureService } from 'src/app/services/fixture.service';
+import { Positioning } from '../../../models/fixture';
+import { FixtureService } from '../../../services/fixture.service';
 
 @Component({
   selector: 'app-fixture-settings-position',
@@ -26,6 +26,10 @@ export class FixtureSettingsPositionComponent implements OnInit {
     //     fixture.positioning = positioning;
     //   }
     // });
+  }
+
+  changeSlider(event: any) {
+    // TODO
   }
 
 }

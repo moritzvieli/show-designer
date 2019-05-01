@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
-import { TimelineService } from 'src/app/services/timeline.service';
+import { TimelineService } from '../../services/timeline.service';
 
 @Component({
   selector: 'app-timeline-grid',

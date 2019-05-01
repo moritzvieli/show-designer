@@ -1,0 +1,125 @@
+<!-- Navigation -->
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light border-secondary"
+  style="border-bottom: 1px solid #444; height: 20px;">
+
+  <!-- Menu buttons -->
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="fileDropdown" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{ 'navigation.file' | translate }}
+      </a>
+      <div class="dropdown-menu" aria-labelledby="fileDropdown">
+        <a class="dropdown-item" href="#" (click)="projectOpen()">{{ 'navigation.project-open' | translate }}</a>
+        <a class="dropdown-item" href="#" (click)="projectSave()">{{ 'navigation.project-save' | translate }}</a>
+        <a class="dropdown-item" href="#" (click)="projectExport()">{{ 'navigation.project-export' | translate }}</a>
+        <a class="dropdown-item" href="#" (click)="projectClose()">{{ 'navigation.project-close' | translate }}</a>
+      </div>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{ 'navigation.settings' | translate }}
+      </a>
+      <div class="dropdown-menu" aria-labelledby="settingsDropdown">
+        <a class="dropdown-item" href="#" (click)="openFixturePool()">{{ 'navigation.fixture-pool' | translate }}</a>
+        <!-- <a class="dropdown-item" href="#">{{ 'navigation.stage' | translate }}</a> -->
+      </div>
+    </li>
+    <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+      <a class="nav-link" routerLink="/help" routerLinkActive="active">{{ 'navigation.help' | translate }}</a>
+    </li>
+  </ul>
+</nav>
+
+<!-- 100 % height minus the menu bar above -->
+<div style="height: calc(100% - 33px)">
+
+  <div id="row1" class="split split-vertical clearfix pt-3 pl-3">
+
+    <!-- Scenes -->
+    <div id="scenes" class="split split-horizontal h-100">
+      <app-scene></app-scene>
+    </div>
+
+    <!-- Presets -->
+    <div id="presets" class="split split-horizontal h-100">
+      <app-preset></app-preset>
+    </div>
+
+    <!-- 3D preview -->
+    <div id="preview" class="split split-horizontal h-100 pr-3">
+      <div class="card border-secondary h-100">
+        <div class="card-body p-0 h-100">
+          <app-preview class="h-100"></app-preview>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="row2" class="split split-vertical clearfix px-3">
+    <div id="capabilities" class="split split-horizontal h-100">
+
+      <div class="row h-100">
+
+        <!-- Menu for the capabilities and effects-->
+        <div class="col col-auto pr-0">
+          <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link px-3 active" (click)="openTab('capabilities')" id="v-pills-capabilities-tab"
+              popover="{{ 'misc.capabilities' | translate }}" container="body" placement="right"
+              triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-capabilities" role="tab"
+              aria-controls="v-pills-capabilities" aria-selected="true">
+              <i class="fa fa-sliders fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
+            </a>
+            <a class="nav-link px-3" (click)="openTab('effects')" id="v-pills-effects-tab"
+              popover="{{ 'misc.effects' | translate }}" container="body" placement="right"
+              triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-effects" role="tab"
+              aria-controls="v-pills-effects" aria-selected="false">
+              <i class="fa fa-magic fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
+            </a>
+            <a class="nav-link px-3" (click)="openTab('settings')" id="v-pills-settings-tab"
+              popover="{{ 'misc.settings' | translate }}" container="body" placement="right"
+              triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-settings" role="tab"
+              aria-controls="v-pills-settings" aria-selected="true">
+              <i class="fa fa-cog fa-fw" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Content for the capabilities and effects -->
+        <div class="col pl-0">
+          <div class="tab-content h-100" id="v-pills-tabContent">
+            <div class="tab-pane h-100 show active" id="v-pills-capabilities" role="tabpanel"
+              aria-labelledby="v-pills-home-tab">
+              <app-fixture-capability></app-fixture-capability>
+            </div>
+            <div class="tab-pane h-100" id="v-pills-effects" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+              <app-effect></app-effect>
+            </div>
+            <div class="tab-pane h-100" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-home-tab">
+              <app-fixture-settings></app-fixture-settings>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fixtures -->
+    <div id="fixtures" class="split split-horizontal h-100">
+      <app-fixture></app-fixture>
+    </div>
+
+    <!-- Master dimmer -->
+    <div id="masterDimmer" class="split split-horizontal h-100">
+      <app-master-dimmer></app-master-dimmer>
+    </div>
+
+  </div>
+
+  <!-- Timeline -->
+  <div id="row3" class="split split-vertical clearfix px-3 pb-3" style="padding-bottom: 20px;">
+    <app-timeline></app-timeline>
+  </div>
+
+</div>

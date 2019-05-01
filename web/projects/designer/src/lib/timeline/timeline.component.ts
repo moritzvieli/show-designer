@@ -39,7 +39,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     this.timelineService.createWaveSurfer();
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   public onResize() {
     if (this.timelineService.waveSurfer) {
       this.timelineService.waveSurfer.setHeight(1);

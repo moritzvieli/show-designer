@@ -3,7 +3,7 @@ import { Subscription, timer } from 'rxjs';
 import { EffectCurve } from './../../models/effect-curve';
 import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
 import { EffectChannel } from '../../models/effect';
-import { PresetService } from 'src/app/services/preset.service';
+import { PresetService } from '../../services/preset.service';
 
 @Component({
   selector: 'app-effect-curve',

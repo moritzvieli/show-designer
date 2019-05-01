@@ -8,7 +8,7 @@ import * as THREE from 'three';
 import './js/EnableThreeExamples';
 import 'three/examples/js/controls/OrbitControls';
 import 'three/examples/js/loaders/GLTFLoader';
-import * as STATS from 'three/examples/js/libs/stats.min';
+import STATS from 'three/examples/js/libs/stats.min';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FixtureTemplate, FixtureType } from '../models/fixture-template';
@@ -195,7 +195,7 @@ export class PreviewComponent implements AfterViewInit {
     }));
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   public onResize() {
     this.camera.aspect = this.getAspectRatio();
     this.camera.updateProjectionMatrix();

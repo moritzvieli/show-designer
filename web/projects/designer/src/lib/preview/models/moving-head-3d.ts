@@ -1,9 +1,8 @@
 import { Fixture3d } from './fixture-3d';
 import * as THREE from 'three';
-import { Positioning, Fixture } from 'src/app/models/fixture';
-import { FixtureTemplate } from 'src/app/models/fixture-template';
-import { FixtureCapabilityValue } from 'src/app/models/fixture-capability-value';
-import { FixtureCapabilityType } from 'src/app/models/fixture-capability';
+import { Positioning, Fixture } from '../../models/fixture';
+import { FixtureCapabilityValue } from '../../models/fixture-capability-value';
+import { FixtureCapabilityType } from '../../models/fixture-capability';
 
 export class MovingHead3d extends Fixture3d {
 

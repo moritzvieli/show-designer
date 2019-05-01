@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PresetService } from 'src/app/services/preset.service';
+import { PresetService } from '../../services/preset.service';
 
 @Component({
   selector: 'app-fixture-capability',

@@ -1,9 +1,9 @@
-import { FixtureTemplate } from "src/app/models/fixture-template";
-import { Fixture } from "src/app/models/fixture";
-import { FixtureCapabilityValue } from "src/app/models/fixture-capability-value";
-import { FixtureCapabilityType, FixtureCapabilityColor } from "src/app/models/fixture-capability";
+import { FixtureTemplate } from "../../models/fixture-template";
+import { Fixture } from "../../models/fixture";
+import { FixtureCapabilityValue } from "../../models/fixture-capability-value";
+import { FixtureCapabilityType, FixtureCapabilityColor } from "../../models/fixture-capability";
 import * as THREE from 'three';
-import { FixtureService } from "src/app/services/fixture.service";
+import { FixtureService } from "../../services/fixture.service";
 
 export abstract class Fixture3d {
 

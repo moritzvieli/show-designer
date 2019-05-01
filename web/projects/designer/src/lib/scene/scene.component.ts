@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { SceneService } from 'src/app/services/scene.service';
-import { PresetService } from 'src/app/services/preset.service';
-import { Preset } from 'src/app/models/preset';
-import { UuidService } from 'src/app/services/uuid.service';
+import { SceneService } from '../services/scene.service';
+import { PresetService } from '../services/preset.service';
+import { Preset } from '../models/preset';
+import { UuidService } from '../services/uuid.service';
 import { ProjectService } from '../services/project.service';
 
 @Component({
@@ -14,7 +14,7 @@ export class SceneComponent implements OnInit {
 
   constructor(
     public sceneService: SceneService,
-    private presetService: PresetService,
+    public presetService: PresetService,
     private uuidService: UuidService,
     public projectService: ProjectService
   ) {

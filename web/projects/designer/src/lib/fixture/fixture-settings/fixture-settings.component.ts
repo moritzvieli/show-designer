@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FixtureService } from 'src/app/services/fixture.service';
+import { FixtureService } from '../../services/fixture.service';
 
 @Component({
   selector: 'app-fixture-settings',
