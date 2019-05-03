@@ -7,27 +7,27 @@
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="fileDropdown" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        {{ 'navigation.file' | translate }}
+        {{ 'designer.navigation.file' | translate }}
       </a>
       <div class="dropdown-menu" aria-labelledby="fileDropdown">
-        <a class="dropdown-item" href="#" (click)="projectOpen()">{{ 'navigation.project-open' | translate }}</a>
-        <a class="dropdown-item" href="#" (click)="projectSave()">{{ 'navigation.project-save' | translate }}</a>
-        <a class="dropdown-item" href="#" (click)="projectExport()">{{ 'navigation.project-export' | translate }}</a>
-        <a class="dropdown-item" href="#" (click)="projectClose()">{{ 'navigation.project-close' | translate }}</a>
+        <a class="dropdown-item" href="#" (click)="projectOpen()">{{ 'designer.navigation.project-open' | translate }}</a>
+        <a class="dropdown-item" href="#" (click)="projectSave()">{{ 'designer.navigation.project-save' | translate }}</a>
+        <a class="dropdown-item" href="#" (click)="projectExport()">{{ 'designer.navigation.project-export' | translate }}</a>
+        <a class="dropdown-item" href="#" (click)="projectClose()">{{ 'designer.navigation.project-close' | translate }}</a>
       </div>
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        {{ 'navigation.settings' | translate }}
+        {{ 'designer.navigation.settings' | translate }}
       </a>
       <div class="dropdown-menu" aria-labelledby="settingsDropdown">
-        <a class="dropdown-item" href="#" (click)="openFixturePool()">{{ 'navigation.fixture-pool' | translate }}</a>
-        <!-- <a class="dropdown-item" href="#">{{ 'navigation.stage' | translate }}</a> -->
+        <a class="dropdown-item" href="#" (click)="openFixturePool()">{{ 'designer.navigation.fixture-pool' | translate }}</a>
+        <!-- <a class="dropdown-item" href="#">{{ 'designer.navigation.stage' | translate }}</a> -->
       </div>
     </li>
     <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-      <a class="nav-link" routerLink="/help" routerLinkActive="active">{{ 'navigation.help' | translate }}</a>
+      <a class="nav-link" routerLink="/help" routerLinkActive="active">{{ 'designer.navigation.help' | translate }}</a>
     </li>
   </ul>
 </nav>
@@ -67,19 +67,19 @@
         <div class="col col-auto pr-0">
           <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             <a class="nav-link px-3 active" (click)="openTab('capabilities')" id="v-pills-capabilities-tab"
-              popover="{{ 'misc.capabilities' | translate }}" container="body" placement="right"
+              popover="{{ 'designer.misc.capabilities' | translate }}" container="body" placement="right"
               triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-capabilities" role="tab"
               aria-controls="v-pills-capabilities" aria-selected="true">
               <i class="fa fa-sliders fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
             </a>
             <a class="nav-link px-3" (click)="openTab('effects')" id="v-pills-effects-tab"
-              popover="{{ 'misc.effects' | translate }}" container="body" placement="right"
+              popover="{{ 'designer.misc.effects' | translate }}" container="body" placement="right"
               triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-effects" role="tab"
               aria-controls="v-pills-effects" aria-selected="false">
               <i class="fa fa-magic fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
             </a>
             <a class="nav-link px-3" (click)="openTab('settings')" id="v-pills-settings-tab"
-              popover="{{ 'misc.settings' | translate }}" container="body" placement="right"
+              popover="{{ 'designer.misc.settings' | translate }}" container="body" placement="right"
               triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-settings" role="tab"
               aria-controls="v-pills-settings" aria-selected="true">
               <i class="fa fa-cog fa-fw" aria-hidden="true"></i>

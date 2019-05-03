@@ -7,18 +7,18 @@
 <div class="modal-body">
 
   <div class="form-group row">
-    <label class="col-lg-4 col-form-label">{{ 'timeline.composition-name' | translate }}</label>
+    <label class="col-lg-4 col-form-label">{{ 'designer.timeline.composition-name' | translate }}</label>
     <div class="col-lg-8 d-flex">
       <input type="text" class="form-control" [ngModel]="composition.name" (ngModelChange)="composition.name = $event;">
     </div>
   </div>
 
   <div class="form-group row">
-    <label class="col-lg-4 col-form-label">{{ 'timeline.composition-sync-type' | translate }}</label>
+    <label class="col-lg-4 col-form-label">{{ 'designer.timeline.composition-sync-type' | translate }}</label>
     <div class="col-lg-8 d-flex">
       <select class="custom-select" [ngModel]="composition.syncType" (ngModelChange)="composition.syncType = $event">
-        <option value="none">{{ 'timeline.composition-sync-type-none' | translate }}</option>
-        <option value="audio">{{ 'timeline.composition-sync-type-audio' | translate }}</option>
+        <option value="none">{{ 'designer.timeline.composition-sync-type-none' | translate }}</option>
+        <option value="audio">{{ 'designer.timeline.composition-sync-type-audio' | translate }}</option>
       </select>
     </div>
   </div>

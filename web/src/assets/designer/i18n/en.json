@@ -1,0 +1,65 @@
+{
+    "designer": {
+        "misc": {
+            "save": "Save",
+            "cancel": "Cancel",
+            "finish": "Finish",
+            "nav-next": "Next",
+            "nav-back": "Back",
+            "ok": "OK",
+            "capabilities": "Capabilities",
+            "settings": "Settings",
+            "effects": "Effects"
+        },
+        "loading": {
+            "title": "Loading...",
+            "description": "Please wait while the application is being loaded."
+        },
+        "navigation": {
+            "file": "File",
+            "settings": "Settings",
+            "help": "Help",
+            "fixture-pool": "Fixture pool",
+            "stage": "Stage",
+            "project-save": "Save",
+            "project-open": "Open",
+            "project-export": "Exportieren",
+            "project-close": "Close"
+        },
+        "scene": {
+            "title": "Scenes"
+        },
+        "fixture-pool": {
+            "title": "Fixture pool",
+            "create-template": "Create template",
+            "search-templates": "Search templates",
+            "settings": "Settings",
+            "dmx": "DMX overview",
+            "fixture-name": "Fixture name",
+            "mode": "Mode",
+            "channels": "channels",
+            "universe": "Universe"
+        },
+        "composition": {
+            "new": "Create new composition..."
+        },
+        "timeline": {
+            "grid": "Grid",
+            "grid-type": "Type",
+            "grid-type-time-based": "Time based",
+            "grid-type-musical": "Musical",
+            "snap-to-grid": "Snap to grid",
+            "beats-per-minute": "BPM",
+            "time-signature": "Time signature",
+            "remove-region": "Remove selected region",
+            "add-region": "Add new region",
+            "remove-composition": "Remove composition",
+            "composition-settings": "Composition settings",
+            "no-compositions": "No compositions",
+            "composition-name": "Name",
+            "composition-sync-type": "Synchronisierung",
+            "composition-sync-type-none": "None",
+            "composition-sync-type-audio": "Audio"
+        }
+    }
+}

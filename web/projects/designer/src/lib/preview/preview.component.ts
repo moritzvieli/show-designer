@@ -7,7 +7,7 @@ import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-// import STATS from 'three/examples/js/libs/stats.min';
+import STATS from 'three/examples/js/libs/stats.min';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FixtureTemplate, FixtureType } from '../models/fixture-template';
@@ -17,7 +17,7 @@ import { TimelineService } from '../services/timeline.service';
 import { MasterDimmerService } from '../services/master-dimmer.service';
 import { ProjectService } from '../services/project.service';
 
-declare var THREEx: any;
+// declare var THREEx: any;
 
 @Component({
   selector: 'app-preview',
@@ -32,7 +32,7 @@ export class PreviewComponent implements AfterViewInit {
   public controls: OrbitControls;
   private loader = new GLTFLoader();
 
-  // private stats: any = STATS();
+  private stats: any = STATS();
   // private rendererStats = new THREEx.RendererStats();
 
   private stageWidth = 600;
@@ -101,7 +101,7 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private animate(timeMillis: number) {
-    // this.stats.begin();
+    this.stats.begin();
 
     if (this.timelineService.playState == 'playing') {
       // Overwrite the current time with the playing time, if we're in playback mode
@@ -143,7 +143,7 @@ export class PreviewComponent implements AfterViewInit {
     // Render the scene
     this.render();
 
-    // this.stats.end();
+    this.stats.end();
 
     requestAnimationFrame(this.animate.bind(this));
   }
@@ -353,14 +353,14 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private setupStats() {
-    // this.rendererStats.domElement.style.position = 'absolute'
-    // this.rendererStats.domElement.style.left = '0px'
-    // this.rendererStats.domElement.style.bottom = '0px'
-    // this.canvas.appendChild(this.rendererStats.domElement)
+    // this.rendererStats.domElement.style.position = 'absolute';
+    // this.rendererStats.domElement.style.left = '0px';
+    // this.rendererStats.domElement.style.bottom = '0px';
+    // this.canvas.appendChild(this.rendererStats.domElement);
 
-    // this.stats.domElement.style.position = 'absolute'
-    // this.stats.domElement.style.left = '0px'
-    // this.canvas.appendChild(this.stats.domElement)
+    this.stats.domElement.style.position = 'absolute';
+    this.stats.domElement.style.left = '0px';
+    this.canvas.appendChild(this.stats.domElement);
   }
 
   private setupScene() {

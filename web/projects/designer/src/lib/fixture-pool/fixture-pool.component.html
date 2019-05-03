@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title pull-left">{{ 'fixture-pool.title' | translate }}</h4>
+  <h4 class="modal-title pull-left">{{ 'designer.fixture-pool.title' | translate }}</h4>
   <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -9,12 +9,12 @@
     <div class="col-6">
       <!-- Create a new template -->
       <a class="btn btn-primary mb-3 btn btn-primary btn-block" href="#" role="button" (click)="ok(); false">
-        <i class="fa fa-plus" aria-hidden="true"></i> {{ 'fixture-pool.create-template' | translate }}
+        <i class="fa fa-plus" aria-hidden="true"></i> {{ 'designer.fixture-pool.create-template' | translate }}
       </a>
 
       <!-- Search for template -->
       <input type="text" class="form-control input-block mb-3" id="searchSet"
-        placeholder="{{ 'fixture-pool.search-templates' | translate }}" (input)="filterTemplates($event.target.value)">
+        placeholder="{{ 'designer.fixture-pool.search-templates' | translate }}" (input)="filterTemplates($event.target.value)">
 
       <!-- Templates -->
       <div class="card border-secondary" style="height: 200px;">
@@ -47,7 +47,7 @@
     <div class="col-6">
       <!-- Fixtures -->
       <div class="form-group row">
-        <label class="col-lg-2 col-form-label">{{ 'fixture-pool.universe' | translate }}</label>
+        <label class="col-lg-2 col-form-label">{{ 'designer.fixture-pool.universe' | translate }}</label>
         <select class="custom-select">
           <option>Universe 1</option>
         </select>
@@ -83,12 +83,12 @@
       <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
         <li class="nav-item">
           <a class="nav-link active" id="sets-tab" data-toggle="tab" href="#dmx" role="tab">
-            <i class="icon-ola" aria-hidden="true"></i> {{ 'fixture-pool.dmx' | translate }}
+            <i class="icon-ola" aria-hidden="true"></i> {{ 'designer.fixture-pool.dmx' | translate }}
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" id="compositions-tab" data-toggle="tab" href="#settings" role="tab">
-            <i class="fa fa-cog" aria-hidden="true"></i> {{ 'fixture-pool.settings' | translate }}
+            <i class="fa fa-cog" aria-hidden="true"></i> {{ 'designer.fixture-pool.settings' | translate }}
           </a>
         </li>
       </ul>
@@ -131,7 +131,7 @@
 
             <div class="form-group row">
               <label class="col-lg-3 col-form-label"
-                for="fixtureName">{{ 'fixture-pool.fixture-name' | translate }}</label>
+                for="fixtureName">{{ 'designer.fixture-pool.fixture-name' | translate }}</label>
               <div class="col-lg-9 d-flex">
                 <input type="text" class="form-control" [(ngModel)]="selectedFixture.name" maxlength="200"
                   id="fixtureName">
@@ -139,13 +139,13 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-lg-3 col-form-label">{{ 'fixture-pool.mode' | translate }}</label>
+              <label class="col-lg-3 col-form-label">{{ 'designer.fixture-pool.mode' | translate }}</label>
               <div class="col-lg-9 d-flex">
                 <select class="custom-select" [ngModel]="selectedFixture.modeShortName"
                   (ngModelChange)="selectedFixture.modeShortName = $event">
                   <option *ngFor="let mode of fixtureService.getTemplateByFixture(selectedFixture).modes"
                     [ngValue]="mode.shortName">
-                    {{ mode.name }} - {{ mode.channels.length }} {{ 'fixture-pool.channels' | translate }}</option>
+                    {{ mode.name }} - {{ mode.channels.length }} {{ 'designer.fixture-pool.channels' | translate }}</option>
                 </select>
               </div>
             </div>
@@ -158,5 +158,5 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" (click)="ok()">{{ 'misc.ok' | translate }}</button>
+  <button type="button" class="btn btn-default" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>
 </div>

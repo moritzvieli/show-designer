@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title pull-left">{{ 'timeline.grid' | translate }}</h4>
+  <h4 class="modal-title pull-left">{{ 'designer.timeline.grid' | translate }}</h4>
   <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -7,18 +7,18 @@
 <div class="modal-body">
 
   <div class="form-group row">
-    <label class="col-lg-4 col-form-label">{{ 'timeline.grid-type' | translate }}</label>
+    <label class="col-lg-4 col-form-label">{{ 'designer.timeline.grid-type' | translate }}</label>
     <div class="col-lg-8 d-flex">
       <select class="custom-select" [ngModel]="timelineService.gridType"
         (ngModelChange)="timelineService.gridType = $event; updateGrid();">
-        <option value="time">{{ 'timeline.grid-type-time-based' | translate }}</option>
-        <option value="musical">{{ 'timeline.grid-type-musical' | translate }}</option>
+        <option value="time">{{ 'designer.timeline.grid-type-time-based' | translate }}</option>
+        <option value="musical">{{ 'designer.timeline.grid-type-musical' | translate }}</option>
       </select>
     </div>
   </div>
 
   <div *ngIf="timelineService.gridType == 'musical'" class="form-group row">
-    <label class="col-lg-4 col-form-label">{{ 'timeline.beats-per-minute' | translate }}</label>
+    <label class="col-lg-4 col-form-label">{{ 'designer.timeline.beats-per-minute' | translate }}</label>
     <div class="col-lg-8 d-flex">
       <input type="text" class="form-control" [ngModel]="timelineService.beatsPerMinute"
         (ngModelChange)="timelineService.beatsPerMinute = $event; updateGrid();">
@@ -26,7 +26,7 @@
   </div>
 
   <div *ngIf="timelineService.gridType == 'musical'" class="form-group row">
-    <label class="col-lg-4 col-form-label">{{ 'timeline.time-signature' | translate }}</label>
+    <label class="col-lg-4 col-form-label">{{ 'designer.timeline.time-signature' | translate }}</label>
     <div class="col-lg-3 d-flex">
       <input type="text" class="form-control" [ngModel]="timelineService.timeSignatureUpper"
         (ngModelChange)="timelineService.timeSignatureUpper = $event; updateGrid();">
@@ -46,7 +46,7 @@
           (ngModelChange)="timelineService.snapToGrid = $event" class="form-check-input" id="snapToGrid">
 
         <label class="form-check-label" for="snapToGrid">
-          {{ 'timeline.snap-to-grid' | translate }}
+          {{ 'designer.timeline.snap-to-grid' | translate }}
         </label>
       </div>
     </div>
