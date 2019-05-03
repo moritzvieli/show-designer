@@ -1,10 +1,10 @@
 {
   "name": "@rocketshow/designer",
-  "version": "1.9.0",
+  "version": "1.11.0",
   "scripts": {
     "assets-delete": "rmdir-cli ../../../src/assets/designer",
     "assets-copy": "ncp assets ../../../src/assets/designer",
-    "postinstall": "npm run assets-delete && assets-copy",
+    "postinstall": "npm run assets-delete && npm run assets-copy",
     "postuninstall": "npm run assets-delete"
   },
   "dependencies": {
