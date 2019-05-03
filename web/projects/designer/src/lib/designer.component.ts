@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, ViewEncapsulation, Input } from '@angular/core';
 import { PreviewComponent } from './preview/preview.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,9 +10,25 @@ import Split from 'split.js';
 @Component({
   selector: 'lib-designer',
   templateUrl: './designer.component.html',
-  styleUrls: ['./designer.component.scss']
+  styleUrls: ['./designer.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DesignerComponent implements AfterViewInit {
+
+  private _menuHeightPx: number = 0;
+
+  @Input()
+  set menuHeightPx(value: number) {
+    this._menuHeightPx = value;
+    this.calcTotalMenuHeight();
+  }
+
+  // the size of the menu used in the designer
+  private designerMenuSizePx = 20;
+
+  private splitGutterSizePx = 13;
+
+  public totalMenuHeightPx: number = 0;
 
   currentTab: string = 'properties';
 
@@ -29,6 +45,11 @@ export class DesignerComponent implements AfterViewInit {
   ) {
 
     this.translateService.use('en');
+    this.calcTotalMenuHeight();
+  }
+
+  private calcTotalMenuHeight() {
+    this.totalMenuHeightPx = this.designerMenuSizePx + this.splitGutterSizePx + this._menuHeightPx;
   }
 
   private onResize() {
@@ -43,28 +64,26 @@ export class DesignerComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // Set up the splitter
-    let gutterSize: number = 12.8;
-
     Split(['#row1', '#row2', '#row3'], {
-      sizes: [50, 32, 18],
+      sizes: [45, 35, 20],
       direction: 'vertical',
       cursor: 'row-resize',
       snapOffset: 0,
-      gutterSize: gutterSize,
+      gutterSize: this.splitGutterSizePx,
       onDrag: this.onResize.bind(this)
     });
 
     Split(['#scenes', '#presets', '#preview'], {
       sizes: [15, 15, 70],
       snapOffset: 0,
-      gutterSize: gutterSize,
+      gutterSize: this.splitGutterSizePx,
       onDrag: this.onResize.bind(this)
     });
 
     Split(['#capabilities', '#fixtures', '#masterDimmer'], {
       sizes: [78, 16, 6],
       snapOffset: 0,
-      gutterSize: gutterSize,
+      gutterSize: this.splitGutterSizePx,
       onDrag: this.onResize.bind(this)
     });
 

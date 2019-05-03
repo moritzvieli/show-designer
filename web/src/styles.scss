@@ -13,9 +13,6 @@ $theme-colors: (
 /* Add bootstrap */
 @import '../node_modules/bootstrap/scss/bootstrap';
 
-/* Add designer css */
-@import 'src/assets/designer/style/styles.scss';
-
 /* General styles */
 body,
 html {

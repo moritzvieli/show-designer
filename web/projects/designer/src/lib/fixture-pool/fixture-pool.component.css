@@ -40,3 +40,7 @@
   border: 1px solid red;
   cursor: move;
 }
+
+.card {
+  overflow: auto;
+}

@@ -161,7 +161,7 @@ export class PreviewComponent implements AfterViewInit {
   private loadScene(name: string): Observable<THREE.Scene> {
     return Observable.create(observer => {
       this.loader.load(
-        './assets/models/' + name + '.gltf',
+        './assets/designer/models/' + name + '.gltf',
 
         // Called when the resource is loaded
         function (gltf: any) {
@@ -238,10 +238,10 @@ export class PreviewComponent implements AfterViewInit {
 
     let geometry = new THREE.BoxGeometry(width, height, width);
 
-    let texture = new THREE.TextureLoader().load('./assets/textures/planks.jpg');
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(10, 10);
+    // let texture = new THREE.TextureLoader().load('./assets/textures/planks.jpg');
+    // texture.wrapS = THREE.RepeatWrapping;
+    // texture.wrapT = THREE.RepeatWrapping;
+    // texture.repeat.set(10, 10);
     //let floorMaterial = new THREE.MeshBasicMaterial({ map: texture });
 
     // let material = new THREE.MeshLambertMaterial({

@@ -1,1 +1,32 @@
-<lib-designer></lib-designer>
+<!-- Navigation -->
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light border-secondary" style="border-bottom: 1px solid #444;">
+  <a class="navbar-brand d-flex" href="#" routerLink="/">
+    <img class="my-auto d-none d-sm-block" src="assets/img/logo.png?v=1.4" height="30px" style="margin-right: 0px;">
+    <span class="my-auto d-none d-sm-block">&nbsp;|&nbsp;</span>
+  </a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+        <a class="nav-link" routerLink="/play" routerLinkActive="active">{{ 'navigation.start' | translate }}</a>
+      </li>
+      <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+      <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+        <a class="nav-link" routerLink="/editor" routerLinkActive="active">{{ 'navigation.compositions' | translate }}</a>
+      </li>
+      <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+        <a class="nav-link" routerLink="/designer" routerLinkActive="active">{{ 'navigation.designer' | translate }}</a>
+      </li>
+      <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+        <a class="nav-link" routerLink="/settings" routerLinkActive="active">{{ 'navigation.settings' | translate }}</a>
+      </li>
+    </ul>
+  </div>
+
+  <button class="navbar-toggler navbar-toggler-left ml-3" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</nav>
+
+<lib-designer [menuHeightPx]="73.375"></lib-designer>
