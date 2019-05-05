@@ -57,8 +57,8 @@ export class FixtureService {
 
     // Load the metadata and the template
     return forkJoin(
-      this.http.get('fixture-search?uuid=' + uuid),
-      this.http.get('fixture?uuid=' + uuid)
+      this.http.get('fixture-search?uuid=' + encodeURI(uuid)),
+      this.http.get('fixture?uuid=' + encodeURI(uuid))
     ).pipe(map(result => {
       let fixtureTemplate = new FixtureTemplate(result[0][0], result[1]);
       this.projectService.project.fixtureTemplates.push(fixtureTemplate);

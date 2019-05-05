@@ -28,6 +28,17 @@ export class SceneService {
     private presetService: PresetService,
     private projectService: ProjectService,
   ) {
+    // Add a default scene and preset
+    this.addScene();
+
+    let preset = new Preset();
+    preset.uuid = this.uuidService.getUuid();
+    preset.name = 'Preset';
+    this.projectService.project.scenes[0].presetUuids.push(preset.uuid);
+
+    this.projectService.project.presets.push(preset);
+
+    this.presetService.selectedPreset = preset;
   }
 
   sceneIsSelected(scene: Scene): boolean {

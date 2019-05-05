@@ -17,13 +17,13 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="fileDropdown">
           <a class="dropdown-item" href="#"
-            (click)="projectOpen()">{{ 'designer.navigation.project-open' | translate }}</a>
+            (click)="projectOpen(); false;">{{ 'designer.navigation.project-open' | translate }}</a>
           <a class="dropdown-item" href="#"
-            (click)="projectSave()">{{ 'designer.navigation.project-save' | translate }}</a>
+            (click)="projectSave(); false;">{{ 'designer.navigation.project-save' | translate }}</a>
           <a class="dropdown-item" href="#"
-            (click)="projectExport()">{{ 'designer.navigation.project-export' | translate }}</a>
+            (click)="projectExport(); false;">{{ 'designer.navigation.project-export' | translate }}</a>
           <a class="dropdown-item" href="#"
-            (click)="projectClose()">{{ 'designer.navigation.project-close' | translate }}</a>
+            (click)="projectClose(); false;">{{ 'designer.navigation.project-close' | translate }}</a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -33,7 +33,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="settingsDropdown">
           <a class="dropdown-item" href="#"
-            (click)="openFixturePool()">{{ 'designer.navigation.fixture-pool' | translate }}</a>
+            (click)="openFixturePool(); false;">{{ 'designer.navigation.fixture-pool' | translate }}</a>
           <!-- <a class="dropdown-item" href="#">{{ 'designer.navigation.stage' | translate }}</a> -->
         </div>
       </li>
