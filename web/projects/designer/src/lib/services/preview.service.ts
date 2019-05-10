@@ -84,14 +84,9 @@ export class PreviewService {
     return presets;
   }
 
-  private capabilityValuesEqual(capability1: FixtureCapabilityValue, capbability2: FixtureCapabilityValue) {
-    if (capability1.type == capbability2.type
-      && (!capability1.color || capbability2.color == capability1.color)) {
-
-      return true;
-    }
-
-    return false;
+  private capabilityValuesEqual(capability1: FixtureCapabilityValue, capbability2: FixtureCapabilityValue): boolean {
+    return capability1.type == capbability2.type
+      && (!capability1.color || capbability2.color == capability1.color);
   }
 
   private mixCapabilityValue(existingCapabilityValues: FixtureCapabilityValue[], capabilityValue: FixtureCapabilityValue, intensityPercentage: number) {
@@ -151,14 +146,13 @@ export class PreviewService {
     // Loop over all relevant presets and calc the property values from the presets (capabilities and effects)
     let calculatedFixtures = new Map<string, FixtureCapabilityValue[]>();
 
-    for (let fixtureIndex = 0; fixtureIndex < this.projectService.project.fixtures.length; fixtureIndex++) {
-      let fixture = this.projectService.project.fixtures[fixtureIndex];
+    for (let i = 0; i < this.projectService.project.fixtures.length; i++) {
+      let fixture = this.projectService.project.fixtures[i];
 
-      // Only relevant for the 3d-preview
       // All capabilities of the current fixture
       let capabilities: FixtureCapabilityValue[] = [];
 
-      let alreadyCalculatedFixture = this.getAlreadyCalculatedFixture(this.projectService.project.fixtures, fixtureIndex);
+      let alreadyCalculatedFixture = this.getAlreadyCalculatedFixture(this.projectService.project.fixtures, i);
 
       if (alreadyCalculatedFixture) {
         // Only relevant for the preview --> reuse all calculated values
@@ -204,12 +198,16 @@ export class PreviewService {
               // Scene fades in
               intensityPercentageScene = (timeMillis - preset.region.startMillis) / preset.scene.fadeInMillis;
             }
+          }
 
+          if (preset.region && preset.preset) {
             // Take away intensity for preset fading
-            if (timeMillis > preset.region.startMillis + preset.preset.endMillis - preset.preset.fadeOutMillis) {
+            if (preset.preset.endMillis && timeMillis > preset.region.startMillis + preset.preset.endMillis - preset.preset.fadeOutMillis) {
               // Preset fades out
               intensityPercentagePreset = (preset.region.startMillis + preset.preset.endMillis - timeMillis) / preset.preset.fadeOutMillis;
-            } else if (timeMillis < preset.region.startMillis + preset.preset.startMillis + preset.preset.fadeInMillis) {
+            }
+            
+            if (preset.preset.startMillis && timeMillis < preset.region.startMillis + preset.preset.startMillis + preset.preset.fadeInMillis) {
               // Preset fades in
               intensityPercentagePreset = (timeMillis - preset.region.startMillis + preset.preset.startMillis) / preset.preset.fadeInMillis;
             }
@@ -221,13 +219,13 @@ export class PreviewService {
           // Search for this fixture in the preset and get it's preset-specific index (for chasing effects)
           let fixtureIndex = this.getFixtureIndex(preset.preset, fixture.uuid);
 
-          if (fixtureIndex >= 0) {
+          if (fixtureIndex && fixtureIndex >= 0) {
             // This fixture is also in the preset
 
             // Match all capability values in this preset with the fixture capabilities
-            for (let fixtureCapabilityIndex = 0; fixtureCapabilityIndex < channels.length; fixtureCapabilityIndex++) {
+            for (let channel of channels) {
               for (let presetCapability of preset.preset.capabilityValues) {
-                if (channels[fixtureCapabilityIndex] && channels[fixtureCapabilityIndex].capability.type == presetCapability.type) {
+                if (channel && channel.capability.type == presetCapability.type) {
                   this.mixCapabilityValue(capabilities, presetCapability, intensityPercentage);
                 }
               }
@@ -261,9 +259,9 @@ export class PreviewService {
                 }
               }
 
-              for (let fixtureCapabilityIndex = 0; fixtureCapabilityIndex < channels.length; fixtureCapabilityIndex++) {
+              for (let channel of channels) {
                 for (let effectCapability of effectCapabilityValues) {
-                  if (channels[fixtureCapabilityIndex].capability.type == effectCapability.type) {
+                  if (channel.capability.type == effectCapability.type) {
                     this.mixCapabilityValue(capabilities, effectCapability, intensityPercentage);
                   }
                 }
@@ -295,10 +293,10 @@ export class PreviewService {
       let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
       let channels = this.fixtureService.getChannelsByFixture(fixture);
 
-      for (let fixtureCapabilityIndex = 0; fixtureCapabilityIndex < channels.length; fixtureCapabilityIndex++) {
-        for (let capability of capabilities) {
-          let channel: FixtureChannel = channels[fixtureCapabilityIndex];
+      for (let channelIndex = 0; channelIndex < channels.length; channelIndex++) {
+        let channel = channels[channelIndex];
 
+        for (let capability of capabilities) {
           if (channel && channel.capability.type == capability.type) {
             // TODO Round the DMX value and set fine property, if available
 

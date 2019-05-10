@@ -592,10 +592,12 @@ export class TimelineService {
               if (presetUuid == this.projectService.project.presets[presetIndex].uuid) {
                 let preset = this.presetService.getPresetByUuid(presetUuid);
 
-                if ((!preset.startMillis || preset.startMillis + region.startMillis <= timeMillis)
-                  && (!preset.endMillis || preset.endMillis + region.startMillis >= timeMillis)) {
+                if(preset) {
+                  if ((!preset.startMillis || preset.startMillis + region.startMillis <= timeMillis)
+                    && (!preset.endMillis || preset.endMillis + region.startMillis >= timeMillis)) {
 
-                  activePresets.push(new PresetRegionScene(preset, region, scene));
+                    activePresets.push(new PresetRegionScene(preset, region, scene));
+                  }
                 }
               }
             }

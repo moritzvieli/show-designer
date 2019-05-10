@@ -140,6 +140,7 @@ export class PreviewComponent implements AfterViewInit {
       fixture3d.isSelected = this.previewService.fixtureIsSelected(fixture3d.fixture.uuid, presets);
     }
 
+    // TODO enable for monitoring the DMX universes
     //this.previewService.setUniverseValues(calculatedFixtures, this.masterDimmerService.masterDimmerValue);
 
     // Update the statistics

@@ -65,7 +65,7 @@ export class FixtureService {
     }));
   }
 
-  getTemplateByFixture(fixture: Fixture) {
+  getTemplateByFixture(fixture: Fixture): FixtureTemplate {
     return this.getTemplateByUuid(fixture.fixtureTemplateUuid);
   }
 
@@ -82,12 +82,11 @@ export class FixtureService {
   getChannelsByFixture(fixture: Fixture): FixtureChannel[] {
     let template = this.getTemplateByFixture(fixture);
     let mode = this.getModeByFixture(fixture);
+    let channels: FixtureChannel[] = [];
 
     if (!mode) {
-      return [];
+      return channels;
     }
-
-    let channels: FixtureChannel[] = [];
 
     for (let modeChannel of mode.channels) {
       if (modeChannel) {
