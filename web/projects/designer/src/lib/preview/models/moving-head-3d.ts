@@ -147,7 +147,8 @@ export class MovingHead3d extends Fixture3d {
         this.head.material = this.material;
 
         // Add the head
-        this.head.scale.multiplyScalar(0.9)
+        this.head.scale.multiplyScalar(0.9);
+        this.head.position.set(-0.1, 0, 0);
         let headPivotGroup = new THREE.Object3D();
         headPivotGroup.add(this.head);
         this.headGroup.add(headPivotGroup);
@@ -186,7 +187,6 @@ export class MovingHead3d extends Fixture3d {
         this.armGroup.add(this.headGroup);
         this.headGroup.position.set(0, -0.6, 0);
         this.armGroup.add(this.arm);
-        this.arm.rotation.x = - Math.PI / 2;
 
         // Add the socket
         this.objectGroup.add(this.armGroup);
