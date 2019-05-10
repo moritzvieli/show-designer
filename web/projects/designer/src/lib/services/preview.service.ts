@@ -219,7 +219,7 @@ export class PreviewService {
           // Search for this fixture in the preset and get it's preset-specific index (for chasing effects)
           let fixtureIndex = this.getFixtureIndex(preset.preset, fixture.uuid);
 
-          if (fixtureIndex && fixtureIndex >= 0) {
+          if (fixtureIndex >= 0) {
             // This fixture is also in the preset
 
             // Match all capability values in this preset with the fixture capabilities

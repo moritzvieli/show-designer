@@ -127,7 +127,7 @@ export class EffectCurveComponent implements OnInit {
   }
 
   toggleChannel(event: any, channel: EffectChannel) {
-    let enumChannel: any = Number(Object.keys(EffectChannel).find(key => EffectChannel[key] === channel));
+    let enumChannel: any = Object.keys(EffectChannel).find(key => EffectChannel[key] === channel);
 
     if(event.currentTarget.checked) {
       // Add the channel
