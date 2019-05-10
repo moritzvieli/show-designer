@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subscription, timer, Subject } from 'rxjs';
+import { Subscription, timer, Subject, Observable } from 'rxjs';
 import WaveSurfer from 'wavesurfer.js';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
@@ -12,6 +12,8 @@ import { Preset } from '../models/preset';
 import { ProjectService } from './project.service';
 import { Composition } from '../models/composition';
 import { PresetRegionScene } from '../models/preset-region-scene';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -46,12 +48,18 @@ export class TimelineService {
   public detectChanges: Subject<void> = new Subject();
 
   // the current composition
-  selectedComposition: Composition;
+  public selectedComposition: Composition;
+  public selectedCompositionIndex: number;
+
+  // can we add new compositions based on an external pool and
+  // should new compositions not available in this pool be added there?
+  public externalCompositionsAvailable: boolean = false;
 
   constructor(
     private sceneService: SceneService,
     private presetService: PresetService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private http: HttpClient
   ) {
     this.presetService.previewSelectionChanged.subscribe(() => {
       this.selectedPlaybackRegion = undefined;
@@ -273,7 +281,7 @@ export class TimelineService {
       return;
     }
 
-    if(!this.selectedComposition) {
+    if (!this.selectedComposition) {
       return;
     }
 
@@ -570,20 +578,26 @@ export class TimelineService {
   }
 
   getPresetsInTime(timeMillis: number): PresetRegionScene[] {
-    // Return all scenes which should be active during the specified time
+    // Return all presets which should be active during the specified time
     let activePresets: PresetRegionScene[] = [];
 
-    for (let scene of this.projectService.project.scenes) {
+    for (let sceneIndex = this.projectService.project.scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
+      let scene = this.projectService.project.scenes[sceneIndex];
+
       for (let region of this.selectedComposition.scenePlaybackRegions) {
-        if (region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
+        if (region.sceneUuid == scene.uuid && region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
           // This region is currently being played -> check all scene presets
-          for (let presetUuid of scene.presetUuids) {
-            let preset = this.presetService.getPresetByUuid(presetUuid);
+          for (let presetIndex = this.projectService.project.presets.length - 1; presetIndex >= 0; presetIndex--) {
+            for (let presetUuid of scene.presetUuids) {
+              if (presetUuid == this.projectService.project.presets[presetIndex].uuid) {
+                let preset = this.presetService.getPresetByUuid(presetUuid);
 
-            if ((!preset.startMillis || preset.startMillis + region.startMillis <= timeMillis)
-              && (!preset.endMillis || preset.endMillis + region.startMillis >= timeMillis)) {
+                if ((!preset.startMillis || preset.startMillis + region.startMillis <= timeMillis)
+                  && (!preset.endMillis || preset.endMillis + region.startMillis >= timeMillis)) {
 
-              activePresets.push(new PresetRegionScene(preset, region, scene));
+                  activePresets.push(new PresetRegionScene(preset, region, scene));
+                }
+              }
             }
           }
         }
@@ -594,7 +608,7 @@ export class TimelineService {
   }
 
   drawAllRegions() {
-    if(!this.selectedComposition) {
+    if (!this.selectedComposition) {
       return;
     }
 
@@ -604,9 +618,20 @@ export class TimelineService {
   }
 
   updateGrid() {
-    console.log('TODO update grid');
-    // TODO
     this.updateCurrentTime();
+  }
+
+  getExternalCompositionNames(): Observable<string[]> {
+    // get available compositions from an external pool (e.g. Rocket Show)
+    return this.http.get('composition/list').pipe(map((response: Array<Object>) => {
+      let compositionNames: string[] = [];
+
+      for (let responseComposition of response) {
+        compositionNames.push((<any>responseComposition).name);
+      }
+
+      return compositionNames;
+    }));
   }
 
 }

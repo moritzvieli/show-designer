@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Fixture } from '../models/fixture';
 import { Project } from '../models/project';
-import { Subject } from 'rxjs';
 import { UuidService } from './uuid.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,19 +12,17 @@ export class ProjectService {
   // the current project
   public project: Project;
 
-  public fixtureAdded: Subject<Fixture> = new Subject<Fixture>();
-
   constructor(
-    private uuidService: UuidService
+    private uuidService: UuidService,
+    private http: HttpClient
   ) {
     this.project = new Project();
     this.project.uuid = this.uuidService.getUuid();
     this.project.name = 'New Project';
   }
 
-  addFixture(fixture: Fixture) {
-    this.project.fixtures.push(fixture);
-    this.fixtureAdded.next(fixture);
+  save(project: Project): Observable<Object> {
+    return this.http.post('project', JSON.stringify(project));
   }
 
 }

@@ -6,11 +6,11 @@
         <a href="#" class="btn btn-primary m-0 p-1 mr-3" (click)="addComposition(); false;"><i
             class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
         <select class="custom-select mr-3"
-          [ngModel]="timelineService.selectedComposition" (ngModelChange)="selectComposition($event)"
+          [ngModel]="timelineService.selectedCompositionIndex" (ngModelChange)="selectComposition($event)"
           style="width: 150px; height: 30px;">
-          <option *ngFor="let composition of projectService.project.compositions" [value]="composition">
+          <option *ngFor="let composition of projectService.project.compositions; let i = index;" [value]="i">
             {{ composition.name }}
-          <option *ngIf="projectService.project.compositions.length == 0" [value]="undefined">
+          <option *ngIf="projectService.project.compositions.length == 0" [value]="0">
             - {{ 'designer.timeline.no-compositions' | translate }} -
           </option>
         </select>

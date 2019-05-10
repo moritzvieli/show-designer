@@ -6,6 +6,9 @@ import { BsModalService } from 'ngx-bootstrap';
 import { ProjectService } from './services/project.service';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 import Split from 'split.js';
+import { TimelineService } from './services/timeline.service';
+import { PreviewService } from './services/preview.service';
+import { map, catchError, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'lib-designer',
@@ -21,6 +24,11 @@ export class DesignerComponent implements AfterViewInit {
   set menuHeightPx(value: number) {
     this._menuHeightPx = value;
     this.calcTotalMenuHeight();
+  }
+
+  @Input()
+  set externalCompositionsAvailable(value: boolean) {
+    this.timelineService.externalCompositionsAvailable = value;
   }
 
   // the size of the menu used in the designer
@@ -41,7 +49,9 @@ export class DesignerComponent implements AfterViewInit {
   constructor(
     private translateService: TranslateService,
     private modalService: BsModalService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private timelineService: TimelineService,
+    private previewService: PreviewService
   ) {
 
     this.translateService.use('en');
@@ -99,7 +109,17 @@ export class DesignerComponent implements AfterViewInit {
   }
 
   openFixturePool() {
-    let bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
+    let fixturesCopy = JSON.parse(JSON.stringify(this.projectService.project.fixtures));
+
+    let bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full', initialState: { fixturePool: fixturesCopy } });
+  
+    (<FixturePoolComponent>bsModalRef.content).onClose.subscribe(result => {
+      if (result === 1) {
+        // OK has been pressed -> save
+        this.projectService.project.fixtures = fixturesCopy;
+        this.previewService.updateFixtureSetup();
+      }
+    });
   }
 
   projectOpen() {
@@ -112,6 +132,26 @@ export class DesignerComponent implements AfterViewInit {
 
   projectSave() {
     // TODO
+    //this.savingComposition = true;
+
+    this.projectService.save(this.projectService.project).pipe(map(() => {
+      // this.loadCompositions();
+      // this.copyInitialComposition();
+
+      // this.compositionService.compositionsChanged.next();
+
+      // this.translateService.get(['editor.toast-composition-save-success', 'editor.toast-save-success-title']).subscribe(result => {
+      //   this.toastrService.success(result['editor.toast-composition-save-success'], result['editor.toast-save-success-title']);
+      // });
+    }),
+      catchError((err) => {
+        //return this.toastGeneralErrorService.show(err);
+        return undefined;
+      }),
+      finalize(() => {
+        //this.savingComposition = false;
+      }))
+      .subscribe();
   }
 
   projectExport() {

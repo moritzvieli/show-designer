@@ -14,7 +14,6 @@ export class Composition {
     // Regions, where the scene will be played
     scenePlaybackRegions: ScenePlaybackRegion[] = [];
 
-    constructor() {
-    }
+    constructor() {}
 
 }

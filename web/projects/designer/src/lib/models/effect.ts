@@ -2,15 +2,15 @@ import { UuidService } from "../services/uuid.service";
 
 export enum EffectChannel
 {
-    colorRed,
-    colorGreen,
-    colorBlue,
+    colorRed = "colorRed",
+    colorGreen = "colorGreen",
+    colorBlue = "colorBlue",
     // TODO
     // hue,
     // saturation,
-    dimmer,
-    pan,
-    tilt
+    dimmer = "dimmer",
+    pan = "pan",
+    tilt = "tilt"
 }
 
 export class Effect {

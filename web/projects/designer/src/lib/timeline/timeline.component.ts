@@ -79,13 +79,34 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     // TODO confirm and delete composition
   }
 
-  private openCompositionSettings(composition: Composition) {
-    let bsModalRef = this.modalService.show(CompositionSettingsComponent, { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { composition: composition } });
+  private openCompositionSettings(compositionIndex?: number, newComposition?: Composition) {
+    let editComposition: Composition = newComposition || JSON.parse(JSON.stringify(this.projectService.project.compositions[compositionIndex]));
+
+    let bsModalRef = this.modalService.show(CompositionSettingsComponent, { keyboard: false, ignoreBackdropClick: true, class: '', initialState: { composition: editComposition } });
+
+    (<CompositionSettingsComponent>bsModalRef.content).onClose.subscribe(result => {
+      if (result === 1) {
+        // OK has been pressed -> save
+        if (newComposition) {
+          this.projectService.project.compositions.push(editComposition);
+          this.timelineService.selectedCompositionIndex = this.projectService.project.compositions.length - 1;
+
+          // create the composition, if externally necessary
+          if (this.timelineService.externalCompositionsAvailable) {
+            // TODO check, if this composition already exists externally and create it, if not
+          }
+        } else {
+          this.projectService.project.compositions[compositionIndex] = editComposition;
+        }
+
+        this.timelineService.selectedComposition = editComposition;
+      }
+    });
   }
 
   compositionSettings() {
-    if (this.timelineService.selectedComposition) {
-      this.openCompositionSettings(this.timelineService.selectedComposition);
+    if (this.timelineService.selectedCompositionIndex) {
+      this.openCompositionSettings(this.timelineService.selectedCompositionIndex);
     }
   }
 
@@ -94,16 +115,18 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     let composition = new Composition();
     composition.uuid = this.uuidService.getUuid();
     composition.name = 'New Composition';
-    this.projectService.project.compositions.push(composition);
-    this.timelineService.selectedComposition = composition;
-    this.openCompositionSettings(this.timelineService.selectedComposition);
+
+    this.openCompositionSettings(undefined, composition);
   }
 
-  selectComposition(event: any) {
-    this.timelineService.selectedComposition = event;
+  selectComposition(index: number) {
+    if (index > 0) {
+      this.timelineService.selectedComposition = this.projectService.project.compositions[index];
+      this.timelineService.selectedCompositionIndex = index;
+    }
   }
 
-  @HostListener('document:keypress', ['$event'])
+  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key == ' ') {
       if (this.timelineService.playState == 'paused') {
@@ -111,6 +134,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       } else {
         this.pause();
       }
+
+      // prevent checkboxes being toggled, if in focus e.g.
+      event.stopPropagation();
+      event.preventDefault();
     }
   }
 

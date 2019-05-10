@@ -2,20 +2,17 @@ import { AnimationService } from './../services/animation.service';
 import { Positioning } from './../models/fixture';
 import { MovingHead3d } from './models/moving-head-3d';
 import { FixtureService } from '../services/fixture.service';
-import { Fixture } from '../models/fixture';
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import STATS from 'three/examples/js/libs/stats.min';
-import { Observable, forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { FixtureTemplate, FixtureType } from '../models/fixture-template';
 import { Fixture3d } from './models/fixture-3d';
 import { PreviewService } from '../services/preview.service';
 import { TimelineService } from '../services/timeline.service';
 import { MasterDimmerService } from '../services/master-dimmer.service';
 import { ProjectService } from '../services/project.service';
+import { PreviewMeshService } from '../services/preview-mesh.service';
 
 // declare var THREEx: any;
 
@@ -30,7 +27,6 @@ export class PreviewComponent implements AfterViewInit {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   public controls: OrbitControls;
-  private loader = new GLTFLoader();
 
   private stats: any = STATS();
   // private rendererStats = new THREEx.RendererStats();
@@ -50,25 +46,34 @@ export class PreviewComponent implements AfterViewInit {
 
   constructor(
     private fixtureService: FixtureService,
+    private previewMeshService: PreviewMeshService,
     private animationService: AnimationService,
     private previewService: PreviewService,
     private timelineService: TimelineService,
     private masterDimmerService: MasterDimmerService,
     private projectService: ProjectService) {
 
-    this.projectService.fixtureAdded.subscribe((fixture: Fixture) => {
+    this.previewService.doUpdateFixtureSetup.subscribe(() => {
+      // synchronize the 3d-fixtures to the project fixtures
+      this.syncFixtures();
+    });
+  }
+
+  private syncFixtures() {
+    // remove all fixtures
+    for (let fixture3d of this.fixtures3d) {
+      fixture3d.destroy();
+    }
+    this.fixtures3d = [];
+
+    // add all fixtures from the project
+    for (let fixture of this.projectService.project.fixtures) {
       let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
 
       if (template.categories[0] == FixtureType['Moving Head']) {
-        forkJoin(
-          this.loadMesh('moving_head_socket'),
-          this.loadMesh('moving_head_arm'),
-          this.loadMesh('moving_head_head')
-        ).pipe(map(([socket, arm, head]) => {
-          this.fixtures3d.push(new MovingHead3d(fixtureService, fixture, this.scene, socket, arm, head));
-        })).subscribe();
+        this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
       }
-    });
+    }
   }
 
   private get canvas(): HTMLCanvasElement {
@@ -156,42 +161,6 @@ export class PreviewComponent implements AfterViewInit {
     }
 
     return this.canvas.clientWidth / this.canvas.clientHeight;
-  }
-
-  private loadScene(name: string): Observable<THREE.Scene> {
-    return Observable.create(observer => {
-      this.loader.load(
-        './assets/designer/models/' + name + '.gltf',
-
-        // Called when the resource is loaded
-        function (gltf: any) {
-          let model = gltf.scene.children[0];
-          model.geometry.center();
-          model.position.set(0, 0, 0);
-
-          observer.next(gltf.scene);
-          observer.complete();
-        },
-
-        // Called while loading is progressing
-        function (xhr: any) { },
-
-        // Called when loading has errors
-        function (error: any) {
-          observer.error(error);
-        }
-      );
-    });
-  }
-
-  private loadMesh(name: string): Observable<THREE.Mesh> {
-    return this.loadScene(name).pipe(map((scene: any) => {
-      let model = scene.children[0];
-      model.geometry.center();
-      model.position.set(0, 0, 0);
-
-      return model;
-    }));
   }
 
   @HostListener('window:resize')

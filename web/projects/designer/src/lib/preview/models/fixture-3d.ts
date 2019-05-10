@@ -11,6 +11,8 @@ export abstract class Fixture3d {
     fixtureTemplate: FixtureTemplate;
     fixtureSupportsDimmer: boolean = false;
 
+    scene: any;
+
     colorRed: number;
     colorGreen: number;
     colorBlue: number;
@@ -18,14 +20,16 @@ export abstract class Fixture3d {
     dimmer: number = 255;
 
     isSelected: boolean = false;
+    isLoaded: boolean = false;
 
     protected selectedMaterial: THREE.MeshLambertMaterial;
 
-    constructor(private fixtureService: FixtureService, fixture: Fixture) {
+    constructor(private fixtureService: FixtureService, fixture: Fixture, scene: any) {
         this.fixture = fixture;
         this.fixtureTemplate = fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+        this.scene = scene;
 
-        // TODO Don't create it for each fixture
+        // TODO Don't create it for each fixture but pass it from the preview service
         this.selectedMaterial = new THREE.MeshLambertMaterial({
             color: 0xff00ff,
             emissive: 0xff00ff
@@ -76,6 +80,10 @@ export abstract class Fixture3d {
                 }
             }
         }
+    }
+
+    destroy() {
+        
     }
 
 }

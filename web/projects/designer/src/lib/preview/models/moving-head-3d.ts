@@ -3,6 +3,10 @@ import * as THREE from 'three';
 import { Positioning, Fixture } from '../../models/fixture';
 import { FixtureCapabilityValue } from '../../models/fixture-capability-value';
 import { FixtureCapabilityType } from '../../models/fixture-capability';
+import { forkJoin } from 'rxjs';
+import { PreviewMeshService } from '../../services/preview-mesh.service';
+import { map } from 'rxjs/operators';
+import { FixtureService } from '../../services/fixture.service';
 
 export class MovingHead3d extends Fixture3d {
 
@@ -113,13 +117,7 @@ export class MovingHead3d extends Fixture3d {
         this.spotLightBeam.rotation.x = Math.PI / 2;
     }
 
-    constructor(fixtureService, fixture: Fixture, scene: any, socket: THREE.Mesh, arm: THREE.Mesh, head: THREE.Mesh) {
-        super(fixtureService, fixture);
-
-        this.socket = socket;
-        this.arm = arm;
-        this.head = head;
-
+    private createObjects() {
         // TODO
         // let path = './assets/textures/SwedishRoyalCastle/';
         // let format = '.jpg';
@@ -139,21 +137,19 @@ export class MovingHead3d extends Fixture3d {
         //     envMapIntensity: 1.4
         // });
 
-        // TODO Don't load the moving head again for each fixture
-
         (<any>this.material) = new THREE.MeshLambertMaterial({
             color: 0x0d0d0d,
             emissive: 0x0d0d0d
         });
 
-        socket.material = this.material;
-        arm.material = this.material;
-        head.material = this.material;
+        this.socket.material = this.material;
+        this.arm.material = this.material;
+        this.head.material = this.material;
 
         // Add the head
-        head.scale.multiplyScalar(0.9)
+        this.head.scale.multiplyScalar(0.9)
         let headPivotGroup = new THREE.Object3D();
-        headPivotGroup.add(head);
+        headPivotGroup.add(this.head);
         this.headGroup.add(headPivotGroup);
 
         // Add the spotlight
@@ -189,18 +185,36 @@ export class MovingHead3d extends Fixture3d {
         // Add the arm
         this.armGroup.add(this.headGroup);
         this.headGroup.position.set(0, -0.6, 0);
-        this.armGroup.add(arm);
-        arm.rotation.x = - Math.PI / 2;
+        this.armGroup.add(this.arm);
+        this.arm.rotation.x = - Math.PI / 2;
 
         // Add the socket
         this.objectGroup.add(this.armGroup);
-        this.objectGroup.add(socket);
-        socket.position.set(0, 1.2, 0);
+        this.objectGroup.add(this.socket);
+        this.socket.position.set(0, 1.2, 0);
 
         // A moving head has about 32 cm in width
         this.objectGroup.scale.multiplyScalar(9);
 
-        scene.add(this.objectGroup);
+        this.scene.add(this.objectGroup);
+
+        this.isLoaded = true;
+    }
+
+    constructor(fixtureService: FixtureService, previewMeshService: PreviewMeshService, fixture: Fixture, scene: any) {
+        super(fixtureService, fixture, scene);
+
+        forkJoin(
+            previewMeshService.getMesh('moving_head_socket'),
+            previewMeshService.getMesh('moving_head_arm'),
+            previewMeshService.getMesh('moving_head_head')
+        ).pipe(map(([socket, arm, head]) => {
+            this.socket = socket;
+            this.arm = arm;
+            this.head = head;
+
+            this.createObjects();
+        })).subscribe();
     }
 
     public getObject(): THREE.Object3D {
@@ -209,6 +223,10 @@ export class MovingHead3d extends Fixture3d {
 
     public updatePreview(capabilityValues: FixtureCapabilityValue[], masterDimmerValue: number): void {
         super.updatePreview(capabilityValues, masterDimmerValue);
+
+        if(!this.isLoaded) {
+            return;
+        }
 
         // Apply default settings
         this.pan = 0;
@@ -299,6 +317,10 @@ export class MovingHead3d extends Fixture3d {
 
         // this.spotLightBeam.material.uniforms.viewVector.value =
         //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);
+    }
+
+    destroy() {
+        this.scene.remove(this.objectGroup);
     }
 
 }

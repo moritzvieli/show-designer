@@ -2,22 +2,22 @@ import { FixtureMode } from './fixture-mode';
 import { FixtureChannel } from './fixture-channel';
 
 export enum FixtureType {
-    Blinder,
-    'Color Changer',
-    Dimmer,
-    Effect,
-    Fan,
-    Flower,
-    Hazer,
-    Laser,
-    Matrix,
-    'Moving Head',
-    'Pixel Bar',
-    Scanner,
-    Smoke,
-    Stand,
-    Strobe,
-    Other
+    Blinder = "Blinder",
+    'Color Changer' = "Color Changer",
+    Dimmer = "Dimmer",
+    Effect = "Effect",
+    Fan = "Fan",
+    Flower = "Flower",
+    Hazer = "Hazer",
+    Laser = "Laser",
+    Matrix = "Matrix",
+    'Moving Head' = "Moving Head",
+    'Pixel Bar' = "Pixel Bar",
+    Scanner = "Scanner",
+    Smoke = "Smoke",
+    Stand = "Stand",
+    Strobe = "Strobe",
+    Other = "Other"
 }
 
 export enum BeamType {

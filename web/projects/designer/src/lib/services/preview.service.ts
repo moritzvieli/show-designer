@@ -14,11 +14,14 @@ import { Preset } from '../models/preset';
 import { FixtureChannel } from '../models/fixture-channel';
 import { ProjectService } from './project.service';
 import { PresetRegionScene } from '../models/preset-region-scene';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PreviewService {
+
+  public doUpdateFixtureSetup: Subject<void> = new Subject();
 
   constructor(
     private presetService: PresetService,
@@ -29,7 +32,7 @@ export class PreviewService {
     private projectService: ProjectService
   ) { }
 
-  private alreadyCalculatedFixture(fixtures: Fixture[], fixtureIndex: number): Fixture {
+  private getAlreadyCalculatedFixture(fixtures: Fixture[], fixtureIndex: number): Fixture {
     // Has this fixture already been calculated (same universe and dmx start address as a fixture before)
     // --> return it
     for (let i = 0; i < fixtureIndex; i++) {
@@ -60,15 +63,17 @@ export class PreviewService {
         }
       } else {
         // Preview the selected scenes
-        let scenes = this.sceneService.selectedScenes;
-
-        for (let sceneIndex = scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
-          for (let presetIndex = this.projectService.project.presets.length - 1; presetIndex >= 0; presetIndex--) {
-            for (let presetUuid of scenes[sceneIndex].presetUuids) {
-              // Loop over the presets in the preset service to retain the preset order
-              if (presetUuid == this.projectService.project.presets[presetIndex].uuid) {
-                presets.push(new PresetRegionScene(this.projectService.project.presets[presetIndex], undefined, scenes[sceneIndex]));
-                break;
+        for (let sceneIndex = this.projectService.project.scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
+          for (let scene of this.sceneService.selectedScenes) {
+            if (scene.uuid == this.projectService.project.scenes[sceneIndex].uuid) {
+              for (let presetIndex = this.projectService.project.presets.length - 1; presetIndex >= 0; presetIndex--) {
+                for (let presetUuid of scene.presetUuids) {
+                  // Loop over the presets in the preset service to retain the preset order
+                  if (presetUuid == this.projectService.project.presets[presetIndex].uuid) {
+                    presets.push(new PresetRegionScene(this.projectService.project.presets[presetIndex], undefined, scene));
+                    break;
+                  }
+                }
               }
             }
           }
@@ -117,7 +122,7 @@ export class PreviewService {
     }
 
     // Add the new value
-    existingCapabilityValues.push(new FixtureCapabilityValue(capabilityValue.type, newValue, { color: capabilityValue.color }));
+    existingCapabilityValues.push(new FixtureCapabilityValue(newValue, capabilityValue.type, capabilityValue.color));
   }
 
   // Get the fixture index inside the passed preset (used for chasing)
@@ -128,7 +133,7 @@ export class PreviewService {
     for (let fixture of this.projectService.project.fixtures) {
       for (let presetFixture of preset.fixtures) {
         if (presetFixture.uuid == fixture.uuid) {
-          if(fixture.uuid == fixtureUuid) {
+          if (fixture.uuid == fixtureUuid) {
             return index;
           }
 
@@ -153,7 +158,7 @@ export class PreviewService {
       // All capabilities of the current fixture
       let capabilities: FixtureCapabilityValue[] = [];
 
-      let alreadyCalculatedFixture = this.alreadyCalculatedFixture(this.projectService.project.fixtures, fixtureIndex);
+      let alreadyCalculatedFixture = this.getAlreadyCalculatedFixture(this.projectService.project.fixtures, fixtureIndex);
 
       if (alreadyCalculatedFixture) {
         // Only relevant for the preview --> reuse all calculated values
@@ -176,7 +181,7 @@ export class PreviewService {
               value = Number.parseInt(<any>channel.defaultValue);
             }
 
-            this.mixCapabilityValue(capabilities, new FixtureCapabilityValue(type, value, { color: channel.capability.color }), 1);
+            this.mixCapabilityValue(capabilities, new FixtureCapabilityValue(value, type, channel.capability.color), 1);
           }
         }
 
@@ -236,22 +241,22 @@ export class PreviewService {
               for (let effectChannel of effect.effectChannels) {
                 switch (effectChannel) {
                   case EffectChannel.dimmer:
-                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.Intensity, value));
+                    effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Intensity));
                     break;
                   case EffectChannel.pan:
-                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.Pan, value));
+                    effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Pan));
                     break;
                   case EffectChannel.tilt:
-                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.Tilt, value));
+                    effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Tilt));
                     break;
                   case EffectChannel.colorRed:
-                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.ColorIntensity, value, { color: FixtureCapabilityColor.Red }));
+                    effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Red));
                     break;
                   case EffectChannel.colorGreen:
-                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.ColorIntensity, value, { color: FixtureCapabilityColor.Green }));
+                    effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Green));
                     break;
                   case EffectChannel.colorBlue:
-                    effectCapabilityValues.push(new FixtureCapabilityValue(FixtureCapabilityType.ColorIntensity, value, { color: FixtureCapabilityColor.Blue }));
+                    effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Blue));
                     break;
                 }
               }
@@ -316,6 +321,10 @@ export class PreviewService {
     }
 
     return false;
+  }
+
+  public updateFixtureSetup() {
+    this.doUpdateFixtureSetup.next();
   }
 
 }

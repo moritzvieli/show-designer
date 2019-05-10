@@ -14,7 +14,8 @@
 
       <!-- Search for template -->
       <input type="text" class="form-control input-block mb-3" id="searchSet"
-        placeholder="{{ 'designer.fixture-pool.search-templates' | translate }}" (input)="filterTemplates($event.target.value)">
+        placeholder="{{ 'designer.fixture-pool.search-templates' | translate }}"
+        (input)="filterTemplates($event.target.value)">
 
       <!-- Templates -->
       <div class="card border-secondary" style="height: 200px;">
@@ -54,8 +55,8 @@
       </div>
       <div class="card border-secondary" style="height: 300px;">
         <div class="card-body p-0">
-          <div class="list-group list-group-flush" [sortablejs]="projectService.project.fixtures">
-            <div class="list-group-item" *ngFor="let fixture of projectService.project.fixtures"
+          <div class="list-group list-group-flush" [sortablejs]="fixturePool">
+            <div class="list-group-item" *ngFor="let fixture of fixturePool"
               [class.active]="fixture == selectedFixture" (click)="selectedFixture = fixture" style="cursor: pointer;">
               <div class="row">
                 <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
@@ -145,7 +146,8 @@
                   (ngModelChange)="selectedFixture.modeShortName = $event">
                   <option *ngFor="let mode of fixtureService.getTemplateByFixture(selectedFixture).modes"
                     [ngValue]="mode.shortName">
-                    {{ mode.name }} - {{ mode.channels.length }} {{ 'designer.fixture-pool.channels' | translate }}</option>
+                    {{ mode.name }} - {{ mode.channels.length }} {{ 'designer.fixture-pool.channels' | translate }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -158,5 +160,8 @@
   </div>
 </div>
 <div class="modal-footer">
+  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
+    {{ 'designer.misc.cancel' | translate }}
+  </a>
   <button type="button" class="btn btn-default" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>
 </div>

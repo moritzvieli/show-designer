@@ -16,7 +16,7 @@ export class Project {
     // Make sure we always have at least one scene (don't allow deletion of the last scene)
     public scenes: Scene[] = [];
 
-    presets: Preset[] = [];
+    public presets: Preset[] = [];
 
     constructor() {
     }

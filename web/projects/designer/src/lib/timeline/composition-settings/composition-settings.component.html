@@ -9,7 +9,8 @@
   <div class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.composition-name' | translate }}</label>
     <div class="col-lg-8 d-flex">
-      <input type="text" class="form-control" [ngModel]="composition.name" (ngModelChange)="composition.name = $event;">
+      <input type="text" class="form-control" [ngModel]="composition.name" (ngModelChange)="composition.name = $event;"
+        [typeahead]="existingCompositionNames">
     </div>
   </div>
 
@@ -23,4 +24,10 @@
     </div>
   </div>
 
+</div>
+<div class="modal-footer">
+  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
+    {{ 'designer.misc.cancel' | translate }}
+  </a>
+  <button type="button" class="btn btn-default" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>
 </div>

@@ -23,7 +23,7 @@ import { TimelineGridComponent } from './timeline/timeline-grid/timeline-grid.co
 import { CompositionSettingsComponent } from './timeline/composition-settings/composition-settings.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SortablejsModule } from 'angular-sortablejs';
-import { PopoverModule, AccordionModule } from 'ngx-bootstrap';
+import { PopoverModule, AccordionModule, TypeaheadModule } from 'ngx-bootstrap';
 
 @NgModule({
   declarations: [
@@ -54,6 +54,7 @@ import { PopoverModule, AccordionModule } from 'ngx-bootstrap';
     TranslateModule,
     AccordionModule,
     PopoverModule,
+    TypeaheadModule,
     SortablejsModule
   ],
   entryComponents: [

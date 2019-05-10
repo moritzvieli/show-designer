@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { DesignerModule } from 'projects/designer/src/public_api';
-import { ModalModule, AccordionModule, PopoverModule } from 'ngx-bootstrap';
+import { ModalModule, AccordionModule, PopoverModule, TypeaheadModule } from 'ngx-bootstrap';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SortablejsModule } from 'angular-sortablejs';
@@ -26,6 +26,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
     }),
     AccordionModule.forRoot(),
     PopoverModule.forRoot(),
+    TypeaheadModule.forRoot(),
     SortablejsModule.forRoot({
       animation: 300,
       handle: '.list-sort-handle'
