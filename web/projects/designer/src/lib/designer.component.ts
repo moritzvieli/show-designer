@@ -75,7 +75,7 @@ export class DesignerComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     // Set up the splitter
     Split(['#row1', '#row2', '#row3'], {
-      sizes: [45, 35, 20],
+      sizes: [44, 36, 20],
       direction: 'vertical',
       cursor: 'row-resize',
       snapOffset: 0,

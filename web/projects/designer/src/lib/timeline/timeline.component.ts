@@ -17,6 +17,12 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   @ViewChild('waveWrapper')
   waveWrapper: ElementRef;
 
+  @ViewChild('waveElement')
+  waveElement: ElementRef;
+
+  private lastHeight: number;
+  private lastWidth: number;
+
   constructor(
     public timelineService: TimelineService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -41,9 +47,22 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:resize')
   public onResize() {
-    if (this.timelineService.waveSurfer) {
-      this.timelineService.waveSurfer.setHeight(1);
-      this.timelineService.waveSurfer.setHeight(this.waveWrapper.nativeElement.clientHeight);
+    // Hide wavesurfer to calculate the height, because it will grow infinitely
+    // otherwise
+    this.waveElement.nativeElement.style.display = 'none';
+    let height = this.waveWrapper.nativeElement.clientHeight;
+    this.waveElement.nativeElement.style.display = 'block';
+
+    let width = this.waveWrapper.nativeElement.clientWidth;
+
+    if (!this.lastHeight || this.lastHeight != height || !this.lastWidth || this.lastWidth != width) {
+      // Set height and redraw
+      if (this.timelineService.waveSurfer) {
+        this.timelineService.waveSurfer.setHeight(height);
+      }
+
+      this.lastHeight = height;
+      this.lastWidth = width;
     }
   }
 
