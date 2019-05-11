@@ -33,11 +33,13 @@ export class EffectComponent implements OnInit {
   }
 
   addCurveEffect() {
-    this.addEffect(new EffectCurve(this.uuidService, this.fixtureService));
+    let effect = new EffectCurve();
+    effect.uuid = this.uuidService.getUuid();
+    this.addEffect(effect);
   }
 
   addPanTiltEffect() {
-    this.addEffect(new EffectPanTilt(this.uuidService, this.fixtureService));
+    this.addEffect(new EffectPanTilt());
   }
 
   openEffect(effect: Effect, event: any) {

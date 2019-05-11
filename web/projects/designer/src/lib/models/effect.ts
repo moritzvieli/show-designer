@@ -1,5 +1,3 @@
-import { UuidService } from "../services/uuid.service";
-
 export enum EffectChannel
 {
     colorRed = "colorRed",
@@ -13,18 +11,16 @@ export enum EffectChannel
     tilt = "tilt"
 }
 
-export class Effect {
+export abstract class Effect {
 
     uuid: string;
     effectChannels: EffectChannel[] = [];
-    paused: boolean = false;
+    type: string;
 
-    constructor(private uuidService: UuidService) {
-        this.uuid = this.uuidService.getUuid();
+    constructor(type: string) {
+        this.type = type;
     }
 
-    getValueAtMillis(timeMillis: number, fixtureIndex?: number): number {
-        return 0;
-    }
+    abstract getValueAtMillis(timeMillis: number, fixtureIndex?: number): number;
 
 }

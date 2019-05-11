@@ -1,16 +1,11 @@
-import { Fixture } from './fixture';
-import { FixtureService } from '../services/fixture.service';
-import { UuidService } from '../services/uuid.service';
 import { Effect } from './effect';
 
 export class EffectPanTilt extends Effect {
 
     phasingMillis = 0;
 
-    constructor(uuidService: UuidService,
-        private fixtureService: FixtureService) {
-
-        super(uuidService);
+    constructor() {
+        super('pan-tilt');
     }
 
     getValueAtMillis(timeMillis: number, fixtureIndex?: number): number {

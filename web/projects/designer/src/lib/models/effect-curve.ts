@@ -1,5 +1,3 @@
-import { FixtureService } from '../services/fixture.service';
-import { UuidService } from '../services/uuid.service';
 import { Effect } from './effect';
 
 export class EffectCurve extends Effect {
@@ -12,10 +10,8 @@ export class EffectCurve extends Effect {
     maxValue = 255;
     phasingMillis = 0;
 
-    constructor(uuidService: UuidService,
-        private fixtureService: FixtureService) {
-
-        super(uuidService);
+    constructor() {
+        super('curve');
     }
 
     getValueAtMillis(timeMillis: number, fixtureIndex?: number): number {
