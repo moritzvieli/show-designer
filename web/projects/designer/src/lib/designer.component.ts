@@ -74,30 +74,33 @@ export class DesignerComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // Set up the splitter
-    Split(['#row1', '#row2', '#row3'], {
-      sizes: [44, 36, 20],
-      direction: 'vertical',
-      cursor: 'row-resize',
-      snapOffset: 0,
-      gutterSize: this.splitGutterSizePx,
-      onDrag: this.onResize.bind(this)
+    setTimeout(() => {
+      Split(['#row1', '#row2', '#row3'], {
+        sizes: [42, 38, 20],
+        direction: 'vertical',
+        cursor: 'row-resize',
+        snapOffset: 0,
+        gutterSize: this.splitGutterSizePx,
+        onDrag: this.onResize.bind(this)
+      });
+  
+      Split(['#scenes', '#presets', '#preview'], {
+        sizes: [15, 15, 70],
+        snapOffset: 0,
+        gutterSize: this.splitGutterSizePx,
+        onDrag: this.onResize.bind(this)
+      });
+  
+      Split(['#capabilities', '#fixtures', '#masterDimmer'], {
+        sizes: [78, 16, 6],
+        snapOffset: 0,
+        gutterSize: this.splitGutterSizePx,
+        onDrag: this.onResize.bind(this),
+        minSize: 50
+      });
+  
+      this.onResize();
     });
-
-    Split(['#scenes', '#presets', '#preview'], {
-      sizes: [15, 15, 70],
-      snapOffset: 0,
-      gutterSize: this.splitGutterSizePx,
-      onDrag: this.onResize.bind(this)
-    });
-
-    Split(['#capabilities', '#fixtures', '#masterDimmer'], {
-      sizes: [78, 16, 6],
-      snapOffset: 0,
-      gutterSize: this.splitGutterSizePx,
-      onDrag: this.onResize.bind(this)
-    });
-
-    this.onResize();
   }
 
   openTab(tab: string) {

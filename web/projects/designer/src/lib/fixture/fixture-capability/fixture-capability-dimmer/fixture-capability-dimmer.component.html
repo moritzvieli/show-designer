@@ -13,12 +13,12 @@
 
   <div class="card-body h-100 d-flex" style="flex-direction: column;">
     <div class="mb-4 w-100 d-flex">
-      <input class="mx-auto" type="text" [ngModel]="getValue() || 255" (ngModelChange)="setValue($event)"
+      <input class="mx-auto" type="text" [ngModel]="getValue() >= 0 ? getValue() : 255" (ngModelChange)="setValue($event)"
         style="width: 30px; text-align: center; font-size: 12px; font-family: monospace;">
     </div>
 
     <div class="h-100 w-100 d-flex">
-      <mv-slider class="mx-auto" [value]="getValue() || 255" (change)="setValue($event.newValue)" [orientation]="'vertical'"
+      <mv-slider class="mx-auto" [value]="getValue() >= 0 ? getValue() : 255" (change)="setValue($event.newValue)" [orientation]="'vertical'"
         [reversed]="true" style="height: 100%;" [tooltip]="'hide'" [min]="0" [max]="255" [step]="1"></mv-slider>
     </div>
 

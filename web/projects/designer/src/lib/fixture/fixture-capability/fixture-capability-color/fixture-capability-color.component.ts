@@ -14,7 +14,7 @@ export class FixtureCapabilityColorComponent implements OnInit {
   color: string = '#fff';
   colorPicker: any;
   active: boolean = false;
-  // private colorPickerMounted: boolean = false;
+  private colorPickerMounted: boolean = false;
 
   constructor(
     private presetService: PresetService
@@ -30,13 +30,14 @@ export class FixtureCapabilityColorComponent implements OnInit {
     });
 
     this.colorPicker.on("color:change", this.changeColor.bind(this));
-    // Mount already fired before this method is called
-    // this.colorPicker.on("mount", this.mount.bind(this));
+
+    // mounted may be called, before this callback has been added. use input:start therefore
+    this.colorPicker.on("input:start", this.mount.bind(this));
   }
 
-  // mount() {
-  //   this.colorPickerMounted = true;
-  // }
+  mount() {
+   this.colorPickerMounted = true;
+  }
 
   private updateFixtureColor(color: any) {
     if(this.presetService.selectedPreset) {
@@ -63,9 +64,9 @@ export class FixtureCapabilityColorComponent implements OnInit {
   }
 
   changeColor(color: any) {
-    // if(!this.colorPickerMounted) {
-    //   return;
-    // }
+    if(!this.colorPickerMounted) {
+      return;
+    }
 
     this.active = true;
     this.color = color.hexString;

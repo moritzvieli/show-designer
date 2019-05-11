@@ -71,34 +71,34 @@
 
     </div>
 
-    <div id="row2" class="split split-vertical clearfix px-3">
-      <div id="capabilities" class="split split-horizontal h-100">
+    <div id="row2" class="split split-vertical clearfix px-3 d-flex" style="flex-direction: row;">
+      <!-- Menu for the capabilities and effects-->
+      <div class="col col-auto p-0" style="margin-right: -1px;">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+          <a class="nav-link px-3 active" (click)="openTab('capabilities')" id="v-pills-capabilities-tab"
+            popover="{{ 'designer.misc.capabilities' | translate }}" container="body" placement="right"
+            triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-capabilities" role="tab"
+            aria-controls="v-pills-capabilities" aria-selected="true">
+            <i class="fa fa-sliders fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
+          </a>
+          <a class="nav-link px-3" (click)="openTab('effects')" id="v-pills-effects-tab"
+            popover="{{ 'designer.misc.effects' | translate }}" container="body" placement="right"
+            triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-effects" role="tab"
+            aria-controls="v-pills-effects" aria-selected="false">
+            <i class="fa fa-magic fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
+          </a>
+          <a class="nav-link px-3" (click)="openTab('settings')" id="v-pills-settings-tab"
+            popover="{{ 'designer.misc.settings' | translate }}" container="body" placement="right"
+            triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-settings" role="tab"
+            aria-controls="v-pills-settings" aria-selected="true">
+            <i class="fa fa-cog fa-fw" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div id="capabilities" class="split split-horizontal h-100" style="padding-left: 1rem;">
 
         <div class="row h-100">
-
-          <!-- Menu for the capabilities and effects-->
-          <div class="col col-auto pr-0">
-            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-              <a class="nav-link px-3 active" (click)="openTab('capabilities')" id="v-pills-capabilities-tab"
-                popover="{{ 'designer.misc.capabilities' | translate }}" container="body" placement="right"
-                triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-capabilities" role="tab"
-                aria-controls="v-pills-capabilities" aria-selected="true">
-                <i class="fa fa-sliders fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
-              </a>
-              <a class="nav-link px-3" (click)="openTab('effects')" id="v-pills-effects-tab"
-                popover="{{ 'designer.misc.effects' | translate }}" container="body" placement="right"
-                triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-effects" role="tab"
-                aria-controls="v-pills-effects" aria-selected="false">
-                <i class="fa fa-magic fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
-              </a>
-              <a class="nav-link px-3" (click)="openTab('settings')" id="v-pills-settings-tab"
-                popover="{{ 'designer.misc.settings' | translate }}" container="body" placement="right"
-                triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-settings" role="tab"
-                aria-controls="v-pills-settings" aria-selected="true">
-                <i class="fa fa-cog fa-fw" aria-hidden="true"></i>
-              </a>
-            </div>
-          </div>
 
           <!-- Content for the capabilities and effects -->
           <div class="col pl-0">
