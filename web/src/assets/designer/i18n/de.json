@@ -9,7 +9,9 @@
             "ok": "OK",
             "capabilities": "Fähigkeiten",
             "settings": "Einstellungen",
-            "effects": "Effekte"
+            "effects": "Effekte",
+            "search": "Suchen",
+            "warning": "Warnung"
         },
         "loading": {
             "title": "Laden...",
@@ -50,16 +52,23 @@
             "grid-type-musical": "Musikalisch",
             "snap-to-grid": "Am Raster ausrichten",
             "beats-per-minute": "BPM",
+            "grid-offset": "Verzögerung in Millisekunden",
             "time-signature": "Taktangabe",
             "remove-region": "Selektierte Region entfernen",
             "add-region": "Neue Region hinzufügen",
             "remove-composition": "Komposition entfernen",
             "composition-settings": "Kompositionseinstellungen",
-            "no-compositions": "Keine Kompositionen",
+            "no-compositions": "Erstelle eine Komposition, um die Szenen zu synchronisieren",
             "composition-name": "Name",
             "composition-sync-type": "Synchronisierung",
             "composition-sync-type-none": "Keine",
-            "composition-sync-type-audio": "Audio"
+            "composition-sync-type-audio": "Audiodatei",
+            "composition-no-file-selected": "Keine Datei ausgewählt",
+            "composition-dropzone-message": "Ziehe eine Datei hier hinein oder klicke, um hochzuladen",
+            "composition-file-upload": "Hochladen",
+            "composition-file-library": "Mediathek",
+            "warning-delete-file": "Möchtest du diese Datei wirklich löschen?"
+
         }
     }
 }

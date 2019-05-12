@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppHttpInterceptor } from './app-http-interceptor/app-http-interceptor';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+  constructor(public appHttpInterceptor: AppHttpInterceptor) {
+
+  }
 
 }

@@ -3,6 +3,12 @@ import { Composition } from '../../models/composition';
 import { BsModalRef } from 'ngx-bootstrap';
 import { TimelineService } from '../../services/timeline.service';
 import { Subject } from 'rxjs';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { ConfigService } from '../../services/config.service';
+import { TranslateService } from '@ngx-translate/core';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { WarningDialogService } from '../../services/warning-dialog.service';
 
 @Component({
   selector: 'app-composition-settings',
@@ -16,10 +22,50 @@ export class CompositionSettingsComponent implements OnInit {
 
   public onClose: Subject<number> = new Subject();
 
+  public dropzoneConfig: DropzoneConfigInterface;
+  public uploadMessage: string;
+
+  public existingFiles: string[] = [];
+  public filteredExistingFiles: string[] = [];
+
   constructor(
     public bsModalRef: BsModalRef,
-    private timelineService: TimelineService
-  ) { }
+    private timelineService: TimelineService,
+    public configService: ConfigService,
+    private translateService: TranslateService,
+    private http: HttpClient,
+    private warningDialogService: WarningDialogService
+  ) {
+    this.dropzoneConfig = {
+      url: this.configService.restUrl + 'file/upload',
+      addRemoveLinks: false,
+      maxFilesize: 50 /* 50 MB */,
+      acceptedFiles: 'audio/*',
+      timeout: 0,
+      previewTemplate: `
+      <div class="dz-preview dz-file-preview">
+        <!-- The attachment details -->
+        <div class="dz-details" style="text-align: left">
+          <i class="fa fa-file-o"></i> <span data-dz-name></span> <small><span class="label label-default file-size" data-dz-size></span></small>
+        </div>
+        
+        <!--div class="mt-5">
+          <span data-dz-errormessage></span>
+        </div-->
+        
+        <div class="progress mt-4 mb-1" style="height: 10px">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:0%;" data-dz-uploadprogress></div>
+        </div>
+      </div>
+      `
+    };
+
+    this.translateService.get('designer.timeline.composition-dropzone-message').pipe(map(result => {
+      this.uploadMessage = '<h3 class="mb-0"><i class="fa fa-cloud-upload"></i></h3>' + result;
+    })).subscribe();
+
+    this.loadFiles();
+  }
 
   ngOnInit() {
     if (this.timelineService.externalCompositionsAvailable) {
@@ -28,7 +74,7 @@ export class CompositionSettingsComponent implements OnInit {
       });
     }
   }
-  
+
   ok() {
     this.onClose.next(1);
     this.bsModalRef.hide()
@@ -37,6 +83,84 @@ export class CompositionSettingsComponent implements OnInit {
   cancel() {
     this.onClose.next(2);
     this.bsModalRef.hide()
+  }
+
+  private getNameFromFile(data: any): string {
+    return data.name;
+  }
+
+  private loadFiles() {
+    if (!this.configService.enableMediaLibrary) {
+      return;
+    }
+
+    this.http.get('file/list')
+      .pipe(map((response: Array<Object>) => {
+        this.existingFiles = [];
+
+        for (let file of response) {
+          // only load audio files
+          if ((<any>file).audioFile) {
+            this.existingFiles.push(this.getNameFromFile((<any>file).audioFile));
+          }
+        }
+
+        this.filterExistingFiles();
+      })).subscribe();
+  }
+
+  public onUploadError(args: any) {
+    console.log('Upload error', args);
+  }
+
+  public onUploadSuccess(args: any) {
+    this.loadFiles();
+
+    // Hide the preview element
+    args[0].previewElement.hidden = true;
+
+    // Select this file
+    if(args[1].audioFile) {
+      this.composition.audioFileName = this.getNameFromFile(args[1].audioFile);
+
+      if(this.configService.enableMediaLibrary) {
+        // the file has been uploaded to the media library
+        this.composition.audioFileInLibrary = true;
+      }
+    }
+  }
+
+  // Filter the existing files
+  filterExistingFiles(searchValue?: string) {
+    if (!searchValue) {
+      this.filteredExistingFiles = this.existingFiles;
+      return;
+    }
+
+    this.filteredExistingFiles = [];
+
+    for (let file of this.existingFiles) {
+      if (file.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+        this.filteredExistingFiles.push(file);
+      }
+    }
+  }
+
+  selectExistingFile(existingFile: string) {
+    this.composition.audioFileName = existingFile;
+
+    // the file has been selected from the media library
+    this.composition.audioFileInLibrary = true;
+  }
+
+  deleteFile(existingFile: string) {
+    this.warningDialogService.show('designer.timeline.warning-delete-file').pipe(map(result => {
+      if (result) {
+        this.http.post('file/delete?name=' + existingFile + '&type=AUDIO', undefined).pipe(map((response: Response) => {
+          this.loadFiles();
+        })).subscribe();
+      }
+    })).subscribe();
   }
 
 }

@@ -42,11 +42,14 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.timelineService.createWaveSurfer();
   }
 
   @HostListener('window:resize')
   public onResize() {
+    if (!this.waveElement) {
+      return;
+    }
+
     // Hide wavesurfer to calculate the height, because it will grow infinitely
     // otherwise
     this.waveElement.nativeElement.style.display = 'none';
@@ -118,7 +121,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           this.projectService.project.compositions[compositionIndex] = editComposition;
         }
 
-        this.timelineService.selectedComposition = editComposition;
+        this.selectComposition(this.timelineService.selectedCompositionIndex);
       }
     });
   }
@@ -139,10 +142,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   selectComposition(index: number) {
-    if (index > 0) {
-      this.timelineService.selectedComposition = this.projectService.project.compositions[index];
-      this.timelineService.selectedCompositionIndex = index;
-    }
+    this.timelineService.selectedComposition = this.projectService.project.compositions[index];
+    this.timelineService.selectedCompositionIndex = index;
+
+    this.timelineService.createWaveSurfer();
   }
 
   @HostListener('document:keydown', ['$event'])

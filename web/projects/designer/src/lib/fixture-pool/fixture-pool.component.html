@@ -28,7 +28,7 @@
               </p>
             </a>
 
-            <div class="list-group-item" *ngFor="let template of filteredTemplates">
+            <div class="list-group-item" *ngFor="let template of filteredTemplates | sort:'uuid'">
               <div class="row">
                 <div class="col-10 col-auto my-auto">
                   <p class="mb-0">{{ template.manufacturerName }} - {{ template.name }}</p>

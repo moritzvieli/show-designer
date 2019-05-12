@@ -23,18 +23,6 @@ export class TimelineService {
   public waveSurfer: WaveSurfer;
   public playState: string = 'paused';
 
-  // TODO move to the composition
-  public beatsPerMinute: number = 178;
-  public timeSignatureUpper: number = 6;
-  public timeSignatureLower: number = 8;
-
-  public snapToGrid: boolean = true;
-  // time based or musical
-  public gridType: string = 'musical';
-  // e.g. 1/1, 1/2, 1/4, etc.
-  public gridResolution: number = 8;
-  public gridOffsetMillis: number = 50;
-
   public zoom = 0;
   private timeUpdateSubscription: Subscription;
   public currentTime: string;
@@ -153,8 +141,8 @@ export class TimelineService {
   }
 
   formatTimeCallback(seconds: number, pxPerSec: number) {
-    if (this.gridType == 'musical') {
-      return Math.round(seconds / this.timeSignatureUpper / (60 / this.beatsPerMinute));
+    if (this.selectedComposition.gridType == 'musical') {
+      return Math.round(seconds / this.selectedComposition.timeSignatureUpper / (60 / this.selectedComposition.beatsPerMinute));
     }
 
     // calculate minutes and seconds from seconds count
@@ -167,8 +155,8 @@ export class TimelineService {
   }
 
   timeInterval(pxPerSec: number) {
-    if (this.gridType == 'musical') {
-      return 60 / this.beatsPerMinute;
+    if (this.selectedComposition.gridType == 'musical') {
+      return 60 / this.selectedComposition.beatsPerMinute;
     }
 
     if (pxPerSec >= 25) {
@@ -182,8 +170,8 @@ export class TimelineService {
   }
 
   primaryLabelInterval(pxPerSec: number) {
-    if (this.gridType == 'musical') {
-      return this.timeSignatureUpper / this.timeSignatureLower * this.gridResolution;
+    if (this.selectedComposition.gridType == 'musical') {
+      return this.selectedComposition.timeSignatureUpper / this.selectedComposition.timeSignatureLower * this.selectedComposition.gridResolution;
     }
 
     if (pxPerSec >= 25) {
@@ -197,7 +185,7 @@ export class TimelineService {
   }
 
   secondaryLabelInterval(pxPerSec: number) {
-    if (this.gridType == 'musical') {
+    if (this.selectedComposition.gridType == 'musical') {
       return 0;
     }
 
@@ -311,8 +299,11 @@ export class TimelineService {
   }
 
   createWaveSurfer() {
+    if(this.waveSurfer) {
+      this.waveSurfer.destroy();
+    }
+
     setTimeout(() => {
-      // TODO what if I change the grid type?
       this.waveSurfer = WaveSurfer.create({
         container: '#waveform',
         waveColor: 'white',
@@ -335,14 +326,14 @@ export class TimelineService {
               slop: 5
             },
             color: '#fff',
-            snapToGridInterval: 60 / this.beatsPerMinute,
-            snapToGridOffset: this.gridOffsetMillis / 1000
+            snapToGridInterval: 60 / this.selectedComposition.beatsPerMinute,
+            snapToGridOffset: this.selectedComposition.gridOffsetMillis / 1000
           }),
           TimeLinePlugin.create({
             container: "#waveform-timeline",
             primaryFontColor: '#fff',
             secondaryFontColor: '#fff',
-            offset: this.gridOffsetMillis / 1000,
+            offset: this.selectedComposition.gridOffsetMillis / 1000,
             formatTimeCallback: this.formatTimeCallback.bind(this),
             timeInterval: this.timeInterval.bind(this),
             primaryLabelInterval: this.primaryLabelInterval.bind(this),
@@ -350,7 +341,18 @@ export class TimelineService {
           })
         ]
       });
-      this.waveSurfer.load('../../assets/test.wav');
+
+      let audioFileName;
+
+      if(this.selectedComposition.audioFileInLibrary) {
+        // the file name is also used for the real file name
+        audioFileName = this.selectedComposition.audioFileName;
+      } else {
+        // the composition uuid is used as the file name
+        audioFileName = this.selectedComposition.uuid;
+      }
+
+      this.waveSurfer.load(audioFileName);
 
       this.waveSurfer.on('ready', () => {
         setTimeout(() => {

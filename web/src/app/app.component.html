@@ -29,7 +29,15 @@
   </button>
 </nav>
 
-<lib-designer 
+<!-- <lib-designer 
   [menuHeightPx]="73.375"
-  [externalCompositionsAvailable]="false">
+  [externalCompositionsAvailable]="false"
+  [restUrl]="appHttpInterceptor.getRestUrl()">
+</lib-designer> -->
+
+<lib-designer
+    [menuHeightPx]="73.375"
+    [externalCompositionsAvailable]="true"
+    [restUrl]="appHttpInterceptor.getRestUrl()"
+    [enableMediaLibrary]="true">
 </lib-designer>

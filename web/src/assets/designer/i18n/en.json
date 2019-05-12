@@ -9,7 +9,9 @@
             "ok": "OK",
             "capabilities": "Capabilities",
             "settings": "Settings",
-            "effects": "Effects"
+            "effects": "Effects",
+            "search": "Suchen",
+            "warning": "Warning"
         },
         "loading": {
             "title": "Loading...",
@@ -50,16 +52,22 @@
             "grid-type-musical": "Musical",
             "snap-to-grid": "Snap to grid",
             "beats-per-minute": "BPM",
+            "grid-offset": "Offset in milliseconds",
             "time-signature": "Time signature",
             "remove-region": "Remove selected region",
             "add-region": "Add new region",
             "remove-composition": "Remove composition",
             "composition-settings": "Composition settings",
-            "no-compositions": "No compositions",
+            "no-compositions": "Create a composition to synchronize the scenes",
             "composition-name": "Name",
-            "composition-sync-type": "Synchronisierung",
+            "composition-sync-type": "Synchronization",
             "composition-sync-type-none": "None",
-            "composition-sync-type-audio": "Audio"
+            "composition-sync-type-audio": "Audio file",
+            "composition-no-file-selected": "No file selected",
+            "composition-dropzone-message": "Drop a file here or click to upload",
+            "composition-file-upload": "Upload",
+            "composition-file-library": "Media library",
+            "warning-delete-file": "Do you really want to delete this file?"
         }
     }
 }

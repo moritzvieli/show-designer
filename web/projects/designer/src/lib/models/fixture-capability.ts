@@ -40,7 +40,8 @@ export enum FixtureCapabilityType {
     Speed = "Speed",
     Time = "Time",
     Maintenance = "Maintenance",
-    Generic = "Generic"
+    Generic = "Generic",
+    Effect = "Effect"
 }
 
 export enum FixtureCapabilityColor {

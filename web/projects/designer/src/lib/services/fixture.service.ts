@@ -88,18 +88,23 @@ export class FixtureService {
       return channels;
     }
 
-    for (let modeChannel of mode.channels) {
-      if (modeChannel) {
-        for (let availableChannelName in template.availableChannels) {
-          let availableChannel: FixtureChannel = template.availableChannels[availableChannelName];
+    for (let channel of mode.channels) {
+      // Check for string channel. It can get creepy for matrix modes
+      if (typeof channel == "string") {
+        let modeChannel: string = <string>channel;
 
-          if (modeChannel == availableChannelName || availableChannel.fineChannelAliases.indexOf(modeChannel) > -1) {
-            channels.push(availableChannel);
+        if (modeChannel) {
+          for (let availableChannelName in template.availableChannels) {
+            let availableChannel: FixtureChannel = template.availableChannels[availableChannelName];
+
+            if (modeChannel == availableChannelName || availableChannel.fineChannelAliases.indexOf(modeChannel) > -1) {
+              channels.push(availableChannel);
+            }
           }
+        } else {
+          // null may be passed as a placeholder for an undefined channel
+          channels.push(null);
         }
-      } else {
-        // null may be passed as a placeholder for an undefined channel
-        channels.push(null);
       }
     }
 

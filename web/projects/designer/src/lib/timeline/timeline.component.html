@@ -5,69 +5,76 @@
       <div class="btn-group mr-3 my-auto" role="group" style="float: left;">
         <a href="#" class="btn btn-primary m-0 p-1 mr-3" (click)="addComposition(); false;"><i
             class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
-        <select class="custom-select mr-3"
+
+        <i *ngIf="projectService.project.compositions.length == 0" class="my-auto">{{ 'designer.timeline.no-compositions' | translate }}</i>
+
+        <select *ngIf="projectService.project.compositions.length > 0" class="mr-3"
           [ngModel]="timelineService.selectedCompositionIndex" (ngModelChange)="selectComposition($event)"
           style="width: 150px; height: 30px;">
           <option *ngFor="let composition of projectService.project.compositions; let i = index;" [value]="i">
             {{ composition.name }}
-          <option *ngIf="projectService.project.compositions.length == 0" [value]="0">
-            - {{ 'designer.timeline.no-compositions' | translate }} -
-          </option>
         </select>
-        <a href="#" class="btn btn-primary m-0 p-1" (click)="rewind(); false;"><i class="fa fa-step-backward fa-fw"
-            aria-hidden="true"></i></a>
-        <a *ngIf="timelineService.playState == 'paused'" href="#" class="btn btn-primary m-0 p-1"
-          (click)="play(); false;"><i class="fa fa-play fa-fw" aria-hidden="true"></i></a>
-        <a *ngIf="timelineService.playState == 'playing'" href="#" class="btn btn-primary m-0 p-1"
-          (click)="pause(); false;"><i class="fa fa-pause fa-fw" aria-hidden="true"></i></a>
+
+        <div *ngIf="timelineService.selectedComposition" class="d-flex">
+          <a href="#" class="btn btn-primary m-0 p-1" (click)="rewind(); false;"><i class="fa fa-step-backward fa-fw"
+              aria-hidden="true"></i></a>
+          <a *ngIf="timelineService.playState == 'paused'" href="#" class="btn btn-primary m-0 p-1"
+            (click)="play(); false;"><i class="fa fa-play fa-fw" aria-hidden="true"></i></a>
+          <a *ngIf="timelineService.playState == 'playing'" href="#" class="btn btn-primary m-0 p-1"
+            (click)="pause(); false;"><i class="fa fa-pause fa-fw" aria-hidden="true"></i></a>
+        </div>
       </div>
 
-      <div class="my-auto mr-3">
-        <span
-          style="width: 78px; text-align: left; display: inline-block; margin-left: 5px;">{{ timelineService.currentTime }}</span>
-        <span style="display: inline-block;"></span>- {{ timelineService.duration }}
+      <div *ngIf="timelineService.selectedComposition" class="d-flex w-100">
+        <div class="my-auto mr-3">
+          <span
+            style="width: 78px; text-align: left; display: inline-block; margin-left: 5px;">{{ timelineService.currentTime }}</span>
+          <span style="display: inline-block;"></span>- {{ timelineService.duration }}
+        </div>
+
+        <div class="my-auto mr-3 ml-auto" style="float: left;">
+          <i (click)="timelineService.applyZoom(timelineService.zoom - 20)" class="fa fa-search-minus mr-3"
+            aria-hidden="true"></i>
+          <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="timelineService.zoom" [min]="0" [max]="200"
+            [step]="20" (change)="timelineService.applyZoom($event.newValue)"></mv-slider>
+          <i (click)="timelineService.applyZoom(timelineService.zoom + 20)" class="fa fa-search-plus ml-3"
+            aria-hidden="true"></i>
+        </div>
+
+        <div class="my-auto mr-3">
+          <input type="text" [value]="timelineService.selectedPlaybackRegion?.startMillis"> - <input type="text"
+            [value]="timelineService.selectedPlaybackRegion?.endMillis">
+        </div>
+
+        <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="openGridSettings(); false;"
+          popover="{{ 'designer.timeline.grid' | translate }}" container="body" placement="left"
+          triggers="mouseenter:mouseleave"><i class="fa fa-th" aria-hidden="true"></i></a>
+
+        <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeRegion(); false;"
+          popover="{{ 'designer.timeline.remove-region' | translate }}" container="body" placement="left"
+          triggers="mouseenter:mouseleave"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>
+
+        <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="addRegion(); false;"
+          popover="{{ 'designer.timeline.add-region' | translate }}" container="body" placement="left"
+          triggers="mouseenter:mouseleave"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+
+        <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeComposition(); false;"
+          popover="{{ 'designer.timeline.remove-composition' | translate }}" container="body" placement="left"
+          triggers="mouseenter:mouseleave"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+
+        <a href="#" class="btn btn-secondary m-0 py-1" (click)="compositionSettings(); false;"
+          popover="{{ 'designer.timeline.composition-settings' | translate }}" container="body" placement="left"
+          triggers="mouseenter:mouseleave"><i class="fa fa-cog" aria-hidden="true"></i></a>
       </div>
-
-      <div class="my-auto mr-3 ml-auto" style="float: left;">
-        <i (click)="timelineService.applyZoom(timelineService.zoom - 20)" class="fa fa-search-minus mr-3"
-          aria-hidden="true"></i>
-        <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="timelineService.zoom" [min]="0" [max]="200"
-          [step]="20" (change)="timelineService.applyZoom($event.newValue)"></mv-slider>
-        <i (click)="timelineService.applyZoom(timelineService.zoom + 20)" class="fa fa-search-plus ml-3"
-          aria-hidden="true"></i>
-      </div>
-
-      <div class="my-auto mr-3">
-        <input type="text" [value]="timelineService.selectedPlaybackRegion?.startMillis"> - <input type="text"
-          [value]="timelineService.selectedPlaybackRegion?.endMillis">
-      </div>
-
-      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="openGridSettings(); false;"
-        popover="{{ 'designer.timeline.grid' | translate }}" container="body" placement="left"
-        triggers="mouseenter:mouseleave"><i class="fa fa-th" aria-hidden="true"></i></a>
-
-      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeRegion(); false;"
-        popover="{{ 'designer.timeline.remove-region' | translate }}" container="body" placement="left"
-        triggers="mouseenter:mouseleave"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>
-
-      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="addRegion(); false;"
-        popover="{{ 'designer.timeline.add-region' | translate }}" container="body" placement="left"
-        triggers="mouseenter:mouseleave"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
-
-      <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeComposition(); false;"
-        popover="{{ 'designer.timeline.remove-composition' | translate }}" container="body" placement="left"
-        triggers="mouseenter:mouseleave"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-
-      <a href="#" class="btn btn-secondary m-0 py-1" (click)="compositionSettings(); false;"
-        popover="{{ 'designer.timeline.composition-settings' | translate }}" container="body" placement="left"
-        triggers="mouseenter:mouseleave"><i class="fa fa-cog" aria-hidden="true"></i></a>
     </div>
 
-    <div>
-      <div id="waveform-timeline"> </div>
-    </div>
-    <div #waveWrapper class="h-100" style="flex: 2; position: relative;">
-      <div #waveElement id="waveform"></div>
+    <div *ngIf="timelineService.selectedComposition">
+      <div>
+        <div id="waveform-timeline"> </div>
+      </div>
+      <div #waveWrapper class="h-100" style="flex: 2; position: relative;">
+        <div #waveElement id="waveform"></div>
+      </div>
     </div>
 
   </div>

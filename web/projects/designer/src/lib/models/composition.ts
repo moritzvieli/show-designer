@@ -2,18 +2,33 @@ import { ScenePlaybackRegion } from "./scene-playback-region";
 
 export class Composition {
 
-    uuid: string;
-    name: string;
+    public uuid: string;
+    public name: string;
 
     // none or audio
-    syncType: string = 'audio';
+    public syncType: string = 'audio';
+
+    public audioFileName: string;
+    public audioFileInLibrary: boolean = false;
+
+    public beatsPerMinute: number = 120;
+    public timeSignatureUpper: number = 4;
+    public timeSignatureLower: number = 4;
+
+    public snapToGrid: boolean = true;
+
+    // time based or musical
+    public gridType: string = 'musical';
+    public gridOffsetMillis: number = 0;
+
+    public gridResolution: number = 1;
 
     // if no sync
-    durationMillis: number = 0;
+    public durationMillis: number = 0;
 
     // Regions, where the scene will be played
-    scenePlaybackRegions: ScenePlaybackRegion[] = [];
+    public scenePlaybackRegions: ScenePlaybackRegion[] = [];
 
-    constructor() {}
+    constructor() { }
 
 }

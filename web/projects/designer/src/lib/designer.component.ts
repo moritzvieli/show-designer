@@ -9,6 +9,7 @@ import Split from 'split.js';
 import { TimelineService } from './services/timeline.service';
 import { PreviewService } from './services/preview.service';
 import { map, catchError, finalize } from 'rxjs/operators';
+import { ConfigService } from './services/config.service';
 
 @Component({
   selector: 'lib-designer',
@@ -31,6 +32,16 @@ export class DesignerComponent implements AfterViewInit {
     this.timelineService.externalCompositionsAvailable = value;
   }
 
+  @Input()
+  set restUrl(value: string) {
+    this.configService.restUrl = value;
+  }
+
+  @Input()
+  set enableMediaLibrary(value: boolean) {
+    this.configService.enableMediaLibrary = value;
+  }
+
   // the size of the menu used in the designer
   private designerMenuSizePx = 20;
 
@@ -51,7 +62,8 @@ export class DesignerComponent implements AfterViewInit {
     private modalService: BsModalService,
     private projectService: ProjectService,
     private timelineService: TimelineService,
-    private previewService: PreviewService
+    private previewService: PreviewService,
+    private configService: ConfigService
   ) {
 
     this.translateService.use('en');

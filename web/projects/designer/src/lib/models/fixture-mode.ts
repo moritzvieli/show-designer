@@ -2,7 +2,7 @@ export class FixtureMode {
 
     name: string;
     shortName: string;
-    channels: string[] = [];
+    channels: any[] = [];
 
     constructor(data?: any) {
         if(!data) {

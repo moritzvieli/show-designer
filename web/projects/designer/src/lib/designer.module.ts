@@ -24,10 +24,18 @@ import { CompositionSettingsComponent } from './timeline/composition-settings/co
 import { TranslateModule } from '@ngx-translate/core';
 import { SortablejsModule } from 'angular-sortablejs';
 import { PopoverModule, AccordionModule, TypeaheadModule } from 'ngx-bootstrap';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { ArraySortPipe } from './array-sort-pipe';
+import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
+
+const DROPZONE_CONFIG: DropzoneConfigInterface = {
+};
 
 @NgModule({
   declarations: [
     DesignerComponent,
+    WarningDialogComponent,
     PreviewComponent,
     EffectCurveComponent,
     EffectPanTiltComponent,
@@ -44,7 +52,8 @@ import { PopoverModule, AccordionModule, TypeaheadModule } from 'ngx-bootstrap';
     MasterDimmerComponent,
     FixtureCapabilityDimmerComponent,
     TimelineGridComponent,
-    CompositionSettingsComponent
+    CompositionSettingsComponent,
+    ArraySortPipe
   ],
   imports: [
     BrowserModule,
@@ -55,12 +64,14 @@ import { PopoverModule, AccordionModule, TypeaheadModule } from 'ngx-bootstrap';
     AccordionModule,
     PopoverModule,
     TypeaheadModule,
-    SortablejsModule
+    SortablejsModule,
+    DropzoneModule.forRoot(DROPZONE_CONFIG)
   ],
   entryComponents: [
     FixturePoolComponent,
     TimelineGridComponent,
-    CompositionSettingsComponent
+    CompositionSettingsComponent,
+    WarningDialogComponent
   ],
   exports: [DesignerComponent]
 })

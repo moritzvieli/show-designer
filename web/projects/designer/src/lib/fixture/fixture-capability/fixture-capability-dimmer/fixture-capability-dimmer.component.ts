@@ -34,7 +34,7 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
 
   changeActive(active: boolean) {
     if (active) {
-      //this.setValue(255);
+      this.setValue(255);
     } else {
       this.presetService.deleteCapabilityValue(FixtureCapabilityType.Intensity);
     }
