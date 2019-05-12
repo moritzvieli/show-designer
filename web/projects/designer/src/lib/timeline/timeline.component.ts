@@ -146,6 +146,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     this.timelineService.selectedCompositionIndex = index;
 
     this.timelineService.createWaveSurfer();
+
+    this.onResize();
   }
 
   @HostListener('document:keydown', ['$event'])

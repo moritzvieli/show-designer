@@ -6,7 +6,8 @@
         <a href="#" class="btn btn-primary m-0 p-1 mr-3" (click)="addComposition(); false;"><i
             class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
 
-        <i *ngIf="projectService.project.compositions.length == 0" class="my-auto">{{ 'designer.timeline.no-compositions' | translate }}</i>
+        <i *ngIf="projectService.project.compositions.length == 0"
+          class="my-auto">{{ 'designer.timeline.no-compositions' | translate }}</i>
 
         <select *ngIf="projectService.project.compositions.length > 0" class="mr-3"
           [ngModel]="timelineService.selectedCompositionIndex" (ngModelChange)="selectComposition($event)"
@@ -68,13 +69,12 @@
       </div>
     </div>
 
+
     <div *ngIf="timelineService.selectedComposition">
-      <div>
-        <div id="waveform-timeline"> </div>
-      </div>
-      <div #waveWrapper class="h-100" style="flex: 2; position: relative;">
-        <div #waveElement id="waveform"></div>
-      </div>
+      <div id="waveform-timeline"> </div>
+    </div>
+    <div *ngIf="timelineService.selectedComposition" #waveWrapper class="h-100" style="flex: 2; position: relative;">
+      <div #waveElement id="waveform"></div>
     </div>
 
   </div>

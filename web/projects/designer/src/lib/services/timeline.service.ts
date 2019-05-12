@@ -14,6 +14,7 @@ import { Composition } from '../models/composition';
 import { PresetRegionScene } from '../models/preset-region-scene';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +48,8 @@ export class TimelineService {
     private sceneService: SceneService,
     private presetService: PresetService,
     private projectService: ProjectService,
-    private http: HttpClient
+    private http: HttpClient,
+    private configService: ConfigService
   ) {
     this.presetService.previewSelectionChanged.subscribe(() => {
       this.selectedPlaybackRegion = undefined;
@@ -301,6 +303,7 @@ export class TimelineService {
   createWaveSurfer() {
     if(this.waveSurfer) {
       this.waveSurfer.destroy();
+      this.waveSurfer = undefined;
     }
 
     setTimeout(() => {
@@ -352,7 +355,7 @@ export class TimelineService {
         audioFileName = this.selectedComposition.uuid;
       }
 
-      this.waveSurfer.load(audioFileName);
+      this.waveSurfer.load(this.configService.restUrl + 'file/get?name=' + audioFileName + '&type=AUDIO');
 
       this.waveSurfer.on('ready', () => {
         setTimeout(() => {
@@ -407,6 +410,7 @@ export class TimelineService {
 
           this.detectChanges.next();
           this.waveSurferReady.next();
+          console.log("Wavesurfer ready");
         }, 0);
       });
 
