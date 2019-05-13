@@ -25,12 +25,6 @@ export class PreviewMeshService {
         // Called when the resource is loaded
         function (gltf: any) {
           let model = gltf.scene.children[0];
-          // console.log(model);
-
-          //model.geometry.center();
-
-          //model.position.set(new THREE.Box3().setFromObject(model).getCenter(model.position).multiplyScalar(-1));
-
 
           model.position.set(0, 0, 0);
 
@@ -52,15 +46,13 @@ export class PreviewMeshService {
   private loadMesh(name: string): Observable<THREE.Mesh> {
     let observable = this.loadScene(name).pipe(map((scene: any) => {
       let model = scene.children[0];
-      //model.geometry.center();
-      //model.position.set(new THREE.Box3().setFromObject(model).getCenter(model.position).multiplyScalar(-1));
 
       model.position.set(0, 0, 0);
 
       this.cachedMeshes.set(name, model);
       this.cachedObservables.delete(name);
 
-      return model;
+      return model.clone();
     }));
 
     this.cachedObservables.set(name, observable);
@@ -70,7 +62,7 @@ export class PreviewMeshService {
 
   getMesh(name: string): Observable<THREE.Mesh> {
     if(this.cachedMeshes.get(name)) {
-      return of(this.cachedMeshes.get(name));
+      return of(this.cachedMeshes.get(name).clone());
     }
 
     return this.cachedObservables.get(name) || this.loadMesh(name);

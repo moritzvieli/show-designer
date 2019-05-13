@@ -6,6 +6,7 @@ import { Fixture } from '../models/fixture';
 import { UuidService } from '../services/uuid.service';
 import { ProjectService } from '../services/project.service';
 import { Subject } from 'rxjs';
+import { PreviewService } from '../services/preview.service';
 
 @Component({
   selector: 'app-fixture-pool',
@@ -32,8 +33,11 @@ export class FixturePoolComponent implements OnInit {
     public bsModalRef: BsModalRef,
     public fixtureService: FixtureService,
     private uuidService: UuidService,
-    public projectService: ProjectService
-  ) { }
+    public projectService: ProjectService,
+    private previewService: PreviewService
+  ) {
+    this.fixturePool = this.projectService.project.fixtures;
+  }
 
   ngOnInit() {
     for (let i = 0; i < 512; i++) {
@@ -221,8 +225,11 @@ export class FixturePoolComponent implements OnInit {
   }
 
   ok() {
-    // TODO Load all required templates
     // TODO don't allow OK if overlapping fixtures exist
+
+    this.projectService.project.fixtures = this.fixturePool;
+    this.previewService.updateFixtureSetup();
+
     this.onClose.next(1);
     this.bsModalRef.hide()
   }

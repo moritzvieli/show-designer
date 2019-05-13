@@ -34,5 +34,10 @@
       </div>
     </div>
 
+    <div *ngIf="projectService.project.fixtures.length == 0" class="w-100 h-100 d-flex p-3 text-center">
+      <a href="#" class="m-auto" (click)="openFixturePool(); false;"><i class="fa fa-plus-circle fa-fw"
+          aria-hidden="true"></i> {{ 'designer.fixture.no-fixtures' | translate }}</a>
+    </div>
+
   </div>
 </div>

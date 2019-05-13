@@ -6,9 +6,6 @@
         <a href="#" class="btn btn-primary m-0 p-1 mr-3" (click)="addComposition(); false;"><i
             class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
 
-        <i *ngIf="projectService.project.compositions.length == 0"
-          class="my-auto">{{ 'designer.timeline.no-compositions' | translate }}</i>
-
         <select *ngIf="projectService.project.compositions.length > 0" class="mr-3"
           [ngModel]="timelineService.selectedCompositionIndex" (ngModelChange)="selectComposition($event)"
           style="width: 150px; height: 30px;">
@@ -48,33 +45,37 @@
         </div>
 
         <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="openGridSettings(); false;"
-          popover="{{ 'designer.timeline.grid' | translate }}" container="body" placement="left"
+          popover="{{ 'designer.timeline.grid' | translate }}" container="body" placement="top"
           triggers="mouseenter:mouseleave"><i class="fa fa-th" aria-hidden="true"></i></a>
 
         <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeRegion(); false;"
-          popover="{{ 'designer.timeline.remove-region' | translate }}" container="body" placement="left"
+          popover="{{ 'designer.timeline.remove-region' | translate }}" container="body" placement="top"
           triggers="mouseenter:mouseleave"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>
 
         <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="addRegion(); false;"
-          popover="{{ 'designer.timeline.add-region' | translate }}" container="body" placement="left"
+          popover="{{ 'designer.timeline.add-region' | translate }}" container="body" placement="top"
           triggers="mouseenter:mouseleave"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
 
         <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="removeComposition(); false;"
-          popover="{{ 'designer.timeline.remove-composition' | translate }}" container="body" placement="left"
+          popover="{{ 'designer.timeline.remove-composition' | translate }}" container="body" placement="top"
           triggers="mouseenter:mouseleave"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
         <a href="#" class="btn btn-secondary m-0 py-1" (click)="compositionSettings(); false;"
-          popover="{{ 'designer.timeline.composition-settings' | translate }}" container="body" placement="left"
+          popover="{{ 'designer.timeline.composition-settings' | translate }}" container="body" placement="top"
           triggers="mouseenter:mouseleave"><i class="fa fa-cog" aria-hidden="true"></i></a>
       </div>
     </div>
-
 
     <div *ngIf="timelineService.selectedComposition">
       <div id="waveform-timeline"> </div>
     </div>
     <div *ngIf="timelineService.selectedComposition" #waveWrapper class="h-100" style="flex: 2; position: relative;">
       <div #waveElement id="waveform"></div>
+    </div>
+
+    <div *ngIf="projectService.project.compositions.length == 0" class="w-100 d-flex">
+      <a href="#" class="m-auto" (click)="addComposition(); false;"><i class="fa fa-plus-circle fa-fw"
+          aria-hidden="true"></i> {{ 'designer.timeline.no-compositions' | translate }}</a>
     </div>
 
   </div>

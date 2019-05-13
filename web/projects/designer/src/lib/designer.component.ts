@@ -7,7 +7,6 @@ import { ProjectService } from './services/project.service';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 import Split from 'split.js';
 import { TimelineService } from './services/timeline.service';
-import { PreviewService } from './services/preview.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ConfigService } from './services/config.service';
 
@@ -62,7 +61,6 @@ export class DesignerComponent implements AfterViewInit {
     private modalService: BsModalService,
     private projectService: ProjectService,
     private timelineService: TimelineService,
-    private previewService: PreviewService,
     private configService: ConfigService
   ) {
 
@@ -124,17 +122,7 @@ export class DesignerComponent implements AfterViewInit {
   }
 
   openFixturePool() {
-    let fixturesCopy = JSON.parse(JSON.stringify(this.projectService.project.fixtures));
-
-    let bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full', initialState: { fixturePool: fixturesCopy } });
-  
-    (<FixturePoolComponent>bsModalRef.content).onClose.subscribe(result => {
-      if (result === 1) {
-        // OK has been pressed -> save
-        this.projectService.project.fixtures = fixturesCopy;
-        this.previewService.updateFixtureSetup();
-      }
-    });
+    this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
   }
 
   projectOpen() {

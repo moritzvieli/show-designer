@@ -31,6 +31,9 @@
         "scene": {
             "title": "Scenes"
         },
+        "fixture": {
+            "no-fixtures": "Add new fixtures to the project"
+        },
         "fixture-pool": {
             "title": "Fixture pool",
             "create-template": "Create template",
