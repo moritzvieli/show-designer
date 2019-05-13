@@ -47,7 +47,7 @@ export class EffectCurveComponent implements OnInit {
 
     //let channelEnum = EffectChannel;
     let keys = Object.keys(EffectChannel);
-    this.channels = keys.slice(keys.length / 2)
+    this.channels = keys;
   }
 
   ngOnInit() {

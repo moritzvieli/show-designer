@@ -340,6 +340,7 @@
     overflow: -moz-scrollbars-none;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    cursor: s-resize;
   }
 
   timeline::-webkit-scrollbar {
@@ -351,8 +352,9 @@
     top: -20px !important;
   }
 
-  /* Change the progress line color */
+  /* Change the progress line color and add the cursor */
   wave {
     border-right-color: #fd7e14 !important;
+    cursor: text;
   }
 }

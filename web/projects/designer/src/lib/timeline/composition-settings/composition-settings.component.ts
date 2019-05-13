@@ -38,8 +38,11 @@ export class CompositionSettingsComponent implements OnInit {
     private warningDialogService: WarningDialogService,
     private toastrService: ToastrService
   ) {
+  }
+
+  ngOnInit() {
     this.dropzoneConfig = {
-      url: this.configService.restUrl + 'file/upload',
+      url: this.configService.restUrl + 'file/upload?compositionUuid=' + this.composition.uuid,
       addRemoveLinks: false,
       maxFilesize: 100 /* 100 MB */,
       acceptedFiles: 'audio/*',
@@ -67,9 +70,7 @@ export class CompositionSettingsComponent implements OnInit {
     })).subscribe();
 
     this.loadFiles();
-  }
 
-  ngOnInit() {
     if (this.timelineService.externalCompositionsAvailable) {
       this.timelineService.getExternalCompositionNames().subscribe(compositionNames => {
         this.existingCompositionNames = compositionNames;
@@ -115,7 +116,7 @@ export class CompositionSettingsComponent implements OnInit {
     let msg = 'designer.timeline.toast-composition-upload-error';
     let title = 'designer.timeline.toast-composition-upload-error-title';
     this.translateService.get([msg, title]).subscribe(result => {
-      this.toastrService.error(result[msg] + args[1], result[title], {timeOut: 0, extendedTimeOut: 0, enableHtml: true});
+      this.toastrService.error(result[msg] + args[1], result[title], { timeOut: 0, extendedTimeOut: 0, enableHtml: true });
       // Hide the preview element
       args[0].previewElement.hidden = true;
     })

@@ -18,7 +18,8 @@
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.composition-sync-type' | translate }}</label>
     <div class="col-lg-8 d-flex">
       <select class="custom-select" [ngModel]="composition.syncType" (ngModelChange)="composition.syncType = $event">
-        <option value="none">{{ 'designer.timeline.composition-sync-type-none' | translate }}</option>
+        <!-- TODO -->
+        <!-- <option value="none">{{ 'designer.timeline.composition-sync-type-none' | translate }}</option> -->
         <option value="audio">{{ 'designer.timeline.composition-sync-type-audio' | translate }}</option>
       </select>
     </div>
@@ -46,12 +47,14 @@
       <ul *ngIf="configService.enableMediaLibrary" class="nav nav-tabs mb-3" id="myTab" role="tablist">
         <li class="nav-item">
           <a class="nav-link active" id="upload-tab" data-toggle="tab" href="#upload" role="tab">
-            <i class="fa fa-upload" aria-hidden="true"></i> {{ 'designer.timeline.composition-file-upload' | translate }}
+            <i class="fa fa-upload" aria-hidden="true"></i>
+            {{ 'designer.timeline.composition-file-upload' | translate }}
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" id="media-library-tab" data-toggle="tab" href="#media-library" role="tab">
-            <i class="fa fa-folder-o" aria-hidden="true"></i> {{ 'designer.timeline.composition-file-library' | translate }}
+            <i class="fa fa-folder-o" aria-hidden="true"></i>
+            {{ 'designer.timeline.composition-file-library' | translate }}
           </a>
         </li>
       </ul>
