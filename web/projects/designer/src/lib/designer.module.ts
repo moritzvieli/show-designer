@@ -28,6 +28,8 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { ArraySortPipe } from './array-sort-pipe';
 import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -57,6 +59,7 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     NgxBootstrapSliderModule,
@@ -65,7 +68,10 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     PopoverModule,
     TypeaheadModule,
     SortablejsModule,
-    DropzoneModule.forRoot(DROPZONE_CONFIG)
+    DropzoneModule.forRoot(DROPZONE_CONFIG),
+    ToastrModule.forRoot({
+      newestOnTop: true
+    }),
   ],
   entryComponents: [
     FixturePoolComponent,

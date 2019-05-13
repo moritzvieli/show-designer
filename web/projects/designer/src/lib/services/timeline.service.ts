@@ -44,6 +44,8 @@ export class TimelineService {
   // should new compositions not available in this pool be added there?
   public externalCompositionsAvailable: boolean = false;
 
+  public loadingAudioFile: boolean = false;
+
   constructor(
     private sceneService: SceneService,
     private presetService: PresetService,
@@ -306,6 +308,8 @@ export class TimelineService {
       this.waveSurfer = undefined;
     }
 
+    this.loadingAudioFile = true;
+
     setTimeout(() => {
       this.waveSurfer = WaveSurfer.create({
         container: '#waveform',
@@ -359,6 +363,8 @@ export class TimelineService {
 
       this.waveSurfer.on('ready', () => {
         setTimeout(() => {
+          this.loadingAudioFile = false;
+
           this.duration = this.msToTime(this.waveSurfer.getDuration() * 1000);
           this.drawAllRegions();
 

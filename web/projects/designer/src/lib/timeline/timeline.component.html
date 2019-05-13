@@ -66,6 +66,10 @@
       </div>
     </div>
 
+    <div *ngIf="timelineService.loadingAudioFile" class="w-100 d-flex">
+        <i class="fa fa-circle-o-notch fa-spin m-auto" style="margin-top: -30px;"></i>
+    </div>
+
     <div *ngIf="timelineService.selectedComposition">
       <div id="waveform-timeline"> </div>
     </div>

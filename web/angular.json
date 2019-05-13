@@ -26,6 +26,7 @@
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css",
               "src/assets/designer/font/style.css",
+              "node_modules/ngx-toastr/toastr.css",
               "src/styles.scss"
             ],
             "scripts": [

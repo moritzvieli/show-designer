@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { WarningDialogService } from '../../services/warning-dialog.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-composition-settings',
@@ -34,12 +35,13 @@ export class CompositionSettingsComponent implements OnInit {
     public configService: ConfigService,
     private translateService: TranslateService,
     private http: HttpClient,
-    private warningDialogService: WarningDialogService
+    private warningDialogService: WarningDialogService,
+    private toastrService: ToastrService
   ) {
     this.dropzoneConfig = {
       url: this.configService.restUrl + 'file/upload',
       addRemoveLinks: false,
-      maxFilesize: 50 /* 50 MB */,
+      maxFilesize: 100 /* 100 MB */,
       acceptedFiles: 'audio/*',
       timeout: 0,
       previewTemplate: `
@@ -110,7 +112,13 @@ export class CompositionSettingsComponent implements OnInit {
   }
 
   public onUploadError(args: any) {
-    console.log('Upload error', args);
+    let msg = 'designer.timeline.toast-composition-upload-error';
+    let title = 'designer.timeline.toast-composition-upload-error-title';
+    this.translateService.get([msg, title]).subscribe(result => {
+      this.toastrService.error(result[msg] + args[1], result[title], {timeOut: 0, extendedTimeOut: 0, enableHtml: true});
+      // Hide the preview element
+      args[0].previewElement.hidden = true;
+    })
   }
 
   public onUploadSuccess(args: any) {
@@ -120,10 +128,10 @@ export class CompositionSettingsComponent implements OnInit {
     args[0].previewElement.hidden = true;
 
     // Select this file
-    if(args[1].audioFile) {
+    if (args[1].audioFile) {
       this.composition.audioFileName = this.getNameFromFile(args[1].audioFile);
 
-      if(this.configService.enableMediaLibrary) {
+      if (this.configService.enableMediaLibrary) {
         // the file has been uploaded to the media library
         this.composition.audioFileInLibrary = true;
       }

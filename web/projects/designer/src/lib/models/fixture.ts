@@ -25,7 +25,7 @@ export class Fixture {
 
     constructor(template: FixtureTemplate) {
         this.fixtureTemplateUuid = template.uuid;
-        this.name = template.manufacturerName + ' - '  + template.name;
+        this.name = template.name;
 
         if(template.modes && template.modes.length > 0) {
             this.modeShortName = template.modes[0].shortName;

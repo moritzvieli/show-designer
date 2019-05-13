@@ -37,6 +37,25 @@ body {
   flex: 1 0;
 }
 
+/* Style the toasts */
+/* Overwrite some wrong styles from bootstrap */
+.toast {
+  opacity: 1 !important;
+}
+
+.toast-error {
+  background-color: #bd362f !important;
+}
+
+.toast-success {
+  background-color: #51a351 !important;
+}
+
+.toast-container .toast {
+  border-radius: 0;
+  box-shadow: none;
+}
+
 /* Style the dropzone */
 dropzone.dz-wrapper>.dropzone {
   overflow: visible !important;

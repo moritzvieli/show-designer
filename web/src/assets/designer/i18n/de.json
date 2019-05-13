@@ -70,8 +70,9 @@
             "composition-dropzone-message": "Ziehe eine Datei hier hinein oder klicke, um hochzuladen",
             "composition-file-upload": "Hochladen",
             "composition-file-library": "Mediathek",
-            "warning-delete-file": "Möchtest du diese Datei wirklich löschen?"
-
+            "warning-delete-file": "Möchtest du diese Datei wirklich löschen?",
+            "toast-composition-upload-error": "Die Datei konnte aus dem folgenden Grund nicht hochgeladen werden: ",
+            "toast-composition-upload-error-title": "Fehler beim Hochladen"
         }
     }
 }
