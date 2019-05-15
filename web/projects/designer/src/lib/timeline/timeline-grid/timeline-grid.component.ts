@@ -15,6 +15,7 @@ export class TimelineGridComponent implements OnInit {
   public timeSignatureLower: number;
   public snapToGrid: boolean;
   public gridOffsetMillis: number;
+  public gridResolution: number;
 
   constructor(
     public bsModalRef: BsModalRef,
@@ -26,6 +27,7 @@ export class TimelineGridComponent implements OnInit {
     this.timeSignatureLower = timelineService.selectedComposition.timeSignatureLower;
     this.snapToGrid = timelineService.selectedComposition.snapToGrid;
     this.gridOffsetMillis = timelineService.selectedComposition.gridOffsetMillis;
+    this.gridResolution = timelineService.selectedComposition.gridResolution;
   }
 
   ngOnInit() {
@@ -38,6 +40,7 @@ export class TimelineGridComponent implements OnInit {
     this.timelineService.selectedComposition.timeSignatureLower = this.timeSignatureLower;
     this.timelineService.selectedComposition.snapToGrid = this.snapToGrid;
     this.timelineService.selectedComposition.gridOffsetMillis = this.gridOffsetMillis;
+    this.timelineService.selectedComposition.gridResolution = this.gridResolution;
 
     this.timelineService.updateGrid();
     this.bsModalRef.hide();

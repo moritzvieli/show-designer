@@ -21,6 +21,7 @@ export class Composition {
     public gridType: string = 'musical';
     public gridOffsetMillis: number = 0;
 
+    // 1/1, 1/2, 1/4, 1/8, etc.
     public gridResolution: number = 1;
 
     // if no sync

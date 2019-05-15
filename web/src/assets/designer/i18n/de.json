@@ -53,6 +53,7 @@
             "grid-type": "Typ",
             "grid-type-time-based": "Zeitbasiert",
             "grid-type-musical": "Musikalisch",
+            "grid-resolution": "Auflösung",
             "snap-to-grid": "Am Raster ausrichten",
             "beats-per-minute": "BPM",
             "grid-offset": "Verzögerung in Millisekunden",

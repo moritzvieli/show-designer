@@ -148,6 +148,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     this.timelineService.createWaveSurfer();
 
     this.onResize();
+    this.timelineService.applyZoom(0);
   }
 
   @HostListener('document:keydown', ['$event'])

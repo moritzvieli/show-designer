@@ -147,60 +147,72 @@ export class TimelineService {
   formatTimeCallback(seconds: number, pxPerSec: number) {
     if (this.selectedComposition.gridType == 'musical') {
       return Math.round(seconds / this.selectedComposition.timeSignatureUpper / (60 / this.selectedComposition.beatsPerMinute));
+    } else {
+      // calculate minutes and seconds from seconds count
+      const minutes = parseInt(<any>(seconds / 60), 10);
+      seconds = parseInt(<any>(seconds % 60), 10);
+
+      // fill up seconds with zeroes
+      const secondsStr = seconds < 10 ? '0' + seconds : seconds;
+      return `${minutes}:${secondsStr}`;
     }
-
-    // calculate minutes and seconds from seconds count
-    const minutes = parseInt(<any>(seconds / 60), 10);
-    seconds = parseInt(<any>(seconds % 60), 10);
-
-    // fill up seconds with zeroes
-    const secondsStr = seconds < 10 ? '0' + seconds : seconds;
-    return `${minutes}:${secondsStr}`;
   }
 
   timeInterval(pxPerSec: number) {
     if (this.selectedComposition.gridType == 'musical') {
-      return 60 / this.selectedComposition.beatsPerMinute;
-    }
+      let interval = 60 / this.selectedComposition.beatsPerMinute / this.selectedComposition.gridResolution;
 
-    if (pxPerSec >= 25) {
-      return 1;
-    } else if (pxPerSec * 5 >= 25) {
-      return 5;
-    } else if (pxPerSec * 15 >= 25) {
-      return 15;
+      if(pxPerSec < 40) {
+        return interval * 4;
+      } else if (pxPerSec < 80) {
+        return interval * 2;
+      }
+
+      return interval;
+    } else {
+      if (pxPerSec >= 25) {
+        return 1;
+      } else if (pxPerSec * 5 >= 25) {
+        return 5;
+      } else if (pxPerSec * 15 >= 25) {
+        return 15;
+      }
+
+      return Math.ceil(0.5 / pxPerSec) * 60;
     }
-    return Math.ceil(0.5 / pxPerSec) * 60;
   }
 
   primaryLabelInterval(pxPerSec: number) {
     if (this.selectedComposition.gridType == 'musical') {
-      return this.selectedComposition.timeSignatureUpper / this.selectedComposition.timeSignatureLower * this.selectedComposition.gridResolution;
-    }
+      let interval = this.selectedComposition.timeSignatureUpper * this.selectedComposition.gridResolution;
 
-    if (pxPerSec >= 25) {
-      return 10;
-    } else if (pxPerSec * 5 >= 25) {
-      return 6;
-    } else if (pxPerSec * 15 >= 25) {
+      return interval;
+    } else {
+      if (pxPerSec >= 25) {
+        return 10;
+      } else if (pxPerSec * 5 >= 25) {
+        return 6;
+      } else if (pxPerSec * 15 >= 25) {
+        return 4;
+      }
+
       return 4;
     }
-    return 4;
   }
 
   secondaryLabelInterval(pxPerSec: number) {
     if (this.selectedComposition.gridType == 'musical') {
       return 0;
-    }
-
-    if (pxPerSec >= 25) {
-      return 5;
-    } else if (pxPerSec * 5 >= 25) {
+    } else {
+      if (pxPerSec >= 25) {
+        return 5;
+      } else if (pxPerSec * 5 >= 25) {
+        return 2;
+      } else if (pxPerSec * 15 >= 25) {
+        return 2;
+      }
       return 2;
-    } else if (pxPerSec * 15 >= 25) {
-      return 2;
     }
-    return 2;
   }
 
   private seeekWithTimeline(e: any) {
@@ -302,8 +314,20 @@ export class TimelineService {
     }
   }
 
+  private getSnapToGridInterval(): number {
+    if (this.selectedComposition.snapToGrid) {
+      return 60 / this.selectedComposition.beatsPerMinute / this.selectedComposition.gridResolution;
+    }
+
+    return undefined;
+  }
+
+  private getSnapToGridOffset(): number {
+    return this.selectedComposition.gridOffsetMillis / 1000;
+  }
+
   createWaveSurfer() {
-    if(this.waveSurfer) {
+    if (this.waveSurfer) {
       this.waveSurfer.destroy();
       this.waveSurfer = undefined;
     }
@@ -333,14 +357,14 @@ export class TimelineService {
               slop: 5
             },
             color: '#fff',
-            snapToGridInterval: 60 / this.selectedComposition.beatsPerMinute,
-            snapToGridOffset: this.selectedComposition.gridOffsetMillis / 1000
+            snapToGridInterval: this.getSnapToGridInterval(),
+            snapToGridOffset: this.getSnapToGridOffset()
           }),
           TimeLinePlugin.create({
             container: "#waveform-timeline",
             primaryFontColor: '#fff',
             secondaryFontColor: '#fff',
-            offset: this.selectedComposition.gridOffsetMillis / 1000,
+            offset: this.getSnapToGridOffset(),
             formatTimeCallback: this.formatTimeCallback.bind(this),
             timeInterval: this.timeInterval.bind(this),
             primaryLabelInterval: this.primaryLabelInterval.bind(this),
@@ -351,7 +375,7 @@ export class TimelineService {
 
       let audioFileName;
 
-      if(this.selectedComposition.audioFileInLibrary) {
+      if (this.selectedComposition.audioFileInLibrary) {
         // the file name is also used for the real file name
         audioFileName = this.selectedComposition.audioFileName;
       } else {
@@ -503,6 +527,13 @@ export class TimelineService {
     this.updateRegionSelection();
   }
 
+  private getRegionSnapToGridValue(value: number): number {
+    // the regions should snap to a grid
+    const offset = this.getSnapToGridOffset() || 0;
+    const interval = this.getSnapToGridInterval() || 0;
+    return (Math.round((value - offset) / interval) * interval + offset);
+  }
+
   private connectRegion(waveSurferRegion: any, scene: Scene, scenePlaybackRegion: ScenePlaybackRegion, preset?: Preset) {
     waveSurferRegion.scenePlaybackRegion = scenePlaybackRegion;
     waveSurferRegion.scene = scene;
@@ -514,8 +545,14 @@ export class TimelineService {
       }
     });
 
-    waveSurferRegion.on('update', (x) => {
+    waveSurferRegion.on('update', () => {
       this.setSelectedRegion(scenePlaybackRegion);
+      if (this.selectedComposition.snapToGrid) {
+        // update the regions boundaries. they may not snap to grid, if it has been
+        // disabled during creation of the region but activated afterwards.
+        waveSurferRegion.start = this.getRegionSnapToGridValue(waveSurferRegion.start);
+        waveSurferRegion.end = this.getRegionSnapToGridValue(waveSurferRegion.end);
+      }
       scenePlaybackRegion.startMillis = waveSurferRegion.start * 1000;
       scenePlaybackRegion.endMillis = waveSurferRegion.end * 1000;
     });
@@ -604,7 +641,7 @@ export class TimelineService {
               if (presetUuid == this.projectService.project.presets[presetIndex].uuid) {
                 let preset = this.presetService.getPresetByUuid(presetUuid);
 
-                if(preset) {
+                if (preset) {
                   if ((!preset.startMillis || preset.startMillis + region.startMillis <= timeMillis)
                     && (!preset.endMillis || preset.endMillis + region.startMillis >= timeMillis)) {
 
@@ -632,6 +669,12 @@ export class TimelineService {
   }
 
   updateGrid() {
+    if (this.waveSurferReady) {
+      this.waveSurfer.timeline.params.offset = this.getSnapToGridOffset();
+
+      this.waveSurfer.regions.params.snapToGridInterval = this.getSnapToGridInterval();
+      this.waveSurfer.regions.params.snapToGridOffset = this.getSnapToGridOffset();
+    }
     this.updateCurrentTime();
   }
 

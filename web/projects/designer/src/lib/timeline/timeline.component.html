@@ -24,7 +24,7 @@
       </div>
 
       <div *ngIf="timelineService.selectedComposition" class="d-flex w-100">
-        <div class="my-auto mr-3">
+        <div *ngIf="timelineService.duration" class="my-auto mr-3">
           <span
             style="width: 78px; text-align: left; display: inline-block; margin-left: 5px;">{{ timelineService.currentTime }}</span>
           <span style="display: inline-block;"></span>- {{ timelineService.duration }}

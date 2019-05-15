@@ -8,7 +8,7 @@
 
   <div class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.grid-type' | translate }}</label>
-    <div class="col-lg-8 d-flex">
+    <div class="col-lg-8">
       <select class="custom-select" [ngModel]="gridType" (ngModelChange)="gridType = $event;">
         <option value="time">{{ 'designer.timeline.grid-type-time-based' | translate }}</option>
         <option value="musical">{{ 'designer.timeline.grid-type-musical' | translate }}</option>
@@ -18,34 +18,48 @@
 
   <div *ngIf="gridType == 'musical'" class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.beats-per-minute' | translate }}</label>
-    <div class="col-lg-8 d-flex">
+    <div class="col-lg-8">
       <input type="text" class="form-control" [ngModel]="beatsPerMinute" (ngModelChange)="beatsPerMinute = $event;">
     </div>
   </div>
 
   <div *ngIf="gridType == 'musical'" class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.time-signature' | translate }}</label>
-    <div class="col-lg-3 d-flex">
+    <div class="col-lg-8">
       <input type="text" class="form-control" [ngModel]="timeSignatureUpper"
-        (ngModelChange)="timeSignatureUpper = $event;">
+        (ngModelChange)="timeSignatureUpper = $event;" style="float: left; width: 40px;">
+      <div class="d-flex px-2 h-100" style="float: left;">
+        <div class="m-auto">/</div>
+      </div><input type="text" class="form-control" [ngModel]="timeSignatureLower"
+        (ngModelChange)="timeSignatureLower = $event;" style="width: 40px;">
     </div>
-    <div class="col-lg-2 d-flex"><span class="m-auto">/</span></div>
-    <div class="col-lg-3 d-flex">
-      <input type="text" class="form-control" [ngModel]="timeSignatureLower"
-        (ngModelChange)="timeSignatureLower = $event;">
+  </div>
+
+  <div *ngIf="gridType == 'musical'" class="form-group row">
+    <label class="col-lg-4 col-form-label">{{ 'designer.timeline.grid-resolution' | translate }}</label>
+    <div class="col-lg-8">
+      <select class="custom-select" [ngModel]="gridResolution" (ngModelChange)="gridResolution = $event;">
+        <option value="1">1/1</option>
+        <option value="2">1/2</option>
+        <option value="4">1/4</option>
+        <option value="8">1/8</option>
+        <option value="16">1/16</option>
+        <option value="32">1/32</option>
+        <option value="64">1/64</option>
+      </select>
     </div>
   </div>
 
   <div *ngIf="gridType == 'musical'" class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.grid-offset' | translate }}</label>
-    <div class="col-lg-8 d-flex">
+    <div class="col-lg-8">
       <input type="text" class="form-control" [ngModel]="gridOffsetMillis" (ngModelChange)="gridOffsetMillis = $event;">
     </div>
   </div>
 
   <div class="form-group row">
     <label class="col-lg-4 col-form-label"></label>
-    <div class="col-lg-8 d-flex">
+    <div class="col-lg-8">
       <div class="form-check">
         <input type="checkbox" [ngModel]="snapToGrid" (ngModelChange)="snapToGrid = $event" class="form-check-input"
           id="snapToGrid">
