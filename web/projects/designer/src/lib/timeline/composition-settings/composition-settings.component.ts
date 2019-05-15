@@ -119,7 +119,7 @@ export class CompositionSettingsComponent implements OnInit {
       this.toastrService.error(result[msg] + args[1], result[title], { timeOut: 0, extendedTimeOut: 0, enableHtml: true });
       // Hide the preview element
       args[0].previewElement.hidden = true;
-    })
+    });
   }
 
   public onUploadSuccess(args: any) {

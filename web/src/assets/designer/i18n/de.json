@@ -32,7 +32,8 @@
             "title": "Szenen"
         },
         "fixture": {
-            "no-fixtures": "Füge neue Fixtures zum Projekt hinzu"
+            "no-fixtures": "Füge neue Fixtures zum Projekt hinzu",
+            "add-copy": "Kopie hinzufügen"
         },
         "fixture-pool": {
             "title": "Fixture Pool",
@@ -42,8 +43,13 @@
             "dmx": "DMX Übersicht",
             "fixture-name": "Fixture Name",
             "mode": "Modus",
+            "first-channel": "Kanal",
             "channels": "Kanäle",
-            "universe": "Universum"
+            "universe": "Universum",
+            "no-free-space": "Im aktuellen Universum ist kein Bereich mehr frei, um dieses Fixture hinzuzufügen.",
+            "no-free-space-title": "Kein freier Bereich",
+            "channel-occupied": "Die eingestellte Konfiguration hat überlappende Kanäle.",
+            "channel-occupied-title": "Überlappende Kanäle"
         },
         "composition": {
             "new": "Neue Komposition erstellen..."

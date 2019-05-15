@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, ViewEncapsulation, Input } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, ViewEncapsulation, Input, HostListener } from '@angular/core';
 import { PreviewComponent } from './preview/preview.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,6 +19,8 @@ import { ConfigService } from './services/config.service';
 export class DesignerComponent implements AfterViewInit {
 
   private _menuHeightPx: number = 0;
+
+  private fixturePoolOpened: boolean = false;
 
   @Input()
   set menuHeightPx(value: number) {
@@ -122,7 +124,11 @@ export class DesignerComponent implements AfterViewInit {
   }
 
   openFixturePool() {
-    this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
+    this.fixturePoolOpened = true;
+    let bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
+    (<FixturePoolComponent>bsModalRef.content).onClose.subscribe(result => {
+      this.fixturePoolOpened = false;
+    });
   }
 
   projectOpen() {
@@ -166,6 +172,17 @@ export class DesignerComponent implements AfterViewInit {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key == 'p' && !this.fixturePoolOpened) {
+      this.openFixturePool();
+
+      // prevent checkboxes being toggled, if in focus e.g.
+      event.stopPropagation();
+      event.preventDefault();
+    }
   }
 
 }

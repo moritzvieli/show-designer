@@ -73,8 +73,14 @@ export class FixtureService {
     let template = this.getTemplateByFixture(fixture);
 
     for (let mode of template.modes) {
-      if (mode.shortName == fixture.modeShortName) {
-        return mode;
+      if (mode.shortName) {
+        if (mode.shortName === fixture.modeShortName) {
+          return mode;
+        }
+      } else {
+        if (mode.name == fixture.modeShortName) {
+          return mode;
+        }
       }
     }
   }
