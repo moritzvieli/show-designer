@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 import { PreviewService } from '../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { PresetService } from '../services/preset.service';
 
 @Component({
   selector: 'app-fixture-pool',
@@ -41,7 +42,8 @@ export class FixturePoolComponent implements OnInit {
     public projectService: ProjectService,
     private previewService: PreviewService,
     private translateService: TranslateService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private presetService: PresetService
   ) {
     this.fixturePool = [...this.projectService.project.fixtures];
 
@@ -65,7 +67,10 @@ export class FixturePoolComponent implements OnInit {
   }
 
   selectFixture(fixture: Fixture) {
-    this.selectedFixtureTemplate = this.fixtureService.getTemplateByFixture(fixture);
+    this.selectedFixtureTemplate = undefined;
+    if (fixture) {
+      this.selectedFixtureTemplate = this.fixtureService.getTemplateByFixture(fixture);
+    }
     this.selectedFixture = fixture;
   }
 
@@ -181,7 +186,11 @@ export class FixturePoolComponent implements OnInit {
   removeFixture(fixture: Fixture) {
     for (let i = 0; i < this.fixturePool.length; i++) {
       if (this.fixturePool[i].uuid == fixture.uuid) {
+        if (this.selectedFixture == this.fixturePool[i]) {
+          this.selectFixture(undefined);
+        }
         this.fixturePool.splice(i, 1);
+        break;
       }
     }
 
@@ -328,6 +337,7 @@ export class FixturePoolComponent implements OnInit {
 
     this.projectService.project.fixtures = this.fixturePool;
     this.previewService.updateFixtureSetup();
+    this.presetService.updateFixtureSelection();
 
     this.onClose.next(1);
     this.bsModalRef.hide()

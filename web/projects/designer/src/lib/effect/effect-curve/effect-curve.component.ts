@@ -73,6 +73,20 @@ export class EffectCurveComponent implements OnInit {
     this.ctx.stroke();
   }
 
+  private getPhasingCount(): number {
+    let count: number = 0;
+    let countedDmxChannels: number[] = [];
+
+    for(let fixture of  this.presetService.selectedPreset.fixtures) {
+      if(!countedDmxChannels.includes(fixture.dmxFirstChannel)) {
+        count ++;
+        countedDmxChannels.push(fixture.dmxFirstChannel);
+      }
+    }
+
+    return count;
+  }
+
   redraw() {
     this.ctx.clearRect(0, 0, this.maxWidth, this.maxHeight);
     this.ctx.fillStyle = "#fff";
@@ -115,10 +129,8 @@ export class EffectCurveComponent implements OnInit {
     // Draw the phasing values (chase), if required
     let phasingCount = 0;
 
-    if (this.curve.phasingMillis > 0) {
-      if(this.presetService.selectedPreset) {
-        phasingCount = this.presetService.selectedPreset.fixtures.length;
-      }
+    if (this.curve.phasingMillis > 0 && this.presetService.selectedPreset) {
+      phasingCount = this.getPhasingCount();
     }
 
     for (let i = 1; i < phasingCount; i++) {
@@ -129,13 +141,13 @@ export class EffectCurveComponent implements OnInit {
   toggleChannel(event: any, channel: EffectChannel) {
     let enumChannel: any = Object.keys(EffectChannel).find(key => EffectChannel[key] === channel);
 
-    if(event.currentTarget.checked) {
+    if (event.currentTarget.checked) {
       // Add the channel
       this.curve.effectChannels.push(enumChannel);
     } else {
       // Remove the channel
-      for(let i = 0; i < this.curve.effectChannels.length; i++) {
-        if(this.curve.effectChannels[i] == enumChannel) {
+      for (let i = 0; i < this.curve.effectChannels.length; i++) {
+        if (this.curve.effectChannels[i] == enumChannel) {
           this.curve.effectChannels.splice(i, 1);
         }
       }

@@ -11,7 +11,6 @@ import { EffectChannel } from '../models/effect';
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture-capability';
 import { Preset } from '../models/preset';
-import { FixtureChannel } from '../models/fixture-channel';
 import { ProjectService } from './project.service';
 import { PresetRegionScene } from '../models/preset-region-scene';
 import { Subject } from 'rxjs';
@@ -123,6 +122,7 @@ export class PreviewService {
   // Get the fixture index inside the passed preset (used for chasing)
   private getFixtureIndex(preset: Preset, fixtureUuid: string): number {
     let index = 0;
+    let countedDmxChannels: number[] = [];
 
     // Loop over the global fixtures to retain the order
     for (let fixture of this.projectService.project.fixtures) {
@@ -132,7 +132,11 @@ export class PreviewService {
             return index;
           }
 
-          index++;
+          // don't count fixtures on the same channel as already counted ones
+          if (!countedDmxChannels.includes(fixture.dmxFirstChannel)) {
+            countedDmxChannels.push(fixture.dmxFirstChannel);
+            index++;
+          }
           break;
         }
       }
@@ -206,7 +210,7 @@ export class PreviewService {
               // Preset fades out
               intensityPercentagePreset = (preset.region.startMillis + preset.preset.endMillis - timeMillis) / preset.preset.fadeOutMillis;
             }
-            
+
             if (preset.preset.startMillis && timeMillis < preset.region.startMillis + preset.preset.startMillis + preset.preset.fadeInMillis) {
               // Preset fades in
               intensityPercentagePreset = (timeMillis - preset.region.startMillis + preset.preset.startMillis) / preset.preset.fadeInMillis;

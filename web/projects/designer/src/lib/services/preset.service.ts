@@ -38,9 +38,13 @@ export class PresetService {
     }
   }
 
-  fixtureIsSelected(fixture: Fixture): boolean {
-    if (!this.selectedPreset) {
-      return false;
+  fixtureIsSelected(fixture: Fixture, preset?: Preset): boolean {
+    if (!preset) {
+      if (this.selectedPreset) {
+        preset = this.selectedPreset;
+      } else {
+        return false;
+      }
     }
 
     for (let selectedFixture of this.selectedPreset.fixtures) {
@@ -57,21 +61,39 @@ export class PresetService {
       return;
     }
 
-    // Select a fixture if not yet selected or unselect it otherwise
+    // select all fixtures at the specified startchannel or unselect them,
+    // if already selected
     if (this.fixtureIsSelected(fixture)) {
-      for (let i = 0; i < this.selectedPreset.fixtures.length; i++) {
-        if (this.selectedPreset.fixtures[i].uuid == fixture.uuid) {
+      for (let i = this.selectedPreset.fixtures.length - 1; i >= 0; i--) {
+        if (this.selectedPreset.fixtures[i].dmxFirstChannel == fixture.dmxFirstChannel) {
           this.selectedPreset.fixtures.splice(i, 1);
-          break;
         }
       }
     } else {
-      this.selectedPreset.fixtures.push(fixture);
+      for (let projectFixture of this.projectService.project.fixtures) {
+        if (projectFixture.dmxFirstChannel == fixture.dmxFirstChannel) {
+          this.selectedPreset.fixtures.push(projectFixture);
+        }
+      }
+    }
+  }
+
+  public updateFixtureSelection() {
+    // after changing the configuration in the fixture pool, we might need to
+    // select some more fixtures on the same channel as already selected ones
+    for (let preset of this.projectService.project.presets) {
+      for (let presetFixture of preset.fixtures) {
+        for (let projectFixture of this.projectService.project.fixtures) {
+          if (projectFixture.dmxFirstChannel == presetFixture.dmxFirstChannel && !this.fixtureIsSelected(projectFixture, preset)) {
+            preset.fixtures.push(projectFixture);
+          }
+        }
+      }
     }
   }
 
   private capabilityValueMatchesTypeAndOptions(capabilityValue: FixtureCapabilityValue, capabilityType: FixtureCapabilityType, options: any = {}) {
-    if(capabilityValue.type == capabilityType 
+    if (capabilityValue.type == capabilityType
       && (!options.color || capabilityValue.color == options.color)) {
 
       return true;
