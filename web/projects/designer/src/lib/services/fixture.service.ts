@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { FixtureChannel } from '../models/fixture-channel';
 import { ProjectService } from './project.service';
 import { Observable, forkJoin, of } from 'rxjs';
+import { FixtureChannelFineIndex } from '../models/fixture-channel-fine-index';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class FixtureService {
 
   getFixtureByUuid(uuid: string): Fixture {
     for (let fixture of this.projectService.project.fixtures) {
-      if (fixture.uuid = uuid) {
+      if (fixture.uuid == uuid) {
         return fixture;
       }
     }
@@ -85,10 +86,10 @@ export class FixtureService {
     }
   }
 
-  getChannelsByFixture(fixture: Fixture): FixtureChannel[] {
+  getChannelsByFixture(fixture: Fixture): FixtureChannelFineIndex[] {
     let template = this.getTemplateByFixture(fixture);
     let mode = this.getModeByFixture(fixture);
-    let channels: FixtureChannel[] = [];
+    let channels: FixtureChannelFineIndex[] = [];
 
     if (!mode) {
       return channels;
@@ -99,18 +100,24 @@ export class FixtureService {
       if (typeof channel == "string") {
         let modeChannel: string = <string>channel;
 
-        if (modeChannel) {
-          for (let availableChannelName in template.availableChannels) {
-            let availableChannel: FixtureChannel = template.availableChannels[availableChannelName];
+        for (let availableChannelName in template.availableChannels) {
+          let availableChannel: FixtureChannel = template.availableChannels[availableChannelName];
 
-            if (modeChannel == availableChannelName || availableChannel.fineChannelAliases.indexOf(modeChannel) > -1) {
-              channels.push(availableChannel);
+          if (modeChannel == availableChannelName || availableChannel.fineChannelAliases.indexOf(modeChannel) > -1) {
+            // count the fine channel values for this channel in the current mode
+            let fineChannels = 0;
+            for (let modeChannel of mode.channels) {
+              if (availableChannel.fineChannelAliases.indexOf(modeChannel) > -1) {
+                fineChannels++;
+              }
             }
+
+            channels.push(new FixtureChannelFineIndex(availableChannel, fineChannels, availableChannel.fineChannelAliases.indexOf(modeChannel)));
           }
-        } else {
-          // null may be passed as a placeholder for an undefined channel
-          channels.push(null);
         }
+      } else {
+        // null may be passed as a placeholder for an undefined channel
+        channels.push(new FixtureChannelFineIndex());
       }
     }
 

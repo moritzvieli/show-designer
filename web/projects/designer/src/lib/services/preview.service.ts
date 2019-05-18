@@ -126,8 +126,8 @@ export class PreviewService {
 
     // Loop over the global fixtures to retain the order
     for (let fixture of this.projectService.project.fixtures) {
-      for (let presetFixture of preset.fixtures) {
-        if (presetFixture.uuid == fixture.uuid) {
+      for (let presetFixtureUuid of preset.fixturesUuids) {
+        if (presetFixtureUuid == fixture.uuid) {
           if (fixture.uuid == fixtureUuid) {
             return index;
           }
@@ -153,7 +153,7 @@ export class PreviewService {
     for (let i = 0; i < this.projectService.project.fixtures.length; i++) {
       let fixture = this.projectService.project.fixtures[i];
 
-      // All capabilities of the current fixture
+      // all capabilities of the current fixture
       let capabilities: FixtureCapabilityValue[] = [];
 
       let alreadyCalculatedFixture = this.getAlreadyCalculatedFixture(this.projectService.project.fixtures, i);
@@ -162,10 +162,12 @@ export class PreviewService {
         // Only relevant for the preview --> reuse all calculated values
         capabilities = Object.assign([], calculatedFixtures.get(alreadyCalculatedFixture.uuid));
       } else {
-        let channels = this.fixtureService.getChannelsByFixture(fixture);
+        let channelFineIndices = this.fixtureService.getChannelsByFixture(fixture);
 
         // Apply the fixture default channels
-        for (let channel of channels) {
+        for (let channelFineIndex of channelFineIndices) {
+          let channel = channelFineIndex.fixtureChannel;
+
           if (channel && channel.defaultValue) {
             let type = channel.capability.type;
             let value = 0;
@@ -176,7 +178,8 @@ export class PreviewService {
               value = 255 / 100 * percentage;
             } else {
               // DMX value
-              value = Number.parseInt(<any>channel.defaultValue);
+              let maxValue = Math.pow(256, 1 + channel.fineChannelAliases.length) - 1;
+              value = Number.parseInt(<any>channel.defaultValue) / maxValue * 255;
             }
 
             this.mixCapabilityValue(capabilities, new FixtureCapabilityValue(value, type, channel.capability.color), 1);
@@ -227,7 +230,9 @@ export class PreviewService {
             // This fixture is also in the preset
 
             // Match all capability values in this preset with the fixture capabilities
-            for (let channel of channels) {
+            for (let channelFineIndex of channelFineIndices) {
+              let channel = channelFineIndex.fixtureChannel;
+
               for (let presetCapability of preset.preset.capabilityValues) {
                 if (channel && channel.capability.type == presetCapability.type) {
                   this.mixCapabilityValue(capabilities, presetCapability, intensityPercentage);
@@ -263,10 +268,14 @@ export class PreviewService {
                 }
               }
 
-              for (let channel of channels) {
-                for (let effectCapability of effectCapabilityValues) {
-                  if (channel.capability.type == effectCapability.type) {
-                    this.mixCapabilityValue(capabilities, effectCapability, intensityPercentage);
+              for (let channelFineIndex of channelFineIndices) {
+                let channel = channelFineIndex.fixtureChannel;
+
+                if (channel) {
+                  for (let effectCapability of effectCapabilityValues) {
+                    if (channel.capability.type == effectCapability.type) {
+                      this.mixCapabilityValue(capabilities, effectCapability, intensityPercentage);
+                    }
                   }
                 }
               }
@@ -282,6 +291,24 @@ export class PreviewService {
     return calculatedFixtures;
   }
 
+  private getDmxValue(value: number, fineValueCount: number, fineIndex: number): number {
+    // return the rounded dmx value in the specified fineness
+    if (fineIndex >= 0) {
+      // a finer value is requested. calculate it by substracting the value
+      // which has been returned on the current level.
+      return this.getDmxValue((value - Math.floor(value)) * 255, fineValueCount - 1, fineIndex - 1);
+    } else {
+      // we reached the required fineness of the value
+      if (fineValueCount > fineIndex + 1) {
+        // there are finer values still available -> floor the current value
+        return Math.floor(value);
+      } else {
+        // there are no finer values available -> round it
+        return Math.round(value);
+      }
+    }
+  }
+
   public setUniverseValues(values: Map<string, FixtureCapabilityValue[]>, masterDimmerValue: number) {
     // Reset all DMX universes
     for (let universe of this.universeService.universes) {
@@ -293,18 +320,24 @@ export class PreviewService {
 
     values.forEach((capabilities: FixtureCapabilityValue[], fixtureUuid: string) => {
       let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-      let universe: Universe = this.universeService.getUniverseByUuid(fixture.dmxUniverseUuid);
-      let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
-      let channels = this.fixtureService.getChannelsByFixture(fixture);
 
-      for (let channelIndex = 0; channelIndex < channels.length; channelIndex++) {
-        let channel = channels[channelIndex];
+      // TODO Get the correct universe for this fixture
+      let universe: Universe = this.universeService.getUniverseByUuid(fixture.dmxUniverseUuid);
+
+      let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+      let channelFineIndices = this.fixtureService.getChannelsByFixture(fixture);
+
+      for (let channelIndex = 0; channelIndex < channelFineIndices.length; channelIndex++) {
+        let channel = channelFineIndices[channelIndex].fixtureChannel;
 
         for (let capability of capabilities) {
           if (channel && channel.capability.type == capability.type) {
-            // TODO Round the DMX value and set fine property, if available
+            let universeChannel = fixture.dmxFirstChannel + channelIndex;
+            let value = this.getDmxValue(capability.value, channelFineIndices[channelIndex].fineValueCount, channelFineIndices[channelIndex].fineIndex);
 
-            // TODO Set universe channel fixture.firstChannel + fixturePropertyIndex to property.value
+            //universe.getUniverse().put(universeChannel, value);
+
+            // TODO Set the fine properties, if available
 
             // TODO apply the master dimmer value to dimmer channels
           }
@@ -315,8 +348,8 @@ export class PreviewService {
 
   public fixtureIsSelected(uuid: string, presets: PresetRegionScene[]): boolean {
     for (let preset of presets) {
-      for (let fixture of preset.preset.fixtures) {
-        if (fixture.uuid == uuid) {
+      for (let fixtureUuid of preset.preset.fixturesUuids) {
+        if (fixtureUuid == uuid) {
           return true;
         }
       }

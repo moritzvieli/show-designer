@@ -4,6 +4,7 @@ import { EffectCurve } from './../../models/effect-curve';
 import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
 import { EffectChannel } from '../../models/effect';
 import { PresetService } from '../../services/preset.service';
+import { FixtureService } from '../../services/fixture.service';
 
 @Component({
   selector: 'app-effect-curve',
@@ -43,7 +44,8 @@ export class EffectCurveComponent implements OnInit {
 
   constructor(
     private presetService: PresetService,
-    private animationService: AnimationService) {
+    private animationService: AnimationService,
+    private fixtureService: FixtureService) {
 
     //let channelEnum = EffectChannel;
     let keys = Object.keys(EffectChannel);
@@ -77,7 +79,9 @@ export class EffectCurveComponent implements OnInit {
     let count: number = 0;
     let countedDmxChannels: number[] = [];
 
-    for(let fixture of  this.presetService.selectedPreset.fixtures) {
+    for(let fixtureUuid of  this.presetService.selectedPreset.fixturesUuids) {
+      let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
+
       if(!countedDmxChannels.includes(fixture.dmxFirstChannel)) {
         count ++;
         countedDmxChannels.push(fixture.dmxFirstChannel);

@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { FixtureCapabilityType } from '../models/fixture-capability';
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 import { ProjectService } from './project.service';
+import { FixtureService } from './fixture.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,8 @@ export class PresetService {
   constructor(
     private effectService: EffectService,
     private uuidService: UuidService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private fixtureService: FixtureService
   ) { }
 
   getPresetByUuid(uuid: string): Preset {
@@ -47,8 +49,8 @@ export class PresetService {
       }
     }
 
-    for (let selectedFixture of this.selectedPreset.fixtures) {
-      if (selectedFixture.uuid == fixture.uuid) {
+    for (let selectedFixtureUuid of this.selectedPreset.fixturesUuids) {
+      if (selectedFixtureUuid == fixture.uuid) {
         return true;
       }
     }
@@ -61,18 +63,20 @@ export class PresetService {
       return;
     }
 
-    // select all fixtures at the specified startchannel or unselect them,
+    // select all fixtures at the specified start channel or unselect them,
     // if already selected
     if (this.fixtureIsSelected(fixture)) {
-      for (let i = this.selectedPreset.fixtures.length - 1; i >= 0; i--) {
-        if (this.selectedPreset.fixtures[i].dmxFirstChannel == fixture.dmxFirstChannel) {
-          this.selectedPreset.fixtures.splice(i, 1);
+      for (let i = this.selectedPreset.fixturesUuids.length - 1; i >= 0; i--) {
+        let projectFixture = this.fixtureService.getFixtureByUuid(this.selectedPreset.fixturesUuids[i]);
+        if (projectFixture.dmxFirstChannel == fixture.dmxFirstChannel) {
+          this.selectedPreset.fixturesUuids.splice(i, 1);
         }
       }
     } else {
+      console.log(this.projectService.project.fixtures);
       for (let projectFixture of this.projectService.project.fixtures) {
         if (projectFixture.dmxFirstChannel == fixture.dmxFirstChannel) {
-          this.selectedPreset.fixtures.push(projectFixture);
+          this.selectedPreset.fixturesUuids.push(projectFixture.uuid);
         }
       }
     }
@@ -82,10 +86,11 @@ export class PresetService {
     // after changing the configuration in the fixture pool, we might need to
     // select some more fixtures on the same channel as already selected ones
     for (let preset of this.projectService.project.presets) {
-      for (let presetFixture of preset.fixtures) {
+      for (let presetFixtureUuid of preset.fixturesUuids) {
+        let presetFixture = this.fixtureService.getFixtureByUuid(presetFixtureUuid);
         for (let projectFixture of this.projectService.project.fixtures) {
           if (projectFixture.dmxFirstChannel == presetFixture.dmxFirstChannel && !this.fixtureIsSelected(projectFixture, preset)) {
-            preset.fixtures.push(projectFixture);
+            preset.fixturesUuids.push(projectFixture.uuid);
           }
         }
       }

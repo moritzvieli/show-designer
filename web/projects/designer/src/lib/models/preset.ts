@@ -1,5 +1,4 @@
 import { Effect } from "./effect";
-import { Fixture } from "./fixture";
 import { FixtureCapabilityValue } from "./fixture-capability-value";
 
 export class Preset {
@@ -8,7 +7,7 @@ export class Preset {
     name: string;
 
     // all related fixtures
-    fixtures: Fixture[] = [];
+    fixturesUuids: string[] = [];
 
     // all properties. Also add the fine properties (16-bit values), if calculated.
     // The fixtures will pick up the corresponding values, if available.

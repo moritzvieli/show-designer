@@ -36,7 +36,9 @@ export abstract class Fixture3d {
         });
 
         // Evaluate, whether this fixture supports a dimmer
-        for (let channel of this.fixtureService.getChannelsByFixture(fixture)) {
+        for (let channelFineIndex of this.fixtureService.getChannelsByFixture(fixture)) {
+            let channel = channelFineIndex.fixtureChannel;
+
             if (channel && channel.capability.type == FixtureCapabilityType.Intensity) {
                 this.fixtureSupportsDimmer = true;
                 break;

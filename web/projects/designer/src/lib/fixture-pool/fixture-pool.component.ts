@@ -132,7 +132,7 @@ export class FixturePoolComponent implements OnInit {
     this.fixtureService.loadTemplateByUuid(searchTemplate.uuid).subscribe(() => {
       let template = this.fixtureService.getTemplateByUuid(searchTemplate.uuid);
       let fixture = new Fixture(template);
-      fixture.uuid = this.uuidService.getUuid();
+      fixture.uuid = this.uuidService.getUuid() + '#' + this.fixturePool.length;
 
       // add the same mode as an existing fixture, if available
       let existingModeShortName: string
@@ -234,7 +234,7 @@ export class FixturePoolComponent implements OnInit {
   }
 
   channelOverlapped(index: number): boolean {
-    let occupiedFixture;
+    let occupiedFixture: Fixture;
 
     for (let fixture of this.fixturePool) {
       let mode = this.fixtureService.getModeByFixture(fixture);
@@ -336,11 +336,12 @@ export class FixturePoolComponent implements OnInit {
     }
 
     this.projectService.project.fixtures = this.fixturePool;
+
     this.previewService.updateFixtureSetup();
     this.presetService.updateFixtureSelection();
 
     this.onClose.next(1);
-    this.bsModalRef.hide()
+    this.bsModalRef.hide();
   }
 
   cancel() {
