@@ -126,7 +126,7 @@ export class PreviewService {
 
     // Loop over the global fixtures to retain the order
     for (let fixture of this.projectService.project.fixtures) {
-      for (let presetFixtureUuid of preset.fixturesUuids) {
+      for (let presetFixtureUuid of preset.fixtureUuids) {
         if (presetFixtureUuid == fixture.uuid) {
           if (fixture.uuid == fixtureUuid) {
             return index;
@@ -348,7 +348,7 @@ export class PreviewService {
 
   public fixtureIsSelected(uuid: string, presets: PresetRegionScene[]): boolean {
     for (let preset of presets) {
-      for (let fixtureUuid of preset.preset.fixturesUuids) {
+      for (let fixtureUuid of preset.preset.fixtureUuids) {
         if (fixtureUuid == uuid) {
           return true;
         }

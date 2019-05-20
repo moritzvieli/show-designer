@@ -7,7 +7,7 @@ export class Preset {
     name: string;
 
     // all related fixtures
-    fixturesUuids: string[] = [];
+    fixtureUuids: string[] = [];
 
     // all properties. Also add the fine properties (16-bit values), if calculated.
     // The fixtures will pick up the corresponding values, if available.

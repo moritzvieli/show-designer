@@ -127,9 +127,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   compositionSettings() {
-    if (this.timelineService.selectedCompositionIndex) {
-      this.openCompositionSettings(this.timelineService.selectedCompositionIndex);
-    }
+    this.openCompositionSettings(this.timelineService.selectedCompositionIndex);
   }
 
   addComposition() {

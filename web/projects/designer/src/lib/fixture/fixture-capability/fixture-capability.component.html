@@ -4,13 +4,25 @@
     <div *ngIf="presetService.selectedPreset" class="row m-0">
 
       <!-- Dimmer -->
-      <div class="col col-auto p-0 my-3 ml-3 mr-3">
+      <div *ngIf="showCapability('Intensity')" class="col col-auto p-0 my-3 ml-3">
         <app-fixture-capability-dimmer></app-fixture-capability-dimmer>
       </div>
 
       <!-- Color -->
-      <div class="col col-auto p-0 my-3 mr-3">
+      <!-- Also show for color wheel fixtures to approx. the color -->
+      <div *ngIf="showCapability('ColorIntensity')" class="col col-auto p-0 my-3 ml-3">
         <app-fixture-capability-color></app-fixture-capability-color>
+      </div>
+
+      <!-- Color wheel -->
+      <!-- Show the wheel colors of all preset fixtures -->
+      <div *ngIf="showCapability('WheelSlot')" class="col col-auto p-0 my-3 ml-3">
+        <app-fixture-capability-color-wheel></app-fixture-capability-color-wheel>
+      </div>
+
+      <!-- Pan/Tilt -->
+      <div class="col col-auto p-0 my-3 ml-3">
+        <app-fixture-capability-pan-tilt></app-fixture-capability-pan-tilt>
       </div>
 
     </div>

@@ -79,7 +79,7 @@ export class EffectCurveComponent implements OnInit {
     let count: number = 0;
     let countedDmxChannels: number[] = [];
 
-    for(let fixtureUuid of  this.presetService.selectedPreset.fixturesUuids) {
+    for(let fixtureUuid of  this.presetService.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
 
       if(!countedDmxChannels.includes(fixture.dmxFirstChannel)) {

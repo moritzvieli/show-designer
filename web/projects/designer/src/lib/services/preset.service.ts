@@ -49,7 +49,7 @@ export class PresetService {
       }
     }
 
-    for (let selectedFixtureUuid of this.selectedPreset.fixturesUuids) {
+    for (let selectedFixtureUuid of this.selectedPreset.fixtureUuids) {
       if (selectedFixtureUuid == fixture.uuid) {
         return true;
       }
@@ -66,17 +66,16 @@ export class PresetService {
     // select all fixtures at the specified start channel or unselect them,
     // if already selected
     if (this.fixtureIsSelected(fixture)) {
-      for (let i = this.selectedPreset.fixturesUuids.length - 1; i >= 0; i--) {
-        let projectFixture = this.fixtureService.getFixtureByUuid(this.selectedPreset.fixturesUuids[i]);
+      for (let i = this.selectedPreset.fixtureUuids.length - 1; i >= 0; i--) {
+        let projectFixture = this.fixtureService.getFixtureByUuid(this.selectedPreset.fixtureUuids[i]);
         if (projectFixture.dmxFirstChannel == fixture.dmxFirstChannel) {
-          this.selectedPreset.fixturesUuids.splice(i, 1);
+          this.selectedPreset.fixtureUuids.splice(i, 1);
         }
       }
     } else {
-      console.log(this.projectService.project.fixtures);
       for (let projectFixture of this.projectService.project.fixtures) {
         if (projectFixture.dmxFirstChannel == fixture.dmxFirstChannel) {
-          this.selectedPreset.fixturesUuids.push(projectFixture.uuid);
+          this.selectedPreset.fixtureUuids.push(projectFixture.uuid);
         }
       }
     }
@@ -86,11 +85,11 @@ export class PresetService {
     // after changing the configuration in the fixture pool, we might need to
     // select some more fixtures on the same channel as already selected ones
     for (let preset of this.projectService.project.presets) {
-      for (let presetFixtureUuid of preset.fixturesUuids) {
+      for (let presetFixtureUuid of preset.fixtureUuids) {
         let presetFixture = this.fixtureService.getFixtureByUuid(presetFixtureUuid);
         for (let projectFixture of this.projectService.project.fixtures) {
           if (projectFixture.dmxFirstChannel == presetFixture.dmxFirstChannel && !this.fixtureIsSelected(projectFixture, preset)) {
-            preset.fixturesUuids.push(projectFixture.uuid);
+            preset.fixtureUuids.push(projectFixture.uuid);
           }
         }
       }

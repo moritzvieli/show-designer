@@ -30,6 +30,8 @@ import { ArraySortPipe } from './array-sort-pipe';
 import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FixtureCapabilityPanTiltComponent } from './fixture/fixture-capability/fixture-capability-pan-tilt/fixture-capability-pan-tilt.component';
+import { FixtureCapabilityColorWheelComponent } from './fixture/fixture-capability/fixture-capability-color-wheel/fixture-capability-color-wheel.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -55,7 +57,9 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     FixtureCapabilityDimmerComponent,
     TimelineGridComponent,
     CompositionSettingsComponent,
-    ArraySortPipe
+    ArraySortPipe,
+    FixtureCapabilityPanTiltComponent,
+    FixtureCapabilityColorWheelComponent
   ],
   imports: [
     BrowserModule,

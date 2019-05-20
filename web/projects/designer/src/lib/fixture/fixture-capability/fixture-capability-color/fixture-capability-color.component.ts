@@ -11,21 +11,57 @@ declare var iro: any;
 })
 export class FixtureCapabilityColorComponent implements OnInit {
 
-  color: string = '#fff';
+  color: string = '#ffffff';
   colorPicker: any;
   active: boolean = false;
   private colorPickerMounted: boolean = false;
 
+  // avoid internal updating events
+  private updatingColor: boolean = false;
+
   constructor(
     private presetService: PresetService
-  ) { }
+  ) {
+    this.presetService.previewSelectionChanged.subscribe(() => {
+      let red = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Red });
+      let green = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Green });
+      let blue = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Blue });
+      if(red != undefined && green != undefined && blue != undefined) {
+        this.active = true;
+      } else {
+        this.active = false;
+        red = 255;
+        green = 255;
+        blue = 255;
+      }
+      this.color = this.rgbToHex(red, green, blue);
+      if (this.colorPickerMounted) {
+        this.setPickerColor(red, green, blue);
+      }
+    });
+  }
+
+  private setPickerColor(red: number, green: number, blue: number) {
+    this.updatingColor = true;
+    this.colorPicker.color.rgb = { r: red, g: green, b: blue };
+    this.updatingColor = false;
+  }
+
+  private componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+
+  private rgbToHex(r, g, b) {
+    return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+  }
 
   ngOnInit() {
     this.colorPicker = new iro.ColorPicker("#color-picker-container", {
       width: 180,
       color: this.color,
       borderWidth: 1,
-      borderColor: "#fff",
+      borderColor: "#ffffff",
       sliderMargin: 20
     });
 
@@ -36,12 +72,12 @@ export class FixtureCapabilityColorComponent implements OnInit {
   }
 
   mount() {
-   this.colorPickerMounted = true;
+    this.colorPickerMounted = true;
   }
 
   private updateFixtureColor(color: any) {
-    if(this.presetService.selectedPreset) {
-      if(color) {
+    if (this.presetService.selectedPreset) {
+      if (color) {
         this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.r, { color: FixtureCapabilityColor.Red });
         this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.g, { color: FixtureCapabilityColor.Green });
         this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.b, { color: FixtureCapabilityColor.Blue });
@@ -60,11 +96,13 @@ export class FixtureCapabilityColorComponent implements OnInit {
       this.updateFixtureColor(this.colorPicker.color);
     } else {
       this.updateFixtureColor(undefined);
+      this.setPickerColor(255, 255, 255);
+      this.color = '#ffffff';
     }
   }
 
   changeColor(color: any) {
-    if(!this.colorPickerMounted) {
+    if (!this.colorPickerMounted || this.updatingColor) {
       return;
     }
 

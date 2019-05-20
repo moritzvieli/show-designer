@@ -112,7 +112,7 @@ export class FixtureService {
               }
             }
 
-            channels.push(new FixtureChannelFineIndex(availableChannel, fineChannels, availableChannel.fineChannelAliases.indexOf(modeChannel)));
+            channels.push(new FixtureChannelFineIndex(availableChannel, availableChannelName, fineChannels, availableChannel.fineChannelAliases.indexOf(modeChannel)));
           }
         }
       } else {

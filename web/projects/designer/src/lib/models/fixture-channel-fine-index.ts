@@ -6,6 +6,9 @@ export class FixtureChannelFineIndex {
     // the corresponding channel
     fixtureChannel: FixtureChannel;
 
+    // the name of the channel
+    channelName: string;
+
     // the total fine value count
     fineValueCount: number = 0;
 
@@ -14,10 +17,12 @@ export class FixtureChannelFineIndex {
 
     constructor(
         fixtureChannel?: FixtureChannel,
+        channelName?: string,
         fineValueCount: number = 0,
         fineIndex: number = -1
     ) {
         this.fixtureChannel = fixtureChannel;
+        this.channelName = channelName
         this.fineValueCount = fineValueCount;
         this.fineIndex = fineIndex;
     }

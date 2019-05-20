@@ -33,7 +33,11 @@
         },
         "fixture": {
             "no-fixtures": "Füge neue Fixtures zum Projekt hinzu",
-            "add-copy": "Kopie hinzufügen"
+            "add-copy": "Kopie hinzufügen",
+            "capability-dimmer": "Dimmer",
+            "capability-color": "Farbe",
+            "capability-color-wheel": "Farbrad",
+            "capability-pan-tilt": "Pan/Tilt"
         },
         "fixture-pool": {
             "title": "Fixture Pool",
