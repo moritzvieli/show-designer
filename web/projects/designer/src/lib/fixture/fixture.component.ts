@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Fixture } from '../models/fixture';
 import { PresetService } from '../services/preset.service';
 import { ProjectService } from '../services/project.service';
-import { BsModalService } from 'ngx-bootstrap';
-import { FixturePoolComponent } from '../fixture-pool/fixture-pool.component';
+import { FixturePoolService } from '../services/fixture-pool.service';
 
 @Component({
   selector: 'app-fixture',
@@ -15,7 +14,7 @@ export class FixtureComponent implements OnInit {
   constructor(
     public projectService: ProjectService,
     public presetService: PresetService,
-    private modalService: BsModalService
+    private fixturePoolService: FixturePoolService
   ) { }
 
   ngOnInit() { }
@@ -38,7 +37,7 @@ export class FixtureComponent implements OnInit {
   }
 
   openFixturePool() {
-    let bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
+    this.fixturePoolService.open();
   }
 
 }

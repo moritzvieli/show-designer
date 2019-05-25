@@ -1,29 +1,41 @@
 <div class="card border-secondary panel h-100">
   <div class="card-body capability-container">
 
-    <div *ngIf="presetService.selectedPreset" class="row m-0">
+    <div *ngIf="presetService.selectedPreset" class="row m-0 px-3 h-100">
+
+      <!-- Template selection -->
+      <div class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+        <div *ngFor="let template of templates; let i = index" class="form-check">
+          <input type="checkbox" class="form-check-input" id="capabilityFilter{{ i }}"
+            [ngModel]="selectedTemplates.indexOf(template) >= 0" (ngModelChange)="changeTemplateSelection($event, template)">
+          <label class="form-check-label" for="capabilityFilter{{ i }}">
+            {{ template.name }}
+          </label>
+        </div>
+      </div>
 
       <!-- Dimmer -->
-      <div *ngIf="showCapability('Intensity')" class="col col-auto p-0 my-3 ml-3">
+      <div *ngIf="showDimmer()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <app-fixture-capability-dimmer></app-fixture-capability-dimmer>
       </div>
 
       <!-- Color -->
       <!-- Also show for color wheel fixtures to approx. the color -->
-      <div *ngIf="showCapability('ColorIntensity')" class="col col-auto p-0 my-3 ml-3">
+      <div *ngIf="showColor()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <app-fixture-capability-color></app-fixture-capability-color>
       </div>
 
-      <!-- Color wheel -->
-      <!-- Show the wheel colors of all preset fixtures -->
-      <div *ngIf="showCapability('WheelSlot')" class="col col-auto p-0 my-3 ml-3">
-        <app-fixture-capability-color-wheel></app-fixture-capability-color-wheel>
-      </div>
-
       <!-- Pan/Tilt -->
-      <div class="col col-auto p-0 my-3 ml-3">
+      <div *ngIf="showPanTilt()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <app-fixture-capability-pan-tilt></app-fixture-capability-pan-tilt>
       </div>
+
+      <!-- All generic channels -->
+      <div *ngFor="let channel of genericChannels; let i = index" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+        <app-fixture-capability-generic [channel]="channel" [capabilityIndex]="i"></app-fixture-capability-generic>
+      </div>
+
+      <div class="col col-auto p-0 my-3 mr-3">&nbsp;</div>
 
     </div>
 

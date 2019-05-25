@@ -22,7 +22,7 @@ export class FixtureChannelFineIndex {
         fineIndex: number = -1
     ) {
         this.fixtureChannel = fixtureChannel;
-        this.channelName = channelName
+        this.channelName = channelName;
         this.fineValueCount = fineValueCount;
         this.fineIndex = fineIndex;
     }

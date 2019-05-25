@@ -5,20 +5,28 @@ export class FixtureChannel {
     fineChannelAliases: string[] = [];
     defaultValue: string | number;
     capability: FixtureCapability;
+    capabilities: FixtureCapability[] = [];
     dmxValueResolution: string;
 
     constructor(data?: any) {
-        if(!data) {
+        if (!data) {
             return;
         }
 
-        if(data.fineChannelAliases) {
+        if (data.fineChannelAliases) {
             this.fineChannelAliases = data.fineChannelAliases;
         }
 
         this.defaultValue = data.defaultValue;
         this.dmxValueResolution = data.dmxValueResolution;
-        this.capability = new FixtureCapability(data.capability);
+
+        if (data.capability) {
+            this.capability = new FixtureCapability(data.capability);
+        } else if (data.capabilities) {
+            for (let capability of data.capabilities) {
+                this.capabilities.push(new FixtureCapability(capability));
+            }
+        }
     }
 
 }

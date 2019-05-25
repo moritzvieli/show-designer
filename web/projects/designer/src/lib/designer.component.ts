@@ -2,13 +2,12 @@ import { Component, ViewChild, AfterViewInit, ViewEncapsulation, Input, HostList
 import { PreviewComponent } from './preview/preview.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { TranslateService } from '@ngx-translate/core';
-import { BsModalService } from 'ngx-bootstrap';
 import { ProjectService } from './services/project.service';
-import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 import Split from 'split.js';
 import { TimelineService } from './services/timeline.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ConfigService } from './services/config.service';
+import { FixturePoolService } from './services/fixture-pool.service';
 
 @Component({
   selector: 'lib-designer',
@@ -60,10 +59,10 @@ export class DesignerComponent implements AfterViewInit {
 
   constructor(
     private translateService: TranslateService,
-    private modalService: BsModalService,
     private projectService: ProjectService,
     private timelineService: TimelineService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private fixturePoolService: FixturePoolService
   ) {
 
     this.translateService.use('en');
@@ -104,7 +103,7 @@ export class DesignerComponent implements AfterViewInit {
       });
   
       Split(['#capabilities', '#fixtures', '#masterDimmer'], {
-        sizes: [78, 16, 6],
+        sizes: [76, 16, 8],
         snapOffset: 0,
         gutterSize: this.splitGutterSizePx,
         onDrag: this.onResize.bind(this),
@@ -124,11 +123,7 @@ export class DesignerComponent implements AfterViewInit {
   }
 
   openFixturePool() {
-    this.fixturePoolOpened = true;
-    let bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
-    (<FixturePoolComponent>bsModalRef.content).onClose.subscribe(result => {
-      this.fixturePoolOpened = false;
-    });
+    this.fixturePoolService.open();
   }
 
   projectOpen() {

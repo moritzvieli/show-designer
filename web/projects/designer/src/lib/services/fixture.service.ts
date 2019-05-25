@@ -8,6 +8,7 @@ import { FixtureChannel } from '../models/fixture-channel';
 import { ProjectService } from './project.service';
 import { Observable, forkJoin, of } from 'rxjs';
 import { FixtureChannelFineIndex } from '../models/fixture-channel-fine-index';
+import { FixtureCapabilityType, FixtureCapability } from '../models/fixture-capability';
 
 @Injectable({
   providedIn: 'root'
@@ -86,14 +87,8 @@ export class FixtureService {
     }
   }
 
-  getChannelsByFixture(fixture: Fixture): FixtureChannelFineIndex[] {
-    let template = this.getTemplateByFixture(fixture);
-    let mode = this.getModeByFixture(fixture);
+  getChannelsByTemplateMode(template: FixtureTemplate, mode: FixtureMode): FixtureChannelFineIndex[] {
     let channels: FixtureChannelFineIndex[] = [];
-
-    if (!mode) {
-      return channels;
-    }
 
     for (let channel of mode.channels) {
       // Check for string channel. It can get creepy for matrix modes
@@ -123,5 +118,44 @@ export class FixtureService {
 
     return channels;
   }
+
+  getChannelsByFixture(fixture: Fixture): FixtureChannelFineIndex[] {
+    let template = this.getTemplateByFixture(fixture);
+    let mode = this.getModeByFixture(fixture);
+
+    if (!mode) {
+      return [];
+    }
+
+    return this.getChannelsByTemplateMode(template, mode);
+  }
+
+  getCapabilitiesByChannel(fixtureChannel: FixtureChannel): FixtureCapability[] {
+    let capabilites: FixtureCapability[] = [];
+
+    if (fixtureChannel.capability) {
+      capabilites.push(fixtureChannel.capability);
+    } else if (fixtureChannel.capabilities) {
+      capabilites = Object.assign([], fixtureChannel.capabilities);
+    }
+
+    return capabilites;
+  }
+
+  channelHasCapabilityType(fixtureChannel: FixtureChannel, fixtureCapabilityType: FixtureCapabilityType): boolean {
+    let capabilites: FixtureCapability[] = this.getCapabilitiesByChannel(fixtureChannel);
+
+    for (let capability of capabilites) {
+      if (capability.type == fixtureCapabilityType) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  getMaxValueByChannel(fixtureChannel: FixtureChannel): number {
+    return Math.pow(256, 1 + fixtureChannel.fineChannelAliases.length) - 1;
+  } 
 
 }

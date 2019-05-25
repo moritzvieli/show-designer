@@ -24,7 +24,11 @@ export abstract class Fixture3d {
 
     protected selectedMaterial: THREE.MeshLambertMaterial;
 
-    constructor(private fixtureService: FixtureService, fixture: Fixture, scene: any) {
+    constructor(
+        private fixtureService: FixtureService,
+        fixture: Fixture,
+        scene: any
+    ) {
         this.fixture = fixture;
         this.fixtureTemplate = fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
         this.scene = scene;
@@ -39,7 +43,7 @@ export abstract class Fixture3d {
         for (let channelFineIndex of this.fixtureService.getChannelsByFixture(fixture)) {
             let channel = channelFineIndex.fixtureChannel;
 
-            if (channel && channel.capability.type == FixtureCapabilityType.Intensity) {
+            if (channel && this.fixtureService.channelHasCapabilityType(channel, FixtureCapabilityType.Intensity)) {
                 this.fixtureSupportsDimmer = true;
                 break;
             }
