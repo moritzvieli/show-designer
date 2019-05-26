@@ -168,21 +168,13 @@ export class PreviewService {
   //       for (let channelFineIndex of channelFineIndices) {
   //         let channel = channelFineIndex.fixtureChannel;
 
-  //         if (channel && channel.defaultValue) {
-  //           let type = channel.capability.type;
-  //           let value = 0;
+  //         if (channel) {
+    //         let defaultValue = this.fixtureService.getDefaultValueByChannel(channel);
 
-  //           if (isNaN(<any>channel.defaultValue) && (<string>channel.defaultValue).endsWith('%')) {
-  //             // percentage value
-  //             let percentage = Number.parseInt((<string>channel.defaultValue).replace('%', ''));
-  //             value = 255 / 100 * percentage;
-  //           } else {
-  //             // DMX value
-  //             let maxValue = this.fixtureService.getMaxValueByChannel(channel);
-  //             value = Number.parseInt(<any>channel.defaultValue) / maxValue * 255;
+  //           if(defaultValue) {
+    //           let type = channel.capability.type;
+    //           this.mixCapabilityValue(capabilities, new FixtureCapabilityValue(defaultValue, type, channel.capability.color), 1);
   //           }
-
-  //           this.mixCapabilityValue(capabilities, new FixtureCapabilityValue(value, type, channel.capability.color), 1);
   //         }
   //       }
 

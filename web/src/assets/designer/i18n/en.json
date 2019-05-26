@@ -33,11 +33,13 @@
         },
         "fixture": {
             "no-fixtures": "Add new fixtures to the project",
+            "no-fixtures-selected": "Select at least one fixture for this preset",
             "add-copy": "Add copy",
             "capability-dimmer": "Dimmer",
             "capability-color": "Color",
             "capability-color-wheel": "Color wheel",
-            "capability-pan-tilt": "Pan/Tilt"
+            "capability-pan-tilt": "Pan/Tilt",
+            "templates": "Templates"
         },
         "fixture-pool": {
             "title": "Fixture pool",

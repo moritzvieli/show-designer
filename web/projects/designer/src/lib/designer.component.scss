@@ -163,6 +163,10 @@
   }
 
   /* Sliders */
+  .slider {
+    cursor: pointer;
+  }
+
   .slider-horizontal .slider-track {
     height: 2px !important;
     margin-top: -2px !important;

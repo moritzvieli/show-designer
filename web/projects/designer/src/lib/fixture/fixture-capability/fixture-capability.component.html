@@ -1,18 +1,7 @@
 <div class="card border-secondary panel h-100">
-  <div class="card-body capability-container">
+  <div class="card-body capability-container d-flex" style="overflow-y: hidden;">
 
-    <div *ngIf="presetService.selectedPreset" class="row m-0 px-3 h-100">
-
-      <!-- Template selection -->
-      <div class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
-        <div *ngFor="let template of templates; let i = index" class="form-check">
-          <input type="checkbox" class="form-check-input" id="capabilityFilter{{ i }}"
-            [ngModel]="selectedTemplates.indexOf(template) >= 0" (ngModelChange)="changeTemplateSelection($event, template)">
-          <label class="form-check-label" for="capabilityFilter{{ i }}">
-            {{ template.name }}
-          </label>
-        </div>
-      </div>
+    <div *ngIf="presetService.selectedPreset" class="row m-0 pl-3">
 
       <!-- Dimmer -->
       <div *ngIf="showDimmer()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
@@ -30,13 +19,32 @@
         <app-fixture-capability-pan-tilt></app-fixture-capability-pan-tilt>
       </div>
 
+      <!-- Template selection -->
+      <div *ngIf="templates.length > 1" class="col col-auto p-3 my-3 mr-3"
+        style="height: calc(100% - 2rem); border: solid 1px #444; border-right: none">
+        <div *ngFor="let template of templates; let i = index" class="form-check">
+          <input type="checkbox" class="form-check-input" id="capabilityFilter{{ i }}"
+            [ngModel]="selectedTemplates.indexOf(template) >= 0"
+            (ngModelChange)="changeTemplateSelection($event, template)">
+          <label class="form-check-label" for="capabilityFilter{{ i }}">
+            {{ template.name }}
+          </label>
+        </div>
+      </div>
+
       <!-- All generic channels -->
-      <div *ngFor="let channel of genericChannels; let i = index" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+      <div *ngFor="let channel of genericChannels; let i = index" class="col col-auto p-0 my-3 mr-3"
+        style="height: calc(100% - 2rem)">
         <app-fixture-capability-generic [channel]="channel" [capabilityIndex]="i"></app-fixture-capability-generic>
       </div>
 
-      <div class="col col-auto p-0 my-3 mr-3">&nbsp;</div>
+      <!-- Fix spacing on the end -->
+      <div *ngIf="templates.length > 1" class="col col-auto p-0 my-3 mr-3">&nbsp;</div>
 
+    </div>
+
+    <div *ngIf="presetService.selectedPreset && templates == 0" class="m-auto">
+        <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures-selected' | translate }}</p>
     </div>
 
   </div>

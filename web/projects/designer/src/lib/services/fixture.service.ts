@@ -156,6 +156,22 @@ export class FixtureService {
 
   getMaxValueByChannel(fixtureChannel: FixtureChannel): number {
     return Math.pow(256, 1 + fixtureChannel.fineChannelAliases.length) - 1;
-  } 
+  }
+
+  getDefaultValueByChannel(fixtureChannel: FixtureChannel): number {
+    if (!fixtureChannel.defaultValue) {
+      return undefined;
+    }
+
+    if (isNaN(<any>fixtureChannel.defaultValue) && (<string>fixtureChannel.defaultValue).endsWith('%')) {
+      // percentage value
+      let percentage = Number.parseInt((<string>fixtureChannel.defaultValue).replace('%', ''));
+      let maxValue = this.getMaxValueByChannel(fixtureChannel);
+      return maxValue / 100 * percentage;
+    } else {
+      // DMX value
+      return Number.parseInt(<any>fixtureChannel.defaultValue);
+    }
+  }
 
 }

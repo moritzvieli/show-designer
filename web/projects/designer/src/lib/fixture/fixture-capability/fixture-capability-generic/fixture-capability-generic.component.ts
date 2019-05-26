@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { FixtureChannelFineIndex } from '../../../models/fixture-channel-fine-index';
 import { FixtureService } from '../../../services/fixture.service';
 import { FixtureCapability } from '../../../models/fixture-capability';
@@ -10,9 +10,6 @@ import { FixtureCapability } from '../../../models/fixture-capability';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FixtureCapabilityGenericComponent implements OnInit {
-
-  @ViewChild('slider')
-  sliderElement;
 
   capabilities: FixtureCapability[];
   selectedCapability: FixtureCapability;
@@ -84,7 +81,10 @@ export class FixtureCapabilityGenericComponent implements OnInit {
   }
 
   getDefaultValue(): number {
-    // TODO
+    if(this._channel.fixtureChannel.defaultValue) {
+      return this.fixtureService.getDefaultValueByChannel(this._channel.fixtureChannel);
+    }
+
     return 0;
   }
 
