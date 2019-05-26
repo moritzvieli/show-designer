@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { PresetService } from '../../services/preset.service';
 import { FixtureCapabilityType } from '../../models/fixture-capability';
 import { FixtureService } from '../../services/fixture.service';
@@ -9,7 +9,8 @@ import { FixtureMode } from '../../models/fixture-mode';
 @Component({
   selector: 'app-fixture-capability',
   templateUrl: './fixture-capability.component.html',
-  styleUrls: ['./fixture-capability.component.css']
+  styleUrls: ['./fixture-capability.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FixtureCapabilityComponent implements OnInit {
 
@@ -19,7 +20,8 @@ export class FixtureCapabilityComponent implements OnInit {
 
   constructor(
     private presetService: PresetService,
-    private fixtureService: FixtureService
+    private fixtureService: FixtureService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.presetService.fixtureSelectionChanged.subscribe(() => {
       // calculate all templates
@@ -74,6 +76,8 @@ export class FixtureCapabilityComponent implements OnInit {
       }
       this.genericChannels = this.genericChannels.concat(templateChannels);
     });
+
+    this.changeDetectorRef.detectChanges();
   }
 
   //   showCapability(type: FixtureCapabilityType, channelName?: string): boolean {

@@ -29,7 +29,7 @@
       <!-- display a slider to select the value for the currently selected capability, if it has a range -->
       <div *ngIf="capabilityHasRange()" class="col col-auto d-flex mx-auto" [class.pl-0]="capabilities?.length > 1" style="flex-direction: column;">
         <div class="mb-4 w-100 d-flex">
-          <input class="mx-auto" type="text" [ngModel]="getValue() ? getValue() : getDefaultValue()"
+          <input #sliderValue class="mx-auto" type="text" [ngModel]="getValue() ? getValue() : getDefaultValue()"
             (ngModelChange)="setValue($event)"
             style="width: 45px; height: 20px; text-align: center; font-size: 12px; font-family: monospace;">
         </div>

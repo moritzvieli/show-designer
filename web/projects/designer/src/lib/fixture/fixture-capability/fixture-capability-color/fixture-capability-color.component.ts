@@ -25,21 +25,21 @@ export class FixtureCapabilityColorComponent implements OnInit {
     private fixtureService: FixtureService
   ) {
     this.presetService.previewSelectionChanged.subscribe(() => {
-      let red = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Red });
-      let green = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Green });
-      let blue = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Blue });
-      if(red != undefined && green != undefined && blue != undefined) {
-        this.active = true;
-      } else {
-        this.active = false;
-        red = 255;
-        green = 255;
-        blue = 255;
-      }
-      this.color = this.fixtureService.rgbToHex(red, green, blue);
-      if (this.colorPickerMounted) {
-        this.setPickerColor(red, green, blue);
-      }
+      // let red = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Red });
+      // let green = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Green });
+      // let blue = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Blue });
+      // if(red != undefined && green != undefined && blue != undefined) {
+      //   this.active = true;
+      // } else {
+      //   this.active = false;
+      //   red = 255;
+      //   green = 255;
+      //   blue = 255;
+      // }
+      // this.color = this.fixtureService.rgbToHex(red, green, blue);
+      // if (this.colorPickerMounted) {
+      //   this.setPickerColor(red, green, blue);
+      // }
     });
   }
 
@@ -69,17 +69,17 @@ export class FixtureCapabilityColorComponent implements OnInit {
   }
 
   private updateFixtureColor(color: any) {
-    if (this.presetService.selectedPreset) {
-      if (color) {
-        this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.r, { color: FixtureCapabilityColor.Red });
-        this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.g, { color: FixtureCapabilityColor.Green });
-        this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.b, { color: FixtureCapabilityColor.Blue });
-      } else {
-        this.presetService.deleteCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Red });
-        this.presetService.deleteCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Green });
-        this.presetService.deleteCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Blue });
-      }
-    }
+    // if (this.presetService.selectedPreset) {
+    //   if (color) {
+    //     this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.r, { color: FixtureCapabilityColor.Red });
+    //     this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.g, { color: FixtureCapabilityColor.Green });
+    //     this.presetService.setCapabilityValue(FixtureCapabilityType.ColorIntensity, color.rgb.b, { color: FixtureCapabilityColor.Blue });
+    //   } else {
+    //     this.presetService.deleteCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Red });
+    //     this.presetService.deleteCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Green });
+    //     this.presetService.deleteCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Blue });
+    //   }
+    // }
   }
 
   changeActive(active: boolean) {

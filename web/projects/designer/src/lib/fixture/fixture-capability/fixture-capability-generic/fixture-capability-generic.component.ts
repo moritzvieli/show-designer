@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, ElementRef, ViewChild } from '@angular/core';
 import { FixtureChannelFineIndex } from '../../../models/fixture-channel-fine-index';
 import { FixtureService } from '../../../services/fixture.service';
 import { FixtureCapability } from '../../../models/fixture-capability';
@@ -11,6 +11,8 @@ import { PresetService } from '../../../services/preset.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FixtureCapabilityGenericComponent implements OnInit {
+
+  @ViewChild('sliderValue') sliderValue: ElementRef;
 
   capabilities: FixtureCapability[];
   selectedCapability: FixtureCapability;
@@ -27,8 +29,7 @@ export class FixtureCapabilityGenericComponent implements OnInit {
 
   constructor(
     private fixtureService: FixtureService,
-    private presetService: PresetService,
-    private changeDetectorRef: ChangeDetectorRef
+    private presetService: PresetService
   ) {
   }
 
@@ -38,7 +39,7 @@ export class FixtureCapabilityGenericComponent implements OnInit {
   }
 
   capabilityHasRange(): boolean {
-    if(this.capabilities.length == 1) {
+    if (this.capabilities.length == 1) {
       return true;
     }
 
@@ -73,16 +74,20 @@ export class FixtureCapabilityGenericComponent implements OnInit {
   }
 
   setValue(value: any) {
-    if(isNaN(value) || value < this.getRangeMin() || value > this.getRangeMax()) {
+    if (isNaN(value) || value < this.getRangeMin() || value > this.getRangeMax()) {
       return;
     }
-    
+
     this.presetService.setChannelValue(this._channel.channelName, this._channel.fixtureTemplate.uuid, value);
-    this.changeDetectorRef.detectChanges();
+    if (this.sliderValue) {
+      // update the value without change detector for performance reasons
+      // TODO use the same technique in the dimmer/pan/tilt/color sliders
+      this.sliderValue.nativeElement.value = value;
+    }
   }
 
   getDefaultValue(): number {
-    if(this._channel.fixtureChannel.defaultValue) {
+    if (this._channel.fixtureChannel.defaultValue) {
       return this.fixtureService.getDefaultValueByChannel(this._channel.fixtureChannel);
     }
 
@@ -90,7 +95,7 @@ export class FixtureCapabilityGenericComponent implements OnInit {
   }
 
   changeActive(active: boolean) {
-    if(active) {
+    if (active) {
       this.setValue(this.getDefaultValue());
     } else {
       this.presetService.deleteChannelValue(this._channel.channelName, this._channel.fixtureTemplate.uuid);
