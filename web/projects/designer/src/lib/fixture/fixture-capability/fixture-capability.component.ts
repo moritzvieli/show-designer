@@ -5,6 +5,7 @@ import { FixtureService } from '../../services/fixture.service';
 import { FixtureChannelFineIndex } from '../../models/fixture-channel-fine-index';
 import { FixtureTemplate } from '../../models/fixture-template';
 import { FixtureMode } from '../../models/fixture-mode';
+import { truncate } from 'fs';
 
 @Component({
   selector: 'app-fixture-capability',
@@ -64,12 +65,12 @@ export class FixtureCapabilityComponent implements OnInit {
     this.genericChannels = [];
     calculatedTemplateModes.forEach((modes: FixtureMode[], template: FixtureTemplate) => {
       let templateChannels: FixtureChannelFineIndex[] = [];
-      for(let mode of modes) {
+      for (let mode of modes) {
         let channels = this.fixtureService.getChannelsByTemplateMode(template, mode);
-        for(let channel of channels) {
+        for (let channel of channels) {
           // only add the channel, if no channel with the same name has already been added
           // (e.g. a fine channel)
-          if(channel.fixtureChannel && !templateChannels.find(c => c.channelName == channel.channelName)) {
+          if (channel.fixtureChannel && !templateChannels.find(c => c.channelName == channel.channelName)) {
             templateChannels.push(channel);
           }
         }
@@ -133,6 +134,13 @@ export class FixtureCapabilityComponent implements OnInit {
     }
 
     this.calculateGenericChannels();
+  }
+
+  isChrome(): boolean {
+    if (navigator.appVersion.indexOf("Chrome/") != -1) {
+      return true;
+    }
+    return false;
   }
 
 }

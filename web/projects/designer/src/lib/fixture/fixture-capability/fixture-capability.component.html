@@ -1,9 +1,14 @@
 <div class="card border-secondary panel h-100">
   <div class="card-body capability-container d-flex h-100" style="overflow-y: hidden;">
 
-    <div *ngIf="presetService.selectedPreset" class="row m-0 pl-3 h-100">
+    <!-- h-100 needs to be applied in chrome to avoid performance issues with many layouts (reflows)
+    during sliding. But the class must not be applied e.g. in Safari, because the bottom margin is not correct
+    anymore afterwards. -->
+    <div *ngIf="presetService.selectedPreset" class="row m-0 pl-3" [class.h-100]="isChrome()">
 
       <!-- Dimmer -->
+      <!-- the height attribute is required to avoid performance issues with many layouts (reflows)
+      in Chrome during sliding -->
       <div *ngIf="showDimmer()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <app-fixture-capability-dimmer></app-fixture-capability-dimmer>
       </div>
