@@ -67,6 +67,9 @@ export class FixtureCapability {
     angleEnd: string;
     color: FixtureCapabilityColor;
     dmxRange: number[] = [];
+    // may be empty. in this case, the channel name points to the wheel
+    wheel: string;
+    slotNumber: number;
 
     constructor(data?: any) {
         if (!data) {
@@ -77,10 +80,11 @@ export class FixtureCapability {
         this.angleStart = data.angleStart;
         this.angleEnd = data.angleEnd;
         this.color = data.color;
-
         if (data.dmxRange) {
             this.dmxRange = data.dmxRange;
         }
+        this.wheel = data.wheel;
+        this.slotNumber = data.slotNumber;
     }
 
 }

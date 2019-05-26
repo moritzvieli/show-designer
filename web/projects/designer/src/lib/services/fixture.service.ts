@@ -9,6 +9,7 @@ import { ProjectService } from './project.service';
 import { Observable, forkJoin, of } from 'rxjs';
 import { FixtureChannelFineIndex } from '../models/fixture-channel-fine-index';
 import { FixtureCapabilityType, FixtureCapability } from '../models/fixture-capability';
+import { FixtureWheelSlot } from '../models/fixture-wheel-slot';
 
 @Injectable({
   providedIn: 'root'
@@ -168,9 +169,8 @@ export class FixtureService {
 
   getCapabilityInValue(channelName: string, templateUuid: string, value: number): FixtureCapability {
     let capabilities = this.getCapabilitiesByChannelName(channelName, templateUuid);
-
     for (let capability of capabilities) {
-      if (capability.dmxRange.length == 0 || (capability.dmxRange[0] >= value && capability.dmxRange[1] <= value)) {
+      if (capability.dmxRange.length == 0 || (value >= capability.dmxRange[0] && value <= capability.dmxRange[1])) {
         return capability;
       }
     }
@@ -220,6 +220,75 @@ export class FixtureService {
     }
 
     return undefined;
+  }
+
+  getWheelSlots(template: FixtureTemplate, wheelName: string, slotNumber: number): FixtureWheelSlot[] {
+    // return one slot or two slots, if they are mixed (e.g. slor number 2.5 returns the slots 2 and 3)
+    for (let property in template.wheels) {
+      if (property == wheelName) {
+        let wheel = template.wheels[property];
+
+        if (slotNumber - Math.floor(slotNumber) > 0) {
+          // two slots are set
+          let slots: FixtureWheelSlot[] = [];
+          let number = Math.floor(slotNumber);
+          slots.push(wheel.slots[number - 1]);
+          if (wheel.slots[number]) {
+            slots.push(wheel.slots[number]);
+          }
+          return slots;
+        } else {
+          // only one slot is set
+          return [wheel.slots[slotNumber - 1]];
+        }
+      }
+    }
+
+    // wheel not found
+    return null;
+  }
+
+  private componentToHex(c: number): any {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+
+  rgbToHex(r: number, g: number, b: number): string {
+    return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+  }
+
+  hexToRgb(hex: string): any {
+    // expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }
+
+  mixColors(colors: any[]): any {
+    // mix an array of rgb-colors containing r, g, b values to a new color
+    let r: number = 0;
+    let g: number = 0;
+    let b: number = 0;
+
+    for (let color of colors) {
+      r += color.r;
+      g += color.g;
+      b += color.b;
+    }
+
+    r /= colors.length;
+    g /= colors.length;
+    b /= colors.length;
+
+    return { r: r, g: g, b: b };
   }
 
 }

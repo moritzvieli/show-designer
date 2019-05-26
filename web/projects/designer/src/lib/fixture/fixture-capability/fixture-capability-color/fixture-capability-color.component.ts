@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PresetService } from '../../../services/preset.service';
 import { FixtureCapabilityType, FixtureCapabilityColor } from '../../../models/fixture-capability';
+import { FixtureService } from '../../../services/fixture.service';
 
 declare var iro: any;
 
@@ -20,7 +21,8 @@ export class FixtureCapabilityColorComponent implements OnInit {
   private updatingColor: boolean = false;
 
   constructor(
-    private presetService: PresetService
+    private presetService: PresetService,
+    private fixtureService: FixtureService
   ) {
     this.presetService.previewSelectionChanged.subscribe(() => {
       let red = this.presetService.getCapabilityValue(FixtureCapabilityType.ColorIntensity, { color: FixtureCapabilityColor.Red });
@@ -34,7 +36,7 @@ export class FixtureCapabilityColorComponent implements OnInit {
         green = 255;
         blue = 255;
       }
-      this.color = this.rgbToHex(red, green, blue);
+      this.color = this.fixtureService.rgbToHex(red, green, blue);
       if (this.colorPickerMounted) {
         this.setPickerColor(red, green, blue);
       }
@@ -45,15 +47,6 @@ export class FixtureCapabilityColorComponent implements OnInit {
     this.updatingColor = true;
     this.colorPicker.color.rgb = { r: red, g: green, b: blue };
     this.updatingColor = false;
-  }
-
-  private componentToHex(c) {
-    var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
-  }
-
-  private rgbToHex(r, g, b) {
-    return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
   }
 
   ngOnInit() {

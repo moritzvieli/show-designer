@@ -54,9 +54,9 @@ export abstract class Fixture3d {
     // Apply the properties of the base fixture to the preview
     updatePreview(channelValues: FixtureChannelValue[], masterDimmerValue: number) {
         // Apply default settings
-        this.colorRed = 0;
-        this.colorGreen = 0;
-        this.colorBlue = 0;
+        this.colorRed = 255;
+        this.colorGreen = 255;
+        this.colorBlue = 255;
 
         if (this.fixtureSupportsDimmer) {
             this.dimmer = 255 * masterDimmerValue;
@@ -82,6 +82,41 @@ export abstract class Fixture3d {
                         //         this.colorBlue = Math.round(capabilityValue.value);
                         //         break;
                         // }
+                        break;
+                    }
+                    case FixtureCapabilityType.WheelSlot: {
+                        let wheelSlots = this.fixtureService.getWheelSlots(this.fixtureTemplate, capability.wheel || channelValue.channelName, capability.slotNumber);
+
+                        if (wheelSlots) {
+                            let colors: string[] = [];
+                            // at least one slot has a color
+                            let hasColor: boolean = false;
+
+                            for (let slot of wheelSlots) {
+                                // calculate the color based on the color wheel slot
+                                // TODO support for multiple colors (multiple beams)
+                                if (slot.colors.length > 0) {
+                                    colors = colors.concat(slot.colors);
+                                    hasColor = true;
+                                } else {
+                                    colors.push('#fff');
+                                }
+                            }
+
+                            if (hasColor) {
+                                let colorsRgb: any[] = [];
+
+                                for (let color of colors) {
+                                    colorsRgb.push(this.fixtureService.hexToRgb(color));
+                                }
+
+                                let mixedColor = this.fixtureService.mixColors(colorsRgb);
+                                this.colorRed = Math.round(mixedColor.r);
+                                this.colorGreen = Math.round(mixedColor.g);
+                                this.colorBlue = Math.round(mixedColor.b);
+                            }
+                        }
+
                         break;
                     }
                     case FixtureCapabilityType.Intensity: {
