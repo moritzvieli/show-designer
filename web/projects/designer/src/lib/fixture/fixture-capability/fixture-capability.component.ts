@@ -5,7 +5,6 @@ import { FixtureService } from '../../services/fixture.service';
 import { FixtureChannelFineIndex } from '../../models/fixture-channel-fine-index';
 import { FixtureTemplate } from '../../models/fixture-template';
 import { FixtureMode } from '../../models/fixture-mode';
-import { FixtureChannel } from '../../models/fixture-channel';
 
 @Component({
   selector: 'app-fixture-capability',

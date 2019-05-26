@@ -7,6 +7,7 @@ import { forkJoin } from 'rxjs';
 import { PreviewMeshService } from '../../services/preview-mesh.service';
 import { map } from 'rxjs/operators';
 import { FixtureService } from '../../services/fixture.service';
+import { FixtureChannelValue } from '../../models/fixture-channel-value';
 
 export class MovingHead3d extends Fixture3d {
 
@@ -104,7 +105,9 @@ export class MovingHead3d extends Fixture3d {
             this.spotlightGroup.remove(this.spotLightBeam);
         }
 
-        let geometry = new THREE.CylinderGeometry(0.1, this.fixtureTemplate.beamAngleDegrees * 1.2, 100, 64, 20, false);
+        // TODO update the correct angle from the template
+        let beamAngleDegrees = 14;
+        let geometry = new THREE.CylinderGeometry(0.1, beamAngleDegrees * 1.2, 100, 64, 20, false);
         geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
         geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 
@@ -221,27 +224,42 @@ export class MovingHead3d extends Fixture3d {
         return this.objectGroup;
     }
 
-    public updatePreview(capabilityValues: FixtureCapabilityValue[], masterDimmerValue: number): void {
-        super.updatePreview(capabilityValues, masterDimmerValue);
+    public updatePreview(channelValues: FixtureChannelValue[], masterDimmerValue: number): void {
+        super.updatePreview(channelValues, masterDimmerValue);
 
-        if(!this.isLoaded) {
+        if (!this.isLoaded) {
             return;
         }
 
         // Apply default settings
+        let panStart: number;
+        let panEnd: number;
+
+        let tiltStart: number;
+        let tiltEnd: number;
+
         this.pan = 0;
         this.tilt = 0;
 
         // Apply the known property values
-        for (let capabilityValue of capabilityValues) {
-            switch (capabilityValue.type) {
-                case FixtureCapabilityType.Pan: {
-                    this.pan = capabilityValue.value;
-                    break;
-                }
-                case FixtureCapabilityType.Tilt: {
-                    this.tilt = capabilityValue.value;
-                    break;
+        for (let channelValue of channelValues) {
+            let capability = this.fixtureService.getCapabilityInValue(channelValue.channelName, channelValue.fixtureTemplateUuid, channelValue.value);
+            let channel = this.fixtureService.getChannelByName(channelValue.channelName, this.fixture);
+
+            if (capability) {
+                switch (capability.type) {
+                    case FixtureCapabilityType.Pan: {
+                        panStart = this.fixtureService.getRotationAngleDeg(capability.angleStart) || 0;
+                        panEnd = this.fixtureService.getRotationAngleDeg(capability.angleEnd) || 540;
+                        this.pan = channelValue.value / this.fixtureService.getMaxValueByChannel(channel.fixtureChannel);
+                        break;
+                    }
+                    case FixtureCapabilityType.Tilt: {
+                        tiltStart = this.fixtureService.getRotationAngleDeg(capability.angleStart) || 0;
+                        tiltEnd = this.fixtureService.getRotationAngleDeg(capability.angleEnd) || 2700;
+                        this.tilt = channelValue.value / this.fixtureService.getMaxValueByChannel(channel.fixtureChannel);
+                        break;
+                    }
                 }
             }
         }
@@ -270,15 +288,17 @@ export class MovingHead3d extends Fixture3d {
             }
         }
 
-        // Calculate the y/x rotation in radiants based on pan/tilt (0-255) respecting the max pan/tilt
-        this.armGroup.rotation.y = THREE.Math.degToRad(this.fixtureTemplate.panRangeDegrees * this.pan / 255) - THREE.Math.degToRad(this.fixtureTemplate.panRangeDegrees / 2);
-        this.headGroup.rotation.x = THREE.Math.degToRad(this.fixtureTemplate.tiltRangeDegrees * this.tilt / 255) - THREE.Math.degToRad(this.fixtureTemplate.tiltRangeDegrees / 2);
+        // calculate the y/x rotation in radiants based on pan/tilt (0-1) respecting the max pan/tilt
+        this.armGroup.rotation.y = THREE.Math.degToRad(panEnd * this.pan + panStart) - THREE.Math.degToRad(panEnd / 2);
+        this.headGroup.rotation.x = THREE.Math.degToRad(tiltEnd * this.tilt + tiltStart) - THREE.Math.degToRad(tiltEnd / 2);
 
         // Update the angle (only on change, because it's expensive)
-        if (this.lastBeamAngleDegrees != this.fixtureTemplate.beamAngleDegrees) {
-            this.spotLight.angle = THREE.Math.degToRad(this.fixtureTemplate.beamAngleDegrees);
+        // TODO update the correct angle from the template
+        let beamAngleDregrees = 14;
+        if (this.lastBeamAngleDegrees != beamAngleDregrees) {
+            this.spotLight.angle = THREE.Math.degToRad(beamAngleDregrees);
             this.createSpotLightBeam();
-            this.lastBeamAngleDegrees = this.fixtureTemplate.beamAngleDegrees;
+            this.lastBeamAngleDegrees = beamAngleDregrees;
         }
 
         // Update the material

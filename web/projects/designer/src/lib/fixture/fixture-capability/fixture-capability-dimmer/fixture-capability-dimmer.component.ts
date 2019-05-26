@@ -20,7 +20,9 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
   }
 
   getValue(): number {
-    return this.presetService.getCapabilityValue(FixtureCapabilityType.Intensity);
+    // TODO
+    // return this.presetService.getCapabilityValue(FixtureCapabilityType.Intensity);
+    return 0;
   }
 
   setValue(value: any) {
@@ -28,7 +30,8 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
       return;
     }
 
-    this.presetService.setCapabilityValue(FixtureCapabilityType.Intensity, value);
+    // TODO
+    // this.presetService.setCapabilityValue(FixtureCapabilityType.Intensity, value);
     this.changeDetectorRef.detectChanges();
   }
 
@@ -36,7 +39,8 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
     if (active) {
       this.setValue(255);
     } else {
-      this.presetService.deleteCapabilityValue(FixtureCapabilityType.Intensity);
+      // TODO
+      // this.presetService.deleteCapabilityValue(FixtureCapabilityType.Intensity);
     }
   }
 

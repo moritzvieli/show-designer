@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } 
 import { FixtureChannelFineIndex } from '../../../models/fixture-channel-fine-index';
 import { FixtureService } from '../../../services/fixture.service';
 import { FixtureCapability } from '../../../models/fixture-capability';
+import { PresetService } from '../../../services/preset.service';
 
 @Component({
   selector: 'app-fixture-capability-generic',
@@ -13,7 +14,6 @@ export class FixtureCapabilityGenericComponent implements OnInit {
 
   capabilities: FixtureCapability[];
   selectedCapability: FixtureCapability;
-  value: number;
   _channel: FixtureChannelFineIndex;
 
   @Input()
@@ -27,6 +27,7 @@ export class FixtureCapabilityGenericComponent implements OnInit {
 
   constructor(
     private fixtureService: FixtureService,
+    private presetService: PresetService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
   }
@@ -68,7 +69,7 @@ export class FixtureCapabilityGenericComponent implements OnInit {
   }
 
   getValue(): number {
-    return this.value;
+    return this.presetService.getChannelValue(this._channel.channelName, this._channel.fixtureTemplate.uuid);
   }
 
   setValue(value: any) {
@@ -76,7 +77,7 @@ export class FixtureCapabilityGenericComponent implements OnInit {
       return;
     }
     
-    this.value = value;
+    this.presetService.setChannelValue(this._channel.channelName, this._channel.fixtureTemplate.uuid, value);
     this.changeDetectorRef.detectChanges();
   }
 
@@ -90,15 +91,16 @@ export class FixtureCapabilityGenericComponent implements OnInit {
 
   changeActive(active: boolean) {
     if(active) {
-      this.value = 0;
+      this.setValue(this.getDefaultValue());
     } else {
-      this.value = undefined;
+      this.presetService.deleteChannelValue(this._channel.channelName, this._channel.fixtureTemplate.uuid);
       this.selectedCapability = this.capabilities[0];
     }
   }
 
   capabilitySelected() {
-    this.value = this.selectedCapability.dmxRange[0];
+    // select the min value of the selected capability
+    this.setValue(this.selectedCapability.dmxRange[0]);
   }
 
 }

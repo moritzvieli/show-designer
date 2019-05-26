@@ -14,6 +14,7 @@ import { Preset } from '../models/preset';
 import { ProjectService } from './project.service';
 import { PresetRegionScene } from '../models/preset-region-scene';
 import { Subject } from 'rxjs';
+import { FixtureChannelValue } from '../models/fixture-channel-value';
 
 @Injectable({
   providedIn: 'root'
@@ -83,22 +84,17 @@ export class PreviewService {
     return presets;
   }
 
-  private capabilityValuesEqual(capability1: FixtureCapabilityValue, capbability2: FixtureCapabilityValue): boolean {
-    return capability1.type == capbability2.type
-      && (!capability1.color || capbability2.color == capability1.color);
-  }
-
-  private mixCapabilityValue(existingCapabilityValues: FixtureCapabilityValue[], capabilityValue: FixtureCapabilityValue, intensityPercentage: number) {
-    let newValue: number = capabilityValue.value;
+  private mixChannelValue(existingChannelValues: FixtureChannelValue[], channelValue: FixtureChannelValue, intensityPercentage: number) {
+    let newValue: number = channelValue.value;
     let existingValue: number = 0;
 
     if (intensityPercentage < 1) {
       // We need to mix a possibly existing value (or the default value 0) with the new value (fading)
 
       // Get the existant value for this property
-      for (let existingCapabilityValue of existingCapabilityValues) {
-        if (this.capabilityValuesEqual(existingCapabilityValue, capabilityValue)) {
-          existingValue = existingCapabilityValue.value;
+      for (let existingChannelValue of existingChannelValues) {
+        if (existingChannelValue.channelName == channelValue.channelName && existingChannelValue.fixtureTemplateUuid == channelValue.fixtureTemplateUuid) {
+          existingValue = existingChannelValue.value;
           break;
         }
       }
@@ -108,15 +104,15 @@ export class PreviewService {
     }
 
     // Remove the existant value, if available
-    for (let i = 0; i < existingCapabilityValues.length; i++) {
-      if (this.capabilityValuesEqual(existingCapabilityValues[i], capabilityValue)) {
-        existingCapabilityValues.splice(i, 1);
+    for (let i = 0; i < existingChannelValues.length; i++) {
+      if (existingChannelValues[i].channelName == channelValue.channelName && existingChannelValues[i].fixtureTemplateUuid == channelValue.fixtureTemplateUuid) {
+        existingChannelValues.splice(i, 1);
         break;
       }
     }
 
     // Add the new value
-    existingCapabilityValues.push(new FixtureCapabilityValue(newValue, capabilityValue.type, capabilityValue.color));
+    existingChannelValues.push(new FixtureChannelValue(channelValue.channelName, channelValue.fixtureTemplateUuid, newValue));
   }
 
   // Get the fixture index inside the passed preset (used for chasing)
@@ -146,142 +142,146 @@ export class PreviewService {
     return undefined;
   }
 
-  // public getFixturePropertyValues(timeMillis: number, presets: PresetRegionScene[]): Map<string, FixtureCapabilityValue[]> {
-  //   // Loop over all relevant presets and calc the property values from the presets (capabilities and effects)
-  //   let calculatedFixtures = new Map<string, FixtureCapabilityValue[]>();
+  // return all fixture uuids with their corresponding channel values
+  public getChannelValues(timeMillis: number, presets: PresetRegionScene[]): Map<string, FixtureChannelValue[]> {
+    // Loop over all relevant presets and calc the property values from the presets (capabilities and effects)
+    let calculatedFixtures = new Map<string, FixtureChannelValue[]>();
 
-  //   for (let i = 0; i < this.projectService.project.fixtures.length; i++) {
-  //     let fixture = this.projectService.project.fixtures[i];
+    for (let i = 0; i < this.projectService.project.fixtures.length; i++) {
+      let fixture = this.projectService.project.fixtures[i];
 
-  //     // all capabilities of the current fixture
-  //     let capabilities: FixtureCapabilityValue[] = [];
+      // all values of the current fixture channels
+      let values: FixtureChannelValue[] = [];
 
-  //     let alreadyCalculatedFixture = this.getAlreadyCalculatedFixture(this.projectService.project.fixtures, i);
+      let alreadyCalculatedFixture = this.getAlreadyCalculatedFixture(this.projectService.project.fixtures, i);
 
-  //     if (alreadyCalculatedFixture) {
-  //       // only relevant for the preview --> reuse all calculated values
-  //       capabilities = Object.assign([], calculatedFixtures.get(alreadyCalculatedFixture.uuid));
-  //     } else {
-  //       let channelFineIndices = this.fixtureService.getChannelsByFixture(fixture);
+      if (alreadyCalculatedFixture) {
+        // only relevant for the preview --> reuse all calculated values
+        values = Object.assign([], calculatedFixtures.get(alreadyCalculatedFixture.uuid));
+      } else {
+        let channelFineIndices = this.fixtureService.getChannelsByFixture(fixture);
 
-  //       // apply the fixture default channels
-  //       for (let channelFineIndex of channelFineIndices) {
-  //         let channel = channelFineIndex.fixtureChannel;
+        // apply the default channels
+        for (let channelFineIndex of channelFineIndices) {
+          let channel = channelFineIndex.fixtureChannel;
 
-  //         if (channel) {
-    //         let defaultValue = this.fixtureService.getDefaultValueByChannel(channel);
+          if (channel) {
+            let defaultValue = this.fixtureService.getDefaultValueByChannel(channel);
 
-  //           if(defaultValue) {
-    //           let type = channel.capability.type;
-    //           this.mixCapabilityValue(capabilities, new FixtureCapabilityValue(defaultValue, type, channel.capability.color), 1);
-  //           }
-  //         }
-  //       }
+            if (defaultValue) {
+              this.mixChannelValue(values, new FixtureChannelValue(channelFineIndex.channelName, channelFineIndex.fixtureTemplate.uuid, defaultValue), 1);
+            }
+          }
+        }
 
-  //       for (let preset of presets) {
-  //         // When fading is in progress (on preset or scene-level), the current preset does not
-  //         // fully cover underlying values.
-  //         // -> 0 = no covering at all, 1 = fully cover (no fading)
-  //         let intensityPercentageScene: number = 1;
-  //         let intensityPercentagePreset: number = 1;
-  //         let intensityPercentage: number = 1;
+        for (let preset of presets) {
+          // When fading is in progress (on preset or scene-level), the current preset does not
+          // fully cover underlying values.
+          // -> 0 = no covering at all, 1 = fully cover (no fading)
+          let intensityPercentageScene: number = 1;
+          let intensityPercentagePreset: number = 1;
+          let intensityPercentage: number = 1;
 
-  //         if (preset.region && preset.scene) {
-  //           // Fade out is stronger than fade in (if they overlap)
+          if (preset.region && preset.scene) {
+            // Fade out is stronger than fade in (if they overlap)
 
-  //           // Take away intensity for scene fading
-  //           if (timeMillis > preset.region.endMillis - preset.scene.fadeOutMillis) {
-  //             // Scene fades out
-  //             intensityPercentageScene = (preset.region.endMillis - timeMillis) / preset.scene.fadeOutMillis;
-  //           } else if (timeMillis < preset.region.startMillis + preset.scene.fadeInMillis) {
-  //             // Scene fades in
-  //             intensityPercentageScene = (timeMillis - preset.region.startMillis) / preset.scene.fadeInMillis;
-  //           }
-  //         }
+            // Take away intensity for scene fading
+            if (timeMillis > preset.region.endMillis - preset.scene.fadeOutMillis) {
+              // Scene fades out
+              intensityPercentageScene = (preset.region.endMillis - timeMillis) / preset.scene.fadeOutMillis;
+            } else if (timeMillis < preset.region.startMillis + preset.scene.fadeInMillis) {
+              // Scene fades in
+              intensityPercentageScene = (timeMillis - preset.region.startMillis) / preset.scene.fadeInMillis;
+            }
+          }
 
-  //         if (preset.region && preset.preset) {
-  //           // Take away intensity for preset fading
-  //           if (preset.preset.endMillis && timeMillis > preset.region.startMillis + preset.preset.endMillis - preset.preset.fadeOutMillis) {
-  //             // Preset fades out
-  //             intensityPercentagePreset = (preset.region.startMillis + preset.preset.endMillis - timeMillis) / preset.preset.fadeOutMillis;
-  //           }
+          if (preset.region && preset.preset) {
+            // Take away intensity for preset fading
+            if (preset.preset.endMillis && timeMillis > preset.region.startMillis + preset.preset.endMillis - preset.preset.fadeOutMillis) {
+              // Preset fades out
+              intensityPercentagePreset = (preset.region.startMillis + preset.preset.endMillis - timeMillis) / preset.preset.fadeOutMillis;
+            }
 
-  //           if (preset.preset.startMillis && timeMillis < preset.region.startMillis + preset.preset.startMillis + preset.preset.fadeInMillis) {
-  //             // Preset fades in
-  //             intensityPercentagePreset = (timeMillis - preset.region.startMillis + preset.preset.startMillis) / preset.preset.fadeInMillis;
-  //           }
+            if (preset.preset.startMillis && timeMillis < preset.region.startMillis + preset.preset.startMillis + preset.preset.fadeInMillis) {
+              // Preset fades in
+              intensityPercentagePreset = (timeMillis - preset.region.startMillis + preset.preset.startMillis) / preset.preset.fadeInMillis;
+            }
 
-  //           // If the preset and the scene, both are fading, take the stronger
-  //           intensityPercentage = Math.min(intensityPercentageScene, intensityPercentagePreset);
-  //         }
+            // If the preset and the scene, both are fading, take the stronger
+            intensityPercentage = Math.min(intensityPercentageScene, intensityPercentagePreset);
+          }
 
-  //         // Search for this fixture in the preset and get it's preset-specific index (for chasing effects)
-  //         let fixtureIndex = this.getFixtureIndex(preset.preset, fixture.uuid);
+          // Search for this fixture in the preset and get it's preset-specific index (for chasing effects)
+          let fixtureIndex = this.getFixtureIndex(preset.preset, fixture.uuid);
 
-  //         if (fixtureIndex >= 0) {
-  //           // this fixture is also in the preset
+          if (fixtureIndex >= 0) {
+            // this fixture is also in the preset
+            let template = this.fixtureService.getTemplateByFixture(fixture);
 
-  //           // match all capability values in this preset with the fixture capabilities
-  //           for (let channelFineIndex of channelFineIndices) {
-  //             let channel = channelFineIndex.fixtureChannel;
+            // mix all channel values in this preset with the fixture channel
+            for (let channelFineIndex of channelFineIndices) {
+              let channel = channelFineIndex.fixtureChannel;
 
-  //             for (let presetCapability of preset.preset.capabilityValues) {
-  //               if (channel && channel.capability.type == presetCapability.type) {
-  //                 this.mixCapabilityValue(capabilities, presetCapability, intensityPercentage);
-  //               }
-  //             }
-  //           }
+              if (channel) {
+                for (let channelValue of preset.preset.fixtureChannelValues) {
+                  if (template.uuid == channelValue.fixtureTemplateUuid && channelFineIndex.channelName == channelValue.channelName) {
+                    this.mixChannelValue(values, channelValue, intensityPercentage);
+                  }
+                }
+              }
+            }
 
-  //           // Match all effect capabilities of this preset with the fixture capabilities
-  //           for (let effect of preset.preset.effects) {
-  //             let effectCapabilityValues: FixtureCapabilityValue[] = [];
-  //             let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
+            // TODO
+            // Match all effect capabilities of this preset with the fixture capabilities
+            // for (let effect of preset.preset.effects) {
+            //   let effectChannelValues: FixtureChannelValue[] = [];
+            //   let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
 
-  //             for (let effectChannel of effect.effectChannels) {
-  //               switch (effectChannel) {
-  //                 case EffectChannel.dimmer:
-  //                   effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Intensity));
-  //                   break;
-  //                 case EffectChannel.pan:
-  //                   effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Pan));
-  //                   break;
-  //                 case EffectChannel.tilt:
-  //                   effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Tilt));
-  //                   break;
-  //                 case EffectChannel.colorRed:
-  //                   effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Red));
-  //                   break;
-  //                 case EffectChannel.colorGreen:
-  //                   effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Green));
-  //                   break;
-  //                 case EffectChannel.colorBlue:
-  //                   effectCapabilityValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Blue));
-  //                   break;
-  //               }
-  //             }
+            //   for (let effectChannel of effect.effectChannels) {
+            //     switch (effectChannel) {
+            //       case EffectChannel.dimmer:
+            //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Intensity));
+            //         break;
+            //       case EffectChannel.pan:
+            //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Pan));
+            //         break;
+            //       case EffectChannel.tilt:
+            //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Tilt));
+            //         break;
+            //       case EffectChannel.colorRed:
+            //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Red));
+            //         break;
+            //       case EffectChannel.colorGreen:
+            //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Green));
+            //         break;
+            //       case EffectChannel.colorBlue:
+            //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Blue));
+            //         break;
+            //     }
+            //   }
 
-  //             for (let channelFineIndex of channelFineIndices) {
-  //               let channel = channelFineIndex.fixtureChannel;
+            //   for (let channelFineIndex of channelFineIndices) {
+            //     let channel = channelFineIndex.fixtureChannel;
 
-  //               if (channel) {
-  //                 for (let effectCapability of effectCapabilityValues) {
-  //                   if (channel.capability.type == effectCapability.type) {
-  //                     this.mixCapabilityValue(capabilities, effectCapability, intensityPercentage);
-  //                   }
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
+            //     if (channel) {
+            //       for (let effectChannelValue of effectChannelValues) {
+            //         if (channel.capability.type == effectChannelValue.type) {
+            //           this.mixChannelValue(values, effectChannelValue, intensityPercentage);
+            //         }
+            //       }
+            //     }
+            //   }
+            // }
+          }
+        }
+      }
 
-  //     // Store the calculated values for subsequent fixtures on the same DMX address
-  //     calculatedFixtures.set(fixture.uuid, capabilities);
-  //   }
+      // Store the calculated values for subsequent fixtures on the same DMX address
+      calculatedFixtures.set(fixture.uuid, values);
+    }
 
-  //   return calculatedFixtures;
-  // }
+    return calculatedFixtures;
+  }
 
   private getDmxValue(value: number, fineValueCount: number, fineIndex: number): number {
     // return the rounded dmx value in the specified fineness
@@ -301,42 +301,43 @@ export class PreviewService {
     }
   }
 
-  // public setUniverseValues(values: Map<string, FixtureCapabilityValue[]>, masterDimmerValue: number) {
-  //   // Reset all DMX universes
-  //   for (let universe of this.universeService.universes) {
-  //     universe.channelValues = [];
-  //     for (let i = 0; i < 512; i++) {
-  //       universe.channelValues.push(0);
-  //     }
-  //   }
+  public setUniverseValues(fixtures: Map<string, FixtureChannelValue[]>, masterDimmerValue: number) {
+    // Reset all DMX universes
+    for (let universe of this.universeService.universes) {
+      universe.channelValues = [];
+      for (let i = 0; i < 512; i++) {
+        universe.channelValues.push(0);
+      }
+    }
 
-  //   values.forEach((capabilities: FixtureCapabilityValue[], fixtureUuid: string) => {
-  //     let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
+    fixtures.forEach((channelValues: FixtureChannelValue[], fixtureUuid: string) => {
+      let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
 
-  //     // TODO Get the correct universe for this fixture
-  //     let universe: Universe = this.universeService.getUniverseByUuid(fixture.dmxUniverseUuid);
+      // TODO Get the correct universe for this fixture
+      let universe: Universe = this.universeService.getUniverseByUuid(fixture.dmxUniverseUuid);
 
-  //     let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
-  //     let channelFineIndices = this.fixtureService.getChannelsByFixture(fixture);
+      let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+      let channelFineIndices = this.fixtureService.getChannelsByFixture(fixture);
 
-  //     for (let channelIndex = 0; channelIndex < channelFineIndices.length; channelIndex++) {
-  //       let channel = channelFineIndices[channelIndex].fixtureChannel;
+      for (let channelIndex = 0; channelIndex < channelFineIndices.length; channelIndex++) {
+        let channel = channelFineIndices[channelIndex].fixtureChannel;
 
-  //       for (let capability of capabilities) {
-  //         if (channel && channel.capability.type == capability.type) {
-  //           let universeChannel = fixture.dmxFirstChannel + channelIndex;
-  //           let value = this.getDmxValue(capability.value, channelFineIndices[channelIndex].fineValueCount, channelFineIndices[channelIndex].fineIndex);
+        // TODO
+        // for (let channelValue of channelValues) {
+        //   if (channel && channel.capability.type == capability.type) {
+        //     let universeChannel = fixture.dmxFirstChannel + channelIndex;
+        //     let value = this.getDmxValue(capability.value, channelFineIndices[channelIndex].fineValueCount, channelFineIndices[channelIndex].fineIndex);
 
-  //           //universe.getUniverse().put(universeChannel, value);
+        //     //universe.getUniverse().put(universeChannel, value);
 
-  //           // TODO Set the fine properties, if available
+        //     // TODO Set the fine properties, if available
 
-  //           // TODO apply the master dimmer value to dimmer channels
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
+        //     // TODO apply the master dimmer value to dimmer channels
+        //   }
+        // }
+      }
+    });
+  }
 
   public fixtureIsSelected(uuid: string, presets: PresetRegionScene[]): boolean {
     for (let preset of presets) {

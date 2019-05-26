@@ -8,6 +8,7 @@ import { FixtureCapabilityType } from '../models/fixture-capability';
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 import { ProjectService } from './project.service';
 import { FixtureService } from './fixture.service';
+import { FixtureChannelValue } from '../models/fixture-channel-value';
 
 @Injectable({
   providedIn: 'root'
@@ -96,41 +97,31 @@ export class PresetService {
     }
   }
 
-  private capabilityValueMatchesTypeAndOptions(capabilityValue: FixtureCapabilityValue, capabilityType: FixtureCapabilityType, options: any = {}) {
-    if (capabilityValue.type == capabilityType
-      && (!options.color || capabilityValue.color == options.color)) {
-
-      return true;
-    }
-
-    return false;
-  }
-
-  deleteCapabilityValue(capabilityType: FixtureCapabilityType, options: any = {}) {
-    for (let i = 0; i < this.selectedPreset.capabilityValues.length; i++) {
-      if (this.capabilityValueMatchesTypeAndOptions(this.selectedPreset.capabilityValues[i], capabilityType, options)) {
-        this.selectedPreset.capabilityValues.splice(i, 1);
+  deleteChannelValue(channelName: string, fixtureTemplateUuid: string) {
+    for (let i = 0; i < this.selectedPreset.fixtureChannelValues.length; i++) {
+      if (this.selectedPreset.fixtureChannelValues[i].channelName == channelName && this.selectedPreset.fixtureChannelValues[i].fixtureTemplateUuid == fixtureTemplateUuid) {
+        this.selectedPreset.fixtureChannelValues.splice(i, 1);
         return;
       }
     }
   }
 
-  setCapabilityValue(capabilityType: FixtureCapabilityType, value: number, options: any = {}) {
+  setChannelValue(channelName: string, fixtureTemplateUuid: string, value: number) {
     // Delete existant properties with this type and set the new value
-    this.deleteCapabilityValue(capabilityType, options);
+    this.deleteChannelValue(channelName, fixtureTemplateUuid);
 
-    let fixtureCapabilityValue = new FixtureCapabilityValue();
-    fixtureCapabilityValue.type = capabilityType;
-    fixtureCapabilityValue.color = options.color;
-    fixtureCapabilityValue.value = value;
+    let fixtureChannelValue = new FixtureChannelValue();
+    fixtureChannelValue.channelName = channelName;
+    fixtureChannelValue.fixtureTemplateUuid = fixtureTemplateUuid;
+    fixtureChannelValue.value = value;
 
-    this.selectedPreset.capabilityValues.push(fixtureCapabilityValue);
+    this.selectedPreset.fixtureChannelValues.push(fixtureChannelValue);
   }
 
-  getCapabilityValue(capabilityType: FixtureCapabilityType, options: any = {}) {
-    for (let capabilityValue of this.selectedPreset.capabilityValues) {
-      if (this.capabilityValueMatchesTypeAndOptions(capabilityValue, capabilityType, options)) {
-        return capabilityValue.value;
+  getChannelValue(channelName: string, fixtureTemplateUuid: string): number {
+    for (let channelValue of this.selectedPreset.fixtureChannelValues) {
+      if (channelValue.channelName == channelName && channelValue.fixtureTemplateUuid == fixtureTemplateUuid) {
+        return channelValue.value;
       }
     }
   }

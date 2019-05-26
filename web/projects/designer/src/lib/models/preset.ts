@@ -1,5 +1,5 @@
 import { Effect } from "./effect";
-import { FixtureCapabilityValue } from "./fixture-capability-value";
+import { FixtureChannelValue } from "./fixture-channel-value";
 
 export class Preset {
 
@@ -9,9 +9,8 @@ export class Preset {
     // all related fixtures
     fixtureUuids: string[] = [];
 
-    // all properties. Also add the fine properties (16-bit values), if calculated.
-    // The fixtures will pick up the corresponding values, if available.
-    capabilityValues: FixtureCapabilityValue[] = [];
+    // all channel values
+    fixtureChannelValues: FixtureChannelValue[] = [];
 
     // all related effects
     effects: Effect[] = [];

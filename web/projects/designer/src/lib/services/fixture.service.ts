@@ -107,7 +107,7 @@ export class FixtureService {
               }
             }
 
-            channels.push(new FixtureChannelFineIndex(availableChannel, availableChannelName, fineChannels, availableChannel.fineChannelAliases.indexOf(modeChannel)));
+            channels.push(new FixtureChannelFineIndex(availableChannel, template, availableChannelName, fineChannels, availableChannel.fineChannelAliases.indexOf(modeChannel)));
           }
         }
       } else {
@@ -130,6 +130,18 @@ export class FixtureService {
     return this.getChannelsByTemplateMode(template, mode);
   }
 
+  getChannelByName(channelName: string, fixture: Fixture): FixtureChannelFineIndex {
+    let channels = this.getChannelsByFixture(fixture);
+
+    for (let channel of channels) {
+      if (channel.channelName == channelName) {
+        return channel;
+      }
+    }
+
+    return null;
+  }
+
   getCapabilitiesByChannel(fixtureChannel: FixtureChannel): FixtureCapability[] {
     let capabilites: FixtureCapability[] = [];
 
@@ -140,6 +152,30 @@ export class FixtureService {
     }
 
     return capabilites;
+  }
+
+  getCapabilitiesByChannelName(channelName: string, templateUuid: string): FixtureCapability[] {
+    let template = this.getTemplateByUuid(templateUuid);
+
+    for (let property in template.availableChannels) {
+      if (property == channelName) {
+        return this.getCapabilitiesByChannel(template.availableChannels[property]);
+      }
+    }
+
+    return [];
+  }
+
+  getCapabilityInValue(channelName: string, templateUuid: string, value: number): FixtureCapability {
+    let capabilities = this.getCapabilitiesByChannelName(channelName, templateUuid);
+
+    for (let capability of capabilities) {
+      if (capability.dmxRange.length == 0 || (capability.dmxRange[0] >= value && capability.dmxRange[1] <= value)) {
+        return capability;
+      }
+    }
+
+    return null;
   }
 
   channelHasCapabilityType(fixtureChannel: FixtureChannel, fixtureCapabilityType: FixtureCapabilityType): boolean {
@@ -172,6 +208,18 @@ export class FixtureService {
       // DMX value
       return Number.parseInt(<any>fixtureChannel.defaultValue);
     }
+  }
+
+  getRotationAngleDeg(value: string): number {
+    // convert a rotation angle value into degrees
+    if (value.endsWith('deg')) {
+      return Number.parseInt(value.replace('deg', ''));
+    } else if (value.endsWith('%')) {
+      let perc = Number.parseInt(value.replace('%', ''));
+      return perc / 100 * 360;
+    }
+
+    return undefined;
   }
 
 }

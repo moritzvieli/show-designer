@@ -74,7 +74,8 @@ export class FixtureCapability {
         }
 
         this.type = FixtureCapabilityType[<string>data.type];
-        this.angleStart = data.angleEnd;
+        this.angleStart = data.angleStart;
+        this.angleEnd = data.angleEnd;
         this.color = data.color;
 
         if (data.dmxRange) {

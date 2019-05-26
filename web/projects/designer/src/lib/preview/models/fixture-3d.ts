@@ -4,6 +4,7 @@ import { FixtureCapabilityValue } from "../../models/fixture-capability-value";
 import { FixtureCapabilityType, FixtureCapabilityColor } from "../../models/fixture-capability";
 import * as THREE from 'three';
 import { FixtureService } from "../../services/fixture.service";
+import { FixtureChannelValue } from "../../models/fixture-channel-value";
 
 export abstract class Fixture3d {
 
@@ -25,7 +26,7 @@ export abstract class Fixture3d {
     protected selectedMaterial: THREE.MeshLambertMaterial;
 
     constructor(
-        private fixtureService: FixtureService,
+        public fixtureService: FixtureService,
         fixture: Fixture,
         scene: any
     ) {
@@ -51,7 +52,7 @@ export abstract class Fixture3d {
     }
 
     // Apply the properties of the base fixture to the preview
-    updatePreview(capabilityValues: FixtureCapabilityValue[], masterDimmerValue: number) {
+    updatePreview(channelValues: FixtureChannelValue[], masterDimmerValue: number) {
         // Apply default settings
         this.colorRed = 0;
         this.colorGreen = 0;
@@ -61,35 +62,37 @@ export abstract class Fixture3d {
             this.dimmer = 255 * masterDimmerValue;
         }
 
-        for (let capabilityValue of capabilityValues) {
-            switch (capabilityValue.type) {
-                case FixtureCapabilityType.ColorIntensity: {
-                    switch (capabilityValue.color) {
-                        case FixtureCapabilityColor.Red:
-                            // Round needed for threejs
-                            this.colorRed = Math.round(capabilityValue.value);
-                            break;
-                        case FixtureCapabilityColor.Green:
-                            // Round needed for threejs
-                            this.colorGreen = Math.round(capabilityValue.value);
-                            break;
-                        case FixtureCapabilityColor.Blue:
-                            // Round needed for threejs
-                            this.colorBlue = Math.round(capabilityValue.value);
-                            break;
+        for (let channelValue of channelValues) {
+            let capability = this.fixtureService.getCapabilityInValue(channelValue.channelName, channelValue.fixtureTemplateUuid, channelValue.value);
+
+            if (capability) {
+                switch (capability.type) {
+                    case FixtureCapabilityType.ColorIntensity: {
+                        // switch (capabilityValue.color) {
+                        //     case FixtureCapabilityColor.Red:
+                        //         // Round needed for threejs
+                        //         this.colorRed = Math.round(capabilityValue.value);
+                        //         break;
+                        //     case FixtureCapabilityColor.Green:
+                        //         // Round needed for threejs
+                        //         this.colorGreen = Math.round(capabilityValue.value);
+                        //         break;
+                        //     case FixtureCapabilityColor.Blue:
+                        //         // Round needed for threejs
+                        //         this.colorBlue = Math.round(capabilityValue.value);
+                        //         break;
+                        // }
+                        break;
                     }
-                    break;
-                }
-                case FixtureCapabilityType.Intensity: {
-                    this.dimmer = capabilityValue.value * masterDimmerValue;
-                    break;
+                    case FixtureCapabilityType.Intensity: {
+                        this.dimmer = channelValue.value * masterDimmerValue;
+                        break;
+                    }
                 }
             }
         }
     }
 
-    destroy() {
-        
-    }
+    destroy() { }
 
 }

@@ -20,11 +20,6 @@ export enum FixtureType {
     Other = "Other"
 }
 
-export enum BeamType {
-    spot,
-    wash
-}
-
 export enum BeamPositionType {
     single,
     grid,
@@ -41,19 +36,7 @@ export class FixtureTemplate {
     manufacturerName: string;
     categories: FixtureType[] = [];
     availableChannels: any = {};
-
     shortName: string;
-    beamType: BeamType = BeamType.spot;
-    beamAngleDegrees: number = 14;
-    beamPositionType: BeamPositionType = BeamPositionType.single;
-    beamPositionGridCells: boolean[][];
-    beamRing1Count: number;
-    beamRing2Count: number;
-    beamRing3Count: number;
-    beamRing4Count: number;
-    panRangeDegrees: number = 540;
-    tiltRangeDegrees: number = 270;
-    tiltOffsetDegrees: number = 0;
 
     // All available fixture modes
     modes: FixtureMode[] = [];
@@ -86,8 +69,6 @@ export class FixtureTemplate {
                 this.availableChannels[property] = fixtureChannel;
             }
         }
-
-        console.log(this);
     }
 
 }

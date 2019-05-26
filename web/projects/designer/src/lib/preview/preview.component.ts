@@ -127,21 +127,21 @@ export class PreviewComponent implements AfterViewInit {
     this.updateStagePosition(Positioning.bottomBack, -this.stageWidth / 2, this.stageWidth / 2, this.stageFloorHeight, this.stageFloorHeight, -this.stageDepth / 2 + 70, -this.stageDepth / 2 + 70);
 
     // Update all fixtures and apply the preview properties, if available
-    // TODO Update the fixtures only 20 times per second according to the "real" refresh rate of the DMX interface?
+    // TODO Update the fixtures only e.g. 40 times per second according to the "real" refresh rate of the DMX interface?
     let presets = this.previewService.getPresets(timeMillis);
 
-    // let calculatedFixtures = this.previewService.getFixturePropertyValues(timeMillis, presets);
+    let calculatedFixtures = this.previewService.getChannelValues(timeMillis, presets);
 
     for (let fixture3d of this.fixtures3d) {
       // Update the fixture properties
-      // fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture.uuid) || [], this.masterDimmerService.masterDimmerValue);
+      fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture.uuid) || [], this.masterDimmerService.masterDimmerValue);
 
       // Select the fixture, if required
       fixture3d.isSelected = this.previewService.fixtureIsSelected(fixture3d.fixture.uuid, presets);
     }
 
     // TODO enable for monitoring the DMX universes
-    // this.previewService.setUniverseValues(calculatedFixtures, this.masterDimmerService.masterDimmerValue);
+    this.previewService.setUniverseValues(calculatedFixtures, this.masterDimmerService.masterDimmerValue);
 
     // Update the statistics
     // this.rendererStats.update(this.renderer);
