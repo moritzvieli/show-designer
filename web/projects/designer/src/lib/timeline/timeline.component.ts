@@ -151,6 +151,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
+    if(!this.timelineService.selectedComposition) {
+      return;
+    }
+
     if (event.key == ' ') {
       if (this.timelineService.playState == 'paused') {
         this.play();

@@ -16,6 +16,7 @@
     <div class="row h-100">
       <!-- display all options, if there is more than one -->
       <div *ngIf="capabilities?.length > 1" class="col mr-3" style="overflow-y: auto">
+        
         <div *ngFor="let capability of capabilities; let i = index;" class="form-check">
           <input [(ngModel)]="selectedCapability" (change)="capabilitySelected()" class="form-check-input" type="radio"
             name="capabilityGeneric{{ capabilityIndex }}Option" id="capabilityGeneric{{ capabilityIndex }}Option{{ i }}"
@@ -24,6 +25,7 @@
             {{ capability.type }}
           </label>
         </div>
+
       </div>
 
       <!-- display a slider to select the value for the currently selected capability, if it has a range -->

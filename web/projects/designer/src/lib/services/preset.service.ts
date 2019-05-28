@@ -4,8 +4,6 @@ import { Fixture } from '../models/fixture';
 import { EffectService } from './effect.service';
 import { UuidService } from './uuid.service';
 import { Subject } from 'rxjs';
-import { FixtureCapabilityType } from '../models/fixture-capability';
-import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 import { ProjectService } from './project.service';
 import { FixtureService } from './fixture.service';
 import { FixtureChannelValue } from '../models/fixture-channel-value';
@@ -77,6 +75,19 @@ export class PresetService {
       for (let projectFixture of this.projectService.project.fixtures) {
         if (projectFixture.dmxFirstChannel == fixture.dmxFirstChannel) {
           this.selectedPreset.fixtureUuids.push(projectFixture.uuid);
+        }
+      }
+    }
+  }
+
+  public removeDeletedFixtures() {
+    // after changing the configuration in the fixture pool, we might need to
+    // delete some fixtures
+    for (let preset of this.projectService.project.presets) {
+      for (let i = 0; i < preset.fixtureUuids.length; i++) {
+        let presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
+        if (!presetFixture) {
+          preset.fixtureUuids.splice(i, 1);
         }
       }
     }

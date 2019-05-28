@@ -337,8 +337,11 @@ export class FixturePoolComponent implements OnInit {
 
     this.projectService.project.fixtures = this.fixturePool;
 
+    this.presetService.removeDeletedFixtures();
     this.previewService.updateFixtureSetup();
     this.presetService.updateFixtureSelection();
+
+    this.presetService.fixtureSelectionChanged.next();
 
     this.onClose.next(1);
     this.bsModalRef.hide();

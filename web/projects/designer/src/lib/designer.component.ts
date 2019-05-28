@@ -103,7 +103,7 @@ export class DesignerComponent implements AfterViewInit {
       });
   
       Split(['#capabilities', '#fixtures', '#masterDimmer'], {
-        sizes: [76, 16, 8],
+        sizes: [74, 18, 8],
         snapOffset: 0,
         gutterSize: this.splitGutterSizePx,
         onDrag: this.onResize.bind(this),
