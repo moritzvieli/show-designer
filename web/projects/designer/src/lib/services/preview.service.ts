@@ -218,7 +218,43 @@ export class PreviewService {
             // this fixture is also in the preset
             let template = this.fixtureService.getTemplateByFixture(fixture);
 
+            // mix all preset capabilities with the fixture channel
+            for (let channelFineIndex of channelFineIndices) {
+              let channel = channelFineIndex.fixtureChannel;
+
+              if (channel) {
+                let capabilities = this.fixtureService.getCapabilitiesByChannel(channel);
+
+                // TODO color, strobo, etc.
+
+                // dimmer
+                if (preset.preset.dimmer != undefined) {
+                  if (capabilities.length == 1 && capabilities[0].type == FixtureCapabilityType.Intensity) {
+                    // the only capability in this channel
+                    let value = this.fixtureService.getMaxValueByChannel(channel) * preset.preset.dimmer;
+                    let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, value);
+                    this.mixChannelValue(values, channelValue, intensityPercentage);
+                  } else {
+                    // more than one capability in the channel
+                    for (let capability of capabilities) {
+                      if (capability.type == FixtureCapabilityType.Intensity) {
+                        if (capability.brightness == 'off' && preset.preset.dimmer == 0) {
+                          let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, capability.dmxRange[0]);
+                          this.mixChannelValue(values, channelValue, intensityPercentage);
+                        } else if ((capability.brightnessStart == 'dark' || capability.brightnessStart == 'off') && capability.brightnessEnd == 'bright') {
+                          let value = (capability.dmxRange[1] - capability.dmxRange[0]) * preset.preset.dimmer + capability.dmxRange[0];
+                          let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, value);
+                          this.mixChannelValue(values, channelValue, intensityPercentage);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
             // mix all channel values in this preset with the fixture channel
+            // (overwrite the capabilities, if necessary)
             for (let channelFineIndex of channelFineIndices) {
               let channel = channelFineIndex.fixtureChannel;
 

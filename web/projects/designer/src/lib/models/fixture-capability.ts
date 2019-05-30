@@ -70,6 +70,9 @@ export class FixtureCapability {
     // may be empty. in this case, the channel name points to the wheel
     wheel: string;
     slotNumber: number;
+    brightness: string;
+    brightnessStart: string;
+    brightnessEnd: string;
 
     constructor(data?: any) {
         if (!data) {
@@ -85,6 +88,9 @@ export class FixtureCapability {
         }
         this.wheel = data.wheel;
         this.slotNumber = data.slotNumber;
+        this.brightness = data.brightness;
+        this.brightnessStart = data.brightnessStart;
+        this.brightnessEnd = data.brightnessEnd;
     }
 
 }

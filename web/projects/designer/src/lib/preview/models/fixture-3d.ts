@@ -120,6 +120,7 @@ export abstract class Fixture3d {
                         break;
                     }
                     case FixtureCapabilityType.Intensity: {
+                        // TODO take partial intensity channels into account (e.g. ADJ auto spot)
                         this.dimmer = channelValue.value * masterDimmerValue;
                         break;
                     }
