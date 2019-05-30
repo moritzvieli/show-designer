@@ -1,7 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { PresetService } from '../../../services/preset.service';
-import { DmxService } from '../../../services/dmx.service';
-import { FixtureCapabilityType } from '../../../models/fixture-capability';
 
 @Component({
   selector: 'app-fixture-capability-dimmer',
@@ -12,35 +10,39 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
 
   constructor(
     private presetService: PresetService,
-    private dmxService: DmxService,
     private changeDetectorRef: ChangeDetectorRef
-    ) { }
+  ) { }
 
   ngOnInit() {
   }
 
   getValue(): number {
-    // TODO
-    // return this.presetService.getCapabilityValue(FixtureCapabilityType.Intensity);
-    return 0;
+    if(this.presetService.selectedPreset.dimmer == undefined) {
+      return undefined;
+    }
+
+    return Math.round(this.presetService.selectedPreset.dimmer * 100 * 100) / 100;
   }
 
   setValue(value: any) {
-    if(!this.dmxService.isValidDmxValue(value)) {
+    if (isNaN(value)) {
       return;
     }
 
-    // TODO
-    // this.presetService.setCapabilityValue(FixtureCapabilityType.Intensity, value);
+    if (value < 0 || value > 1) {
+      return;
+    }
+
+    this.presetService.selectedPreset.dimmer = value;
     this.changeDetectorRef.detectChanges();
   }
 
   changeActive(active: boolean) {
     if (active) {
-      this.setValue(255);
+      this.setValue(1);
     } else {
-      // TODO
-      // this.presetService.deleteCapabilityValue(FixtureCapabilityType.Intensity);
+      this.presetService.selectedPreset.dimmer = undefined;
+      this.changeDetectorRef.detectChanges();
     }
   }
 

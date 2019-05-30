@@ -18,11 +18,11 @@ export class MasterDimmerComponent implements OnInit {
 
   setValue(value: any) {
     if(isNaN(value)){
-      return false;
+      return;
     }
 
     if(value < 0 || value > 1) {
-      return false;
+      return;
     }
 
     this.masterDimmerService.masterDimmerValue = value;

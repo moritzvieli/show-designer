@@ -15,6 +15,9 @@ export class Preset {
     // all related effects
     effects: Effect[] = [];
 
+    // known capabilities
+    dimmer: number;
+
     // position offset, relative to the scene start
     // (undefined = start/end of the scene itself)
     startMillis: number;

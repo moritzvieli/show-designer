@@ -79,18 +79,24 @@
             popover="{{ 'designer.misc.capabilities' | translate }}" container="body" placement="right"
             triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-capabilities" role="tab"
             aria-controls="v-pills-capabilities" aria-selected="true">
-            <i class="fa fa-sliders fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
+            <i class="fa fa-bolt fa-fw" aria-hidden="true"></i>
+          </a>
+          <a class="nav-link px-3" (click)="openTab('channels')" id="v-pills-channels-tab"
+            popover="{{ 'designer.misc.channels' | translate }}" container="body" placement="right"
+            triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-channels" role="tab"
+            aria-controls="v-pills-channels" aria-selected="false">
+            <i class="fa fa-sliders fa-fw" aria-hidden="true"></i>
           </a>
           <a class="nav-link px-3" (click)="openTab('effects')" id="v-pills-effects-tab"
             popover="{{ 'designer.misc.effects' | translate }}" container="body" placement="right"
             triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-effects" role="tab"
             aria-controls="v-pills-effects" aria-selected="false">
-            <i class="fa fa-magic fa-fw" aria-hidden="true" style="color: #fd7e14;"></i>
+            <i class="fa fa-magic fa-fw" aria-hidden="true"></i>
           </a>
           <a class="nav-link px-3" (click)="openTab('settings')" id="v-pills-settings-tab"
             popover="{{ 'designer.misc.settings' | translate }}" container="body" placement="right"
             triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-settings" role="tab"
-            aria-controls="v-pills-settings" aria-selected="true">
+            aria-controls="v-pills-settings" aria-selected="false">
             <i class="fa fa-cog fa-fw" aria-hidden="true"></i>
           </a>
         </div>
@@ -106,6 +112,10 @@
               <div class="tab-pane h-100 show active" id="v-pills-capabilities" role="tabpanel"
                 aria-labelledby="v-pills-home-tab">
                 <app-fixture-capability></app-fixture-capability>
+              </div>
+              <div class="tab-pane h-100 show active" id="v-pills-channels" role="tabpanel"
+                aria-labelledby="v-pills-home-tab">
+                <app-fixture-channel></app-fixture-channel>
               </div>
               <div class="tab-pane h-100" id="v-pills-effects" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                 <app-effect></app-effect>
