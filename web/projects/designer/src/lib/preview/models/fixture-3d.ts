@@ -18,7 +18,7 @@ export abstract class Fixture3d {
     colorGreen: number;
     colorBlue: number;
 
-    dimmer: number = 255;
+    dimmer: number = 1;
 
     isSelected: boolean = false;
     isLoaded: boolean = false;
@@ -59,7 +59,7 @@ export abstract class Fixture3d {
         this.colorBlue = 255;
 
         if (this.fixtureSupportsDimmer) {
-            this.dimmer = 255 * masterDimmerValue;
+            this.dimmer = masterDimmerValue;
         }
 
         for (let channelValue of channelValues) {
@@ -121,7 +121,15 @@ export abstract class Fixture3d {
                     }
                     case FixtureCapabilityType.Intensity: {
                         // TODO take partial intensity channels into account (e.g. ADJ auto spot)
-                        this.dimmer = channelValue.value * masterDimmerValue;
+                        let valuePercentage: number;
+
+                        if(capability.dmxRange.length > 0) {
+                            valuePercentage = (channelValue.value - capability.dmxRange[0]) / ((capability.dmxRange[1] - capability.dmxRange[0]));
+                        } else {
+                            valuePercentage = channelValue.value / this.fixtureService.getMaxValueByChannel(this.fixtureService.getChannelByName(channelValue.channelName, this.fixture).fixtureChannel);
+                        }
+
+                        this.dimmer = valuePercentage * masterDimmerValue;
                         break;
                     }
                 }

@@ -11,7 +11,7 @@ import { FixtureChannelValue } from '../../models/fixture-channel-value';
 
 export class MovingHead3d extends Fixture3d {
 
-    private readonly pontLightMaxIntensity: number = 2;
+    private readonly pointLightMaxIntensity: number = 2;
     private readonly spotLightLightMaxIntensity: number = 10;
 
     private pan: number;
@@ -329,11 +329,11 @@ export class MovingHead3d extends Fixture3d {
 
         // Apply the dimmer value
         // Take the color into account for the beam (don't show a black beam)
-        let intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue) / 255;
-        (<any>this.spotLightBeam.material).uniforms.opacity.value = Math.min(intensityColor, this.dimmer / 255);
+        let intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue);
+        (<any>this.spotLightBeam.material).uniforms.opacity.value = Math.min(intensityColor, this.dimmer);
 
-        this.spotLight.intensity = this.dimmer * this.spotLightLightMaxIntensity / 255;
-        this.pointLight.intensity = this.dimmer * this.pontLightMaxIntensity / 255;
+        this.spotLight.intensity = this.spotLightLightMaxIntensity * this.dimmer;
+        this.pointLight.intensity = this.pointLightMaxIntensity * this.dimmer;
 
         // this.spotLightBeam.material.uniforms.viewVector.value =
         //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);
