@@ -31,7 +31,7 @@ import { WarningDialogComponent } from './warning-dialog/warning-dialog.componen
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FixtureCapabilityPanTiltComponent } from './fixture/fixture-capability/fixture-capability-pan-tilt/fixture-capability-pan-tilt.component';
-import { FixtureCapabilityGenericComponent } from './fixture/fixture-capability/fixture-capability-generic/fixture-capability-generic.component';
+import { FixtureCapabilityChannelComponent } from './fixture/fixture-capability/fixture-capability-channel/fixture-capability-channel.component';
 import { FixtureChannelComponent } from './fixture/fixture-channel/fixture-channel.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
@@ -60,7 +60,7 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     CompositionSettingsComponent,
     ArraySortPipe,
     FixtureCapabilityPanTiltComponent,
-    FixtureCapabilityGenericComponent,
+    FixtureCapabilityChannelComponent,
     FixtureChannelComponent
   ],
   imports: [

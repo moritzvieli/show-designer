@@ -4,7 +4,6 @@ import { FixtureService } from '../../services/fixture.service';
 import { FixtureTemplate } from '../../models/fixture-template';
 import { FixtureChannelFineIndex } from '../../models/fixture-channel-fine-index';
 import { FixtureMode } from '../../models/fixture-mode';
-import { FixtureCapabilityType } from '../../models/fixture-capability';
 
 @Component({
   selector: 'app-fixture-channel',
@@ -13,7 +12,7 @@ import { FixtureCapabilityType } from '../../models/fixture-capability';
 })
 export class FixtureChannelComponent implements OnInit {
 
-  public genericChannels: FixtureChannelFineIndex[] = [];
+  public channelCapabilities: FixtureChannelFineIndex[] = [];
   public templates: FixtureTemplate[] = [];
   public selectedTemplates: FixtureTemplate[] = [];
 
@@ -23,28 +22,18 @@ export class FixtureChannelComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.presetService.fixtureSelectionChanged.subscribe(() => {
-      // calculate all templates
-      this.templates = [];
-      for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-        let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-        let template = this.fixtureService.getTemplateByFixture(fixture);
+      this.calculateTemplates();
+    });
 
-        if (this.templates.indexOf(template) < 0) {
-          this.templates.push(template);
-        }
-      }
-
-      // select all templates by default
-      this.selectedTemplates = [...this.templates];
-
-      this.calculateGenericChannels();
+    this.presetService.previewSelectionChanged.subscribe(() => {
+      this.calculateTemplates();
     });
   }
 
   ngOnInit() {
   }
 
-  private calculateGenericChannels() {
+  private calculateChannelCapabilities() {
     // calculate all required modes to the templates
     let calculatedTemplateModes = new Map<FixtureTemplate, FixtureMode[]>();
     for (let template of this.selectedTemplates) {
@@ -60,7 +49,7 @@ export class FixtureChannelComponent implements OnInit {
     }
 
     // calculate all required channels from the modes
-    this.genericChannels = [];
+    this.channelCapabilities = [];
     calculatedTemplateModes.forEach((modes: FixtureMode[], template: FixtureTemplate) => {
       let templateChannels: FixtureChannelFineIndex[] = [];
       for (let mode of modes) {
@@ -73,10 +62,28 @@ export class FixtureChannelComponent implements OnInit {
           }
         }
       }
-      this.genericChannels = this.genericChannels.concat(templateChannels);
+      this.channelCapabilities = this.channelCapabilities.concat(templateChannels);
     });
 
     this.changeDetectorRef.detectChanges();
+  }
+
+  private calculateTemplates() {
+    // calculate all templates
+    this.templates = [];
+    for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
+      let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
+      let template = this.fixtureService.getTemplateByFixture(fixture);
+
+      if (this.templates.indexOf(template) < 0) {
+        this.templates.push(template);
+      }
+    }
+
+    // select all templates by default
+    this.selectedTemplates = [...this.templates];
+
+    this.calculateChannelCapabilities();
   }
 
   changeTemplateSelection($event: any, template: FixtureTemplate) {
@@ -86,7 +93,7 @@ export class FixtureChannelComponent implements OnInit {
       this.selectedTemplates.push(template);
     }
 
-    this.calculateGenericChannels();
+    this.calculateChannelCapabilities();
   }
 
   isChrome(): boolean {

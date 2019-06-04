@@ -5,12 +5,12 @@ import { FixtureCapability } from '../../../models/fixture-capability';
 import { PresetService } from '../../../services/preset.service';
 
 @Component({
-  selector: 'app-fixture-capability-generic',
-  templateUrl: './fixture-capability-generic.component.html',
-  styleUrls: ['./fixture-capability-generic.component.css'],
+  selector: 'app-fixture-capability-channel',
+  templateUrl: './fixture-capability-channel.component.html',
+  styleUrls: ['./fixture-capability-channel.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FixtureCapabilityGenericComponent implements OnInit {
+export class FixtureCapabilityChannelComponent implements OnInit {
 
   @ViewChild('sliderValue') sliderValue: ElementRef;
 
@@ -36,6 +36,16 @@ export class FixtureCapabilityGenericComponent implements OnInit {
   private updateChannel() {
     this.capabilities = this.fixtureService.getCapabilitiesByChannel(this._channel.fixtureChannel);
     this.selectedCapability = this.capabilities[0];
+
+    let currentValue = this.getValue();
+    if (currentValue >= 0) {
+      for (let capability of this.capabilities) {
+        if (capability.dmxRange.length > 0 && capability.dmxRange[0] == currentValue) {
+          this.selectedCapability = capability;
+          break;
+        }
+      }
+    }
   }
 
   capabilityHasRange(): boolean {

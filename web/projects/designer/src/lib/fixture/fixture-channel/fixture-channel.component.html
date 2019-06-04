@@ -19,10 +19,10 @@
           </div>
         </div>
   
-        <!-- All generic channels -->
-        <div *ngFor="let channel of genericChannels; let i = index" class="col col-auto p-0 my-3 mr-3"
+        <!-- All channel capabilities -->
+        <div *ngFor="let channelCapability of channelCapabilities; let i = index" class="col col-auto p-0 my-3 mr-3"
           style="height: calc(100% - 2rem)">
-          <app-fixture-capability-generic [channel]="channel" [capabilityIndex]="i"></app-fixture-capability-generic>
+          <app-fixture-capability-channel [channel]="channelCapability" [capabilityIndex]="i"></app-fixture-capability-channel>
         </div>
   
         <!-- Fix spacing on the end -->
