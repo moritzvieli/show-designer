@@ -275,6 +275,16 @@ export class PreviewService {
                         // wheel slot (color, gobo, etc.)
                         let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, Math.floor((channelCapability.dmxRange[0] + channelCapability.dmxRange[1]) / 2));
                         this.mixChannelValue(values, channelValue, 1);
+
+                        // check, whether we just set a color wheel value
+                        let wheel = this.fixtureService.getWheelByName(template, channelCapability.wheel || channelFineIndex.channelName);
+                        let wheelSlots = this.fixtureService.getWheelSlots(wheel, channelCapability.slotNumber);
+                        for (let slot of wheelSlots) {
+                          if (slot.colors.length > 0) {
+                            hasColor = true;
+                            break;
+                          }
+                        }
                       }
                     }
                   }
@@ -285,36 +295,25 @@ export class PreviewService {
                   // search for a color wheel on this fixture
                   let colorWheel: FixtureWheel;
                   for (let channelCapability of channelCapabilities) {
-                    if(channelCapability.type == FixtureCapabilityType.WheelSlot) {
+                    if (channelCapability.type == FixtureCapabilityType.WheelSlot) {
                       let wheel = this.fixtureService.getWheelByName(template, channelCapability.wheel || channelFineIndex.channelName);
                       let wheelSlots = this.fixtureService.getWheelSlots(wheel, channelCapability.slotNumber);
-                      for(let slot of wheelSlots) {
-                        if(slot.colors.length > 0) {
+                      for (let slot of wheelSlots) {
+                        if (slot.colors.length > 0) {
                           colorWheel = wheel;
                         }
                       }
                     }
                   }
 
-                  if(colorWheel) {
+                  if (colorWheel) {
                     // there is a color wheel
                     let capability = this.presetService.getApproximatedColorWheelCapability(preset.preset, channelFineIndex.channelName, template);
 
                     if (capability) {
                       // we found an approximated color in the available wheel channel
-                      let channelSet: boolean = false;
-                      for(let channelValue of values) {
-                        if(channelValue.channelName == channelFineIndex.channelName && channelValue.fixtureTemplateUuid == template.uuid) {
-                          // the channel has already been set (manual capability) -> don't overwrite it
-                          channelSet = true;
-                          break;
-                        }
-                      }
-
-                      if(!channelSet) {
-                        let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, Math.floor((capability.dmxRange[0] + capability.dmxRange[1]) / 2));
-                        this.mixChannelValue(values, channelValue, 1);
-                      }
+                      let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, Math.floor((capability.dmxRange[0] + capability.dmxRange[1]) / 2));
+                      this.mixChannelValue(values, channelValue, 1);
                     }
                   }
                 }
