@@ -19,6 +19,11 @@
         <app-fixture-capability-color></app-fixture-capability-color>
       </div>
 
+      <!-- Color wheels -->
+      <div *ngFor="let entry of colorWheels | keyvalue; let i = index" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+        <app-fixture-capability-color-wheel [fixtureTemplate]="entry.key" [wheelName]="entry.value" [wheelIndex]="i"></app-fixture-capability-color-wheel>
+      </div>
+
       <!-- Pan/Tilt -->
       <div *ngIf="showPanTilt()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <app-fixture-capability-pan-tilt></app-fixture-capability-pan-tilt>

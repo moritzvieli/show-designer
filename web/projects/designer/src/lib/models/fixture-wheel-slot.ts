@@ -1,4 +1,4 @@
-export enum FixtureWheelSlowType {
+export enum FixtureWheelSlotType {
     Open = "Open",
     Closed = "Closed",
     Color = "Color",
@@ -12,7 +12,7 @@ export enum FixtureWheelSlowType {
 
 export class FixtureWheelSlot {
 
-    type: FixtureWheelSlowType;
+    type: FixtureWheelSlotType;
     name: string;
     colors: string[] = [];
 
@@ -21,7 +21,7 @@ export class FixtureWheelSlot {
             return;
         }
 
-        this.type = FixtureWheelSlowType[<string>data.type];
+        this.type = FixtureWheelSlotType[<string>data.type];
         this.name = data.name;
         if(data.colors) {
             this.colors = data.colors;

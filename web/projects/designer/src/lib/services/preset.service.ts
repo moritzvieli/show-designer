@@ -7,6 +7,9 @@ import { Subject } from 'rxjs';
 import { ProjectService } from './project.service';
 import { FixtureService } from './fixture.service';
 import { FixtureChannelValue } from '../models/fixture-channel-value';
+import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture-capability';
+import { FixtureCapabilityValue } from '../models/fixture-capability-value';
+import { FixtureWheelValue } from '../models/fixture-wheel-slot-value';
 
 @Injectable({
   providedIn: 'root'
@@ -108,6 +111,48 @@ export class PresetService {
     }
   }
 
+  private capabilityValueMatches(capabilityValue: FixtureCapabilityValue, capabilityType: FixtureCapabilityType, color: FixtureCapabilityColor): boolean {
+    if (capabilityValue.type == capabilityType
+      && (!color || capabilityValue.color == color)) {
+      return true;
+    }
+    return false;
+  }
+
+  deleteCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor) {
+    for (let i = 0; i < preset.fixtureCapabilityValues.length; i++) {
+      if (this.capabilityValueMatches(preset.fixtureCapabilityValues[i],
+        capabilityType,
+        color)) {
+          preset.fixtureCapabilityValues.splice(i, 1);
+        return;
+      }
+    }
+  }
+
+  setCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, value: number, color?: FixtureCapabilityColor) {
+    // Delete existant properties with this type and set the new value
+    this.deleteCapabilityValue(preset, capabilityType, color);
+
+    let fixtureCapabilityValue = new FixtureCapabilityValue();
+    fixtureCapabilityValue.type = capabilityType;
+    fixtureCapabilityValue.color = color;
+    fixtureCapabilityValue.valuePercentage = value;
+
+    preset.fixtureCapabilityValues.push(fixtureCapabilityValue);
+  }
+
+  getCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor): number {
+    for (let capabilityValue of preset.fixtureCapabilityValues) {
+      if (this.capabilityValueMatches(capabilityValue,
+        capabilityType,
+        color)) {
+        return capabilityValue.valuePercentage;
+      }
+    }
+    return undefined;
+  }
+
   deleteChannelValue(channelName: string, fixtureTemplateUuid: string) {
     for (let i = 0; i < this.selectedPreset.fixtureChannelValues.length; i++) {
       if (this.selectedPreset.fixtureChannelValues[i].channelName == channelName && this.selectedPreset.fixtureChannelValues[i].fixtureTemplateUuid == fixtureTemplateUuid) {
@@ -135,6 +180,42 @@ export class PresetService {
         return channelValue.value;
       }
     }
+  }
+
+  deleteWheelValue(wheelName: string, fixtureTemplateUuid: string) {
+    for (let i = 0; i < this.selectedPreset.fixtureWheelValues.length; i++) {
+      if (this.selectedPreset.fixtureWheelValues[i].wheelName == wheelName && this.selectedPreset.fixtureWheelValues[i].templateUuid == fixtureTemplateUuid) {
+        this.selectedPreset.fixtureWheelValues.splice(i, 1);
+        return;
+      }
+    }
+  }
+
+  setWheelValue(wheelName: string, fixtureTemplateUuid: string, value: number) {
+    // Delete existant properties with this type and set the new value
+    this.deleteWheelValue(wheelName, fixtureTemplateUuid);
+
+    let fixtureWheelValue = new FixtureWheelValue();
+    fixtureWheelValue.wheelName = wheelName;
+    fixtureWheelValue.templateUuid = fixtureTemplateUuid;
+    fixtureWheelValue.slotIndex = value;
+
+    this.selectedPreset.fixtureWheelValues.push(fixtureWheelValue);
+  }
+
+  getWheelValue(wheelName: string, fixtureTemplateUuid: string): number {
+    for (let wheelValue of this.selectedPreset.fixtureWheelValues) {
+      if (wheelValue.wheelName == wheelName && wheelValue.templateUuid == fixtureTemplateUuid) {
+        return wheelValue.slotIndex;
+      }
+    }
+  }
+
+  getApproximatedColorWheelSlotIndex(wheelName: string, fixtureTemplateUuid: string): number {
+    // return an approximated wheel slot index, if a color or a different wheel slot
+    // has been selected on the preset
+    // TODO
+    return undefined;
   }
 
   selectPreset(index: number) {

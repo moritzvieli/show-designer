@@ -2,21 +2,18 @@ import { FixtureCapabilityType, FixtureCapabilityColor } from "./fixture-capabil
 
 export class FixtureCapabilityValue {
 
-    // DMX value between 0 and 255
-    value: number;
-
+    // value between 0 and 1
+    valuePercentage: number;
     type: FixtureCapabilityType;
     color: FixtureCapabilityColor;
 
-    constructor(
-        value?: number,
-        type?: FixtureCapabilityType,
-        color?: FixtureCapabilityColor
-    ) {
-        this.value = value;
-
-        this.type = type;
-        this.color = color;
+    constructor(data?: any) {
+        if(!data) {
+            return;
+        }
+        this.valuePercentage = data.valuePercentage;
+        this.type = FixtureCapabilityType[<string>data.type];
+        this.color = FixtureCapabilityColor[<string>data.color];
     }
 
 }

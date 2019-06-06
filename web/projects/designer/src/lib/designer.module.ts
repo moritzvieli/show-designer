@@ -33,6 +33,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FixtureCapabilityPanTiltComponent } from './fixture/fixture-capability/fixture-capability-pan-tilt/fixture-capability-pan-tilt.component';
 import { FixtureCapabilityChannelComponent } from './fixture/fixture-capability/fixture-capability-channel/fixture-capability-channel.component';
 import { FixtureChannelComponent } from './fixture/fixture-channel/fixture-channel.component';
+import { FixtureCapabilityColorWheelComponent } from './fixture/fixture-capability/fixture-capability-color-wheel/fixture-capability-color-wheel.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -61,7 +62,8 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     ArraySortPipe,
     FixtureCapabilityPanTiltComponent,
     FixtureCapabilityChannelComponent,
-    FixtureChannelComponent
+    FixtureChannelComponent,
+    FixtureCapabilityColorWheelComponent
   ],
   imports: [
     BrowserModule,

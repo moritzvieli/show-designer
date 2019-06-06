@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { PresetService } from '../../../services/preset.service';
+import { FixtureCapabilityType } from '../../../models/fixture-capability';
 
 @Component({
   selector: 'app-fixture-capability-dimmer',
@@ -17,11 +18,12 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
   }
 
   getValue(): number {
-    if(this.presetService.selectedPreset.dimmer == undefined) {
+    let dimmer = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity);
+    if (dimmer == undefined) {
       return undefined;
     }
 
-    return Math.round(this.presetService.selectedPreset.dimmer * 100 * 100) / 100;
+    return Math.round(dimmer * 100 * 100) / 100;
   }
 
   setValue(value: any) {
@@ -33,7 +35,7 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
       return;
     }
 
-    this.presetService.selectedPreset.dimmer = value;
+    this.presetService.setCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity, value);
     this.changeDetectorRef.detectChanges();
   }
 
@@ -41,7 +43,7 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
     if (active) {
       this.setValue(1);
     } else {
-      this.presetService.selectedPreset.dimmer = undefined;
+      this.presetService.deleteCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity);
       this.changeDetectorRef.detectChanges();
     }
   }

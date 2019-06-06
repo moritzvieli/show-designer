@@ -10,6 +10,7 @@ import { Observable, forkJoin, of } from 'rxjs';
 import { FixtureChannelFineIndex } from '../models/fixture-channel-fine-index';
 import { FixtureCapabilityType, FixtureCapability } from '../models/fixture-capability';
 import { FixtureWheelSlot } from '../models/fixture-wheel-slot';
+import { FixtureWheel } from '../models/fixture-wheel';
 
 @Injectable({
   providedIn: 'root'
@@ -113,7 +114,7 @@ export class FixtureService {
         }
       } else {
         // null may be passed as a placeholder for an undefined channel
-        channels.push(new FixtureChannelFineIndex());
+        channels.push(new FixtureChannelFineIndex(undefined, template));
       }
     }
 
@@ -222,30 +223,38 @@ export class FixtureService {
     return undefined;
   }
 
-  getWheelSlots(template: FixtureTemplate, wheelName: string, slotNumber: number): FixtureWheelSlot[] {
-    // return one slot or two slots, if they are mixed (e.g. slor number 2.5 returns the slots 2 and 3)
+  getWheelByName(template: FixtureTemplate, wheelName: string): FixtureWheel {
     for (let property in template.wheels) {
       if (property == wheelName) {
-        let wheel = template.wheels[property];
-
-        if (slotNumber - Math.floor(slotNumber) > 0) {
-          // two slots are set
-          let slots: FixtureWheelSlot[] = [];
-          let number = Math.floor(slotNumber);
-          slots.push(wheel.slots[number - 1]);
-          if (wheel.slots[number]) {
-            slots.push(wheel.slots[number]);
-          }
-          return slots;
-        } else {
-          // only one slot is set
-          return [wheel.slots[slotNumber - 1]];
-        }
+        return template.wheels[property];
       }
     }
 
     // wheel not found
-    return null;
+    return undefined;
+  }
+
+  getWheelSlots(template: FixtureTemplate, wheelName: string, slotNumber: number): FixtureWheelSlot[] {
+    // return one slot or two slots, if they are mixed (e.g. slor number 2.5 returns the slots 2 and 3)
+    let wheel = this.getWheelByName(template, wheelName);
+
+    if(!wheel) {
+      return undefined;
+    }
+
+    if (slotNumber - Math.floor(slotNumber) > 0) {
+      // two slots are set
+      let slots: FixtureWheelSlot[] = [];
+      let number = Math.floor(slotNumber);
+      slots.push(wheel.slots[number - 1]);
+      if (wheel.slots[number]) {
+        slots.push(wheel.slots[number]);
+      }
+      return slots;
+    } else {
+      // only one slot is set
+      return [wheel.slots[slotNumber - 1]];
+    }
   }
 
   private componentToHex(c: number): any {
