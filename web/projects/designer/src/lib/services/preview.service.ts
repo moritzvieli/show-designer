@@ -218,32 +218,40 @@ export class PreviewService {
             // this fixture is also in the preset
             let template = this.fixtureService.getTemplateByFixture(fixture);
 
-            // mix all preset capability values
+            // mix the preset capability values
             for (let channelFineIndex of channelFineIndices) {
               let channel = channelFineIndex.fixtureChannel;
 
               if (channel) {
-                let capabilities = this.fixtureService.getCapabilitiesByChannel(channel);
+                let channelCapabilities = this.fixtureService.getCapabilitiesByChannel(channel);
 
-                // dimmer
-                let dimmer = this.presetService.getCapabilityValue(preset.preset, FixtureCapabilityType.Intensity);
-                if (dimmer != undefined) {
-                  if (capabilities.length == 1 && capabilities[0].type == FixtureCapabilityType.Intensity) {
-                    // the only capability in this channel
-                    let value = this.fixtureService.getMaxValueByChannel(channel) * dimmer;
-                    let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, value);
-                    this.mixChannelValue(values, channelValue, intensityPercentage);
-                  } else {
-                    // more than one capability in the channel
-                    for (let capability of capabilities) {
-                      if (capability.type == FixtureCapabilityType.Intensity) {
-                        if (capability.brightness == 'off' && dimmer == 0) {
-                          let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, capability.dmxRange[0]);
+                for (let presetCapabilityValue of preset.preset.fixtureCapabilityValues) {
+                  for (let channelCapability of channelCapabilities) {
+                    if (presetCapabilityValue.type == channelCapability.type &&
+                      (!presetCapabilityValue.color || presetCapabilityValue.color == channelCapability.color)) {
+
+                      // the capabilities match -> apply the value, if possible
+                      if (presetCapabilityValue.valuePercentage && 
+                        (presetCapabilityValue.type == FixtureCapabilityType.Intensity ||
+                        presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity)) {
+
+                        let valuePercentage = presetCapabilityValue.valuePercentage;
+
+                        // brightness property
+                        if (channelCapabilities.length == 1) {
+                          // the only capability in this channel
+                          let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, this.fixtureService.getMaxValueByChannel(channel) * valuePercentage);
                           this.mixChannelValue(values, channelValue, intensityPercentage);
-                        } else if ((capability.brightnessStart == 'dark' || capability.brightnessStart == 'off') && capability.brightnessEnd == 'bright') {
-                          let value = (capability.dmxRange[1] - capability.dmxRange[0]) * dimmer + capability.dmxRange[0];
-                          let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, value);
-                          this.mixChannelValue(values, channelValue, intensityPercentage);
+                        } else {
+                          // more than one capability in the channel
+                          if(channelCapability.brightness == 'off' && valuePercentage == 0) {
+                            let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, Math.floor((channelCapability.dmxRange[0] + channelCapability.dmxRange[1]) / 2));
+                            this.mixChannelValue(values, channelValue, intensityPercentage);
+                          } else if ((channelCapability.brightnessStart == 'dark' || channelCapability.brightnessStart == 'off') && channelCapability.brightnessEnd == 'bright') {
+                            let value = (channelCapability.dmxRange[1] - channelCapability.dmxRange[0]) * valuePercentage + channelCapability.dmxRange[0];
+                            let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, value);
+                            this.mixChannelValue(values, channelValue, intensityPercentage);
+                          }
                         }
                       }
                     }
@@ -252,11 +260,15 @@ export class PreviewService {
               }
             }
 
-            // mix all preset wheels
+            // mix the preset wheels
             for (let channelFineIndex of channelFineIndices) {
               let channel = channelFineIndex.fixtureChannel;
 
               if (channel) {
+                let channelCapabilities = this.fixtureService.getCapabilitiesByChannel(channel);
+
+
+
                 // TODO
 
                 // approximate the color wheel, if a color capability is set or a different color wheel
@@ -264,7 +276,7 @@ export class PreviewService {
               }
             }
 
-            // mix all preset channel values (overwrite the capabilities, if necessary)
+            // mix the preset channel values (overwrite the capabilities, if necessary)
             for (let channelFineIndex of channelFineIndices) {
               let channel = channelFineIndex.fixtureChannel;
 

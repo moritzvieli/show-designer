@@ -40,7 +40,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     let currentValue = this.getValue();
     if (currentValue >= 0) {
       for (let capability of this.capabilities) {
-        if (capability.dmxRange.length > 0 && capability.dmxRange[0] == currentValue) {
+        if (capability.dmxRange.length > 0 && Math.floor((capability.dmxRange[0] + capability.dmxRange[1]) / 2) == currentValue) {
           this.selectedCapability = capability;
           break;
         }
@@ -114,8 +114,8 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   }
 
   capabilitySelected() {
-    // select the min value of the selected capability
-    this.setValue(this.selectedCapability.dmxRange[0]);
+    // select the center value of the selected capability
+    this.setValue(Math.floor((this.selectedCapability.dmxRange[0] + this.selectedCapability.dmxRange[1]) / 2));
   }
 
 }
