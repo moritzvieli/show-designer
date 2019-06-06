@@ -218,26 +218,12 @@ export class PreviewService {
             // this fixture is also in the preset
             let template = this.fixtureService.getTemplateByFixture(fixture);
 
-            // mix all preset capabilities with the fixture channel
+            // mix all preset capability values
             for (let channelFineIndex of channelFineIndices) {
               let channel = channelFineIndex.fixtureChannel;
 
               if (channel) {
                 let capabilities = this.fixtureService.getCapabilitiesByChannel(channel);
-
-                // TODO strobo, etc.
-
-                // color channels
-                // TODO merge to Rocket Show
-                // if (preset.preset.colorR != undefined && capabilities[0].type == FixtureCapabilityType.ColorIntensity && capabilities[0].color == FixtureCapabilityColor.Red) {
-                  // TODO
-                // }
-
-                // color wheel
-
-
-                // this.presetService.getApproximatedColorWheelSlotIndex
-                // TODO
 
                 // dimmer
                 let dimmer = this.presetService.getCapabilityValue(preset.preset, FixtureCapabilityType.Intensity);
@@ -266,8 +252,19 @@ export class PreviewService {
               }
             }
 
-            // mix all channel values in this preset with the fixture channel
-            // (overwrite the capabilities, if necessary)
+            // mix all preset wheels
+            for (let channelFineIndex of channelFineIndices) {
+              let channel = channelFineIndex.fixtureChannel;
+
+              if (channel) {
+                // TODO
+
+                // approximate the color wheel, if a color capability is set or a different color wheel
+                // this.presetService.getApproximatedColorWheelSlotIndex
+              }
+            }
+
+            // mix all preset channel values (overwrite the capabilities, if necessary)
             for (let channelFineIndex of channelFineIndices) {
               let channel = channelFineIndex.fixtureChannel;
 
