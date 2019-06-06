@@ -10,3 +10,9 @@
     border-width: 3px;
     border-color: white;
 }
+
+.color-selected-inner {
+    border: solid 1px black;
+    height: 100%;
+    width: 100%;
+}

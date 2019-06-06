@@ -20,8 +20,8 @@
       </div>
 
       <!-- Color wheels -->
-      <div *ngFor="let entry of colorWheels | keyvalue; let i = index" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
-        <app-fixture-capability-color-wheel [fixtureTemplate]="entry.key" [wheelName]="entry.value" [wheelIndex]="i"></app-fixture-capability-color-wheel>
+      <div *ngFor="let entry of colorWheelChannels | keyvalue; let i = index" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+        <app-fixture-capability-color-wheel [fixtureTemplate]="entry.key" [channelName]="entry.value" [wheelIndex]="i" [showContainer]="colorWheelChannels.size > 1"></app-fixture-capability-color-wheel>
       </div>
 
       <!-- Pan/Tilt -->

@@ -14,8 +14,8 @@ import { FixtureWheelSlotType } from '../../models/fixture-wheel-slot';
 })
 export class FixtureCapabilityComponent implements OnInit {
 
-  // wheels containing the template and the wheel name
-  colorWheels: Map<FixtureTemplate, string> = new Map<FixtureTemplate, string>();
+  // map containing the template and the channel name containing the wheel
+  colorWheelChannels: Map<FixtureTemplate, string> = new Map<FixtureTemplate, string>();
 
   constructor(
     public presetService: PresetService,
@@ -34,9 +34,9 @@ export class FixtureCapabilityComponent implements OnInit {
   ngOnInit() {
   }
 
-  private wheelInList(wheels: Map<FixtureTemplate, string>, template: FixtureTemplate, name: string) {
-    wheels.forEach((wheelName: string, template: FixtureTemplate) => {
-      if (template == template && wheelName == name) {
+  private wheelInList(wheels: Map<FixtureTemplate, string>, template: FixtureTemplate, channelName: string) {
+    wheels.forEach((existingChannelName: string, template: FixtureTemplate) => {
+      if (template == template && existingChannelName == channelName) {
         return true;
       }
     });
@@ -55,7 +55,7 @@ export class FixtureCapabilityComponent implements OnInit {
   }
 
   private updateColorWheels() {
-    this.colorWheels = new Map<FixtureTemplate, string>();
+    this.colorWheelChannels = new Map<FixtureTemplate, string>();
 
     for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
@@ -67,8 +67,8 @@ export class FixtureCapabilityComponent implements OnInit {
           if (wheel && wheel.slots && wheel.slots.length > 0) {
             if (this.wheelHasSlotType(wheel, FixtureWheelSlotType.Color)) {
               // color wheel
-              if (!this.wheelInList(this.colorWheels, channelFineIndex.fixtureTemplate, wheelName)) {
-                this.colorWheels.set(channelFineIndex.fixtureTemplate, wheelName);
+              if (!this.wheelInList(this.colorWheelChannels, channelFineIndex.fixtureTemplate, channelFineIndex.channelName)) {
+                this.colorWheelChannels.set(channelFineIndex.fixtureTemplate, channelFineIndex.channelName);
               }
             } else if (this.wheelHasSlotType(wheel, FixtureWheelSlotType.Gobo)) {
               // gobo wheel
@@ -114,7 +114,7 @@ export class FixtureCapabilityComponent implements OnInit {
     }
 
     // different color wheels are involved
-    if (this.colorWheels.size > 1) {
+    if (this.colorWheelChannels.size > 1) {
       return true;
     }
 

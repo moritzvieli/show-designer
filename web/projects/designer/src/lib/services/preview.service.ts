@@ -7,14 +7,14 @@ import { SceneService } from './scene.service';
 import { TimelineService } from './timeline.service';
 import { UniverseService } from './universe.service';
 import { FixtureTemplate } from '../models/fixture-template';
-import { EffectChannel } from '../models/effect';
-import { FixtureCapabilityValue } from '../models/fixture-capability-value';
-import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture-capability';
+import { FixtureCapabilityType } from '../models/fixture-capability';
 import { Preset } from '../models/preset';
 import { ProjectService } from './project.service';
 import { PresetRegionScene } from '../models/preset-region-scene';
 import { Subject } from 'rxjs';
 import { FixtureChannelValue } from '../models/fixture-channel-value';
+import { FixtureChannelFineIndex } from '../models/fixture-channel-fine-index';
+import { FixtureWheel } from '../models/fixture-wheel';
 
 @Injectable({
   providedIn: 'root'
@@ -213,6 +213,7 @@ export class PreviewService {
 
           // Search for this fixture in the preset and get it's preset-specific index (for chasing effects)
           let fixtureIndex = this.getFixtureIndex(preset.preset, fixture.uuid);
+          let hasColor: boolean = false;
 
           if (fixtureIndex >= 0) {
             // this fixture is also in the preset
@@ -227,14 +228,17 @@ export class PreviewService {
 
                 for (let presetCapabilityValue of preset.preset.fixtureCapabilityValues) {
                   for (let channelCapability of channelCapabilities) {
-                    if (presetCapabilityValue.type == channelCapability.type &&
-                      (!presetCapabilityValue.color || presetCapabilityValue.color == channelCapability.color)) {
+                    let wheelName = channelCapability.wheel || channelFineIndex.channelName;
+
+                    if (presetCapabilityValue.type == channelCapability.type
+                      && (!presetCapabilityValue.color || presetCapabilityValue.color == channelCapability.color)
+                      && (!presetCapabilityValue.wheel || (presetCapabilityValue.wheel == wheelName && presetCapabilityValue.fixtureTemplateUuid == template.uuid))) {
 
                       // the capabilities match -> apply the value, if possible
-                      if (presetCapabilityValue.valuePercentage && 
+                      if (presetCapabilityValue.valuePercentage >= 0 &&
                         (presetCapabilityValue.type == FixtureCapabilityType.Intensity ||
-                        presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity)) {
-
+                          presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity)) {
+                        // intensity and colorIntensity (dimmer and color)
                         let valuePercentage = presetCapabilityValue.valuePercentage;
 
                         // brightness property
@@ -242,37 +246,78 @@ export class PreviewService {
                           // the only capability in this channel
                           let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, this.fixtureService.getMaxValueByChannel(channel) * valuePercentage);
                           this.mixChannelValue(values, channelValue, intensityPercentage);
+
+                          if (presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity) {
+                            hasColor = true;
+                          }
                         } else {
                           // more than one capability in the channel
-                          if(channelCapability.brightness == 'off' && valuePercentage == 0) {
+                          if (channelCapability.brightness == 'off' && valuePercentage == 0) {
                             let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, Math.floor((channelCapability.dmxRange[0] + channelCapability.dmxRange[1]) / 2));
                             this.mixChannelValue(values, channelValue, intensityPercentage);
+
+                            if (presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity) {
+                              hasColor = true;
+                            }
                           } else if ((channelCapability.brightnessStart == 'dark' || channelCapability.brightnessStart == 'off') && channelCapability.brightnessEnd == 'bright') {
                             let value = (channelCapability.dmxRange[1] - channelCapability.dmxRange[0]) * valuePercentage + channelCapability.dmxRange[0];
                             let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, value);
                             this.mixChannelValue(values, channelValue, intensityPercentage);
+
+                            if (presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity) {
+                              hasColor = true;
+                            }
                           }
                         }
+                      } else if (presetCapabilityValue.type == FixtureCapabilityType.WheelSlot
+                        && channelCapability.slotNumber == presetCapabilityValue.slotNumber) {
+
+                        // wheel slot (color, gobo, etc.)
+                        let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, Math.floor((channelCapability.dmxRange[0] + channelCapability.dmxRange[1]) / 2));
+                        this.mixChannelValue(values, channelValue, 1);
                       }
                     }
                   }
                 }
-              }
-            }
 
-            // mix the preset wheels
-            for (let channelFineIndex of channelFineIndices) {
-              let channel = channelFineIndex.fixtureChannel;
+                // approximate the color from a color or a different color wheel, if necessary
+                if (!hasColor) {
+                  // search for a color wheel on this fixture
+                  let colorWheel: FixtureWheel;
+                  for (let channelCapability of channelCapabilities) {
+                    if(channelCapability.type == FixtureCapabilityType.WheelSlot) {
+                      let wheel = this.fixtureService.getWheelByName(template, channelCapability.wheel || channelFineIndex.channelName);
+                      let wheelSlots = this.fixtureService.getWheelSlots(wheel, channelCapability.slotNumber);
+                      for(let slot of wheelSlots) {
+                        if(slot.colors.length > 0) {
+                          colorWheel = wheel;
+                        }
+                      }
+                    }
+                  }
 
-              if (channel) {
-                let channelCapabilities = this.fixtureService.getCapabilitiesByChannel(channel);
+                  if(colorWheel) {
+                    // there is a color wheel
+                    let capability = this.presetService.getApproximatedColorWheelCapability(preset.preset, channelFineIndex.channelName, template);
 
+                    if (capability) {
+                      // we found an approximated color in the available wheel channel
+                      let channelSet: boolean = false;
+                      for(let channelValue of values) {
+                        if(channelValue.channelName == channelFineIndex.channelName && channelValue.fixtureTemplateUuid == template.uuid) {
+                          // the channel has already been set (manual capability) -> don't overwrite it
+                          channelSet = true;
+                          break;
+                        }
+                      }
 
-
-                // TODO
-
-                // approximate the color wheel, if a color capability is set or a different color wheel
-                // this.presetService.getApproximatedColorWheelSlotIndex
+                      if(!channelSet) {
+                        let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, Math.floor((capability.dmxRange[0] + capability.dmxRange[1]) / 2));
+                        this.mixChannelValue(values, channelValue, 1);
+                      }
+                    }
+                  }
+                }
               }
             }
 

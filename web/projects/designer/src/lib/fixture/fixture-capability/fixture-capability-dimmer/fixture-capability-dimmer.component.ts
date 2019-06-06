@@ -18,12 +18,11 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
   }
 
   getValue(): number {
-    let dimmer = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity);
-    if (dimmer == undefined) {
-      return undefined;
+    let capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity);
+    if (capabilityValue && capabilityValue.valuePercentage >= 0) {
+      return Math.round(capabilityValue.valuePercentage * 100 * 100) / 100;
     }
-
-    return Math.round(dimmer * 100 * 100) / 100;
+    return undefined;
   }
 
   setValue(value: any) {

@@ -85,36 +85,13 @@ export abstract class Fixture3d {
                         break;
                     }
                     case FixtureCapabilityType.WheelSlot: {
-                        let wheelSlots = this.fixtureService.getWheelSlots(this.fixtureTemplate, capability.wheel || channelValue.channelName, capability.slotNumber);
+                        let wheel = this.fixtureService.getWheelByName(this.fixtureTemplate, capability.wheel || channelValue.channelName);
+                        let mixedColor = this.fixtureService.getMixedWheelSlotColor(wheel, capability.slotNumber);
 
-                        if (wheelSlots) {
-                            let colors: string[] = [];
-                            // at least one slot has a color
-                            let hasColor: boolean = false;
-
-                            for (let slot of wheelSlots) {
-                                // calculate the color based on the color wheel slot
-                                // TODO support for multiple colors (multiple beams)
-                                if (slot.colors.length > 0) {
-                                    colors = colors.concat(slot.colors);
-                                    hasColor = true;
-                                } else {
-                                    colors.push('#fff');
-                                }
-                            }
-
-                            if (hasColor) {
-                                let colorsRgb: any[] = [];
-
-                                for (let color of colors) {
-                                    colorsRgb.push(this.fixtureService.hexToRgb(color));
-                                }
-
-                                let mixedColor = this.fixtureService.mixColors(colorsRgb);
-                                this.colorRed = Math.round(mixedColor.r);
-                                this.colorGreen = Math.round(mixedColor.g);
-                                this.colorBlue = Math.round(mixedColor.b);
-                            }
+                        if (mixedColor) {
+                            this.colorRed = Math.round(mixedColor.red);
+                            this.colorGreen = Math.round(mixedColor.green);
+                            this.colorBlue = Math.round(mixedColor.blue);
                         }
 
                         break;

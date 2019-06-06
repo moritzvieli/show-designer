@@ -6,6 +6,9 @@ export class FixtureCapabilityValue {
     valuePercentage: number;
     type: FixtureCapabilityType;
     color: FixtureCapabilityColor;
+    slotNumber: number;
+    wheel: string;
+    fixtureTemplateUuid: string;
 
     constructor(data?: any) {
         if(!data) {
@@ -14,6 +17,9 @@ export class FixtureCapabilityValue {
         this.valuePercentage = data.valuePercentage;
         this.type = FixtureCapabilityType[<string>data.type];
         this.color = FixtureCapabilityColor[<string>data.color];
+        this.slotNumber = data.slotNumber;
+        this.wheel = data.wheel;
+        this.fixtureTemplateUuid = data.fixtureTemplateUuid;
     }
 
 }

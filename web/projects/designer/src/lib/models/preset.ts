@@ -1,7 +1,6 @@
 import { Effect } from "./effect";
 import { FixtureChannelValue } from "./fixture-channel-value";
 import { FixtureCapabilityValue } from "./fixture-capability-value";
-import { FixtureWheelValue } from "./fixture-wheel-slot-value";
 
 export class Preset {
 
@@ -14,7 +13,6 @@ export class Preset {
     // the selected values
     fixtureChannelValues: FixtureChannelValue[] = [];
     fixtureCapabilityValues: FixtureCapabilityValue[] = [];
-    fixtureWheelValues: FixtureWheelValue[] = [];
 
     // all related effects
     effects: Effect[] = [];
@@ -44,11 +42,6 @@ export class Preset {
         if (data.fixtureCapabilityValues) {
             for (let fixtureCapabilityValue of data.fixtureCapabilityValues) {
                 this.fixtureCapabilityValues.push(new FixtureCapabilityValue(fixtureCapabilityValue));
-            }
-        }
-        if (data.fixtureWheelValues) {
-            for (let wheelValue of data.fixtureWheelValues) {
-                this.fixtureWheelValues.push(new FixtureWheelValue(wheelValue));
             }
         }
         if (data.effects) {

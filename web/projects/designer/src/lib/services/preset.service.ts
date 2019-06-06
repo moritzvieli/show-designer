@@ -7,9 +7,10 @@ import { Subject } from 'rxjs';
 import { ProjectService } from './project.service';
 import { FixtureService } from './fixture.service';
 import { FixtureChannelValue } from '../models/fixture-channel-value';
-import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture-capability';
+import { FixtureCapabilityType, FixtureCapabilityColor, FixtureCapability } from '../models/fixture-capability';
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
-import { FixtureWheelValue } from '../models/fixture-wheel-slot-value';
+import { FixtureTemplate } from '../models/fixture-template';
+import { FixtureChannel } from '../models/fixture-channel';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,10 @@ export class PresetService {
 
   // Fires, when the fixture selection has changed
   fixtureSelectionChanged: Subject<void> = new Subject<void>();
+
+  // Fires, when the selected color has changed. This is required,
+  // because detectChanges is not enough to trigger different components.
+  fixtureColorChanged: Subject<void> = new Subject<void>();
 
   // True = show the preset, false = show the selected scene
   previewPreset: boolean = true;
@@ -111,43 +116,54 @@ export class PresetService {
     }
   }
 
-  private capabilityValueMatches(capabilityValue: FixtureCapabilityValue, capabilityType: FixtureCapabilityType, color: FixtureCapabilityColor): boolean {
+  private capabilityValueMatches(capabilityValue: FixtureCapabilityValue, capabilityType: FixtureCapabilityType, color: FixtureCapabilityColor, wheel: string, templateUuid: string): boolean {
     if (capabilityValue.type == capabilityType
-      && (!color || capabilityValue.color == color)) {
+      && (!color || capabilityValue.color == color)
+      && (!wheel || capabilityValue.wheel == wheel)
+      && (!templateUuid || capabilityValue.fixtureTemplateUuid == templateUuid)) {
       return true;
     }
     return false;
   }
 
-  deleteCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor) {
+  deleteCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, templateUuid?: string) {
     for (let i = 0; i < preset.fixtureCapabilityValues.length; i++) {
       if (this.capabilityValueMatches(preset.fixtureCapabilityValues[i],
         capabilityType,
-        color)) {
-          preset.fixtureCapabilityValues.splice(i, 1);
+        color,
+        wheel,
+        templateUuid)) {
+
+        preset.fixtureCapabilityValues.splice(i, 1);
         return;
       }
     }
   }
 
-  setCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, value: number, color?: FixtureCapabilityColor) {
+  setCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, valuePercentage: number, slotNumber?: number, color?: FixtureCapabilityColor, wheel?: string, templateUuid?: string) {
     // Delete existant properties with this type and set the new value
-    this.deleteCapabilityValue(preset, capabilityType, color);
+    this.deleteCapabilityValue(preset, capabilityType, color, wheel, templateUuid);
 
     let fixtureCapabilityValue = new FixtureCapabilityValue();
     fixtureCapabilityValue.type = capabilityType;
     fixtureCapabilityValue.color = color;
-    fixtureCapabilityValue.valuePercentage = value;
+    fixtureCapabilityValue.wheel = wheel;
+    fixtureCapabilityValue.valuePercentage = valuePercentage;
+    fixtureCapabilityValue.slotNumber = slotNumber;
+    fixtureCapabilityValue.fixtureTemplateUuid = templateUuid;
 
     preset.fixtureCapabilityValues.push(fixtureCapabilityValue);
   }
 
-  getCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor): number {
+  getCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, templateUuid?: string): FixtureCapabilityValue {
     for (let capabilityValue of preset.fixtureCapabilityValues) {
       if (this.capabilityValueMatches(capabilityValue,
         capabilityType,
-        color)) {
-        return capabilityValue.valuePercentage;
+        color,
+        wheel,
+        templateUuid)) {
+
+        return capabilityValue;
       }
     }
     return undefined;
@@ -182,40 +198,53 @@ export class PresetService {
     }
   }
 
-  deleteWheelValue(wheelName: string, fixtureTemplateUuid: string) {
-    for (let i = 0; i < this.selectedPreset.fixtureWheelValues.length; i++) {
-      if (this.selectedPreset.fixtureWheelValues[i].wheelName == wheelName && this.selectedPreset.fixtureWheelValues[i].templateUuid == fixtureTemplateUuid) {
-        this.selectedPreset.fixtureWheelValues.splice(i, 1);
-        return;
+  getApproximatedColorWheelCapability(preset: Preset, wheelChannelName: string, fixtureTemplate: FixtureTemplate): FixtureCapability {
+    // return an approximated wheel slot channel capability, if a color or a slot on a different
+    // wheel has been selected
+    let colorRed: number;
+    let colorGreen: number;
+    let colorBlue: number;
+    let lowestDiff = Number.MAX_VALUE;
+    let lowestDiffCapability: FixtureCapability;
+    let capabilityValue: FixtureCapabilityValue;
+
+    capabilityValue = this.getCapabilityValue(preset, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Red);
+    if (capabilityValue) {
+      colorRed = 255 * capabilityValue.valuePercentage;
+    }
+    capabilityValue = this.getCapabilityValue(preset, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Green);
+    if (capabilityValue) {
+      colorGreen = 255 * capabilityValue.valuePercentage;
+    }
+    capabilityValue = this.getCapabilityValue(preset, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Blue);
+    if (capabilityValue) {
+      colorBlue = 255 * capabilityValue.valuePercentage;
+    }
+
+    if (!colorRed) {
+      // no color found -> search the first color wheel
+      // TODO
+    }
+
+    if (colorRed != undefined && colorGreen != undefined && colorBlue != undefined) {
+      let capabilities = this.fixtureService.getCapabilitiesByChannelName(wheelChannelName, fixtureTemplate.uuid);
+
+      for (let capability of capabilities) {
+        if (capability.slotNumber) {
+          let wheel = this.fixtureService.getWheelByName(fixtureTemplate, capability.wheel || wheelChannelName);
+          let mixedColor = this.fixtureService.getMixedWheelSlotColor(wheel, capability.slotNumber);
+          if (mixedColor) {
+            let diff = Math.abs(mixedColor.red - colorRed) + Math.abs(mixedColor.green - colorGreen) + Math.abs(mixedColor.blue - colorBlue);
+            if (diff < lowestDiff) {
+              lowestDiff = diff;
+              lowestDiffCapability = capability;
+            }
+          }
+        }
       }
     }
-  }
 
-  setWheelValue(wheelName: string, fixtureTemplateUuid: string, value: number) {
-    // Delete existant properties with this type and set the new value
-    this.deleteWheelValue(wheelName, fixtureTemplateUuid);
-
-    let fixtureWheelValue = new FixtureWheelValue();
-    fixtureWheelValue.wheelName = wheelName;
-    fixtureWheelValue.templateUuid = fixtureTemplateUuid;
-    fixtureWheelValue.slotIndex = value;
-
-    this.selectedPreset.fixtureWheelValues.push(fixtureWheelValue);
-  }
-
-  getWheelValue(wheelName: string, fixtureTemplateUuid: string): number {
-    for (let wheelValue of this.selectedPreset.fixtureWheelValues) {
-      if (wheelValue.wheelName == wheelName && wheelValue.templateUuid == fixtureTemplateUuid) {
-        return wheelValue.slotIndex;
-      }
-    }
-  }
-
-  getApproximatedColorWheelSlotIndex(wheelName: string, fixtureTemplateUuid: string): number {
-    // return an approximated wheel slot index, if a color or a different wheel slot
-    // has been selected on the preset
-    // TODO
-    return undefined;
+    return lowestDiffCapability;
   }
 
   selectPreset(index: number) {
