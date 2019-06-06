@@ -67,21 +67,32 @@ export abstract class Fixture3d {
 
             if (capability) {
                 switch (capability.type) {
+                    case FixtureCapabilityType.Intensity: {
+                        let valuePercentage: number;
+                        if(capability.dmxRange.length > 0) {
+                            valuePercentage = (channelValue.value - capability.dmxRange[0]) / ((capability.dmxRange[1] - capability.dmxRange[0]));
+                        } else {
+                            valuePercentage = channelValue.value / this.fixtureService.getMaxValueByChannel(this.fixtureService.getChannelByName(channelValue.channelName, this.fixture).fixtureChannel);
+                        }
+                        this.dimmer = valuePercentage * masterDimmerValue;
+                        break;
+                    }
                     case FixtureCapabilityType.ColorIntensity: {
-                        // switch (capabilityValue.color) {
-                        //     case FixtureCapabilityColor.Red:
-                        //         // Round needed for threejs
-                        //         this.colorRed = Math.round(capabilityValue.value);
-                        //         break;
-                        //     case FixtureCapabilityColor.Green:
-                        //         // Round needed for threejs
-                        //         this.colorGreen = Math.round(capabilityValue.value);
-                        //         break;
-                        //     case FixtureCapabilityColor.Blue:
-                        //         // Round needed for threejs
-                        //         this.colorBlue = Math.round(capabilityValue.value);
-                        //         break;
-                        // }
+                        let valuePercentage = 255 * channelValue.value / this.fixtureService.getMaxValueByChannel(this.fixtureService.getChannelByName(channelValue.channelName, this.fixture).fixtureChannel);
+                        switch (capability.color) {
+                            case FixtureCapabilityColor.Red:
+                                // Round needed for threejs
+                                this.colorRed = Math.round(valuePercentage);
+                                break;
+                            case FixtureCapabilityColor.Green:
+                                // Round needed for threejs
+                                this.colorGreen = Math.round(valuePercentage);
+                                break;
+                            case FixtureCapabilityColor.Blue:
+                                // Round needed for threejs
+                                this.colorBlue = Math.round(valuePercentage);
+                                break;
+                        }
                         break;
                     }
                     case FixtureCapabilityType.WheelSlot: {
@@ -94,19 +105,6 @@ export abstract class Fixture3d {
                             this.colorBlue = Math.round(mixedColor.blue);
                         }
 
-                        break;
-                    }
-                    case FixtureCapabilityType.Intensity: {
-                        // TODO take partial intensity channels into account (e.g. ADJ auto spot)
-                        let valuePercentage: number;
-
-                        if(capability.dmxRange.length > 0) {
-                            valuePercentage = (channelValue.value - capability.dmxRange[0]) / ((capability.dmxRange[1] - capability.dmxRange[0]));
-                        } else {
-                            valuePercentage = channelValue.value / this.fixtureService.getMaxValueByChannel(this.fixtureService.getChannelByName(channelValue.channelName, this.fixture).fixtureChannel);
-                        }
-
-                        this.dimmer = valuePercentage * masterDimmerValue;
                         break;
                     }
                 }
