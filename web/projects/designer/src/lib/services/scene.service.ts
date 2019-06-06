@@ -35,10 +35,10 @@ export class SceneService {
     preset.uuid = this.uuidService.getUuid();
     preset.name = 'Preset';
     this.projectService.project.scenes[0].presetUuids.push(preset.uuid);
-
+    
     this.projectService.project.presets.push(preset);
-
     this.presetService.selectedPreset = preset;
+    this.presetService.previewPreset = true;
   }
 
   sceneIsSelected(scene: Scene): boolean {
