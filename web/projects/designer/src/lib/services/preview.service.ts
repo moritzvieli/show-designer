@@ -84,9 +84,9 @@ export class PreviewService {
     return presets;
   }
 
-  private mixChannelValue(existingChannelValues: FixtureChannelValue[], channelValue: FixtureChannelValue, intensityPercentage: number) {
+  private mixChannelValue(existingChannelValues: FixtureChannelValue[], channelValue: FixtureChannelValue, intensityPercentage: number, defaultValue: number = 0) {
     let newValue: number = channelValue.value;
-    let existingValue: number = 0;
+    let existingValue: number = defaultValue;
 
     if (intensityPercentage < 1) {
       // We need to mix a possibly existing value (or the default value 0) with the new value (fading)
@@ -240,12 +240,18 @@ export class PreviewService {
                           presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity)) {
                         // intensity and colorIntensity (dimmer and color)
                         let valuePercentage = presetCapabilityValue.valuePercentage;
+                        let defaultValue = 0;
+
+                        if(presetCapabilityValue.type == FixtureCapabilityType.Intensity) {
+                          // the dimmer starts at full brightness
+                          defaultValue = 255;
+                        }
 
                         // brightness property
                         if (channelCapabilities.length == 1) {
                           // the only capability in this channel
                           let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, this.fixtureService.getMaxValueByChannel(channel) * valuePercentage);
-                          this.mixChannelValue(values, channelValue, intensityPercentage);
+                          this.mixChannelValue(values, channelValue, intensityPercentage, defaultValue);
 
                           if (presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity) {
                             hasColor = true;
@@ -254,7 +260,7 @@ export class PreviewService {
                           // more than one capability in the channel
                           if (channelCapability.brightness == 'off' && valuePercentage == 0) {
                             let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, Math.floor((channelCapability.dmxRange[0] + channelCapability.dmxRange[1]) / 2));
-                            this.mixChannelValue(values, channelValue, intensityPercentage);
+                            this.mixChannelValue(values, channelValue, intensityPercentage, defaultValue);
 
                             if (presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity) {
                               hasColor = true;
@@ -262,7 +268,7 @@ export class PreviewService {
                           } else if ((channelCapability.brightnessStart == 'dark' || channelCapability.brightnessStart == 'off') && channelCapability.brightnessEnd == 'bright') {
                             let value = (channelCapability.dmxRange[1] - channelCapability.dmxRange[0]) * valuePercentage + channelCapability.dmxRange[0];
                             let channelValue = new FixtureChannelValue(channelFineIndex.channelName, template.uuid, value);
-                            this.mixChannelValue(values, channelValue, intensityPercentage);
+                            this.mixChannelValue(values, channelValue, intensityPercentage, defaultValue);
 
                             if (presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity) {
                               hasColor = true;

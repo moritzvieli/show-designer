@@ -11,6 +11,7 @@ export abstract class Fixture3d {
     fixture: Fixture;
     fixtureTemplate: FixtureTemplate;
     fixtureSupportsDimmer: boolean = false;
+    fixtureHasColorWheel: boolean = false;
 
     scene: any;
 
@@ -40,13 +41,28 @@ export abstract class Fixture3d {
             emissive: 0xff00ff
         });
 
-        // Evaluate, whether this fixture supports a dimmer
+        // evaluate, various capabilities of this fixture
         for (let channelFineIndex of this.fixtureService.getChannelsByFixture(fixture)) {
             let channel = channelFineIndex.fixtureChannel;
 
-            if (channel && this.fixtureService.channelHasCapabilityType(channel, FixtureCapabilityType.Intensity)) {
-                this.fixtureSupportsDimmer = true;
-                break;
+            if (channel) {
+                let capabilities = this.fixtureService.getCapabilitiesByChannel(channel);
+
+                if (channel && this.fixtureService.channelHasCapabilityType(channel, FixtureCapabilityType.Intensity)) {
+                    this.fixtureSupportsDimmer = true;
+                }
+
+                for (let capability of capabilities) {
+                    if (capability.type == FixtureCapabilityType.WheelSlot) {
+                        let wheel = this.fixtureService.getWheelByName(this.fixtureTemplate, capability.wheel || channelFineIndex.channelName);
+                        let wheelSlots = this.fixtureService.getWheelSlots(wheel, capability.slotNumber);
+                        for (let slot of wheelSlots) {
+                            if (slot.colors.length > 0) {
+                                this.fixtureHasColorWheel = true;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -57,6 +73,12 @@ export abstract class Fixture3d {
         this.colorRed = 255;
         this.colorGreen = 255;
         this.colorBlue = 255;
+
+        if (!this.fixtureHasColorWheel) {
+            this.colorRed = 0;
+            this.colorGreen = 0;
+            this.colorBlue = 0;
+        }
 
         if (this.fixtureSupportsDimmer) {
             this.dimmer = masterDimmerValue;
@@ -69,7 +91,7 @@ export abstract class Fixture3d {
                 switch (capability.type) {
                     case FixtureCapabilityType.Intensity: {
                         let valuePercentage: number;
-                        if(capability.dmxRange.length > 0) {
+                        if (capability.dmxRange.length > 0) {
                             valuePercentage = (channelValue.value - capability.dmxRange[0]) / ((capability.dmxRange[1] - capability.dmxRange[0]));
                         } else {
                             valuePercentage = channelValue.value / this.fixtureService.getMaxValueByChannel(this.fixtureService.getChannelByName(channelValue.channelName, this.fixture).fixtureChannel);
