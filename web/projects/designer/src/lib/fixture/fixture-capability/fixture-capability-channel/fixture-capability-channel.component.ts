@@ -83,8 +83,12 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     return this.presetService.getChannelValue(this._channel.channelName, this.template.uuid);
   }
 
-  setValue(value: any) {
-    if (isNaN(value) || value < this.getRangeMin() || value > this.getRangeMax()) {
+  setValue(value: any, ignoreCapabilityRange: boolean = false) {
+    if (isNaN(value)) {
+      return;
+    }
+
+    if (!ignoreCapabilityRange && (value < this.getRangeMin() || value > this.getRangeMax())) {
       return;
     }
 
@@ -106,7 +110,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
 
   changeActive(active: boolean) {
     if (active) {
-      this.setValue(this.getDefaultValue());
+      this.setValue(this.getDefaultValue(), true);
     } else {
       this.presetService.deleteChannelValue(this._channel.channelName, this.template.uuid);
       this.selectedCapability = this._channel.capabilities[0];
@@ -115,7 +119,11 @@ export class FixtureCapabilityChannelComponent implements OnInit {
 
   capabilitySelected() {
     // select the center value of the selected capability
-    this.setValue(this.selectedCapability.centerValue);
+    if (this.capabilityHasRange) {
+      this.setValue(this.selectedCapability.capability.dmxRange[0], true);
+    } else {
+      this.setValue(this.selectedCapability.centerValue, true);
+    }
   }
 
 }
