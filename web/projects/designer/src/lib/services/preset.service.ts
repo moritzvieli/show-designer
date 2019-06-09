@@ -7,10 +7,10 @@ import { Subject } from 'rxjs';
 import { ProjectService } from './project.service';
 import { FixtureService } from './fixture.service';
 import { FixtureChannelValue } from '../models/fixture-channel-value';
-import { FixtureCapabilityType, FixtureCapabilityColor, FixtureCapability } from '../models/fixture-capability';
+import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture-capability';
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
-import { FixtureTemplate } from '../models/fixture-template';
-import { FixtureChannel } from '../models/fixture-channel';
+import { CachedFixtureChannel } from '../models/cached-fixture-channel';
+import { CachedFixtureCapability } from '../models/cached-fixture-capability';
 
 @Injectable({
   providedIn: 'root'
@@ -198,14 +198,14 @@ export class PresetService {
     }
   }
 
-  getApproximatedColorWheelCapability(preset: Preset, wheelChannelName: string, fixtureTemplate: FixtureTemplate): FixtureCapability {
+  getApproximatedColorWheelCapability(preset: Preset, cachedChannel: CachedFixtureChannel): CachedFixtureCapability {
     // return an approximated wheel slot channel capability, if a color or a slot on a different
     // wheel has been selected
     let colorRed: number;
     let colorGreen: number;
     let colorBlue: number;
     let lowestDiff = Number.MAX_VALUE;
-    let lowestDiffCapability: FixtureCapability;
+    let lowestDiffCapability: CachedFixtureCapability;
     let capabilityValue: FixtureCapabilityValue;
 
     capabilityValue = this.getCapabilityValue(preset, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Red);
@@ -221,18 +221,15 @@ export class PresetService {
       colorBlue = 255 * capabilityValue.valuePercentage;
     }
 
-    if (!colorRed) {
+    if (!colorRed && !colorGreen && !colorBlue) {
       // no color found -> search the first color wheel
       // TODO
     }
 
     if (colorRed != undefined && colorGreen != undefined && colorBlue != undefined) {
-      let capabilities = this.fixtureService.getCapabilitiesByChannelName(wheelChannelName, fixtureTemplate.uuid);
-
-      for (let capability of capabilities) {
-        if (capability.slotNumber) {
-          let wheel = this.fixtureService.getWheelByName(fixtureTemplate, capability.wheel || wheelChannelName);
-          let mixedColor = this.fixtureService.getMixedWheelSlotColor(wheel, capability.slotNumber);
+      for (let capability of cachedChannel.capabilities) {
+        if (capability.capability.slotNumber) {
+          let mixedColor = this.fixtureService.getMixedWheelSlotColor(capability.wheel, capability.capability.slotNumber);
           if (mixedColor) {
             let diff = Math.abs(mixedColor.red - colorRed) + Math.abs(mixedColor.green - colorGreen) + Math.abs(mixedColor.blue - colorBlue);
             if (diff < lowestDiff) {

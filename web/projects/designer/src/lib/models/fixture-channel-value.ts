@@ -4,10 +4,13 @@ export class FixtureChannelValue {
     fixtureTemplateUuid: string;
     value: number;
 
-    constructor(channelName?: string, fixtureTemplateUuid?: string, value?: number) {
-        this.channelName = channelName;
-        this.fixtureTemplateUuid = fixtureTemplateUuid;
-        this.value = value;
+    constructor(data?: any) {
+        if(!data) {
+            return;
+        }
+        this.channelName = data.channelName;
+        this.fixtureTemplateUuid = data.fixtureTemplateUuid;
+        this.value = data.value;
     }
 
 }

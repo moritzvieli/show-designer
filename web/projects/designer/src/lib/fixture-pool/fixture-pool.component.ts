@@ -69,7 +69,7 @@ export class FixturePoolComponent implements OnInit {
   selectFixture(fixture: Fixture) {
     this.selectedFixtureTemplate = undefined;
     if (fixture) {
-      this.selectedFixtureTemplate = this.fixtureService.getTemplateByFixture(fixture);
+      this.selectedFixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
     }
     this.selectedFixture = fixture;
   }
@@ -100,7 +100,7 @@ export class FixturePoolComponent implements OnInit {
       let occupiedChannels = 0;
 
       for (let fixture of this.fixturePool) {
-        let mode = this.fixtureService.getModeByFixture(fixture);
+        let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
 
         if (i >= fixture.dmxFirstChannel && i < fixture.dmxFirstChannel + mode.channels.length) {
           // this channel is already occupied by a fixture -> move forward to the end of the fixture
@@ -137,7 +137,7 @@ export class FixturePoolComponent implements OnInit {
       // add the same mode as an existing fixture, if available
       let existingModeShortName: string
       for (let existingFixture of this.fixturePool) {
-        let existingTemplate = this.fixtureService.getTemplateByFixture(existingFixture);
+        let existingTemplate = this.fixtureService.getTemplateByUuid(existingFixture.fixtureTemplateUuid);
 
         if (existingTemplate == template) {
           existingModeShortName = existingFixture.modeShortName;
@@ -151,7 +151,7 @@ export class FixturePoolComponent implements OnInit {
         fixture.modeShortName = template.modes[0].shortName || template.modes[0].name;
       }
 
-      const mode = this.fixtureService.getModeByFixture(fixture);
+      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
       const firstChannel = this.getNextFreeDmxChannel(mode.channels.length);
 
       if (firstChannel >= 0) {
@@ -172,7 +172,7 @@ export class FixturePoolComponent implements OnInit {
   }
 
   addCopy(originalFixture: Fixture) {
-    let template = this.fixtureService.getTemplateByFixture(originalFixture);
+    let template = this.fixtureService.getTemplateByUuid(originalFixture.fixtureTemplateUuid);
     let fixture = new Fixture(template);
     fixture.uuid = this.uuidService.getUuid();
     fixture.modeShortName = originalFixture.modeShortName;
@@ -201,7 +201,7 @@ export class FixturePoolComponent implements OnInit {
 
   channelOccupied(index: number): boolean {
     for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(fixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
 
       if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
         return true;
@@ -223,7 +223,7 @@ export class FixturePoolComponent implements OnInit {
 
   channelOccupiedEnd(index: number): boolean {
     for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(fixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
 
       if (index == fixture.dmxFirstChannel + mode.channels.length - 1) {
         return true;
@@ -237,7 +237,7 @@ export class FixturePoolComponent implements OnInit {
     let occupiedFixture: Fixture;
 
     for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(fixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
 
       if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
         if (occupiedFixture) {
@@ -263,7 +263,7 @@ export class FixturePoolComponent implements OnInit {
     // find a dragging fixture and select it, but don't change the selection, if the
     // currently selected fixture might also be selected (on overlapped fixtures)
     for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(fixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
 
       if (selectedIndex >= fixture.dmxFirstChannel && selectedIndex <= fixture.dmxFirstChannel + mode.channels.length - 1) {
         if (this.selectedFixture == fixture) {
@@ -293,7 +293,7 @@ export class FixturePoolComponent implements OnInit {
     }
 
     if (index >= this.selectedFixture.dmxFirstChannel) {
-      let mode = this.fixtureService.getModeByFixture(this.selectedFixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(this.selectedFixture.fixtureTemplateUuid), this.selectedFixture);
 
       if (index < this.selectedFixture.dmxFirstChannel + mode.channels.length) {
         return true;
@@ -315,7 +315,7 @@ export class FixturePoolComponent implements OnInit {
     // perform dragging
     const selectedIndex = event.target.dataset.index;
 
-    if (this.channelDragFixture && selectedIndex - this.channelDragOffset >= 0 && selectedIndex - this.channelDragOffset + this.fixtureService.getModeByFixture(this.channelDragFixture).channels.length - 1 <= 511) {
+    if (this.channelDragFixture && selectedIndex - this.channelDragOffset >= 0 && selectedIndex - this.channelDragOffset + this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(this.channelDragFixture.fixtureTemplateUuid), this.channelDragFixture).channels.length - 1 <= 511) {
       this.channelDragFixture.dmxFirstChannel = selectedIndex - this.channelDragOffset;
     }
   }
@@ -337,10 +337,11 @@ export class FixturePoolComponent implements OnInit {
 
     this.projectService.project.fixtures = this.fixturePool;
 
+    this.fixtureService.updateCachedFixtures();
+
     this.presetService.removeDeletedFixtures();
     this.previewService.updateFixtureSetup();
     this.presetService.updateFixtureSelection();
-
     this.presetService.fixtureSelectionChanged.next();
 
     this.onClose.next(1);

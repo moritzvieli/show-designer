@@ -1,38 +1,43 @@
 <div class="card border-secondary panel h-100">
-    <div class="card-body capability-container d-flex h-100" style="overflow-y: hidden;">
-  
-      <!-- h-100 needs to be applied in chrome to avoid performance issues with many layouts (reflows)
+  <div class="card-body capability-container d-flex h-100" style="overflow-y: hidden;">
+
+    <!-- h-100 needs to be applied in chrome to avoid performance issues with many layouts (reflows)
       during sliding. But the class must not be applied e.g. in Safari, because the bottom margin is not correct
       anymore afterwards. -->
-      <div *ngIf="presetService.selectedPreset" class="row m-0 pl-3" [class.h-100]="isChrome()">
-  
-        <!-- Template selection -->
-        <div *ngIf="templates.length > 1" class="col col-auto p-3 my-3 mr-3"
-          style="height: calc(100% - 2rem); border: solid 1px #444; border-right: none">
-          <div *ngFor="let template of templates; let i = index" class="form-check">
-            <input type="checkbox" class="form-check-input" id="capabilityFilter{{ i }}"
-              [ngModel]="selectedTemplates.indexOf(template) >= 0"
-              (ngModelChange)="changeTemplateSelection($event, template)">
-            <label class="form-check-label" for="capabilityFilter{{ i }}">
-              {{ template.name }}
-            </label>
-          </div>
+    <div *ngIf="presetService.selectedPreset" class="row m-0 pl-3" [class.h-100]="isChrome()">
+
+      <!-- Template selection -->
+      <div *ngIf="templates.length > 1" class="col col-auto p-3 my-3 mr-3"
+        style="height: calc(100% - 2rem); border: solid 1px #444; border-right: none">
+        <div *ngFor="let template of templates; let i = index" class="form-check">
+          <input type="checkbox" class="form-check-input" id="capabilityFilter{{ i }}"
+            [ngModel]="selectedTemplates.indexOf(template) >= 0"
+            (ngModelChange)="changeTemplateSelection($event, template)">
+          <label class="form-check-label" for="capabilityFilter{{ i }}">
+            {{ template.name }}
+          </label>
         </div>
-  
-        <!-- All channel capabilities -->
-        <div *ngFor="let channelCapability of channelCapabilities; let i = index" class="col col-auto p-0 my-3 mr-3"
+      </div>
+
+      <!-- All channel capabilities -->
+      <ng-container *ngFor="let entry of channelCapabilities | keyvalue; let i = index">
+        <div *ngFor="let capability of entry.value; let j = index" class="col col-auto p-0 my-3 mr-3"
           style="height: calc(100% - 2rem)">
-          <app-fixture-capability-channel [channel]="channelCapability" [capabilityIndex]="i"></app-fixture-capability-channel>
+
+          <app-fixture-capability-channel [template]="entry.key" [channel]="capability"
+            [capabilityIndex]="i * 10000 + j">
+          </app-fixture-capability-channel>
         </div>
-  
-        <!-- Fix spacing on the end -->
-        <div *ngIf="templates.length > 1" class="col col-auto p-0 my-3 mr-3">&nbsp;</div>
-  
-      </div>
-  
-      <div *ngIf="presetService.selectedPreset && templates == 0" class="m-auto">
-        <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures-selected' | translate }}</p>
-      </div>
-  
+      </ng-container>
+
+      <!-- Fix spacing on the end -->
+      <div *ngIf="templates.length > 1" class="col col-auto p-0 my-3 mr-3">&nbsp;</div>
+
     </div>
+
+    <div *ngIf="presetService.selectedPreset && templates == 0" class="m-auto">
+      <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures-selected' | translate }}</p>
+    </div>
+
   </div>
+</div>

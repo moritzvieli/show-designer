@@ -4,7 +4,9 @@ import { FixtureWheel } from '../../../models/fixture-wheel';
 import { FixtureTemplate } from '../../../models/fixture-template';
 import { FixtureService } from '../../../services/fixture.service';
 import { FixtureCapability, FixtureCapabilityType } from '../../../models/fixture-capability';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
+import { CachedFixtureCapability } from '../../../models/cached-fixture-capability';
 
 @Component({
   selector: 'app-fixture-capability-color-wheel',
@@ -14,21 +16,21 @@ import { Observable, Subscription } from 'rxjs';
 export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
 
   _fixtureTemplate: FixtureTemplate;
-  _channelName: string;
+  _channel: CachedFixtureChannel;
   wheelName: string;
   wheel: FixtureWheel;
-  slotCapabilities: FixtureCapability[];
+  slotCapabilities: CachedFixtureCapability[];
   colorChangeSubscription: Subscription;
 
   @Input()
-  set fixtureTemplate(value: FixtureTemplate) {
+  set template(value: FixtureTemplate) {
     this._fixtureTemplate = value;
     this.update();
   }
 
   @Input()
-  set channelName(value: string) {
-    this._channelName = value;
+  set channel(value: CachedFixtureChannel) {
+    this._channel = value;
     this.update();
   }
 
@@ -55,28 +57,26 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
   }
 
   private update() {
-    if (this._fixtureTemplate && this._channelName) {
-      let channelCapabilities = this.fixtureService.getCapabilitiesByChannelName(this._channelName, this._fixtureTemplate.uuid);
+    if (this._fixtureTemplate && this._channel) {
       this.wheelName = undefined;
       this.slotCapabilities = [];
 
       // get the wheel name
-      for (let capability of channelCapabilities) {
+      for (let capability of this._channel.capabilities) {
         if (capability.wheel) {
-          this.wheelName = capability.wheel;
+          this.wheelName = capability.wheelName;
           break;
         }
       }
       if (!this.wheelName) {
-        this.wheelName = this._channelName;
+        this.wheelName = this._channel.channelName;
       }
 
       this.wheel = this.fixtureService.getWheelByName(this._fixtureTemplate, this.wheelName);
 
       // calculate all available slots
-      let capabilities = this.fixtureService.getCapabilitiesByChannelName(this._channelName, this._fixtureTemplate.uuid);
-      for (let capability of capabilities) {
-        if (capability.type == FixtureCapabilityType.WheelSlot) {
+      for (let capability of this._channel.capabilities) {
+        if (capability.capability.type == FixtureCapabilityType.WheelSlot) {
           this.slotCapabilities.push(capability);
         }
       }
@@ -85,14 +85,13 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.detectChanges();
   }
 
-  getCapabilityColorStyle(capability: FixtureCapability): any {
-    let wheelSlots = this.fixtureService.getWheelSlots(this.wheel, capability.slotNumber);
+  getCapabilityColorStyle(capability: CachedFixtureCapability): any {
     let property: string = 'background-color';
     let value: string = 'black';
     let colors: string[] = [];
 
-    if (wheelSlots) {
-      for (let slot of wheelSlots) {
+    if (capability.wheelSlots) {
+      for (let slot of capability.wheelSlots) {
         // calculate the color based on the color wheel slot
         if (slot.colors.length > 0) {
           colors = colors.concat(slot.colors);
@@ -141,9 +140,9 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
     } else {
       // no slot is selected and the capability is inactive
       // -> show the approx. color, if a color or a similar slot from a different wheel has been selected
-      let approximatedCapability = this.presetService.getApproximatedColorWheelCapability(this.presetService.selectedPreset, this._channelName, this._fixtureTemplate);
+      let approximatedCapability = this.presetService.getApproximatedColorWheelCapability(this.presetService.selectedPreset, this._channel);
       if (approximatedCapability) {
-        return slotNumber == approximatedCapability.slotNumber;
+        return slotNumber == approximatedCapability.capability.slotNumber;
       } else {
         return false;
       }

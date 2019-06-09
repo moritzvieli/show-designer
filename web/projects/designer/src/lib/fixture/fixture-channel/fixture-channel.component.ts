@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { PresetService } from '../../services/preset.service';
 import { FixtureService } from '../../services/fixture.service';
 import { FixtureTemplate } from '../../models/fixture-template';
-import { FixtureChannelFineIndex } from '../../models/fixture-channel-fine-index';
 import { FixtureMode } from '../../models/fixture-mode';
+import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 
 @Component({
   selector: 'app-fixture-channel',
@@ -12,7 +12,7 @@ import { FixtureMode } from '../../models/fixture-mode';
 })
 export class FixtureChannelComponent implements OnInit {
 
-  public channelCapabilities: FixtureChannelFineIndex[] = [];
+  public channelCapabilities: Map<FixtureTemplate, CachedFixtureChannel[]> = new Map<FixtureTemplate, CachedFixtureChannel[]>();
   public templates: FixtureTemplate[] = [];
   public selectedTemplates: FixtureTemplate[] = [];
 
@@ -39,21 +39,20 @@ export class FixtureChannelComponent implements OnInit {
     for (let template of this.selectedTemplates) {
       let modes: FixtureMode[] = [];
       for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-        let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-        let mode = this.fixtureService.getModeByFixture(fixture);
-        if (modes.indexOf(mode) < 0) {
-          modes.push(mode);
+        let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+        if (modes.indexOf(fixture.mode) < 0) {
+          modes.push(fixture.mode);
         }
       }
       calculatedTemplateModes.set(template, modes);
     }
 
     // calculate all required channels from the modes
-    this.channelCapabilities = [];
+    this.channelCapabilities = new Map<FixtureTemplate, CachedFixtureChannel[]>();
     calculatedTemplateModes.forEach((modes: FixtureMode[], template: FixtureTemplate) => {
-      let templateChannels: FixtureChannelFineIndex[] = [];
+      let templateChannels: CachedFixtureChannel[] = [];
       for (let mode of modes) {
-        let channels = this.fixtureService.getChannelsByTemplateMode(template, mode);
+        let channels = this.fixtureService.getCachedChannels(template, mode);
         for (let channel of channels) {
           // only add the channel, if no channel with the same name has already been added
           // (e.g. a fine channel)
@@ -62,7 +61,7 @@ export class FixtureChannelComponent implements OnInit {
           }
         }
       }
-      this.channelCapabilities = this.channelCapabilities.concat(templateChannels);
+      this.channelCapabilities.set(template, templateChannels);
     });
 
     this.changeDetectorRef.detectChanges();
@@ -73,7 +72,7 @@ export class FixtureChannelComponent implements OnInit {
     this.templates = [];
     for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-      let template = this.fixtureService.getTemplateByFixture(fixture);
+      let template = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
 
       if (this.templates.indexOf(template) < 0) {
         this.templates.push(template);

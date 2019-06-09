@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, ElementRef, ViewChild } from '@angular/core';
-import { FixtureChannelFineIndex } from '../../../models/fixture-channel-fine-index';
-import { FixtureService } from '../../../services/fixture.service';
-import { FixtureCapability } from '../../../models/fixture-capability';
 import { PresetService } from '../../../services/preset.service';
+import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
+import { CachedFixtureCapability } from '../../../models/cached-fixture-capability';
+import { FixtureTemplate } from '../../../models/fixture-template';
 
 @Component({
   selector: 'app-fixture-capability-channel',
@@ -14,12 +14,14 @@ export class FixtureCapabilityChannelComponent implements OnInit {
 
   @ViewChild('sliderValue') sliderValue: ElementRef;
 
-  capabilities: FixtureCapability[];
-  selectedCapability: FixtureCapability;
-  _channel: FixtureChannelFineIndex;
+  selectedCapability: CachedFixtureCapability;
+  _channel: CachedFixtureChannel;
 
   @Input()
-  set channel(value: FixtureChannelFineIndex) {
+  template: FixtureTemplate;
+
+  @Input()
+  set channel(value: CachedFixtureChannel) {
     this._channel = value;
     this.updateChannel();
   }
@@ -28,19 +30,17 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   capabilityIndex: number;
 
   constructor(
-    private fixtureService: FixtureService,
     private presetService: PresetService
   ) {
   }
 
   private updateChannel() {
-    this.capabilities = this.fixtureService.getCapabilitiesByChannel(this._channel.fixtureChannel);
-    this.selectedCapability = this.capabilities[0];
+    this.selectedCapability = this._channel.capabilities[0];
 
     let currentValue = this.getValue();
     if (currentValue >= 0) {
-      for (let capability of this.capabilities) {
-        if (capability.dmxRange.length > 0 && Math.floor((capability.dmxRange[0] + capability.dmxRange[1]) / 2) == currentValue) {
+      for (let capability of this._channel.capabilities) {
+        if (capability.capability.dmxRange.length > 0 && capability.centerValue == currentValue) {
           this.selectedCapability = capability;
           break;
         }
@@ -49,11 +49,11 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   }
 
   capabilityHasRange(): boolean {
-    if (this.capabilities.length == 1) {
+    if (this._channel.capabilities && this._channel.capabilities.length == 1) {
       return true;
     }
 
-    if (this.selectedCapability.angleStart) {
+    if (this.selectedCapability && this.selectedCapability.capability.angleStart) {
       return true;
     }
 
@@ -61,26 +61,26 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   }
 
   getRangeMin(): number {
-    if (this.selectedCapability.dmxRange.length > 0) {
-      return this.selectedCapability.dmxRange[0];
+    if (this.selectedCapability.capability.dmxRange.length > 0) {
+      return this.selectedCapability.capability.dmxRange[0];
     }
 
     return 0;
   }
 
   getRangeMax(): number {
-    if (this.selectedCapability.dmxRange.length > 0) {
-      return this.selectedCapability.dmxRange[1];
+    if (this.selectedCapability.capability.dmxRange.length > 0) {
+      return this.selectedCapability.capability.dmxRange[1];
     }
 
-    return this.fixtureService.getMaxValueByChannel(this._channel.fixtureChannel);
+    return this._channel.maxValue;
   }
 
   ngOnInit() {
   }
 
   getValue(): number {
-    return this.presetService.getChannelValue(this._channel.channelName, this._channel.fixtureTemplate.uuid);
+    return this.presetService.getChannelValue(this._channel.channelName, this.template.uuid);
   }
 
   setValue(value: any) {
@@ -88,7 +88,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       return;
     }
 
-    this.presetService.setChannelValue(this._channel.channelName, this._channel.fixtureTemplate.uuid, value);
+    this.presetService.setChannelValue(this._channel.channelName, this.template.uuid, value);
     if (this.sliderValue) {
       // update the value without change detector for performance reasons
       // TODO use the same technique in the dimmer/pan/tilt/color sliders
@@ -97,8 +97,8 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   }
 
   getDefaultValue(): number {
-    if (this._channel.fixtureChannel.defaultValue) {
-      return this.fixtureService.getDefaultValueByChannel(this._channel.fixtureChannel);
+    if (this._channel.defaultValue) {
+      return this._channel.defaultValue;
     }
 
     return 0;
@@ -108,14 +108,14 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     if (active) {
       this.setValue(this.getDefaultValue());
     } else {
-      this.presetService.deleteChannelValue(this._channel.channelName, this._channel.fixtureTemplate.uuid);
-      this.selectedCapability = this.capabilities[0];
+      this.presetService.deleteChannelValue(this._channel.channelName, this.template.uuid);
+      this.selectedCapability = this._channel.capabilities[0];
     }
   }
 
   capabilitySelected() {
     // select the center value of the selected capability
-    this.setValue(Math.floor((this.selectedCapability.dmxRange[0] + this.selectedCapability.dmxRange[1]) / 2));
+    this.setValue(this.selectedCapability.centerValue);
   }
 
 }

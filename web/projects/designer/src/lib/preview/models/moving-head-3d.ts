@@ -8,6 +8,7 @@ import { PreviewMeshService } from '../../services/preview-mesh.service';
 import { map } from 'rxjs/operators';
 import { FixtureService } from '../../services/fixture.service';
 import { FixtureChannelValue } from '../../models/fixture-channel-value';
+import { CachedFixture } from '../../models/cached-fixture';
 
 export class MovingHead3d extends Fixture3d {
 
@@ -204,7 +205,7 @@ export class MovingHead3d extends Fixture3d {
         this.isLoaded = true;
     }
 
-    constructor(fixtureService: FixtureService, previewMeshService: PreviewMeshService, fixture: Fixture, scene: any) {
+    constructor(fixtureService: FixtureService, previewMeshService: PreviewMeshService, fixture: CachedFixture, scene: any) {
         super(fixtureService, fixture, scene);
 
         forkJoin(
@@ -243,21 +244,20 @@ export class MovingHead3d extends Fixture3d {
 
         // Apply the known property values
         for (let channelValue of channelValues) {
-            let capability = this.fixtureService.getCapabilityInValue(channelValue.channelName, channelValue.fixtureTemplateUuid, channelValue.value);
-            let channel = this.fixtureService.getChannelByName(channelValue.channelName, this.fixture);
-
+            let channel = this.getChannelByName(channelValue.channelName);
+            let capability = this.getCapabilityInValue(channel, channelValue.value);
             if (capability) {
-                switch (capability.type) {
+                switch (capability.capability.type) {
                     case FixtureCapabilityType.Pan: {
-                        panStart = this.fixtureService.getRotationAngleDeg(capability.angleStart) || 0;
-                        panEnd = this.fixtureService.getRotationAngleDeg(capability.angleEnd) || 540;
-                        this.pan = channelValue.value / this.fixtureService.getMaxValueByChannel(channel.fixtureChannel);
+                        panStart = this.fixtureService.getRotationAngleDeg(capability.capability.angleStart) || 0;
+                        panEnd = this.fixtureService.getRotationAngleDeg(capability.capability.angleEnd) || 540;
+                        this.pan = channelValue.value / channel.maxValue;
                         break;
                     }
                     case FixtureCapabilityType.Tilt: {
-                        tiltStart = this.fixtureService.getRotationAngleDeg(capability.angleStart) || 0;
-                        tiltEnd = this.fixtureService.getRotationAngleDeg(capability.angleEnd) || 2700;
-                        this.tilt = channelValue.value / this.fixtureService.getMaxValueByChannel(channel.fixtureChannel);
+                        tiltStart = this.fixtureService.getRotationAngleDeg(capability.capability.angleStart) || 0;
+                        tiltEnd = this.fixtureService.getRotationAngleDeg(capability.capability.angleEnd) || 2700;
+                        this.tilt = channelValue.value / channel.maxValue;
                         break;
                     }
                 }
@@ -265,25 +265,25 @@ export class MovingHead3d extends Fixture3d {
         }
 
         // Update the position
-        switch (this.fixture.positioning) {
+        switch (this.fixture.fixture.positioning) {
             case Positioning.topFront: {
                 this.objectGroup.rotation.x = THREE.Math.degToRad(0);
-                this.objectGroup.position.set(this.fixture.positionX, this.fixture.positionY - 13, this.fixture.positionZ);
+                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
                 break;
             }
             case Positioning.bottomFront: {
                 this.objectGroup.rotation.x = THREE.Math.degToRad(180);
-                this.objectGroup.position.set(this.fixture.positionX, this.fixture.positionY + 13, this.fixture.positionZ);
+                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
                 break;
             }
             case Positioning.topBack: {
                 this.objectGroup.rotation.x = THREE.Math.degToRad(0);
-                this.objectGroup.position.set(this.fixture.positionX, this.fixture.positionY - 13, this.fixture.positionZ);
+                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
                 break;
             }
             case Positioning.bottomBack: {
                 this.objectGroup.rotation.x = THREE.Math.degToRad(180);
-                this.objectGroup.position.set(this.fixture.positionX, this.fixture.positionY + 13, this.fixture.positionZ);
+                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
                 break;
             }
         }

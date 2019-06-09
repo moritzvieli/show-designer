@@ -67,10 +67,8 @@ export class PreviewComponent implements AfterViewInit {
     this.fixtures3d = [];
 
     // add all fixtures from the project
-    for (let fixture of this.projectService.project.fixtures) {
-      let template: FixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
-
-      if (template.categories[0] == FixtureType['Moving Head']) {
+    for (let fixture of this.fixtureService.cachedFixtures) {
+      if (fixture.template.categories[0] == FixtureType['Moving Head']) {
         this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
       }
     }
@@ -134,10 +132,10 @@ export class PreviewComponent implements AfterViewInit {
 
     for (let fixture3d of this.fixtures3d) {
       // Update the fixture properties
-      fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture.uuid) || [], this.masterDimmerService.masterDimmerValue);
+      fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture) || [], this.masterDimmerService.masterDimmerValue);
 
       // Select the fixture, if required
-      fixture3d.isSelected = this.previewService.fixtureIsSelected(fixture3d.fixture.uuid, presets);
+      fixture3d.isSelected = this.previewService.fixtureIsSelected(fixture3d.fixture.fixture.uuid, presets);
     }
 
     // TODO enable for monitoring the DMX universes

@@ -5,6 +5,7 @@ import { FixtureService } from '../../services/fixture.service';
 import { FixtureWheel } from '../../models/fixture-wheel';
 import { FixtureTemplate, FixtureType } from '../../models/fixture-template';
 import { FixtureWheelSlotType } from '../../models/fixture-wheel-slot';
+import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 
 @Component({
   selector: 'app-fixture-capability',
@@ -15,7 +16,7 @@ import { FixtureWheelSlotType } from '../../models/fixture-wheel-slot';
 export class FixtureCapabilityComponent implements OnInit {
 
   // map containing the template and the channel name containing the wheel
-  colorWheelChannels: Map<FixtureTemplate, string> = new Map<FixtureTemplate, string>();
+  colorWheelChannels: Map<FixtureTemplate, CachedFixtureChannel> = new Map<FixtureTemplate, CachedFixtureChannel>();
 
   constructor(
     public presetService: PresetService,
@@ -34,9 +35,9 @@ export class FixtureCapabilityComponent implements OnInit {
   ngOnInit() {
   }
 
-  private wheelInList(wheels: Map<FixtureTemplate, string>, template: FixtureTemplate, channelName: string) {
-    wheels.forEach((existingChannelName: string, template: FixtureTemplate) => {
-      if (template == template && existingChannelName == channelName) {
+  private wheelInList(wheels: Map<FixtureTemplate, CachedFixtureChannel>, template: FixtureTemplate, channel: CachedFixtureChannel) {
+    wheels.forEach((existingChannel: CachedFixtureChannel, template: FixtureTemplate) => {
+      if (template == template && existingChannel.channelName == channel.channelName) {
         return true;
       }
     });
@@ -55,22 +56,19 @@ export class FixtureCapabilityComponent implements OnInit {
   }
 
   private updateColorWheels() {
-    this.colorWheelChannels = new Map<FixtureTemplate, string>();
+    this.colorWheelChannels = new Map<FixtureTemplate, CachedFixtureChannel>();
 
     for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-      let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-      let channels = this.fixtureService.getChannelsByFixture(fixture);
-      for (let channelFineIndex of channels) {
-        for (let capability of this.fixtureService.getCapabilitiesByChannelName(channelFineIndex.channelName, channelFineIndex.fixtureTemplate.uuid)) {
-          let wheelName = capability.wheel || channelFineIndex.channelName;
-          let wheel = this.fixtureService.getWheelByName(channelFineIndex.fixtureTemplate, wheelName);
-          if (wheel && wheel.slots && wheel.slots.length > 0) {
-            if (this.wheelHasSlotType(wheel, FixtureWheelSlotType.Color)) {
+      let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+      for (let channel of fixture.channels) {
+        for (let capability of channel.capabilities) {
+          if (capability.wheel && capability.wheelSlots && capability.wheelSlots.length > 0) {
+            if (this.wheelHasSlotType(capability.wheel, FixtureWheelSlotType.Color)) {
               // color wheel
-              if (!this.wheelInList(this.colorWheelChannels, channelFineIndex.fixtureTemplate, channelFineIndex.channelName)) {
-                this.colorWheelChannels.set(channelFineIndex.fixtureTemplate, channelFineIndex.channelName);
+              if (!this.wheelInList(this.colorWheelChannels, fixture.template, channel)) {
+                this.colorWheelChannels.set(fixture.template, channel);
               }
-            } else if (this.wheelHasSlotType(wheel, FixtureWheelSlotType.Gobo)) {
+            } else if (this.wheelHasSlotType(capability.wheel, FixtureWheelSlotType.Gobo)) {
               // gobo wheel
               // TODO
             }
@@ -88,12 +86,13 @@ export class FixtureCapabilityComponent implements OnInit {
   private hasCapabilityType(type: FixtureCapabilityType): boolean {
     // there is at least one channel with at least one intensity capability
     for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-      let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-      let channels = this.fixtureService.getChannelsByFixture(fixture);
-      for (let channelFineIndex of channels) {
-        if (channelFineIndex.fixtureChannel) {
-          if (this.fixtureService.channelHasCapabilityType(channelFineIndex.fixtureChannel, type)) {
-            return true;
+      let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+      for (let channel of fixture.channels) {
+        if (channel.fixtureChannel) {
+          for(let capability of channel.capabilities) {
+            if(capability.capability.type == type) {
+              return true;
+            }
           }
         }
       }
