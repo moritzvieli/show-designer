@@ -391,24 +391,6 @@ export class PreviewService {
     return calculatedFixtures;
   }
 
-  private getDmxValue(value: number, fineValueCount: number, fineIndex: number): number {
-    // return the rounded dmx value in the specified fineness
-    if (fineIndex >= 0) {
-      // a finer value is requested. calculate it by substracting the value
-      // which has been returned on the current level.
-      return this.getDmxValue((value - Math.floor(value)) * 255, fineValueCount - 1, fineIndex - 1);
-    } else {
-      // we reached the required fineness of the value
-      if (fineValueCount > fineIndex + 1) {
-        // there are finer values still available -> floor the current value
-        return Math.floor(value);
-      } else {
-        // there are no finer values available -> round it
-        return Math.round(value);
-      }
-    }
-  }
-
   public setUniverseValues(fixtures: Map<CachedFixture, FixtureChannelValue[]>, masterDimmerValue: number) {
     // Reset all DMX universes
     for (let universe of this.universeService.universes) {
@@ -424,19 +406,18 @@ export class PreviewService {
       let universe: Universe = this.universeService.getUniverseByUuid(cachedFixture.fixture.dmxUniverseUuid);
 
       // loop over each channel for this fixture
-      for (let channelIndex = 0; channelIndex < cachedFixture.channels.length; channelIndex++) {
-        let cachedChannel = cachedFixture.channels[channelIndex];
-
-        if (cachedChannel.fixtureChannel) {
-          // loop over each channel value
-          for (let channelValue of channelValues) {
-            // match the channel value with the fixture channel
-            if (cachedChannel.channelName == channelValue.channelName) {
+      for (let channelIndex = 0; channelIndex < cachedFixture.mode.channels.length; channelIndex++) {
+        let channelName = cachedFixture.mode.channels[channelIndex];
+        // match this mode channel with a channel value
+        for (let channelValue of channelValues) {
+          let channel = this.fixtureService.getChannelByName(cachedFixture, channelName);
+          if (channel && channel.fixtureChannel) {
+            let fineIndex = channel.fixtureChannel.fineChannelAliases.indexOf(channelName);
+            if (channel.channelName == channelValue.channelName || fineIndex > -1) {
               let universeChannel = cachedFixture.fixture.dmxFirstChannel + channelIndex;
-
+              let dmxValue = Math.floor(channelValue.value / Math.pow(256, channel.fixtureChannel.fineChannelAliases.length - (fineIndex + 1))) % 256;
               // TODO
-              let value = channelValue.value;
-              // let value = this.getDmxValue(capability.value, channelFineIndices[channelIndex].fineValueCount, channelFineIndices[channelIndex].fineIndex);
+              break;
             }
           }
         }

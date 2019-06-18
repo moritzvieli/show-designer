@@ -1,5 +1,4 @@
 import { FixtureChannel } from "./fixture-channel";
-import { FixtureCapability } from "./fixture-capability";
 import { CachedFixtureCapability } from "./cached-fixture-capability";
 import { FixtureWheel } from "./fixture-wheel";
 
@@ -10,12 +9,6 @@ export class CachedFixtureChannel {
 
     // the name of the channel
     channelName: string;
-
-    // the total fine value count
-    fineValueCount: number = 0;
-
-    // the fine value of the current channel
-    fineIndex: number = -1;
 
     // all channel capabilities
     capabilities: CachedFixtureCapability[] = [];

@@ -6,7 +6,7 @@ export class CachedFixtureCapability {
 
     capability: FixtureCapability;
 
-    // the wheel name, if available
+    // the wheel names, if available
     wheelName: string;
 
     // the wheel, if available

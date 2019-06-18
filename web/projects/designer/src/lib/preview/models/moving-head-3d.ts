@@ -244,7 +244,7 @@ export class MovingHead3d extends Fixture3d {
 
         // Apply the known property values
         for (let channelValue of channelValues) {
-            let channel = this.getChannelByName(channelValue.channelName);
+            let channel = this.fixtureService.getChannelByName(this.fixture, channelValue.channelName);
             let capability = this.getCapabilityInValue(channel, channelValue.value);
             if (capability) {
                 switch (capability.capability.type) {

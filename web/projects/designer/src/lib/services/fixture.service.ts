@@ -216,9 +216,13 @@ export class FixtureService {
   private getFixtureCapability(capability: FixtureCapability, channelName: string, template: FixtureTemplate): CachedFixtureCapability {
     let cachedFixtureCapability = new CachedFixtureCapability();
     cachedFixtureCapability.capability = capability;
-    if(capability.slotNumber) {
+    if (capability.slotNumber) {
       // there is a wheel connected to this capability
-      cachedFixtureCapability.wheelName = capability.wheel || channelName;
+      if (typeof capability.wheel == "string") {
+        cachedFixtureCapability.wheelName = <string>capability.wheel;
+      } else if (Array.isArray(capability.wheel)) {
+        cachedFixtureCapability.wheelName = capability.wheel[0];
+      }
       cachedFixtureCapability.wheel = this.getWheelByName(template, cachedFixtureCapability.wheelName);
       cachedFixtureCapability.wheelSlots = this.getWheelSlots(cachedFixtureCapability.wheel, capability.slotNumber);
       for (let slot of cachedFixtureCapability.wheelSlots) {
@@ -280,6 +284,26 @@ export class FixtureService {
     return undefined;
   }
 
+  // private channelInList(channels: CachedFixtureChannel[], name: string): boolean {
+  //   for (let channel of channels) {
+  //     if (channel.channelName == name) {
+  //       return true;
+  //     }
+  //   }
+
+  //   return false;
+  // }
+
+  getChannelByName(fixture: CachedFixture, channelName: string): CachedFixtureChannel {
+    for (let channel of fixture.channels) {
+      if (channel.channelName == channelName || (channel.fixtureChannel && channel.fixtureChannel.fineChannelAliases.indexOf(channelName) > -1)) {
+        return channel;
+      }
+    }
+
+    return undefined;
+  }
+
   getCachedChannels(template: FixtureTemplate, mode: FixtureMode): CachedFixtureChannel[] {
     let channels: CachedFixtureChannel[] = [];
 
@@ -287,39 +311,29 @@ export class FixtureService {
       return channels;
     }
 
-    for (let channel of mode.channels) {
-      // Check for string channel. It can get creepy for matrix modes
-      if (typeof channel == "string") {
-        let modeChannel: string = <string>channel;
+    for (let availableChannelName in template.availableChannels) {
+      let availableChannel: FixtureChannel = template.availableChannels[availableChannelName];
 
-        for (let availableChannelName in template.availableChannels) {
-          let availableChannel: FixtureChannel = template.availableChannels[availableChannelName];
+      for (let channel of mode.channels) {
+        // check for string channel. It can get creepy for matrix modes
+        if (typeof channel == "string") {
+          let modeChannel: string = <string>channel;
 
-          if (modeChannel == availableChannelName || availableChannel.fineChannelAliases.indexOf(modeChannel) > -1) {
-            // count the fine channel values for this channel in the current mode
-            let fineChannelCount = 0;
-            for (let modeChannel of mode.channels) {
-              if (availableChannel.fineChannelAliases.indexOf(modeChannel) > -1) {
-                fineChannelCount++;
-              }
-            }
-
+          // don't check the fine channels. only add the coarse channel.
+          if (modeChannel == availableChannelName) {
             let cachedFixtureChannel = new CachedFixtureChannel();
             cachedFixtureChannel.fixtureChannel = availableChannel;
             cachedFixtureChannel.channelName = availableChannelName;
-            cachedFixtureChannel.fineValueCount = fineChannelCount;
-            cachedFixtureChannel.fineIndex = availableChannel.fineChannelAliases.indexOf(modeChannel);
             cachedFixtureChannel.capabilities = this.getCapabilitiesByChannel(cachedFixtureChannel.fixtureChannel, availableChannelName, template);
             cachedFixtureChannel.defaultValue = this.getDefaultValueByChannel(cachedFixtureChannel.fixtureChannel);
             cachedFixtureChannel.maxValue = this.getMaxValueByChannel(cachedFixtureChannel.fixtureChannel);
             cachedFixtureChannel.colorWheel = this.getColorWheelByChannel(cachedFixtureChannel, template);
-
             channels.push(cachedFixtureChannel);
           }
+        } else {
+          // null may be passed as a placeholder for an undefined channel
+          channels.push(new CachedFixtureChannel());
         }
-      } else {
-        // null may be passed as a placeholder for an undefined channel
-        channels.push(new CachedFixtureChannel());
       }
     }
 

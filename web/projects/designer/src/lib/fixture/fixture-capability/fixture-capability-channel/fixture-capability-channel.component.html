@@ -32,13 +32,13 @@
       <div *ngIf="capabilityHasRange()" class="col col-auto d-flex mx-auto" [class.pl-0]="_channel.capabilities?.length > 1"
         style="flex-direction: column;">
         <div class="mb-4 w-100 d-flex">
-          <input #sliderValue class="mx-auto" type="text" [ngModel]="getValue() ? getValue() : getDefaultValue()"
+          <input #sliderValue class="mx-auto" type="text" [ngModel]="getValue() >= 0 ? getValue() : getDefaultValue()"
             (ngModelChange)="setValue($event)"
             style="width: 45px; height: 20px; text-align: center; font-size: 12px; font-family: monospace;">
         </div>
 
         <div class="h-100 w-100 d-flex">
-          <mv-slider #slider class="mx-auto" [value]="getValue() ? getValue() : getDefaultValue()"
+          <mv-slider #slider class="mx-auto" [value]="getValue() >= 0 ? getValue() : getDefaultValue()"
             (change)="setValue($event.newValue)" [orientation]="'vertical'" [reversed]="true" style="height: 100%"
             [tooltip]="'hide'" [min]="getRangeMin()" [max]="getRangeMax()" [step]="1"></mv-slider>
         </div>

@@ -6,6 +6,7 @@ import { CompositionSettingsComponent } from './composition-settings/composition
 import { Composition } from '../models/composition';
 import { UuidService } from '../services/uuid.service';
 import { ProjectService } from '../services/project.service';
+import { HotkeyTargetExcludeService } from '../services/hotkey-target-exclude.service';
 
 @Component({
   selector: 'app-timeline',
@@ -28,7 +29,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     private changeDetectorRef: ChangeDetectorRef,
     private modalService: BsModalService,
     private uuidService: UuidService,
-    public projectService: ProjectService
+    public projectService: ProjectService,
+    private hotkeyTargetExcludeService: HotkeyTargetExcludeService
   ) {
     this.timelineService.waveSurferReady.subscribe(() => {
       this.onResize();
@@ -151,6 +153,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.hotkeyTargetExcludeService.exclude(event)) {
+      return;
+    }
+
     if(!this.timelineService.selectedComposition) {
       return;
     }

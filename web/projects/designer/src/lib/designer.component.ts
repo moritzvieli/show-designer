@@ -8,6 +8,7 @@ import { TimelineService } from './services/timeline.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ConfigService } from './services/config.service';
 import { FixturePoolService } from './services/fixture-pool.service';
+import { HotkeyTargetExcludeService } from './services/hotkey-target-exclude.service';
 
 @Component({
   selector: 'lib-designer',
@@ -62,7 +63,8 @@ export class DesignerComponent implements AfterViewInit {
     private projectService: ProjectService,
     private timelineService: TimelineService,
     private configService: ConfigService,
-    private fixturePoolService: FixturePoolService
+    private fixturePoolService: FixturePoolService,
+    private hotkeyTargetExcludeService: HotkeyTargetExcludeService
   ) {
 
     this.translateService.use('en');
@@ -94,14 +96,14 @@ export class DesignerComponent implements AfterViewInit {
         gutterSize: this.splitGutterSizePx,
         onDrag: this.onResize.bind(this)
       });
-  
+
       Split(['#scenes', '#presets', '#preview'], {
         sizes: [15, 15, 70],
         snapOffset: 0,
         gutterSize: this.splitGutterSizePx,
         onDrag: this.onResize.bind(this)
       });
-  
+
       Split(['#capabilities', '#fixtures', '#masterDimmer'], {
         sizes: [74, 18, 8],
         snapOffset: 0,
@@ -109,7 +111,7 @@ export class DesignerComponent implements AfterViewInit {
         onDrag: this.onResize.bind(this),
         minSize: 50
       });
-  
+
       this.onResize();
     });
   }
@@ -170,7 +172,11 @@ export class DesignerComponent implements AfterViewInit {
   }
 
   @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
+  handleKeyboardEvent(event: any) {
+    if (this.hotkeyTargetExcludeService.exclude(event)) {
+      return;
+    }
+
     if (event.key == 'p' && !this.fixturePoolOpened) {
       this.openFixturePool();
 

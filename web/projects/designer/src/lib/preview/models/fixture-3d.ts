@@ -55,16 +55,6 @@ export abstract class Fixture3d {
         }
     }
 
-    protected getChannelByName(channelName: string): CachedFixtureChannel {
-        for (let channel of this.fixture.channels) {
-            if (channel.channelName == channelName) {
-                return channel;
-            }
-        }
-
-        return undefined;
-    }
-
     protected getCapabilityInValue(channel: CachedFixtureChannel, value: number): CachedFixtureCapability {
         for (let capability of channel.capabilities) {
             if (capability.capability.dmxRange.length == 0 || (value >= capability.capability.dmxRange[0] && value <= capability.capability.dmxRange[1])) {
@@ -93,7 +83,7 @@ export abstract class Fixture3d {
         }
 
         for (let channelValue of channelValues) {
-            let channel = this.getChannelByName(channelValue.channelName);
+            let channel = this.fixtureService.getChannelByName(this.fixture, channelValue.channelName);
             let capability = this.getCapabilityInValue(channel, channelValue.value);
             if (capability) {
                 switch (capability.capability.type) {
