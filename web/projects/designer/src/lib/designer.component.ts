@@ -20,8 +20,6 @@ export class DesignerComponent implements AfterViewInit {
 
   private _menuHeightPx: number = 0;
 
-  private fixturePoolOpened: boolean = false;
-
   @Input()
   set menuHeightPx(value: number) {
     this._menuHeightPx = value;
@@ -177,7 +175,7 @@ export class DesignerComponent implements AfterViewInit {
       return;
     }
 
-    if (event.key == 'p' && !this.fixturePoolOpened) {
+    if (event.key == 'p') {
       this.openFixturePool();
 
       // prevent checkboxes being toggled, if in focus e.g.

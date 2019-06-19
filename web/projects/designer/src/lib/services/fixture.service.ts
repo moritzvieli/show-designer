@@ -8,7 +8,7 @@ import { FixtureChannel } from '../models/fixture-channel';
 import { ProjectService } from './project.service';
 import { Observable, forkJoin, of } from 'rxjs';
 import { FixtureCapabilityType, FixtureCapability } from '../models/fixture-capability';
-import { FixtureWheelSlot } from '../models/fixture-wheel-slot';
+import { FixtureWheelSlot, FixtureWheelSlotType } from '../models/fixture-wheel-slot';
 import { FixtureWheel } from '../models/fixture-wheel';
 import { Color } from '../models/color';
 import { CachedFixture } from '../models/cached-fixture';
@@ -165,6 +165,16 @@ export class FixtureService {
     return new Color(r, g, b);
   }
 
+  wheelHasSlotType(wheel: FixtureWheel, slotType: FixtureWheelSlotType): boolean {
+    for (let slot of wheel.slots) {
+      if (slot.type == slotType) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   getWheelByName(template: FixtureTemplate, wheelName: string): FixtureWheel {
     for (let property in template.wheels) {
       if (property == wheelName) {
@@ -222,15 +232,12 @@ export class FixtureService {
         cachedFixtureCapability.wheelName = <string>capability.wheel;
       } else if (Array.isArray(capability.wheel)) {
         cachedFixtureCapability.wheelName = capability.wheel[0];
+      } else {
+        cachedFixtureCapability.wheelName = channelName;
       }
       cachedFixtureCapability.wheel = this.getWheelByName(template, cachedFixtureCapability.wheelName);
       cachedFixtureCapability.wheelSlots = this.getWheelSlots(cachedFixtureCapability.wheel, capability.slotNumber);
-      for (let slot of cachedFixtureCapability.wheelSlots) {
-        if (slot.colors.length > 0) {
-          cachedFixtureCapability.wheelIsColor = true;
-          break;
-        }
-      }
+      cachedFixtureCapability.wheelIsColor = this.wheelHasSlotType(cachedFixtureCapability.wheel, FixtureWheelSlotType.Color);
     }
     cachedFixtureCapability.centerValue = Math.floor((cachedFixtureCapability.capability.dmxRange[0] + cachedFixtureCapability.capability.dmxRange[1]) / 2);
     return cachedFixtureCapability;
@@ -272,12 +279,8 @@ export class FixtureService {
 
   private getColorWheelByChannel(channel: CachedFixtureChannel, template: FixtureTemplate): FixtureWheel {
     for (let channelCapability of channel.capabilities) {
-      if (channelCapability.capability.type == FixtureCapabilityType.WheelSlot) {
-        for (let slot of channelCapability.wheelSlots) {
-          if (slot.colors.length > 0) {
-            return channelCapability.wheel;
-          }
-        }
+      if (channelCapability.wheelIsColor) {
+        return channelCapability.wheel;
       }
     }
 

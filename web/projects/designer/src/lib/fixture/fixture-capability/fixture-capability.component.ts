@@ -45,16 +45,6 @@ export class FixtureCapabilityComponent implements OnInit {
     return false;
   }
 
-  private wheelHasSlotType(wheel: FixtureWheel, slotType: FixtureWheelSlotType): boolean {
-    for (let slot of wheel.slots) {
-      if (slot.type == slotType) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   private updateColorWheels() {
     this.colorWheelChannels = new Map<FixtureTemplate, CachedFixtureChannel>();
 
@@ -63,12 +53,12 @@ export class FixtureCapabilityComponent implements OnInit {
       for (let channel of fixture.channels) {
         for (let capability of channel.capabilities) {
           if (capability.wheel && capability.wheelSlots && capability.wheelSlots.length > 0) {
-            if (this.wheelHasSlotType(capability.wheel, FixtureWheelSlotType.Color)) {
+            if (this.fixtureService.wheelHasSlotType(capability.wheel, FixtureWheelSlotType.Color)) {
               // color wheel
               if (!this.wheelInList(this.colorWheelChannels, fixture.template, channel)) {
                 this.colorWheelChannels.set(fixture.template, channel);
               }
-            } else if (this.wheelHasSlotType(capability.wheel, FixtureWheelSlotType.Gobo)) {
+            } else if (this.fixtureService.wheelHasSlotType(capability.wheel, FixtureWheelSlotType.Gobo)) {
               // gobo wheel
               // TODO
             }
