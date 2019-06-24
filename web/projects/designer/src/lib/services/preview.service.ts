@@ -12,6 +12,8 @@ import { PresetRegionScene } from '../models/preset-region-scene';
 import { Subject } from 'rxjs';
 import { FixtureChannelValue } from '../models/fixture-channel-value';
 import { CachedFixture } from '../models/cached-fixture';
+import { EffectCurve } from '../models/effect-curve';
+import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 
 @Injectable({
   providedIn: 'root'
@@ -294,7 +296,27 @@ export class PreviewService {
     }
   }
 
-  private mixEffects(preset: PresetRegionScene, cachedFixture: CachedFixture, values: FixtureChannelValue[], intensityPercentage: number) {
+  private mixEffects(timeMillis: number, fixtureIndex: number, preset: PresetRegionScene, cachedFixture: CachedFixture, values: FixtureChannelValue[], intensityPercentage: number) {
+    for (let effect of preset.preset.effects) {
+      if (effect instanceof EffectCurve) {
+        let effectCurve = <EffectCurve>effect;
+
+        for (let capability of effectCurve.capabilities) {
+          for (let cachedChannel of cachedFixture.channels) {
+            for (let channelCapability of cachedChannel.capabilities) {
+              if (capability.type == channelCapability.capability.type) {
+                let fixtureChannelValue = new FixtureChannelValue();
+                fixtureChannelValue.channelName = cachedChannel.channelName;
+                fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+                fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex) / 100;
+                this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
+              }
+            }
+          }
+        }
+      }
+    }
+
     // TODO
     // Match all effect capabilities of this preset with the fixture capabilities
     // for (let effect of preset.preset.effects) {
@@ -379,7 +401,7 @@ export class PreviewService {
 
             this.mixCapabilityValues(preset, cachedFixture, values, intensityPercentage);
             this.mixChannelValues(preset, cachedFixture, values, intensityPercentage);
-            this.mixEffects(preset, cachedFixture, values, intensityPercentage);
+            this.mixEffects(timeMillis, fixtureIndex, preset, cachedFixture, values, intensityPercentage);
           }
         }
       }

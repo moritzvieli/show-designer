@@ -2,9 +2,10 @@ import { AnimationService } from './../../services/animation.service';
 import { Subscription, timer } from 'rxjs';
 import { EffectCurve } from './../../models/effect-curve';
 import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
-import { EffectChannel } from '../../models/effect';
 import { PresetService } from '../../services/preset.service';
 import { FixtureService } from '../../services/fixture.service';
+import { FixtureCapability, FixtureCapabilityType, FixtureCapabilityColor } from '../../models/fixture-capability';
+import { FixtureTemplateChannels } from '../../models/fixture-template-channels';
 
 @Component({
   selector: 'app-effect-curve',
@@ -18,27 +19,27 @@ export class EffectCurveComponent implements OnInit {
   private maxWidth: number;
   private maxHeight: number;
 
-  channels: Array<string>;
+  availableCapabilities: FixtureCapability[] = [];
+  availableChannels: FixtureTemplateChannels[] = [];
 
   @Input() curve: EffectCurve;
 
-  // Whether the effect is currently being edited (open) or not
+  // whether the effect is currently being edited (open) or not
   @Input()
   set isSelected(value: boolean) {
     if (value) {
-      // Start the update timer
+      // start the update timer
       if (!this.gridUpdateSubscription) {
         this.gridUpdateSubscription = timer(15, 0).subscribe(() => { this.redraw(); });
       }
     } else {
-      // Stop the update timer
+      // stop the update timer
       if (this.gridUpdateSubscription) {
         this.gridUpdateSubscription.unsubscribe();
         this.gridUpdateSubscription = undefined;
       }
     }
   }
-
 
   @ViewChild('curveGrid') curveGrid: ElementRef;
 
@@ -47,9 +48,11 @@ export class EffectCurveComponent implements OnInit {
     private animationService: AnimationService,
     private fixtureService: FixtureService) {
 
-    //let channelEnum = EffectChannel;
-    let keys = Object.keys(EffectChannel);
-    this.channels = keys;
+    this.presetService.fixtureSelectionChanged.subscribe(() => {
+      this.updateCapabilitiesAndChannels();
+    });
+
+    this.updateCapabilitiesAndChannels();
   }
 
   ngOnInit() {
@@ -79,11 +82,11 @@ export class EffectCurveComponent implements OnInit {
     let count: number = 0;
     let countedDmxChannels: number[] = [];
 
-    for(let fixtureUuid of  this.presetService.selectedPreset.fixtureUuids) {
+    for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
 
-      if(!countedDmxChannels.includes(fixture.dmxFirstChannel)) {
-        count ++;
+      if (!countedDmxChannels.includes(fixture.dmxFirstChannel)) {
+        count++;
         countedDmxChannels.push(fixture.dmxFirstChannel);
       }
     }
@@ -96,7 +99,7 @@ export class EffectCurveComponent implements OnInit {
     this.ctx.fillStyle = "#fff";
     this.ctx.strokeStyle = "#fff";
 
-    // The width of the lines
+    // the width of the lines
     let width: number = 3;
 
     this.ctx.lineWidth = width;
@@ -108,7 +111,7 @@ export class EffectCurveComponent implements OnInit {
     let durationMillis = this.curve.lengthMillis * Math.round(4 - this.curve.lengthMillis / 1000);
     let maxValue = this.curve.maxValue;
 
-    // Draw the curve
+    // draw the curve
     for (var i = -step * 2; i < durationMillis + step * 2; i += step) {
       let val = this.curve.getValueAtMillis(i);
 
@@ -127,10 +130,10 @@ export class EffectCurveComponent implements OnInit {
       oldY = y;
     }
 
-    // Draw the current value
+    // draw the current value
     this.drawCurrentValue(this.animationService.timeMillis % durationMillis, 5, width, durationMillis, maxValue);
 
-    // Draw the phasing values (chase), if required
+    // draw the phasing values (chase), if required
     let phasingCount = 0;
 
     if (this.curve.phasingMillis > 0 && this.presetService.selectedPreset) {
@@ -142,20 +145,84 @@ export class EffectCurveComponent implements OnInit {
     }
   }
 
-  toggleChannel(event: any, channel: EffectChannel) {
-    let enumChannel: any = Object.keys(EffectChannel).find(key => EffectChannel[key] === channel);
+  private updateCapabilitiesAndChannels() {
+    this.availableCapabilities = [];
 
+    if (this.presetService.hasCapabilityDimmer()) {
+      let capability = new FixtureCapability();
+      capability.type = FixtureCapabilityType.Intensity;
+      this.availableCapabilities.push(capability);
+    }
+
+    if (this.presetService.hasCapabilityColor()) {
+      let capability = new FixtureCapability();
+      capability.type = FixtureCapabilityType.ColorIntensity;
+      capability.color = FixtureCapabilityColor.Red;
+      this.availableCapabilities.push(capability);
+
+      capability = new FixtureCapability();
+      capability.type = FixtureCapabilityType.ColorIntensity;
+      capability.color = FixtureCapabilityColor.Green;
+      this.availableCapabilities.push(capability);
+
+      capability = new FixtureCapability();
+      capability.type = FixtureCapabilityType.ColorIntensity;
+      capability.color = FixtureCapabilityColor.Blue;
+      this.availableCapabilities.push(capability);
+    }
+
+    // todo
+    // if (this.presetService.hasCapabilityPanTilt()) {
+      let capability = new FixtureCapability();
+      capability.type = FixtureCapabilityType.Pan;
+      this.availableCapabilities.push(capability);
+
+      capability = new FixtureCapability();
+      capability.type = FixtureCapabilityType.Tilt;
+      this.availableCapabilities.push(capability);
+    // }
+
+    this.availableChannels = [];
+  }
+
+  getCapabilityName(capability: FixtureCapability): string {
+    let name: string = '';
+    name += capability.type;
+    if (capability.color) {
+      name += ', ' + capability.color;
+    }
+    return name;
+  }
+
+  getChannelName(templateChannels: FixtureTemplateChannels, channelIndex: number): string {
+    let template = this.fixtureService.getTemplateByUuid(templateChannels.templateUuid);
+    return template.name += ' - ' + templateChannels.channels[channelIndex];
+  }
+
+  capabilityChecked(): boolean {
+    // TODO
+    return false;
+  }
+
+  toggleCapability(event: any, capability: FixtureCapability) {
     if (event.currentTarget.checked) {
-      // Add the channel
-      this.curve.effectChannels.push(enumChannel);
+      // add the capability
+      this.curve.capabilities.push(capability);
     } else {
       // Remove the channel
-      for (let i = 0; i < this.curve.effectChannels.length; i++) {
-        if (this.curve.effectChannels[i] == enumChannel) {
-          this.curve.effectChannels.splice(i, 1);
+      for (let i = 0; i < this.curve.capabilities.length; i++) {
+        let existingCapability = this.curve.capabilities[i];
+        if (existingCapability.type == capability.type &&
+          (!existingCapability.color) || (existingCapability.color == capability.color)) {
+
+          this.curve.capabilities.splice(i, 1);
         }
       }
     }
+  }
+
+  toggleChannel(event: any, templateChannels: FixtureTemplateChannels, channelIndex: number) {
+    // TODO
   }
 
 }

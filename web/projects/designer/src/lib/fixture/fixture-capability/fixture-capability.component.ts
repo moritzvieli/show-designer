@@ -1,9 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { PresetService } from '../../services/preset.service';
-import { FixtureCapabilityType } from '../../models/fixture-capability';
 import { FixtureService } from '../../services/fixture.service';
-import { FixtureWheel } from '../../models/fixture-wheel';
-import { FixtureTemplate, FixtureType } from '../../models/fixture-template';
+import { FixtureTemplate } from '../../models/fixture-template';
 import { FixtureWheelSlotType } from '../../models/fixture-wheel-slot';
 import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 
@@ -71,49 +69,6 @@ export class FixtureCapabilityComponent implements OnInit {
   private update() {
     this.updateColorWheels();
     this.changeDetectorRef.detectChanges();
-  }
-
-  private hasCapabilityType(type: FixtureCapabilityType): boolean {
-    // there is at least one channel with at least one intensity capability
-    for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-      let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
-      for (let channel of fixture.channels) {
-        if (channel.fixtureChannel) {
-          for(let capability of channel.capabilities) {
-            if(capability.capability.type == type) {
-              return true;
-            }
-          }
-        }
-      }
-    }
-    return false;
-  }
-
-  showDimmer(): boolean {
-    return this.hasCapabilityType(FixtureCapabilityType.Intensity);
-  }
-
-  showColor(): boolean {
-    // TODO optionally color temperature and color white (see stairville/mh-100)
-
-    // one of the templates has a color intensity
-    if (this.hasCapabilityType(FixtureCapabilityType.ColorIntensity)) {
-      return true;
-    }
-
-    // different color wheels are involved
-    if (this.colorWheelChannels.size > 1) {
-      return true;
-    }
-
-    return false;
-  }
-
-  showPanTilt(): boolean {
-    // TODO there is at least one pan and one tilt channel
-    // TODO optionally endless pan/tilt and movement speed
-    return false;
   }
 
   isChrome(): boolean {

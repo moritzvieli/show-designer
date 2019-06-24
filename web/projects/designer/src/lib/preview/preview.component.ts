@@ -6,7 +6,7 @@ import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import STATS from 'three/examples/js/libs/stats.min';
-import { FixtureTemplate, FixtureType } from '../models/fixture-template';
+import { FixtureType } from '../models/fixture-template';
 import { Fixture3d } from './models/fixture-3d';
 import { PreviewService } from '../services/preview.service';
 import { TimelineService } from '../services/timeline.service';
@@ -268,8 +268,8 @@ export class PreviewComponent implements AfterViewInit {
 
     // Global floor has a height of 1
     let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
-    var geometry;
-    let mesh;
+    var geometry: any;
+    let mesh: any;
 
     // Floor
     geometry = new THREE.BoxBufferGeometry(this.stageWidth, this.stageFloorHeight, this.stageDepth);

@@ -1,5 +1,6 @@
 <div class="mr-3" style="float: left">
-  <canvas #curveGrid class="curve-grid" width="200" height="100" viewBox="150 -75 4850 5150" preserveAspectRatio="none"></canvas>
+  <canvas #curveGrid class="curve-grid" width="200" height="100" viewBox="150 -75 4850 5150"
+    preserveAspectRatio="none"></canvas>
 </div>
 
 <div class="mr-4" style="float: left">
@@ -8,8 +9,8 @@
       Length
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.lengthMillis" style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="500"
-        [max]="2500" [step]="1"></mv-slider>
+      <mv-slider (change)="redraw()" [(value)]="curve.lengthMillis" style="width: 80px;" [tooltip]="'hide'" [value]="0"
+        [min]="500" [max]="2500" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
       <input type="text" class="slider-input" [(ngModel)]="curve.lengthMillis">
@@ -21,8 +22,8 @@
       Amplitude
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.amplitude" style="width: 80px;" [tooltip]="'hide'" [min]="0" [max]="255"
-        [step]="1"></mv-slider>
+      <mv-slider (change)="redraw()" [(value)]="curve.amplitude" style="width: 80px;" [tooltip]="'hide'" [min]="0"
+        [max]="400" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
       <input type="text" class="slider-input" [(ngModel)]="curve.amplitude">
@@ -34,7 +35,8 @@
       Position
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.position" style="width: 80px; height: 18px;" [tooltip]="'hide'" [min]="-255" [max]="255" [step]="1"></mv-slider>
+      <mv-slider (change)="redraw()" [(value)]="curve.position" style="width: 80px; height: 18px;" [tooltip]="'hide'"
+        [min]="0" [max]="100" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
       <input type="text" class="slider-input" [(ngModel)]="curve.position">
@@ -46,7 +48,8 @@
       Phase
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.phaseMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'" [min]="-1000" [max]="1000" [step]="1"></mv-slider>
+      <mv-slider (change)="redraw()" [(value)]="curve.phaseMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'"
+        [min]="-1000" [max]="1000" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
       <input type="text" class="slider-input" [(ngModel)]="curve.phaseMillis">
@@ -58,8 +61,8 @@
       Chase
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.phasingMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'" [min]="0"
-        [max]="700" [step]="1"></mv-slider>
+      <mv-slider (change)="redraw()" [(value)]="curve.phasingMillis" style="width: 80px; height: 18px;"
+        [tooltip]="'hide'" [min]="0" [max]="700" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
       <input type="text" class="slider-input" [(ngModel)]="curve.phasingMillis">
@@ -67,9 +70,20 @@
   </div>
 </div>
 
-<div class="h-100 p-2" style="overflow-y: scroll; width: 180px; height: 110px !important; background-color: #222; border: 1px solid white;">
-  <div *ngFor="let channel of channels" class="form-check">
-    <input type="checkbox" class="form-check-input" id="channel_{{ curve?.uuid + '_' + channel }}" (change)="toggleChannel($event, channel)">
-    <label class="form-check-label" for="channel_{{ curve?.uuid + '_' + channel }}">{{ channel }}</label>
+<div class="h-100 p-2" style="overflow-y: scroll; width: 250px; height: 110px !important; background-color: #222; border: 1px solid white;">
+  
+  <!-- Capabilities-->
+  <div *ngFor="let capability of availableCapabilities; let i = index;" class="form-check">
+    <input type="checkbox" class="form-check-input" id="capability_{{ curve?.uuid + '_' + i }}" [ngModel]="capabilityChecked(capability)" (change)="toggleCapability($event, capability)">
+    <label class="form-check-label" for="capability_{{ curve?.uuid + '_' + i }}">{{ 'designer.effect.selection-capability' | translate }} - {{ getCapabilityName(capability) }}</label>
   </div>
+
+  <!-- Channels -->
+  <ng-container *ngFor="let templateChannels of availableChannels">
+    <div *ngFor="let channel of templateChannels.channels; let i = index;" class="form-check">
+      <input type="checkbox" class="form-check-input" id="channel_{{ curve?.uuid + '_' + i }}" [ngModel]="channelChecked(templateChannels, i)" (change)="toggleChannel($event, templateChannels, i)">
+      <label class="form-check-label" for="channel_{{ curve?.uuid + '_' + i }}">{{ 'designer.effect.selection-channel' | translate }} - {{ getChannelName(templateChannels, i) }}</label>
+    </div>
+  </ng-container>
+
 </div>

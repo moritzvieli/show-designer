@@ -19,17 +19,17 @@ export class PresetService {
 
   selectedPreset: Preset;
 
-  // Fires, when the current preview element has changed (scene/preset)
+  // fires, when the current preview element has changed (scene/preset)
   previewSelectionChanged: Subject<void> = new Subject<void>();
 
-  // Fires, when the fixture selection has changed
+  // fires, when the fixture selection has changed
   fixtureSelectionChanged: Subject<void> = new Subject<void>();
 
-  // Fires, when the selected color has changed. This is required,
+  // fires, when the selected color has changed. This is required,
   // because detectChanges is not enough to trigger different components.
   fixtureColorChanged: Subject<void> = new Subject<void>();
 
-  // True = show the preset, false = show the selected scene
+  // true = show the preset, false = show the selected scene
   previewPreset: boolean = true;
 
   constructor(
@@ -242,6 +242,54 @@ export class PresetService {
     }
 
     return lowestDiffCapability;
+  }
+
+  private hasCapabilityType(type: FixtureCapabilityType): boolean {
+    // there is at least one channel with at least one intensity capability
+    for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
+      let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+      for (let channel of fixture.channels) {
+        if (channel.fixtureChannel) {
+          for(let capability of channel.capabilities) {
+            if(capability.capability.type == type) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  hasCapabilityDimmer(): boolean {
+    return this.hasCapabilityType(FixtureCapabilityType.Intensity);
+  }
+
+  hasCapabilityColor(): boolean {
+    // TODO optionally color temperature and color white (see stairville/mh-100)
+
+    // one of the templates has a color intensity
+    if (this.hasCapabilityType(FixtureCapabilityType.ColorIntensity)) {
+      return true;
+    }
+
+    // a color wheel is involved
+    for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
+      let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+      for (let channel of fixture.channels) {
+        if(channel.colorWheel) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  hasCapabilityPanTilt(): boolean {
+    // TODO there is at least one pan and one tilt channel
+    // TODO optionally endless pan/tilt and movement speed
+    return false;
   }
 
   selectPreset(index: number) {

@@ -9,6 +9,5 @@ export class CachedFixture {
     template: FixtureTemplate;
     mode: FixtureMode;
     channels: CachedFixtureChannel[] = [];
-    hasColor: boolean;
 
 }
