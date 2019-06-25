@@ -116,24 +116,18 @@ export class PresetService {
     }
   }
 
-  private capabilityValueMatches(capabilityValue: FixtureCapabilityValue, capabilityType: FixtureCapabilityType, color: FixtureCapabilityColor, wheel: string, templateUuid: string): boolean {
-    if (capabilityValue.type == capabilityType
-      && (!color || capabilityValue.color == color)
-      && (!wheel || capabilityValue.wheel == wheel)
-      && (!templateUuid || capabilityValue.fixtureTemplateUuid == templateUuid)) {
-      return true;
-    }
-    return false;
-  }
-
   deleteCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, templateUuid?: string) {
     for (let i = 0; i < preset.fixtureCapabilityValues.length; i++) {
-      if (this.capabilityValueMatches(preset.fixtureCapabilityValues[i],
+      if (this.fixtureService.capabilitiesMatch(
+        preset.fixtureCapabilityValues[i].type,
         capabilityType,
+        preset.fixtureCapabilityValues[i].color,
         color,
+        preset.fixtureCapabilityValues[i].wheel,
         wheel,
-        templateUuid)) {
-
+        preset.fixtureCapabilityValues[i].fixtureTemplateUuid,
+        templateUuid
+      )) {
         preset.fixtureCapabilityValues.splice(i, 1);
         return;
       }
@@ -157,12 +151,16 @@ export class PresetService {
 
   getCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, templateUuid?: string): FixtureCapabilityValue {
     for (let capabilityValue of preset.fixtureCapabilityValues) {
-      if (this.capabilityValueMatches(capabilityValue,
+      if (this.fixtureService.capabilitiesMatch(
+        capabilityValue.type,
         capabilityType,
+        capabilityValue.color,
         color,
+        capabilityValue.wheel,
         wheel,
-        templateUuid)) {
-
+        capabilityValue.fixtureTemplateUuid,
+        templateUuid
+      )) {
         return capabilityValue;
       }
     }
@@ -250,8 +248,8 @@ export class PresetService {
       let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
       for (let channel of fixture.channels) {
         if (channel.fixtureChannel) {
-          for(let capability of channel.capabilities) {
-            if(capability.capability.type == type) {
+          for (let capability of channel.capabilities) {
+            if (capability.capability.type == type) {
               return true;
             }
           }
@@ -277,7 +275,7 @@ export class PresetService {
     for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
       for (let channel of fixture.channels) {
-        if(channel.colorWheel) {
+        if (channel.colorWheel) {
           return true;
         }
       }

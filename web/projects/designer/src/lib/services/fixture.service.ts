@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { FixtureChannel } from '../models/fixture-channel';
 import { ProjectService } from './project.service';
 import { Observable, forkJoin, of } from 'rxjs';
-import { FixtureCapabilityType, FixtureCapability } from '../models/fixture-capability';
+import { FixtureCapabilityType, FixtureCapability, FixtureCapabilityColor } from '../models/fixture-capability';
 import { FixtureWheelSlot, FixtureWheelSlotType } from '../models/fixture-wheel-slot';
 import { FixtureWheel } from '../models/fixture-wheel';
 import { Color } from '../models/color';
@@ -359,6 +359,25 @@ export class FixtureService {
 
       this.cachedFixtures.push(cachedFixture);
     }
+  }
+
+  capabilitiesMatch (
+    type1: FixtureCapabilityType,
+    type2: FixtureCapabilityType,
+    color1: FixtureCapabilityColor,
+    color2: FixtureCapabilityColor,
+    wheel1: string,
+    wheel2: string,
+    templateUuid1: string,
+    templateUuid2: string
+  ): boolean {
+    if (type1 == type2
+      && (!color1 || color1 == color2)
+      && (!wheel1 || wheel1 == wheel2)
+      && (!templateUuid1 || templateUuid1 == templateUuid2)) {
+      return true;
+    }
+    return false;
   }
 
 }

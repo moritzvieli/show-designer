@@ -193,9 +193,16 @@ export class PreviewService {
       for (let cachedChannel of cachedFixture.channels) {
         if (cachedChannel.fixtureChannel) {
           for (let channelCapability of cachedChannel.capabilities) {
-            if (presetCapabilityValue.type == channelCapability.capability.type
-              && (!presetCapabilityValue.color || presetCapabilityValue.color == channelCapability.capability.color)
-              && (!presetCapabilityValue.wheel || (presetCapabilityValue.wheel == channelCapability.wheelName && presetCapabilityValue.fixtureTemplateUuid == cachedFixture.template.uuid))) {
+            if (this.fixtureService.capabilitiesMatch(
+              presetCapabilityValue.type,
+              channelCapability.capability.type,
+              presetCapabilityValue.color,
+              channelCapability.capability.color,
+              presetCapabilityValue.wheel,
+              channelCapability.wheelName,
+              presetCapabilityValue.fixtureTemplateUuid,
+              cachedFixture.template.uuid
+            )) {
 
               // the capabilities match -> apply the value, if possible
               if (presetCapabilityValue.valuePercentage >= 0 &&
@@ -298,13 +305,24 @@ export class PreviewService {
 
   private mixEffects(timeMillis: number, fixtureIndex: number, preset: PresetRegionScene, cachedFixture: CachedFixture, values: FixtureChannelValue[], intensityPercentage: number) {
     for (let effect of preset.preset.effects) {
+      // EffectCurve
       if (effect instanceof EffectCurve) {
         let effectCurve = <EffectCurve>effect;
 
+        // capabilities
         for (let capability of effectCurve.capabilities) {
           for (let cachedChannel of cachedFixture.channels) {
             for (let channelCapability of cachedChannel.capabilities) {
-              if (capability.type == channelCapability.capability.type) {
+              if(this.fixtureService.capabilitiesMatch(
+                capability.type,
+                channelCapability.capability.type,
+                capability.color,
+                channelCapability.capability.color,
+                null,
+                null,
+                null,
+                null
+              )) {
                 let fixtureChannelValue = new FixtureChannelValue();
                 fixtureChannelValue.channelName = cachedChannel.channelName;
                 fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
@@ -314,50 +332,13 @@ export class PreviewService {
             }
           }
         }
+
+        // channels
+        // TODO
       }
+
+      // TODO other effects (PanTilt, etc.)
     }
-
-    // TODO
-    // Match all effect capabilities of this preset with the fixture capabilities
-    // for (let effect of preset.preset.effects) {
-    //   let effectChannelValues: FixtureChannelValue[] = [];
-    //   let value = effect.getValueAtMillis(timeMillis, fixtureIndex);
-
-    //   for (let effectChannel of effect.effectChannels) {
-    //     switch (effectChannel) {
-    //       case EffectChannel.dimmer:
-    //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Intensity));
-    //         break;
-    //       case EffectChannel.pan:
-    //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Pan));
-    //         break;
-    //       case EffectChannel.tilt:
-    //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.Tilt));
-    //         break;
-    //       case EffectChannel.colorRed:
-    //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Red));
-    //         break;
-    //       case EffectChannel.colorGreen:
-    //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Green));
-    //         break;
-    //       case EffectChannel.colorBlue:
-    //         effectChannelValues.push(new FixtureCapabilityValue(value, FixtureCapabilityType.ColorIntensity, FixtureCapabilityColor.Blue));
-    //         break;
-    //     }
-    //   }
-
-    //   for (let channelFineIndex of channelFineIndices) {
-    //     let channel = channelFineIndex.fixtureChannel;
-
-    //     if (channel) {
-    //       for (let effectChannelValue of effectChannelValues) {
-    //         if (channel.capability.type == effectChannelValue.type) {
-    //           this.mixChannelValue(values, effectChannelValue, intensityPercentage);
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
   }
 
   // return all fixture uuids with their corresponding channel values
