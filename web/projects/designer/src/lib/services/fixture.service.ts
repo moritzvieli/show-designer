@@ -371,6 +371,7 @@ export class FixtureService {
     templateUuid1: string,
     templateUuid2: string
   ): boolean {
+    // checks, whether two provided capapabilities match
     if (type1 == type2
       && (!color1 || color1 == color2)
       && (!wheel1 || wheel1 == wheel2)

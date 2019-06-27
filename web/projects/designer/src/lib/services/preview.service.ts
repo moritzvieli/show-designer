@@ -13,7 +13,6 @@ import { Subject } from 'rxjs';
 import { FixtureChannelValue } from '../models/fixture-channel-value';
 import { CachedFixture } from '../models/cached-fixture';
 import { EffectCurve } from '../models/effect-curve';
-import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 
 @Injectable({
   providedIn: 'root'

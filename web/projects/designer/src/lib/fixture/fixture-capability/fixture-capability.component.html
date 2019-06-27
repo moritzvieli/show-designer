@@ -15,7 +15,7 @@
 
       <!-- Color -->
       <!-- Also show for color wheel fixtures to approx. the color -->
-      <div *ngIf="presetService.hasCapabilityColor()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+      <div *ngIf="presetService.hasCapabilityColorOrColorWheel()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <app-fixture-capability-color></app-fixture-capability-color>
       </div>
 

@@ -171,8 +171,7 @@ export class EffectCurveComponent implements OnInit {
       this.availableCapabilities.push(capability);
     }
 
-    // todo
-    // if (this.presetService.hasCapabilityPanTilt()) {
+    if (this.presetService.hasCapabilityPanTilt()) {
       let capability = new FixtureCapability();
       capability.type = FixtureCapabilityType.Pan;
       this.availableCapabilities.push(capability);
@@ -180,7 +179,7 @@ export class EffectCurveComponent implements OnInit {
       capability = new FixtureCapability();
       capability.type = FixtureCapabilityType.Tilt;
       this.availableCapabilities.push(capability);
-    // }
+    }
 
     this.availableChannels = [];
   }
@@ -199,8 +198,21 @@ export class EffectCurveComponent implements OnInit {
     return template.name += ' - ' + templateChannels.channels[channelIndex];
   }
 
-  capabilityChecked(): boolean {
-    // TODO
+  capabilityChecked(capability: FixtureCapability): boolean {
+    for (let existingCapability of this.curve.capabilities) {
+      if (this.fixtureService.capabilitiesMatch(
+        existingCapability.type,
+        capability.type,
+        existingCapability.color,
+        capability.color,
+        null,
+        null,
+        null,
+        null,
+      )) {
+        return true;
+      }
+    }
     return false;
   }
 
@@ -212,13 +224,25 @@ export class EffectCurveComponent implements OnInit {
       // Remove the channel
       for (let i = 0; i < this.curve.capabilities.length; i++) {
         let existingCapability = this.curve.capabilities[i];
-        if (existingCapability.type == capability.type &&
-          (!existingCapability.color) || (existingCapability.color == capability.color)) {
-
+        if (this.fixtureService.capabilitiesMatch(
+          existingCapability.type,
+          capability.type,
+          existingCapability.color,
+          capability.color,
+          null,
+          null,
+          null,
+          null,
+        )) {
           this.curve.capabilities.splice(i, 1);
         }
       }
     }
+  }
+
+  channelChecked(): boolean {
+    // TODO
+    return false;
   }
 
   toggleChannel(event: any, templateChannels: FixtureTemplateChannels, channelIndex: number) {

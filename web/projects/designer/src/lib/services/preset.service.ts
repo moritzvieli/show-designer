@@ -271,6 +271,17 @@ export class PresetService {
       return true;
     }
 
+    return false;
+  }
+
+  hasCapabilityColorOrColorWheel(): boolean {
+    // TODO optionally color temperature and color white (see stairville/mh-100)
+
+    // one of the templates has a color intensity
+    if (this.hasCapabilityColor()) {
+      return true;
+    }
+
     // a color wheel is involved
     for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
