@@ -9,6 +9,8 @@ export class Project {
     public uuid: string;
     public name: string;
 
+    public masterDimmerValue: number = 1;
+
     public compositions: Composition[] = [];
     public fixtureTemplates: FixtureTemplate[] = [];
     public fixtures: Fixture[] = [];
@@ -18,7 +20,27 @@ export class Project {
 
     public presets: Preset[] = [];
 
-    constructor() {
+    constructor(data?: any) {
+        if(!data) {
+            return;
+        }
+
+        this.masterDimmerValue = data.masterDimmerValue;
+
+        if(data.compositions) {
+            for(let composition of data.compositions) {
+                this.compositions.push(new Composition(composition));
+            }
+        }
+
+        // TODO
+        // if(data.fixtureTemplates) {
+        //     for(let fixtureTemplates of data.fixtureTemplates) {
+        //         this.compositions.push(new FixtureTemplate(fixtureTemplates));
+        //     }
+        // }
+
+        // TODO
     }
 
 }

@@ -10,7 +10,6 @@ import { FixtureType } from '../models/fixture-template';
 import { Fixture3d } from './models/fixture-3d';
 import { PreviewService } from '../services/preview.service';
 import { TimelineService } from '../services/timeline.service';
-import { MasterDimmerService } from '../services/master-dimmer.service';
 import { ProjectService } from '../services/project.service';
 import { PreviewMeshService } from '../services/preview-mesh.service';
 
@@ -50,7 +49,6 @@ export class PreviewComponent implements AfterViewInit {
     private animationService: AnimationService,
     private previewService: PreviewService,
     private timelineService: TimelineService,
-    private masterDimmerService: MasterDimmerService,
     private projectService: ProjectService) {
 
     this.previewService.doUpdateFixtureSetup.subscribe(() => {
@@ -132,14 +130,14 @@ export class PreviewComponent implements AfterViewInit {
 
     for (let fixture3d of this.fixtures3d) {
       // Update the fixture properties
-      fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture) || [], this.masterDimmerService.masterDimmerValue);
+      fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture) || [], this.projectService.project.masterDimmerValue);
 
       // Select the fixture, if required
       fixture3d.isSelected = this.previewService.fixtureIsSelected(fixture3d.fixture.fixture.uuid, presets);
     }
 
     // TODO enable for monitoring the DMX universes
-    this.previewService.setUniverseValues(calculatedFixtures, this.masterDimmerService.masterDimmerValue);
+    this.previewService.setUniverseValues(calculatedFixtures, this.projectService.project.masterDimmerValue);
 
     // Update the statistics
     // this.rendererStats.update(this.renderer);

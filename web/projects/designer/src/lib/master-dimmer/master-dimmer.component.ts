@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { MasterDimmerService } from '../services/master-dimmer.service';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-master-dimmer',
@@ -9,7 +9,7 @@ import { MasterDimmerService } from '../services/master-dimmer.service';
 export class MasterDimmerComponent implements OnInit {
 
   constructor(
-    public masterDimmerService: MasterDimmerService,
+    public projectService: ProjectService,
     private changeDetectorRef: ChangeDetectorRef
   ) { }
 
@@ -25,12 +25,12 @@ export class MasterDimmerComponent implements OnInit {
       return;
     }
 
-    this.masterDimmerService.masterDimmerValue = value;
+    this.projectService.project.masterDimmerValue = value;
     this.changeDetectorRef.detectChanges();
   }
 
   getValue(): number {
-    return Math.round(this.masterDimmerService.masterDimmerValue * 100 * 100) / 100;
+    return Math.round(this.projectService.project.masterDimmerValue * 100 * 100) / 100;
   }
 
 }

@@ -30,6 +30,12 @@ export class Composition {
     // Regions, where the scene will be played
     public scenePlaybackRegions: ScenePlaybackRegion[] = [];
 
-    constructor() { }
+    constructor(data?: any) {
+        if(!data) {
+            return;
+        }
+
+        // TODO
+    }
 
 }

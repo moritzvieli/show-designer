@@ -12,7 +12,7 @@
     </div>
 
     <div class="h-100 w-100 d-flex">
-      <mv-slider class="mx-auto" [value]="masterDimmerService.masterDimmerValue" (change)="setValue($event.newValue)" [orientation]="'vertical'"
+      <mv-slider class="mx-auto" [value]="projectService?.project?.masterDimmerValue" (change)="setValue($event.newValue)" [orientation]="'vertical'"
         [reversed]="true" style="height: 100%;" [tooltip]="'hide'" [min]="0" [max]="1" [step]="0.001"></mv-slider>
     </div>
 

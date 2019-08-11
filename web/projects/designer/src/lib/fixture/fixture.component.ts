@@ -29,11 +29,11 @@ export class FixtureComponent implements OnInit {
   }
 
   selectAll() {
-    // TODO
+    this.presetService.selectAllFixtures();
   }
 
   selectNone() {
-    // TODO
+    this.presetService.selectNoFixtures();
   }
 
   openFixturePool() {

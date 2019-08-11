@@ -90,6 +90,26 @@ export class PresetService {
     }
   }
 
+  selectAllFixtures() {
+    if (!this.selectedPreset) {
+      return;
+    }
+
+    for (let fixture of this.projectService.project.fixtures) {
+      if (!this.fixtureIsSelected(fixture)) {
+        this.selectedPreset.fixtureUuids.push(fixture.uuid);
+      }
+    }
+  }
+
+  selectNoFixtures() {
+    if (!this.selectedPreset) {
+      return;
+    }
+
+    this.selectedPreset.fixtureUuids = [];
+  }
+
   public removeDeletedFixtures() {
     // after changing the configuration in the fixture pool, we might need to
     // delete some fixtures
@@ -298,8 +318,22 @@ export class PresetService {
   }
 
   hasCapabilityPanTilt(): boolean {
-    // TODO there is at least one pan and one tilt channel
-    // TODO optionally endless pan/tilt and movement speed
+    let hasPan: boolean = false;
+    let hasTilt: boolean = false;
+
+    // there is at least one pan and one tilt channel
+    if (this.hasCapabilityType(FixtureCapabilityType.Pan)) {
+      hasPan = true;
+    }
+
+    if (this.hasCapabilityType(FixtureCapabilityType.Tilt)) {
+      hasTilt = true;
+    }
+
+    if (hasPan && hasTilt) {
+      return true;
+    }
+
     return false;
   }
 
