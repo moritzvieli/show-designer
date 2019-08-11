@@ -34,50 +34,14 @@ export class FixtureChannelComponent implements OnInit {
   }
 
   private calculateChannelCapabilities() {
-    // calculate all required modes to the templates
-    let calculatedTemplateModes = new Map<FixtureTemplate, FixtureMode[]>();
-    for (let template of this.selectedTemplates) {
-      let modes: FixtureMode[] = [];
-      for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-        let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
-        if (modes.indexOf(fixture.mode) < 0) {
-          modes.push(fixture.mode);
-        }
-      }
-      calculatedTemplateModes.set(template, modes);
-    }
-
-    // calculate all required channels from the modes
-    this.channelCapabilities = new Map<FixtureTemplate, CachedFixtureChannel[]>();
-    calculatedTemplateModes.forEach((modes: FixtureMode[], template: FixtureTemplate) => {
-      let templateChannels: CachedFixtureChannel[] = [];
-      for (let mode of modes) {
-        let channels = this.fixtureService.getCachedChannels(template, mode);
-        for (let channel of channels) {
-          // only add the channel, if no channel with the same name has already been added
-          // (e.g. a fine channel)
-          if (channel.fixtureChannel && !templateChannels.find(c => c.channelName == channel.channelName)) {
-            templateChannels.push(channel);
-          }
-        }
-      }
-      this.channelCapabilities.set(template, templateChannels);
-    });
+    this.channelCapabilities = this.presetService.getSelectedTemplateChannels(this.selectedTemplates);
 
     this.changeDetectorRef.detectChanges();
   }
 
   private calculateTemplates() {
     // calculate all templates
-    this.templates = [];
-    for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-      let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-      let template = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
-
-      if (this.templates.indexOf(template) < 0) {
-        this.templates.push(template);
-      }
-    }
+    this.templates = this.presetService.getSelectedTemplates();
 
     // select all templates by default
     this.selectedTemplates = [...this.templates];

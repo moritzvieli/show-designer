@@ -11,6 +11,8 @@ import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 import { CachedFixtureChannel } from '../models/cached-fixture-channel';
 import { CachedFixtureCapability } from '../models/cached-fixture-capability';
+import { FixtureTemplate } from '../models/fixture-template';
+import { FixtureMode } from 'projects/designer/dist/lib/models/fixture-mode';
 
 @Injectable({
   providedIn: 'root'
@@ -324,6 +326,55 @@ export class PresetService {
 
     this.projectService.project.presets.splice(highestSelectedPresetIndex, 0, preset);
     this.selectPreset(highestSelectedPresetIndex);
+  }
+
+  getSelectedTemplates() {
+    let templates: FixtureTemplate[] = [];
+
+    for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
+      let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
+      let template = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+
+      if (templates.indexOf(template) < 0) {
+        templates.push(template);
+      }
+    }
+
+    return templates;
+  }
+
+  getSelectedTemplateChannels(selectedTemplates: FixtureTemplate[]) {
+    let availableChannels: Map<FixtureTemplate, CachedFixtureChannel[]> = new Map<FixtureTemplate, CachedFixtureChannel[]>();
+
+    let calculatedTemplateModes = new Map<FixtureTemplate, FixtureMode[]>();
+    for (let template of selectedTemplates) {
+      let modes: FixtureMode[] = [];
+      for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
+        let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+        if (modes.indexOf(fixture.mode) < 0) {
+          modes.push(fixture.mode);
+        }
+      }
+      calculatedTemplateModes.set(template, modes);
+    }
+
+    // calculate all required channels from the modes
+    calculatedTemplateModes.forEach((modes: FixtureMode[], template: FixtureTemplate) => {
+      let templateChannels: CachedFixtureChannel[] = [];
+      for (let mode of modes) {
+        let channels = this.fixtureService.getCachedChannels(template, mode);
+        for (let channel of channels) {
+          // only add the channel, if no channel with the same name has already been added
+          // (e.g. a fine channel)
+          if (channel.fixtureChannel && !templateChannels.find(c => c.channelName == channel.channelName)) {
+            templateChannels.push(channel);
+          }
+        }
+      }
+      availableChannels.set(template, templateChannels);
+    });
+
+    return availableChannels;
   }
 
 }

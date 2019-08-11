@@ -87,10 +87,6 @@
             "warning-delete-file": "Do you really want to delete this file?",
             "toast-composition-upload-error": "Die Datei konnte aus dem folgenden Grund nicht hochgeladen werden: ",
             "toast-composition-upload-error-title": "Fehler beim Hochladen"
-        },
-        "effect": {
-            "selection-capability": "Capability",
-            "selection-channel": "Channel"
         }
     }
 }

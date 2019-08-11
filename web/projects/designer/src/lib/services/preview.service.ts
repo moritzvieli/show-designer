@@ -312,7 +312,7 @@ export class PreviewService {
         for (let capability of effectCurve.capabilities) {
           for (let cachedChannel of cachedFixture.channels) {
             for (let channelCapability of cachedChannel.capabilities) {
-              if(this.fixtureService.capabilitiesMatch(
+              if (this.fixtureService.capabilitiesMatch(
                 capability.type,
                 channelCapability.capability.type,
                 capability.color,
@@ -333,7 +333,23 @@ export class PreviewService {
         }
 
         // channels
-        // TODO
+        for (let channelTemplate of effectCurve.channels) {
+          if (channelTemplate.templateUuid == cachedFixture.template.uuid) {
+            for (let channel of channelTemplate.channels) {
+              for (let cachedChannel of cachedFixture.channels) {
+                if (cachedChannel.channelName == channel) {
+                  let fixtureChannelValue = new FixtureChannelValue();
+                  fixtureChannelValue.channelName = cachedChannel.channelName;
+                  fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+                  fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex) / 100;
+                  this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
+                }
+              }
+            }
+
+            break;
+          }
+        }
       }
 
       // TODO other effects (PanTilt, etc.)

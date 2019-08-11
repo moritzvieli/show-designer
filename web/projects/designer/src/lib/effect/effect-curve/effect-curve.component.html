@@ -10,7 +10,7 @@
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.lengthMillis" style="width: 80px;" [tooltip]="'hide'" [value]="0"
-        [min]="500" [max]="2500" [step]="1"></mv-slider>
+        [min]="50" [max]="2500" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
       <input type="text" class="slider-input" [(ngModel)]="curve.lengthMillis">
@@ -70,20 +70,63 @@
   </div>
 </div>
 
-<div class="h-100 p-2" style="overflow-y: scroll; width: 250px; height: 110px !important; background-color: #222; border: 1px solid white;">
-  
-  <!-- Capabilities-->
-  <div *ngFor="let capability of availableCapabilities; let i = index;" class="form-check">
-    <input type="checkbox" class="form-check-input" id="capability_{{ curve?.uuid + '_' + i }}" [ngModel]="capabilityChecked(capability)" (change)="toggleCapability($event, capability)">
-    <label class="form-check-label" for="capability_{{ curve?.uuid + '_' + i }}">{{ 'designer.effect.selection-capability' | translate }} - {{ getCapabilityName(capability) }}</label>
+<!-- Menu for the capabilities and channels-->
+<div class="col col-auto p-0" style="margin-right: 1px; width: 50px; float: left">
+  <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <a class="nav-link px-3 active" id="v-pills-effect-capabilities-tab"
+      popover="{{ 'designer.misc.capabilities' | translate }}" container="body" placement="right"
+      triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-effect-capabilities" role="tab"
+      aria-controls="v-pills-capabilities" aria-selected="true">
+      <i class="fa fa-bolt fa-fw" aria-hidden="true"></i>
+    </a>
+    <a class="nav-link px-3" id="v-pills-effect-channels-tab" popover="{{ 'designer.misc.channels' | translate }}"
+      container="body" placement="right" triggers="mouseenter:mouseleave" data-toggle="pill"
+      href="#v-pills-effect-channels" role="tab" aria-controls="v-pills-channels" aria-selected="false">
+      <i class="fa fa-sliders fa-fw" aria-hidden="true"></i>
+    </a>
   </div>
+</div>
 
-  <!-- Channels -->
-  <ng-container *ngFor="let templateChannels of availableChannels">
-    <div *ngFor="let channel of templateChannels.channels; let i = index;" class="form-check">
-      <input type="checkbox" class="form-check-input" id="channel_{{ curve?.uuid + '_' + i }}" [ngModel]="channelChecked(templateChannels, i)" (change)="toggleChannel($event, templateChannels, i)">
-      <label class="form-check-label" for="channel_{{ curve?.uuid + '_' + i }}">{{ 'designer.effect.selection-channel' | translate }} - {{ getChannelName(templateChannels, i) }}</label>
+<div class="h-100 p-2"
+  style="overflow-y: scroll; height: 110px !important; background-color: #222; border: 1px solid white;">
+  <div class="tab-content h-100" id="v-pills-tabContent">
+    <div class="tab-pane h-100 show active" id="v-pills-effect-capabilities" role="tabpanel">
+
+      <!-- Capabilities-->
+      <div *ngFor="let capability of availableCapabilities; let i = index;" class="form-check">
+        <input type="checkbox" class="form-check-input" id="capability_{{ curve?.uuid + '_' + i }}"
+          [ngModel]="capabilityChecked(capability)" (change)="toggleCapability($event, capability)">
+        <label class="form-check-label"
+          for="capability_{{ curve?.uuid + '_' + i }}">{{ getCapabilityName(capability) }}</label>
+      </div>
+
     </div>
-  </ng-container>
+    <div class="tab-pane h-100 show" id="v-pills-effect-channels" role="tabpanel">
+      <!-- Channels -->
 
+      <!-- Template selection -->
+      <div *ngIf="availableTemplates.length > 1">
+        <div *ngFor="let template of availableTemplates; let i = index" class="form-check">
+          <input type="checkbox" class="form-check-input" id="channel_template_{{ curve?.uuid }}_{{ template.uuid }}"
+            [ngModel]="selectedTemplates.indexOf(template) >= 0" (change)="changeTemplateSelection($event, template)">
+          <label class="form-check-label"
+            for="channel_template_{{ curve?.uuid }}_{{ template.uuid }}">{{ template.name }}</label>
+        </div>
+
+        <hr class="my-1" style="border-color: white;"/>
+      </div>
+
+      <!--channels -->
+      <ng-container *ngFor="let entry of availableChannels | keyvalue; let i = index">
+        <div *ngFor="let channel of entry.value; let j = index" class="form-check">
+
+          <input type="checkbox" class="form-check-input" id="channel_{{ curve?.uuid }}_{{ i }}_{{ j }}"
+            [ngModel]="channelChecked(entry.key, channel)" (change)="toggleChannel($event, entry.key, channel)">
+          <label class="form-check-label" for="channel_{{ curve?.uuid }}_{{ i }}_{{ j }}">{{ getChannelName(entry.key.name, channel.channelName) }}</label>
+
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
 </div>

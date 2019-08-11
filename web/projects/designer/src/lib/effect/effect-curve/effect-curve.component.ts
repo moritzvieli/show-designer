@@ -6,6 +6,9 @@ import { PresetService } from '../../services/preset.service';
 import { FixtureService } from '../../services/fixture.service';
 import { FixtureCapability, FixtureCapabilityType, FixtureCapabilityColor } from '../../models/fixture-capability';
 import { FixtureTemplateChannels } from '../../models/fixture-template-channels';
+import { FixtureTemplate } from 'projects/designer/dist/lib/models/fixture-template';
+import { CachedFixtureChannel } from 'projects/designer/dist/lib/models/cached-fixture-channel';
+import { EffectCurveTemplateChannels } from '../../models/effect-curve-template-channel';
 
 @Component({
   selector: 'app-effect-curve',
@@ -19,8 +22,13 @@ export class EffectCurveComponent implements OnInit {
   private maxWidth: number;
   private maxHeight: number;
 
-  availableCapabilities: FixtureCapability[] = [];
-  availableChannels: FixtureTemplateChannels[] = [];
+  // the selected capabilities
+  public availableCapabilities: FixtureCapability[] = [];
+
+  // the selected channels
+  public availableChannels: Map<FixtureTemplate, CachedFixtureChannel[]> = new Map<FixtureTemplate, CachedFixtureChannel[]>();
+  public availableTemplates: FixtureTemplate[] = [];
+  public selectedTemplates: FixtureTemplate[] = [];
 
   @Input() curve: EffectCurve;
 
@@ -108,6 +116,11 @@ export class EffectCurveComponent implements OnInit {
     let oldY: number;
 
     let step = 50;
+
+    if (length < 500) {
+      step = 5;
+    }
+
     let durationMillis = this.curve.lengthMillis * Math.round(4 - this.curve.lengthMillis / 1000);
     let maxValue = this.curve.maxValue;
 
@@ -145,7 +158,22 @@ export class EffectCurveComponent implements OnInit {
     }
   }
 
+  private calculateChannelCapabilities() {
+    this.availableChannels = this.presetService.getSelectedTemplateChannels(this.selectedTemplates);
+  }
+
+  changeTemplateSelection($event: any, template: FixtureTemplate) {
+    if (this.selectedTemplates.indexOf(template) >= 0) {
+      this.selectedTemplates.splice(this.selectedTemplates.indexOf(template), 1);
+    } else {
+      this.selectedTemplates.push(template);
+    }
+
+    this.calculateChannelCapabilities();
+  }
+
   private updateCapabilitiesAndChannels() {
+    // capabilities
     this.availableCapabilities = [];
 
     if (this.presetService.hasCapabilityDimmer()) {
@@ -181,7 +209,14 @@ export class EffectCurveComponent implements OnInit {
       this.availableCapabilities.push(capability);
     }
 
-    this.availableChannels = [];
+    // calculate all templates
+    this.availableTemplates = this.presetService.getSelectedTemplates();
+
+    // select all templates by default
+    this.selectedTemplates = [...this.availableTemplates];
+
+    // calculate all channels
+    this.calculateChannelCapabilities();
   }
 
   getCapabilityName(capability: FixtureCapability): string {
@@ -191,11 +226,6 @@ export class EffectCurveComponent implements OnInit {
       name += ', ' + capability.color;
     }
     return name;
-  }
-
-  getChannelName(templateChannels: FixtureTemplateChannels, channelIndex: number): string {
-    let template = this.fixtureService.getTemplateByUuid(templateChannels.templateUuid);
-    return template.name += ' - ' + templateChannels.channels[channelIndex];
   }
 
   capabilityChecked(capability: FixtureCapability): boolean {
@@ -240,13 +270,58 @@ export class EffectCurveComponent implements OnInit {
     }
   }
 
-  channelChecked(): boolean {
-    // TODO
+  getChannelName(templateName: string, channelName: string) {
+    if(this.availableTemplates.length > 1) {
+      return templateName + ' - ' + channelName;
+    }
+
+    return channelName;
+  }
+
+  channelChecked(template: FixtureTemplate, channel: CachedFixtureChannel): boolean {
+    for(let templateChannels of this.curve.channels) {
+      if(templateChannels.templateUuid == template.uuid) {
+        if(templateChannels.channels.includes(channel.channelName)) {
+          return true;
+        }
+
+        break;
+      }
+    }
+
     return false;
   }
 
-  toggleChannel(event: any, templateChannels: FixtureTemplateChannels, channelIndex: number) {
-    // TODO
+  toggleChannel(event: any, template: FixtureTemplate, channel: CachedFixtureChannel) {
+    // add the template, if necessary
+    let templateContained: boolean = false;
+    for(let templateChannels of this.curve.channels) {
+      if(templateChannels.templateUuid == template.uuid) {
+        templateContained = true;
+        break;
+      }
+    }
+
+    if(!templateContained) {
+      let templateChannels = new EffectCurveTemplateChannels();
+      templateChannels.templateUuid = template.uuid;
+      this.curve.channels.push(templateChannels);
+    }
+
+    // add or delete the channel
+    for(let templateChannels of this.curve.channels) {
+      if(templateChannels.templateUuid == template.uuid) {
+        let index = templateChannels.channels.indexOf(channel.channelName);
+
+        if(index >= 0) {
+          templateChannels.channels.splice(index, 1);
+        } else {
+          templateChannels.channels.push(channel.channelName);
+        }
+
+        break;
+      }
+    }
   }
 
 }

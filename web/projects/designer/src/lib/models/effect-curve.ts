@@ -1,11 +1,11 @@
 import { Effect } from './effect';
-import { FixtureTemplateChannels } from './fixture-template-channels';
 import { FixtureCapability } from './fixture-capability';
+import { EffectCurveTemplateChannels } from './effect-curve-template-channel';
 
 export class EffectCurve extends Effect {
 
     capabilities: FixtureCapability[] = [];
-    channels: FixtureTemplateChannels[] = [];
+    channels: EffectCurveTemplateChannels[] = [];
 
     lengthMillis = 2500;
     phaseMillis = 0;
@@ -27,9 +27,10 @@ export class EffectCurve extends Effect {
                 this.capabilities.push(new FixtureCapability(capability));
             }
         }
+
         if(data.channels) {
             for (let channel in data.channels) {
-                this.channels.push(new FixtureTemplateChannels(channel));
+                this.channels.push(new EffectCurveTemplateChannels(channel));
             }
         }
 
