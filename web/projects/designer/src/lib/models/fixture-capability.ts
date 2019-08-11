@@ -16,7 +16,6 @@ export enum FixtureCapabilityType {
     WheelShake = "WheelShake",
     WheelSlotRotation = "WheelSlotRotation",
     WheelRotation = "WheelRotation",
-    Effec = "Effect",
     EffectSpeed = "EffectSpeed",
     EffectDuration = "EffectDuration",
     EffectParameter = "EffectParameter",

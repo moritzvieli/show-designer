@@ -22,7 +22,7 @@
             name="capabilityGeneric{{ capabilityIndex }}Option" id="capabilityGeneric{{ capabilityIndex }}Option{{ i }}"
             [value]="capability">
           <label class="form-check-label" for="capabilityGeneric{{ capabilityIndex }}Option{{ i }}">
-            {{ capability.capability.type }}
+            {{ 'designer.fixtureCapabilityType.' + capability.capability.type | translate }}
           </label>
         </div>
 
