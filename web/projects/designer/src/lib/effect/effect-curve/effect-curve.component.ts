@@ -1,14 +1,15 @@
 import { AnimationService } from './../../services/animation.service';
-import { Subscription, timer } from 'rxjs';
+import { Subscription, timer, Observable } from 'rxjs';
 import { EffectCurve } from './../../models/effect-curve';
 import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
 import { PresetService } from '../../services/preset.service';
 import { FixtureService } from '../../services/fixture.service';
 import { FixtureCapability, FixtureCapabilityType, FixtureCapabilityColor } from '../../models/fixture-capability';
-import { FixtureTemplateChannels } from '../../models/fixture-template-channels';
 import { FixtureTemplate } from 'projects/designer/dist/lib/models/fixture-template';
 import { CachedFixtureChannel } from 'projects/designer/dist/lib/models/cached-fixture-channel';
 import { EffectCurveTemplateChannels } from '../../models/effect-curve-template-channel';
+import { TranslateService } from '@ngx-translate/core';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-effect-curve',
@@ -54,7 +55,8 @@ export class EffectCurveComponent implements OnInit {
   constructor(
     private presetService: PresetService,
     private animationService: AnimationService,
-    private fixtureService: FixtureService) {
+    private fixtureService: FixtureService,
+    private translate: TranslateService) {
 
     this.presetService.fixtureSelectionChanged.subscribe(() => {
       this.updateCapabilitiesAndChannels();
@@ -219,13 +221,22 @@ export class EffectCurveComponent implements OnInit {
     this.calculateChannelCapabilities();
   }
 
-  getCapabilityName(capability: FixtureCapability): string {
-    let name: string = '';
-    name += capability.type;
-    if (capability.color) {
-      name += ', ' + capability.color;
-    }
-    return name;
+  getCapabilityName(capability: FixtureCapability): Observable<string> {
+    return this.translate.get([
+      'designer.fixtureCapabilityType.' + capability.type,
+      'designer.fixtureCapabilityColor.' + capability.color
+    ]).pipe(map((result: string) => {
+      let name: string = '';
+      name += result['designer.fixtureCapabilityType.' + capability.type];
+
+      if (capability.color) {
+        name += ', ' + result['designer.fixtureCapabilityColor.' + capability.color];
+      } else {
+        return name;
+      }
+
+      return name;
+    }));
   }
 
   capabilityChecked(capability: FixtureCapability): boolean {
@@ -271,7 +282,7 @@ export class EffectCurveComponent implements OnInit {
   }
 
   getChannelName(templateName: string, channelName: string) {
-    if(this.availableTemplates.length > 1) {
+    if (this.availableTemplates.length > 1) {
       return templateName + ' - ' + channelName;
     }
 
@@ -279,9 +290,9 @@ export class EffectCurveComponent implements OnInit {
   }
 
   channelChecked(template: FixtureTemplate, channel: CachedFixtureChannel): boolean {
-    for(let templateChannels of this.curve.channels) {
-      if(templateChannels.templateUuid == template.uuid) {
-        if(templateChannels.channels.includes(channel.channelName)) {
+    for (let templateChannels of this.curve.channels) {
+      if (templateChannels.templateUuid == template.uuid) {
+        if (templateChannels.channels.includes(channel.channelName)) {
           return true;
         }
 
@@ -295,25 +306,25 @@ export class EffectCurveComponent implements OnInit {
   toggleChannel(event: any, template: FixtureTemplate, channel: CachedFixtureChannel) {
     // add the template, if necessary
     let templateContained: boolean = false;
-    for(let templateChannels of this.curve.channels) {
-      if(templateChannels.templateUuid == template.uuid) {
+    for (let templateChannels of this.curve.channels) {
+      if (templateChannels.templateUuid == template.uuid) {
         templateContained = true;
         break;
       }
     }
 
-    if(!templateContained) {
+    if (!templateContained) {
       let templateChannels = new EffectCurveTemplateChannels();
       templateChannels.templateUuid = template.uuid;
       this.curve.channels.push(templateChannels);
     }
 
     // add or delete the channel
-    for(let templateChannels of this.curve.channels) {
-      if(templateChannels.templateUuid == template.uuid) {
+    for (let templateChannels of this.curve.channels) {
+      if (templateChannels.templateUuid == template.uuid) {
         let index = templateChannels.channels.indexOf(channel.channelName);
 
-        if(index >= 0) {
+        if (index >= 0) {
           templateChannels.channels.splice(index, 1);
         } else {
           templateChannels.channels.push(channel.channelName);

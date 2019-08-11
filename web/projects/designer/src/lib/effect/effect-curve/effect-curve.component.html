@@ -97,7 +97,7 @@
         <input type="checkbox" class="form-check-input" id="capability_{{ curve?.uuid + '_' + i }}"
           [ngModel]="capabilityChecked(capability)" (change)="toggleCapability($event, capability)">
         <label class="form-check-label"
-          for="capability_{{ curve?.uuid + '_' + i }}">{{ getCapabilityName(capability) }}</label>
+          for="capability_{{ curve?.uuid + '_' + i }}">{{ getCapabilityName(capability) | async }}</label>
       </div>
 
     </div>
