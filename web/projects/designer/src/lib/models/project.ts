@@ -14,33 +14,46 @@ export class Project {
     public compositions: Composition[] = [];
     public fixtureTemplates: FixtureTemplate[] = [];
     public fixtures: Fixture[] = [];
-
-    // Make sure we always have at least one scene (don't allow deletion of the last scene)
     public scenes: Scene[] = [];
-
     public presets: Preset[] = [];
 
     constructor(data?: any) {
-        if(!data) {
+        if (!data) {
             return;
         }
 
         this.masterDimmerValue = data.masterDimmerValue;
 
-        if(data.compositions) {
-            for(let composition of data.compositions) {
+        if (data.compositions) {
+            for (let composition of data.compositions) {
                 this.compositions.push(new Composition(composition));
             }
         }
 
-        // TODO
-        // if(data.fixtureTemplates) {
-        //     for(let fixtureTemplates of data.fixtureTemplates) {
-        //         this.compositions.push(new FixtureTemplate(fixtureTemplates));
-        //     }
-        // }
+        if (data.fixtureTemplates) {
+            for (let fixtureTemplate of data.fixtureTemplates) {
+                this.fixtureTemplates.push(new FixtureTemplate(fixtureTemplate));
+            }
+        }
 
-        // TODO
+        if (data.fixtures) {
+            for (let fixture of data.fixtures) {
+                // TODO
+                this.fixtures.push(new Fixture(fixture));
+            }
+        }
+
+        if (data.scenes) {
+            for (let scene of data.scenes) {
+                this.scenes.push(new Scene(scene));
+            }
+        }
+
+        if (data.presets) {
+            for (let preset of data.presets) {
+                this.presets.push(new Preset(preset));
+            }
+        }
     }
 
 }

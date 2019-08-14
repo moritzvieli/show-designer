@@ -16,7 +16,7 @@ export class EffectCurve extends Effect {
     phasingMillis = 0;
 
     constructor(data?: any) {
-        super(data);
+        super('curve', data);
 
         if(!data) {
             return;

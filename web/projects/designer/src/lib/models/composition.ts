@@ -35,7 +35,25 @@ export class Composition {
             return;
         }
 
-        // TODO
+        this.uuid = data.uuid;
+        this.name = data.name;
+        this.syncType = data.syncType;
+        this.audioFileName = data.audioFileName;
+        this.audioFileInLibrary = data.audioFileInLibrary;
+        this.beatsPerMinute = data.beatsPerMinute;
+        this.timeSignatureUpper = data.timeSignatureUpper;
+        this.timeSignatureLower = data.timeSignatureLower;
+        this.snapToGrid = data.snapToGrid;
+        this.gridType = data.gridType;
+        this.gridOffsetMillis = data.gridOffsetMillis;
+        this.gridResolution = data.gridResolution;
+        this.durationMillis = data.durationMillis;
+
+        if(data.scenePlaybackRegions) {
+            for (let scenePlaybackRegion of data.scenePlaybackRegions) {
+                this.scenePlaybackRegions.push(new ScenePlaybackRegion(ScenePlaybackRegion));
+            }
+        }
     }
 
 }

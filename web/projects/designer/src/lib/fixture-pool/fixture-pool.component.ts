@@ -131,8 +131,14 @@ export class FixturePoolComponent implements OnInit {
     // minimal template passed from the search.
     this.fixtureService.loadTemplateByUuid(searchTemplate.uuid).subscribe(() => {
       let template = this.fixtureService.getTemplateByUuid(searchTemplate.uuid);
-      let fixture = new Fixture(template);
-      fixture.uuid = this.uuidService.getUuid() + '#' + this.fixturePool.length;
+      let fixture = new Fixture();
+      fixture.uuid = this.uuidService.getUuid();
+      fixture.fixtureTemplateUuid = template.uuid;
+      fixture.name = template.name;
+
+      if (template.modes && template.modes.length > 0) {
+        fixture.modeShortName = template.modes[0].shortName;
+      }
 
       // add the same mode as an existing fixture, if available
       let existingModeShortName: string
@@ -172,9 +178,10 @@ export class FixturePoolComponent implements OnInit {
   }
 
   addCopy(originalFixture: Fixture) {
-    let template = this.fixtureService.getTemplateByUuid(originalFixture.fixtureTemplateUuid);
-    let fixture = new Fixture(template);
+    let fixture = new Fixture();
     fixture.uuid = this.uuidService.getUuid();
+    fixture.fixtureTemplateUuid = originalFixture.fixtureTemplateUuid;
+    fixture.name = originalFixture.name;
     fixture.modeShortName = originalFixture.modeShortName;
     fixture.dmxFirstChannel = originalFixture.dmxFirstChannel;
     fixture.dmxUniverseUuid = originalFixture.dmxUniverseUuid;

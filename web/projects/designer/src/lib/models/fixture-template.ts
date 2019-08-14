@@ -35,15 +35,17 @@ export class FixtureTemplate {
     // All available fixture modes
     modes: FixtureMode[] = [];
 
-    constructor(metaData: any, data?: any) {
-        this.uuid = metaData.uuid;
-        this.name = metaData.name;
-        this.manufacturerName = metaData.manufacturerName;
-        this.manufacturerShortName = metaData.manufacturerShortName;
-
+    constructor(data?: any) {
         if (!data) {
             return;
         }
+
+        // metadata
+        this.uuid = data.uuid;
+        this.name = data.name;
+        this.manufacturerName = data.manufacturerName;
+        this.manufacturerShortName = data.manufacturerShortName;
+
         if(data.categories) {
             for(let category of data.categories) {
                 this.categories.push(FixtureType[<string>category]);

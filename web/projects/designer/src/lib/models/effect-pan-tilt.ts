@@ -4,15 +4,15 @@ export class EffectPanTilt extends Effect {
 
     phasingMillis = 0;
 
-    constructor() {
-        super('pan-tilt');
+    constructor(data?: any) {
+        super('pan-tilt', data);
     }
 
     getValueAtMillis(timeMillis: number, fixtureIndex?: number): number {
         // Calculate the offset for phasing
         let phasingIndex = 0;
 
-        if(fixtureIndex) {
+        if (fixtureIndex) {
             phasingIndex = fixtureIndex;
         }
 

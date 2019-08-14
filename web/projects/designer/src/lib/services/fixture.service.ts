@@ -77,7 +77,8 @@ export class FixtureService {
       this.http.get('fixture-search?uuid=' + encodeURI(uuid)),
       this.http.get('fixture?uuid=' + encodeURI(uuid))
     ).pipe(map(result => {
-      let fixtureTemplate = new FixtureTemplate(result[0][0], result[1]);
+      let mergedData = { ...result[0][0], ...result[1] }
+      let fixtureTemplate = new FixtureTemplate(mergedData);
       this.projectService.project.fixtureTemplates.push(fixtureTemplate);
     }));
   }
@@ -361,7 +362,7 @@ export class FixtureService {
     }
   }
 
-  capabilitiesMatch (
+  capabilitiesMatch(
     type1: FixtureCapabilityType,
     type2: FixtureCapabilityType,
     color1: FixtureCapabilityColor,

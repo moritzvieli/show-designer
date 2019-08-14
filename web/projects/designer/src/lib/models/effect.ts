@@ -1,9 +1,12 @@
 export abstract class Effect {
 
+    type: string;
     uuid: string;
 
-    constructor(data?: any) {
-        if(!data) {
+    constructor(type: string, data?: any) {
+        this.type = type;
+
+        if (!data) {
             return;
         }
 

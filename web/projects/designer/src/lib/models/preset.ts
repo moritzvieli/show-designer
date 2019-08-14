@@ -1,6 +1,8 @@
 import { Effect } from "./effect";
 import { FixtureChannelValue } from "./fixture-channel-value";
 import { FixtureCapabilityValue } from "./fixture-capability-value";
+import { EffectCurve } from "./effect-curve";
+import { EffectPanTilt } from "./effect-pan-tilt";
 
 export class Preset {
 
@@ -46,8 +48,14 @@ export class Preset {
         }
         if (data.effects) {
             for (let effect of data.effects) {
-                // TODO
-                // this.effects.push(new Effect(effect));
+                switch (effect.type) {
+                    case 'curve':
+                        this.effects.push(new EffectCurve(effect));
+                        break;
+                    case 'pan-tilt':
+                        this.effects.push(new EffectPanTilt(effect));
+                        break;
+                }
             }
         }
         this.startMillis = data.startMillis;

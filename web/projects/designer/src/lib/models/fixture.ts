@@ -1,11 +1,9 @@
-import { FixtureTemplate } from './fixture-template';
-
 export enum Positioning {
-    topFront,
-    topBack,
-    bottomFront,
-    bottomBack,
-    manual
+    topFront = 'topFront',
+    topBack = 'topBack',
+    bottomFront = 'bottomFront',
+    bottomBack = 'bottomBack',
+    manual = 'manual'
 }
 
 export class Fixture {
@@ -23,13 +21,21 @@ export class Fixture {
     positionY: number = 0;
     positionZ: number = 0;
 
-    constructor(template: FixtureTemplate) {
-        this.fixtureTemplateUuid = template.uuid;
-        this.name = template.name;
-
-        if(template.modes && template.modes.length > 0) {
-            this.modeShortName = template.modes[0].shortName;
+    constructor(data?: any) {
+        if(!data) {
+            return;
         }
+
+        this.uuid = data.uuid;
+        this.fixtureTemplateUuid = data.fixtureTemplateUuid;
+        this.name = data.name;
+        this.dmxUniverseUuid = data.dmxUniverseUuid;
+        this.dmxFirstChannel = data.dmxFirstChannel;
+        this.modeShortName = data.modeShortName;
+        this.positioning = data.positioning;
+        this.positionX = data.positionX;
+        this.positionY = data.positionY;
+        this.positionZ = data.positionZ;
     }
 
 }
