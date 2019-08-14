@@ -25,7 +25,12 @@ export class SceneComponent implements OnInit {
   }
 
   removeScene() {
-    // TODO
+    if (this.sceneService.selectedScenes.length == 0) {
+      return;
+    }
+
+    this.projectService.project.scenes.splice(this.projectService.project.scenes.indexOf(this.sceneService.selectedScenes[0]), 1);
+    this.sceneService.selectScene(0);
   }
 
 }

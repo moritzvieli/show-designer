@@ -30,9 +30,12 @@
         <app-fixture-capability-pan-tilt></app-fixture-capability-pan-tilt>
       </div> -->
 
+      <!-- Fix spacing at the end -->
+      <div class="col col-auto p-0 my-3 mr-3">&nbsp;</div>
+
     </div>
 
-    <div *ngIf="!presetService.selectedPreset" class="m-auto">
+    <div *ngIf="presetService.selectedPreset && presetService.selectedPreset.fixtureUuids.length == 0" class="m-auto">
       <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures-selected' | translate }}</p>
     </div>
 

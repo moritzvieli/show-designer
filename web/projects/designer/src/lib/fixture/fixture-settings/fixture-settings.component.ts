@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FixtureService } from '../../services/fixture.service';
+import { PresetService } from '../../services/preset.service';
 
 @Component({
   selector: 'app-fixture-settings',
@@ -11,7 +12,8 @@ export class FixtureSettingsComponent implements OnInit {
   dmxChannels: number[] = [];
 
   constructor(
-    private fixtureService: FixtureService
+    private fixtureService: FixtureService,
+    public presetService: PresetService
   ) {
     for(let i = 0; i < 512; i++) {
       this.dmxChannels.push(0);
@@ -19,6 +21,13 @@ export class FixtureSettingsComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  isChrome(): boolean {
+    if (navigator.appVersion.indexOf("Chrome/") != -1) {
+      return true;
+    }
+    return false;
   }
 
 }

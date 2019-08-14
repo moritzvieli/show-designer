@@ -365,6 +365,10 @@ export class PresetService {
   getSelectedTemplates() {
     let templates: FixtureTemplate[] = [];
 
+    if(!this.selectedPreset) {
+      return templates;
+    }
+
     for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
       let template = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);

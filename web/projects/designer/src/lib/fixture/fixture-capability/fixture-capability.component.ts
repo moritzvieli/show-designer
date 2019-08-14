@@ -46,6 +46,10 @@ export class FixtureCapabilityComponent implements OnInit {
   private updateColorWheels() {
     this.colorWheelChannels = new Map<FixtureTemplate, CachedFixtureChannel>();
 
+    if(!this.presetService.selectedPreset) {
+      return;
+    }
+
     for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
       for (let channel of fixture.channels) {

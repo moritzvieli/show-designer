@@ -35,7 +35,7 @@ export class SceneService {
     preset.uuid = this.uuidService.getUuid();
     preset.name = 'Preset';
     this.projectService.project.scenes[0].presetUuids.push(preset.uuid);
-    
+
     this.projectService.project.presets.push(preset);
     this.presetService.selectedPreset = preset;
     this.presetService.previewPreset = true;
@@ -82,11 +82,15 @@ export class SceneService {
   selectScene(index: number) {
     this.effectService.selectedEffect = undefined;
 
-    if (this.multipleSelection) {
-      this.switchSceneSelection(this.projectService.project.scenes[index]);
-    } else {
+    if (index >= this.projectService.project.scenes.length) {
       this.selectedScenes = [];
-      this.selectedScenes.push(this.projectService.project.scenes[index]);
+    } else {
+      if (this.multipleSelection) {
+        this.switchSceneSelection(this.projectService.project.scenes[index]);
+      } else {
+        this.selectedScenes = [];
+        this.selectedScenes.push(this.projectService.project.scenes[index]);
+      }
     }
 
     this.presetService.previewSelectionChanged.next();
