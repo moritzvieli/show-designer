@@ -9,7 +9,7 @@ export enum Positioning {
 export class Fixture {
 
     uuid: string;
-    fixtureTemplateUuid: string;
+    profileUuid: string;
     name: string;
     dmxUniverseUuid: string;
     dmxFirstChannel: number = 5;
@@ -27,7 +27,7 @@ export class Fixture {
         }
 
         this.uuid = data.uuid;
-        this.fixtureTemplateUuid = data.fixtureTemplateUuid;
+        this.profileUuid = data.profileUuid;
         this.name = data.name;
         this.dmxUniverseUuid = data.dmxUniverseUuid;
         this.dmxFirstChannel = data.dmxFirstChannel;

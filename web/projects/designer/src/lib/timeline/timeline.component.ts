@@ -100,6 +100,13 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   removeComposition() {
+    // this.warningDialogService.show('designer.timeline.warning-delete-file').pipe(map(result => {
+    //   if (result) {
+    //     this.http.post('file/delete?name=' + existingFile + '&type=AUDIO', undefined).pipe(map((response: Response) => {
+    //       this.loadFiles();
+    //     })).subscribe();
+    //   }
+    // })).subscribe();
     // TODO confirm and delete composition
   }
 

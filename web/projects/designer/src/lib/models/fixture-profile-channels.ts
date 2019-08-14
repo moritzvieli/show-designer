@@ -1,6 +1,6 @@
-export class FixtureTemplateChannels {
+export class FixtureProfileChannels {
 
-    templateUuid: string;
+    profileUuid: string;
     channels: any[] = [];
 
     constructor(data?: any) {
@@ -8,7 +8,7 @@ export class FixtureTemplateChannels {
             return;
         }
 
-        this.templateUuid = data.templateUuid;
+        this.profileUuid = data.profileUuid;
 
         if(data.channels) {
             this.channels = data.channels;

@@ -1,11 +1,11 @@
 import { Effect } from './effect';
 import { FixtureCapability } from './fixture-capability';
-import { EffectCurveTemplateChannels } from './effect-curve-template-channel';
+import { EffectCurveProfileChannels } from './effect-curve-profile-channel';
 
 export class EffectCurve extends Effect {
 
     capabilities: FixtureCapability[] = [];
-    channels: EffectCurveTemplateChannels[] = [];
+    channels: EffectCurveProfileChannels[] = [];
 
     lengthMillis = 2500;
     phaseMillis = 0;
@@ -18,19 +18,19 @@ export class EffectCurve extends Effect {
     constructor(data?: any) {
         super('curve', data);
 
-        if(!data) {
+        if (!data) {
             return;
         }
 
-        if(data.capabilities) {
+        if (data.capabilities) {
             for (let capability in data.capabilities) {
                 this.capabilities.push(new FixtureCapability(capability));
             }
         }
 
-        if(data.channels) {
+        if (data.channels) {
             for (let channel in data.channels) {
-                this.channels.push(new EffectCurveTemplateChannels(channel));
+                this.channels.push(new EffectCurveProfileChannels(channel));
             }
         }
 
@@ -47,7 +47,7 @@ export class EffectCurve extends Effect {
         // Calculate the offset for phasing
         let phasingIndex = 0;
 
-        if(fixtureIndex) {
+        if (fixtureIndex) {
             phasingIndex = fixtureIndex;
         }
 

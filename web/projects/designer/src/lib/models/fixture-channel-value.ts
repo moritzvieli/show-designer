@@ -1,7 +1,7 @@
 export class FixtureChannelValue {
 
     channelName: string;
-    fixtureTemplateUuid: string;
+    profileUuid: string;
     value: number;
 
     constructor(data?: any) {
@@ -9,7 +9,7 @@ export class FixtureChannelValue {
             return;
         }
         this.channelName = data.channelName;
-        this.fixtureTemplateUuid = data.fixtureTemplateUuid;
+        this.profileUuid = data.profileUuid;
         this.value = data.value;
     }
 

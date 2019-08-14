@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectionStrategy, ElementRef, ViewChil
 import { PresetService } from '../../../services/preset.service';
 import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
 import { CachedFixtureCapability } from '../../../models/cached-fixture-capability';
-import { FixtureTemplate } from '../../../models/fixture-template';
+import { FixtureProfile } from '../../../models/fixture-profile';
 
 @Component({
   selector: 'app-fixture-capability-channel',
@@ -18,7 +18,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   _channel: CachedFixtureChannel;
 
   @Input()
-  template: FixtureTemplate;
+  profile: FixtureProfile;
 
   @Input()
   set channel(value: CachedFixtureChannel) {
@@ -80,7 +80,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   }
 
   getValue(): number {
-    return this.presetService.getChannelValue(this._channel.channelName, this.template.uuid);
+    return this.presetService.getChannelValue(this._channel.name, this.profile.uuid);
   }
 
   setValue(value: any, ignoreCapabilityRange: boolean = false) {
@@ -92,7 +92,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       return;
     }
 
-    this.presetService.setChannelValue(this._channel.channelName, this.template.uuid, value);
+    this.presetService.setChannelValue(this._channel.name, this.profile.uuid, value);
     if (this.sliderValue) {
       // update the value without change detector for performance reasons
       // TODO use the same technique in the dimmer/pan/tilt/color sliders
@@ -112,7 +112,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     if (active) {
       this.setValue(this.getDefaultValue(), true);
     } else {
-      this.presetService.deleteChannelValue(this._channel.channelName, this.template.uuid);
+      this.presetService.deleteChannelValue(this._channel.name, this.profile.uuid);
       this.selectedCapability = this._channel.capabilities[0];
     }
   }

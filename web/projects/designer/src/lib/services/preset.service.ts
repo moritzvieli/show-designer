@@ -11,8 +11,8 @@ import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 import { CachedFixtureChannel } from '../models/cached-fixture-channel';
 import { CachedFixtureCapability } from '../models/cached-fixture-capability';
-import { FixtureTemplate } from '../models/fixture-template';
-import { FixtureMode } from 'projects/designer/dist/lib/models/fixture-mode';
+import { FixtureProfile } from '../models/fixture-profile';
+import { FixtureMode } from '../models/fixture-mode';
 
 @Injectable({
   providedIn: 'root'
@@ -138,7 +138,7 @@ export class PresetService {
     }
   }
 
-  deleteCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, templateUuid?: string) {
+  deleteCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, profileUuid?: string) {
     for (let i = 0; i < preset.fixtureCapabilityValues.length; i++) {
       if (this.fixtureService.capabilitiesMatch(
         preset.fixtureCapabilityValues[i].type,
@@ -147,8 +147,8 @@ export class PresetService {
         color,
         preset.fixtureCapabilityValues[i].wheel,
         wheel,
-        preset.fixtureCapabilityValues[i].fixtureTemplateUuid,
-        templateUuid
+        preset.fixtureCapabilityValues[i].profileUuid,
+        profileUuid
       )) {
         preset.fixtureCapabilityValues.splice(i, 1);
         return;
@@ -156,9 +156,9 @@ export class PresetService {
     }
   }
 
-  setCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, valuePercentage: number, slotNumber?: number, color?: FixtureCapabilityColor, wheel?: string, templateUuid?: string) {
+  setCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, valuePercentage: number, slotNumber?: number, color?: FixtureCapabilityColor, wheel?: string, profileUuid?: string) {
     // Delete existant properties with this type and set the new value
-    this.deleteCapabilityValue(preset, capabilityType, color, wheel, templateUuid);
+    this.deleteCapabilityValue(preset, capabilityType, color, wheel, profileUuid);
 
     let fixtureCapabilityValue = new FixtureCapabilityValue();
     fixtureCapabilityValue.type = capabilityType;
@@ -166,12 +166,12 @@ export class PresetService {
     fixtureCapabilityValue.wheel = wheel;
     fixtureCapabilityValue.valuePercentage = valuePercentage;
     fixtureCapabilityValue.slotNumber = slotNumber;
-    fixtureCapabilityValue.fixtureTemplateUuid = templateUuid;
+    fixtureCapabilityValue.profileUuid = profileUuid;
 
     preset.fixtureCapabilityValues.push(fixtureCapabilityValue);
   }
 
-  getCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, templateUuid?: string): FixtureCapabilityValue {
+  getCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, profileUuid?: string): FixtureCapabilityValue {
     for (let capabilityValue of preset.fixtureCapabilityValues) {
       if (this.fixtureService.capabilitiesMatch(
         capabilityValue.type,
@@ -180,8 +180,8 @@ export class PresetService {
         color,
         capabilityValue.wheel,
         wheel,
-        capabilityValue.fixtureTemplateUuid,
-        templateUuid
+        capabilityValue.profileUuid,
+        profileUuid
       )) {
         return capabilityValue;
       }
@@ -189,30 +189,30 @@ export class PresetService {
     return undefined;
   }
 
-  deleteChannelValue(channelName: string, fixtureTemplateUuid: string) {
+  deleteChannelValue(channelName: string, profileUuid: string) {
     for (let i = 0; i < this.selectedPreset.fixtureChannelValues.length; i++) {
-      if (this.selectedPreset.fixtureChannelValues[i].channelName == channelName && this.selectedPreset.fixtureChannelValues[i].fixtureTemplateUuid == fixtureTemplateUuid) {
+      if (this.selectedPreset.fixtureChannelValues[i].channelName == channelName && this.selectedPreset.fixtureChannelValues[i].profileUuid == profileUuid) {
         this.selectedPreset.fixtureChannelValues.splice(i, 1);
         return;
       }
     }
   }
 
-  setChannelValue(channelName: string, fixtureTemplateUuid: string, value: number) {
+  setChannelValue(channelName: string, profileUuid: string, value: number) {
     // Delete existant properties with this type and set the new value
-    this.deleteChannelValue(channelName, fixtureTemplateUuid);
+    this.deleteChannelValue(channelName, profileUuid);
 
     let fixtureChannelValue = new FixtureChannelValue();
     fixtureChannelValue.channelName = channelName;
-    fixtureChannelValue.fixtureTemplateUuid = fixtureTemplateUuid;
+    fixtureChannelValue.profileUuid = profileUuid;
     fixtureChannelValue.value = value;
 
     this.selectedPreset.fixtureChannelValues.push(fixtureChannelValue);
   }
 
-  getChannelValue(channelName: string, fixtureTemplateUuid: string): number {
+  getChannelValue(channelName: string, profileUuid: string): number {
     for (let channelValue of this.selectedPreset.fixtureChannelValues) {
-      if (channelValue.channelName == channelName && channelValue.fixtureTemplateUuid == fixtureTemplateUuid) {
+      if (channelValue.channelName == channelName && channelValue.profileUuid == profileUuid) {
         return channelValue.value;
       }
     }
@@ -269,7 +269,7 @@ export class PresetService {
     for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
       for (let channel of fixture.channels) {
-        if (channel.fixtureChannel) {
+        if (channel.channel) {
           for (let capability of channel.capabilities) {
             if (capability.capability.type == type) {
               return true;
@@ -288,7 +288,7 @@ export class PresetService {
   hasCapabilityColor(): boolean {
     // TODO optionally color temperature and color white (see stairville/mh-100)
 
-    // one of the templates has a color intensity
+    // one of the profiles has a color intensity
     if (this.hasCapabilityType(FixtureCapabilityType.ColorIntensity)) {
       return true;
     }
@@ -299,7 +299,7 @@ export class PresetService {
   hasCapabilityColorOrColorWheel(): boolean {
     // TODO optionally color temperature and color white (see stairville/mh-100)
 
-    // one of the templates has a color intensity
+    // one of the profiles has a color intensity
     if (this.hasCapabilityColor()) {
       return true;
     }
@@ -362,30 +362,30 @@ export class PresetService {
     this.selectPreset(highestSelectedPresetIndex);
   }
 
-  getSelectedTemplates() {
-    let templates: FixtureTemplate[] = [];
+  getSelectedProfiles() {
+    let profiles: FixtureProfile[] = [];
 
-    if(!this.selectedPreset) {
-      return templates;
+    if (!this.selectedPreset) {
+      return profiles;
     }
 
     for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
       let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-      let template = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+      let profile = this.fixtureService.getProfileByUuid(fixture.profileUuid);
 
-      if (templates.indexOf(template) < 0) {
-        templates.push(template);
+      if (profiles.indexOf(profile) < 0) {
+        profiles.push(profile);
       }
     }
 
-    return templates;
+    return profiles;
   }
 
-  getSelectedTemplateChannels(selectedTemplates: FixtureTemplate[]) {
-    let availableChannels: Map<FixtureTemplate, CachedFixtureChannel[]> = new Map<FixtureTemplate, CachedFixtureChannel[]>();
+  getSelectedProfileChannels(selectedProfiles: FixtureProfile[]) {
+    let availableChannels: Map<FixtureProfile, CachedFixtureChannel[]> = new Map<FixtureProfile, CachedFixtureChannel[]>();
 
-    let calculatedTemplateModes = new Map<FixtureTemplate, FixtureMode[]>();
-    for (let template of selectedTemplates) {
+    let calculatedProfileModes = new Map<FixtureProfile, FixtureMode[]>();
+    for (let profile of selectedProfiles) {
       let modes: FixtureMode[] = [];
       for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
         let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
@@ -393,23 +393,23 @@ export class PresetService {
           modes.push(fixture.mode);
         }
       }
-      calculatedTemplateModes.set(template, modes);
+      calculatedProfileModes.set(profile, modes);
     }
 
     // calculate all required channels from the modes
-    calculatedTemplateModes.forEach((modes: FixtureMode[], template: FixtureTemplate) => {
-      let templateChannels: CachedFixtureChannel[] = [];
+    calculatedProfileModes.forEach((modes: FixtureMode[], profile: FixtureProfile) => {
+      let profileChannels: CachedFixtureChannel[] = [];
       for (let mode of modes) {
-        let channels = this.fixtureService.getCachedChannels(template, mode);
+        let channels = this.fixtureService.getCachedChannels(profile, mode);
         for (let channel of channels) {
           // only add the channel, if no channel with the same name has already been added
           // (e.g. a fine channel)
-          if (channel.fixtureChannel && !templateChannels.find(c => c.channelName == channel.channelName)) {
-            templateChannels.push(channel);
+          if (channel.channel && !profileChannels.find(c => c.name == channel.name)) {
+            profileChannels.push(channel);
           }
         }
       }
-      availableChannels.set(template, templateChannels);
+      availableChannels.set(profile, profileChannels);
     });
 
     return availableChannels;

@@ -2,7 +2,7 @@ import { Composition } from "./composition";
 import { Fixture } from "./fixture";
 import { Scene } from "./scene";
 import { Preset } from "./preset";
-import { FixtureTemplate } from "./fixture-template";
+import { FixtureProfile } from "./fixture-profile";
 
 export class Project {
 
@@ -12,7 +12,7 @@ export class Project {
     public masterDimmerValue: number = 1;
 
     public compositions: Composition[] = [];
-    public fixtureTemplates: FixtureTemplate[] = [];
+    public fixtureProfiles: FixtureProfile[] = [];
     public fixtures: Fixture[] = [];
     public scenes: Scene[] = [];
     public presets: Preset[] = [];
@@ -30,15 +30,14 @@ export class Project {
             }
         }
 
-        if (data.fixtureTemplates) {
-            for (let fixtureTemplate of data.fixtureTemplates) {
-                this.fixtureTemplates.push(new FixtureTemplate(fixtureTemplate));
+        if (data.fixtureProfiles) {
+            for (let fixtureProfile of data.fixtureProfiles) {
+                this.fixtureProfiles.push(new FixtureProfile(fixtureProfile));
             }
         }
 
         if (data.fixtures) {
             for (let fixture of data.fixtures) {
-                // TODO
                 this.fixtures.push(new Fixture(fixture));
             }
         }

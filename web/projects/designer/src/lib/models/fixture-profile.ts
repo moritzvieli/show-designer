@@ -2,7 +2,7 @@ import { FixtureMode } from './fixture-mode';
 import { FixtureChannel } from './fixture-channel';
 import { FixtureWheel } from './fixture-wheel';
 
-export enum FixtureType {
+export enum FixtureCategory {
     Blinder = "Blinder",
     'Color Changer' = "Color Changer",
     Dimmer = "Dimmer",
@@ -21,13 +21,13 @@ export enum FixtureType {
     Other = "Other"
 }
 
-export class FixtureTemplate {
+export class FixtureProfile {
 
     uuid: string;
     name: string;
     manufacturerShortName: string;
     manufacturerName: string;
-    categories: FixtureType[] = [];
+    categories: FixtureCategory[] = [];
     availableChannels: any = {};
     shortName: string;
     wheels: any = {};
@@ -48,7 +48,7 @@ export class FixtureTemplate {
 
         if(data.categories) {
             for(let category of data.categories) {
-                this.categories.push(FixtureType[<string>category]);
+                this.categories.push(FixtureCategory[<string>category]);
             }
         }
         if(data.wheels) {

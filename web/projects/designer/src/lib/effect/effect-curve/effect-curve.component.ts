@@ -5,11 +5,11 @@ import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
 import { PresetService } from '../../services/preset.service';
 import { FixtureService } from '../../services/fixture.service';
 import { FixtureCapability, FixtureCapabilityType, FixtureCapabilityColor } from '../../models/fixture-capability';
-import { FixtureTemplate } from 'projects/designer/dist/lib/models/fixture-template';
-import { CachedFixtureChannel } from 'projects/designer/dist/lib/models/cached-fixture-channel';
-import { EffectCurveTemplateChannels } from '../../models/effect-curve-template-channel';
+import { EffectCurveProfileChannels } from '../../models/effect-curve-profile-channel';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
+import { FixtureProfile } from '../../models/fixture-profile';
+import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 
 @Component({
   selector: 'app-effect-curve',
@@ -27,9 +27,9 @@ export class EffectCurveComponent implements OnInit {
   public availableCapabilities: FixtureCapability[] = [];
 
   // the selected channels
-  public availableChannels: Map<FixtureTemplate, CachedFixtureChannel[]> = new Map<FixtureTemplate, CachedFixtureChannel[]>();
-  public availableTemplates: FixtureTemplate[] = [];
-  public selectedTemplates: FixtureTemplate[] = [];
+  public availableChannels: Map<FixtureProfile, CachedFixtureChannel[]> = new Map<FixtureProfile, CachedFixtureChannel[]>();
+  public availableProfiles: FixtureProfile[] = [];
+  public selectedProfiles: FixtureProfile[] = [];
 
   @Input() curve: EffectCurve;
 
@@ -161,14 +161,14 @@ export class EffectCurveComponent implements OnInit {
   }
 
   private calculateChannelCapabilities() {
-    this.availableChannels = this.presetService.getSelectedTemplateChannels(this.selectedTemplates);
+    this.availableChannels = this.presetService.getSelectedProfileChannels(this.selectedProfiles);
   }
 
-  changeTemplateSelection($event: any, template: FixtureTemplate) {
-    if (this.selectedTemplates.indexOf(template) >= 0) {
-      this.selectedTemplates.splice(this.selectedTemplates.indexOf(template), 1);
+  changeProfileSelection($event: any, profile: FixtureProfile) {
+    if (this.selectedProfiles.indexOf(profile) >= 0) {
+      this.selectedProfiles.splice(this.selectedProfiles.indexOf(profile), 1);
     } else {
-      this.selectedTemplates.push(template);
+      this.selectedProfiles.push(profile);
     }
 
     this.calculateChannelCapabilities();
@@ -211,11 +211,11 @@ export class EffectCurveComponent implements OnInit {
       this.availableCapabilities.push(capability);
     }
 
-    // calculate all templates
-    this.availableTemplates = this.presetService.getSelectedTemplates();
+    // calculate all profiles
+    this.availableProfiles = this.presetService.getSelectedProfiles();
 
-    // select all templates by default
-    this.selectedTemplates = [...this.availableTemplates];
+    // select all profiles by default
+    this.selectedProfiles = [...this.availableProfiles];
 
     // calculate all channels
     this.calculateChannelCapabilities();
@@ -281,18 +281,18 @@ export class EffectCurveComponent implements OnInit {
     }
   }
 
-  getChannelName(templateName: string, channelName: string) {
-    if (this.availableTemplates.length > 1) {
-      return templateName + ' - ' + channelName;
+  getChannelName(profileName: string, channelName: string) {
+    if (this.availableProfiles.length > 1) {
+      return profileName + ' - ' + channelName;
     }
 
     return channelName;
   }
 
-  channelChecked(template: FixtureTemplate, channel: CachedFixtureChannel): boolean {
-    for (let templateChannels of this.curve.channels) {
-      if (templateChannels.templateUuid == template.uuid) {
-        if (templateChannels.channels.includes(channel.channelName)) {
+  channelChecked(profile: FixtureProfile, channel: CachedFixtureChannel): boolean {
+    for (let profileChannels of this.curve.channels) {
+      if (profileChannels.profileUuid == profile.uuid) {
+        if (profileChannels.channels.includes(channel.name)) {
           return true;
         }
 
@@ -303,31 +303,31 @@ export class EffectCurveComponent implements OnInit {
     return false;
   }
 
-  toggleChannel(event: any, template: FixtureTemplate, channel: CachedFixtureChannel) {
-    // add the template, if necessary
-    let templateContained: boolean = false;
-    for (let templateChannels of this.curve.channels) {
-      if (templateChannels.templateUuid == template.uuid) {
-        templateContained = true;
+  toggleChannel(event: any, profile: FixtureProfile, channel: CachedFixtureChannel) {
+    // add the profile, if necessary
+    let profileContained: boolean = false;
+    for (let profileChannels of this.curve.channels) {
+      if (profileChannels.profileUuid == profile.uuid) {
+        profileContained = true;
         break;
       }
     }
 
-    if (!templateContained) {
-      let templateChannels = new EffectCurveTemplateChannels();
-      templateChannels.templateUuid = template.uuid;
-      this.curve.channels.push(templateChannels);
+    if (!profileContained) {
+      let profileChannels = new EffectCurveProfileChannels();
+      profileChannels.profileUuid = profile.uuid;
+      this.curve.channels.push(profileChannels);
     }
 
     // add or delete the channel
-    for (let templateChannels of this.curve.channels) {
-      if (templateChannels.templateUuid == template.uuid) {
-        let index = templateChannels.channels.indexOf(channel.channelName);
+    for (let profileChannels of this.curve.channels) {
+      if (profileChannels.profileUuid == profile.uuid) {
+        let index = profileChannels.channels.indexOf(channel.name);
 
         if (index >= 0) {
-          templateChannels.channels.splice(index, 1);
+          profileChannels.channels.splice(index, 1);
         } else {
-          templateChannels.channels.push(channel.channelName);
+          profileChannels.channels.push(channel.name);
         }
 
         break;

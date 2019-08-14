@@ -106,7 +106,7 @@ export class MovingHead3d extends Fixture3d {
             this.spotlightGroup.remove(this.spotLightBeam);
         }
 
-        // TODO update the correct angle from the template
+        // TODO update the correct angle from the profile
         let beamAngleDegrees = 14;
         let geometry = new THREE.CylinderGeometry(0.1, beamAngleDegrees * 1.2, 100, 64, 20, false);
         geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
@@ -293,7 +293,7 @@ export class MovingHead3d extends Fixture3d {
         this.headGroup.rotation.x = THREE.Math.degToRad(tiltEnd * this.tilt + tiltStart) - THREE.Math.degToRad(tiltEnd / 2);
 
         // Update the angle (only on change, because it's expensive)
-        // TODO update the correct angle from the template
+        // TODO update the correct angle from the profile
         let beamAngleDregrees = 14;
         if (this.lastBeamAngleDegrees != beamAngleDregrees) {
             this.spotLight.angle = THREE.Math.degToRad(beamAngleDregrees);

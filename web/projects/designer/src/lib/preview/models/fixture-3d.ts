@@ -41,7 +41,7 @@ export abstract class Fixture3d {
 
         // evaluate, various capabilities of this fixture
         for (let cachedChannel of this.fixture.channels) {
-            if (cachedChannel.fixtureChannel) {
+            if (cachedChannel.channel) {
                 for (let capability of cachedChannel.capabilities) {
                     if (capability.capability.type == FixtureCapabilityType.Intensity) {
                         this.fixtureSupportsDimmer = true;

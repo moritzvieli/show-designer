@@ -40,12 +40,12 @@
             "capability-color": "Farbe",
             "capability-color-wheel": "Farbrad",
             "capability-pan-tilt": "Pan/Tilt",
-            "templates": "Templates"
+            "profiles": "Profiles"
         },
         "fixture-pool": {
             "title": "Fixture Pool",
-            "create-template": "Vorlage erstellen",
-            "search-templates": "Vorlagen suchen",
+            "create-profile": "Profil erstellen",
+            "search-profiles": "Profile suchen",
             "settings": "Einstellungen",
             "dmx": "DMX Übersicht",
             "fixture-name": "Fixture Name",

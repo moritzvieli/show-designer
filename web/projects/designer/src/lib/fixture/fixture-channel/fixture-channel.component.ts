@@ -1,8 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { PresetService } from '../../services/preset.service';
 import { FixtureService } from '../../services/fixture.service';
-import { FixtureTemplate } from '../../models/fixture-template';
-import { FixtureMode } from '../../models/fixture-mode';
+import { FixtureProfile } from '../../models/fixture-profile';
 import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 
 @Component({
@@ -12,9 +11,9 @@ import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 })
 export class FixtureChannelComponent implements OnInit {
 
-  public channelCapabilities: Map<FixtureTemplate, CachedFixtureChannel[]> = new Map<FixtureTemplate, CachedFixtureChannel[]>();
-  public templates: FixtureTemplate[] = [];
-  public selectedTemplates: FixtureTemplate[] = [];
+  public channelCapabilities: Map<FixtureProfile, CachedFixtureChannel[]> = new Map<FixtureProfile, CachedFixtureChannel[]>();
+  public profiles: FixtureProfile[] = [];
+  public selectedProfiles: FixtureProfile[] = [];
 
   constructor(
     public presetService: PresetService,
@@ -22,11 +21,11 @@ export class FixtureChannelComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.presetService.fixtureSelectionChanged.subscribe(() => {
-      this.calculateTemplates();
+      this.calculateProfiles();
     });
 
     this.presetService.previewSelectionChanged.subscribe(() => {
-      this.calculateTemplates();
+      this.calculateProfiles();
     });
   }
 
@@ -34,26 +33,26 @@ export class FixtureChannelComponent implements OnInit {
   }
 
   private calculateChannelCapabilities() {
-    this.channelCapabilities = this.presetService.getSelectedTemplateChannels(this.selectedTemplates);
+    this.channelCapabilities = this.presetService.getSelectedProfileChannels(this.selectedProfiles);
 
     this.changeDetectorRef.detectChanges();
   }
 
-  private calculateTemplates() {
-    // calculate all templates
-    this.templates = this.presetService.getSelectedTemplates();
+  private calculateProfiles() {
+    // calculate all profiels
+    this.profiles = this.presetService.getSelectedProfiles();
 
-    // select all templates by default
-    this.selectedTemplates = [...this.templates];
+    // select all profiles by default
+    this.selectedProfiles = [...this.profiles];
 
     this.calculateChannelCapabilities();
   }
 
-  changeTemplateSelection($event: any, template: FixtureTemplate) {
-    if (this.selectedTemplates.indexOf(template) >= 0) {
-      this.selectedTemplates.splice(this.selectedTemplates.indexOf(template), 1);
+  changeProfileSelection($event: any, profile: FixtureProfile) {
+    if (this.selectedProfiles.indexOf(profile) >= 0) {
+      this.selectedProfiles.splice(this.selectedProfiles.indexOf(profile), 1);
     } else {
-      this.selectedTemplates.push(template);
+      this.selectedProfiles.push(profile);
     }
 
     this.calculateChannelCapabilities();

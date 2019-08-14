@@ -6,7 +6,7 @@ import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import STATS from 'three/examples/js/libs/stats.min';
-import { FixtureType } from '../models/fixture-template';
+import { FixtureCategory } from '../models/fixture-profile';
 import { Fixture3d } from './models/fixture-3d';
 import { PreviewService } from '../services/preview.service';
 import { TimelineService } from '../services/timeline.service';
@@ -66,7 +66,7 @@ export class PreviewComponent implements AfterViewInit {
 
     // add all fixtures from the project
     for (let fixture of this.fixtureService.cachedFixtures) {
-      if (fixture.template.categories[0] == FixtureType['Moving Head']) {
+      if (fixture.profile.categories[0] == FixtureCategory['Moving Head']) {
         this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
       }
     }

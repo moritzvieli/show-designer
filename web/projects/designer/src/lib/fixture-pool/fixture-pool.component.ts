@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
-import { FixtureTemplate } from '../models/fixture-template';
+import { FixtureProfile } from '../models/fixture-profile';
 import { FixtureService } from '../services/fixture.service';
 import { Fixture } from '../models/fixture';
 import { UuidService } from '../services/uuid.service';
@@ -18,15 +18,15 @@ import { PresetService } from '../services/preset.service';
 })
 export class FixturePoolComponent implements OnInit {
 
-  private templates: FixtureTemplate[];
-  public filteredTemplates: FixtureTemplate[];
-  public loadingTemplates: boolean = false;
+  private profiles: FixtureProfile[];
+  public filteredProfiles: FixtureProfile[];
+  public loadingProfiles: boolean = false;
 
   public fixturePool: Fixture[];
 
   public dmxChannels: number[] = [];
   public selectedFixture: Fixture;
-  public selectedFixtureTemplate: FixtureTemplate;
+  public selectedFixtureProfile: FixtureProfile;
   public showChannelNumbers: boolean = false;
   public channelDragFixture: Fixture;
   public channelDragOffset: number;
@@ -57,37 +57,37 @@ export class FixturePoolComponent implements OnInit {
       this.dmxChannels.push(0);
     }
 
-    this.loadingTemplates = true;
+    this.loadingProfiles = true;
 
-    this.fixtureService.getSearchTemplates().subscribe(templates => {
-      this.templates = templates;
-      this.filterTemplates();
-      this.loadingTemplates = false;
+    this.fixtureService.getSearchProfiles().subscribe(profiles => {
+      this.profiles = profiles;
+      this.filterProfiles();
+      this.loadingProfiles = false;
     });
   }
 
   selectFixture(fixture: Fixture) {
-    this.selectedFixtureTemplate = undefined;
+    this.selectedFixtureProfile = undefined;
     if (fixture) {
-      this.selectedFixtureTemplate = this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid);
+      this.selectedFixtureProfile = this.fixtureService.getProfileByUuid(fixture.profileUuid);
     }
     this.selectedFixture = fixture;
   }
 
-  filterTemplates(searchValue?: string) {
+  filterProfiles(searchValue?: string) {
     if (!searchValue) {
-      this.filteredTemplates = this.templates;
+      this.filteredProfiles = this.profiles;
       return;
     }
 
-    this.filteredTemplates = [];
+    this.filteredProfiles = [];
 
-    for (let template of this.templates) {
-      if (template.uuid.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
-        || template.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
-        || template.manufacturerName.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+    for (let profile of this.profiles) {
+      if (profile.uuid.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
+        || profile.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
+        || profile.manufacturerName.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
 
-        this.filteredTemplates.push(template);
+        this.filteredProfiles.push(profile);
       }
     }
   }
@@ -100,7 +100,7 @@ export class FixturePoolComponent implements OnInit {
       let occupiedChannels = 0;
 
       for (let fixture of this.fixturePool) {
-        let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
+        let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
         if (i >= fixture.dmxFirstChannel && i < fixture.dmxFirstChannel + mode.channels.length) {
           // this channel is already occupied by a fixture -> move forward to the end of the fixture
@@ -126,26 +126,26 @@ export class FixturePoolComponent implements OnInit {
     return -1;
   }
 
-  addFixture(searchTemplate: FixtureTemplate) {
-    // Load the template details, if not already done. There is only a
-    // minimal template passed from the search.
-    this.fixtureService.loadTemplateByUuid(searchTemplate.uuid).subscribe(() => {
-      let template = this.fixtureService.getTemplateByUuid(searchTemplate.uuid);
+  addFixture(searchProfile: FixtureProfile) {
+    // Load the profile details, if not already done. There is only a
+    // minimal profile passed from the search.
+    this.fixtureService.loadProfileByUuid(searchProfile.uuid).subscribe(() => {
+      let profile = this.fixtureService.getProfileByUuid(searchProfile.uuid);
       let fixture = new Fixture();
       fixture.uuid = this.uuidService.getUuid();
-      fixture.fixtureTemplateUuid = template.uuid;
-      fixture.name = template.name;
+      fixture.profileUuid = profile.uuid;
+      fixture.name = profile.name;
 
-      if (template.modes && template.modes.length > 0) {
-        fixture.modeShortName = template.modes[0].shortName;
+      if (profile.modes && profile.modes.length > 0) {
+        fixture.modeShortName = profile.modes[0].shortName;
       }
 
       // add the same mode as an existing fixture, if available
       let existingModeShortName: string
       for (let existingFixture of this.fixturePool) {
-        let existingTemplate = this.fixtureService.getTemplateByUuid(existingFixture.fixtureTemplateUuid);
+        let existingProfile = this.fixtureService.getProfileByUuid(existingFixture.profileUuid);
 
-        if (existingTemplate == template) {
+        if (existingProfile == profile) {
           existingModeShortName = existingFixture.modeShortName;
           break;
         }
@@ -154,10 +154,10 @@ export class FixturePoolComponent implements OnInit {
       if (existingModeShortName) {
         fixture.modeShortName = existingModeShortName;
       } else {
-        fixture.modeShortName = template.modes[0].shortName || template.modes[0].name;
+        fixture.modeShortName = profile.modes[0].shortName || profile.modes[0].name;
       }
 
-      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
+      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
       const firstChannel = this.getNextFreeDmxChannel(mode.channels.length);
 
       if (firstChannel >= 0) {
@@ -180,7 +180,7 @@ export class FixturePoolComponent implements OnInit {
   addCopy(originalFixture: Fixture) {
     let fixture = new Fixture();
     fixture.uuid = this.uuidService.getUuid();
-    fixture.fixtureTemplateUuid = originalFixture.fixtureTemplateUuid;
+    fixture.profileUuid = originalFixture.profileUuid;
     fixture.name = originalFixture.name;
     fixture.modeShortName = originalFixture.modeShortName;
     fixture.dmxFirstChannel = originalFixture.dmxFirstChannel;
@@ -208,7 +208,7 @@ export class FixturePoolComponent implements OnInit {
 
   channelOccupied(index: number): boolean {
     for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
       if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
         return true;
@@ -230,7 +230,7 @@ export class FixturePoolComponent implements OnInit {
 
   channelOccupiedEnd(index: number): boolean {
     for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
       if (index == fixture.dmxFirstChannel + mode.channels.length - 1) {
         return true;
@@ -244,7 +244,7 @@ export class FixturePoolComponent implements OnInit {
     let occupiedFixture: Fixture;
 
     for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
       if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
         if (occupiedFixture) {
@@ -270,7 +270,7 @@ export class FixturePoolComponent implements OnInit {
     // find a dragging fixture and select it, but don't change the selection, if the
     // currently selected fixture might also be selected (on overlapped fixtures)
     for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(fixture.fixtureTemplateUuid), fixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
       if (selectedIndex >= fixture.dmxFirstChannel && selectedIndex <= fixture.dmxFirstChannel + mode.channels.length - 1) {
         if (this.selectedFixture == fixture) {
@@ -300,7 +300,7 @@ export class FixturePoolComponent implements OnInit {
     }
 
     if (index >= this.selectedFixture.dmxFirstChannel) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(this.selectedFixture.fixtureTemplateUuid), this.selectedFixture);
+      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(this.selectedFixture.profileUuid), this.selectedFixture);
 
       if (index < this.selectedFixture.dmxFirstChannel + mode.channels.length) {
         return true;
@@ -322,7 +322,7 @@ export class FixturePoolComponent implements OnInit {
     // perform dragging
     const selectedIndex = event.target.dataset.index;
 
-    if (this.channelDragFixture && selectedIndex - this.channelDragOffset >= 0 && selectedIndex - this.channelDragOffset + this.fixtureService.getModeByFixture(this.fixtureService.getTemplateByUuid(this.channelDragFixture.fixtureTemplateUuid), this.channelDragFixture).channels.length - 1 <= 511) {
+    if (this.channelDragFixture && selectedIndex - this.channelDragOffset >= 0 && selectedIndex - this.channelDragOffset + this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(this.channelDragFixture.profileUuid), this.channelDragFixture).channels.length - 1 <= 511) {
       this.channelDragFixture.dmxFirstChannel = selectedIndex - this.channelDragOffset;
     }
   }

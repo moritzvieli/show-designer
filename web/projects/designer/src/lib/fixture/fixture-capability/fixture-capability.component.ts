@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { PresetService } from '../../services/preset.service';
 import { FixtureService } from '../../services/fixture.service';
-import { FixtureTemplate } from '../../models/fixture-template';
+import { FixtureProfile } from '../../models/fixture-profile';
 import { FixtureWheelSlotType } from '../../models/fixture-wheel-slot';
 import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 
@@ -13,8 +13,8 @@ import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 })
 export class FixtureCapabilityComponent implements OnInit {
 
-  // map containing the template and the channel name containing the wheel
-  colorWheelChannels: Map<FixtureTemplate, CachedFixtureChannel> = new Map<FixtureTemplate, CachedFixtureChannel>();
+  // map containing the profile and the channel name containing the wheel
+  colorWheelChannels: Map<FixtureProfile, CachedFixtureChannel> = new Map<FixtureProfile, CachedFixtureChannel>();
 
   constructor(
     public presetService: PresetService,
@@ -33,9 +33,9 @@ export class FixtureCapabilityComponent implements OnInit {
   ngOnInit() {
   }
 
-  private wheelInList(wheels: Map<FixtureTemplate, CachedFixtureChannel>, template: FixtureTemplate, channel: CachedFixtureChannel) {
-    wheels.forEach((existingChannel: CachedFixtureChannel, template: FixtureTemplate) => {
-      if (template == template && existingChannel.channelName == channel.channelName) {
+  private wheelInList(wheels: Map<FixtureProfile, CachedFixtureChannel>, profile: FixtureProfile, channel: CachedFixtureChannel) {
+    wheels.forEach((existingChannel: CachedFixtureChannel, profile: FixtureProfile) => {
+      if (profile == profile && existingChannel.name == channel.name) {
         return true;
       }
     });
@@ -44,7 +44,7 @@ export class FixtureCapabilityComponent implements OnInit {
   }
 
   private updateColorWheels() {
-    this.colorWheelChannels = new Map<FixtureTemplate, CachedFixtureChannel>();
+    this.colorWheelChannels = new Map<FixtureProfile, CachedFixtureChannel>();
 
     if(!this.presetService.selectedPreset) {
       return;
@@ -57,8 +57,8 @@ export class FixtureCapabilityComponent implements OnInit {
           if (capability.wheel && capability.wheelSlots && capability.wheelSlots.length > 0) {
             if (this.fixtureService.wheelHasSlotType(capability.wheel, FixtureWheelSlotType.Color)) {
               // color wheel
-              if (!this.wheelInList(this.colorWheelChannels, fixture.template, channel)) {
-                this.colorWheelChannels.set(fixture.template, channel);
+              if (!this.wheelInList(this.colorWheelChannels, fixture.profile, channel)) {
+                this.colorWheelChannels.set(fixture.profile, channel);
               }
             } else if (this.fixtureService.wheelHasSlotType(capability.wheel, FixtureWheelSlotType.Gobo)) {
               // gobo wheel

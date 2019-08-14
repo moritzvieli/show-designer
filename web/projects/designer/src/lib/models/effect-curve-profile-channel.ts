@@ -1,6 +1,6 @@
-export class EffectCurveTemplateChannels {
+export class EffectCurveProfileChannels {
 
-    templateUuid: string;
+    profileUuid: string;
     channels: string[] = [];
 
     constructor(data?: any) {
@@ -8,7 +8,7 @@ export class EffectCurveTemplateChannels {
             return;
         }
 
-        this.templateUuid = data.templateUuid;
+        this.profileUuid = data.profileUuid;
 
         if (data.channels) {
             for (let channel in data.channels) {

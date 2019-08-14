@@ -91,7 +91,7 @@ export class PreviewService {
 
       // Get the existant value for this property
       for (let existingChannelValue of existingChannelValues) {
-        if (existingChannelValue.channelName == channelValue.channelName && existingChannelValue.fixtureTemplateUuid == channelValue.fixtureTemplateUuid) {
+        if (existingChannelValue.channelName == channelValue.channelName && existingChannelValue.profileUuid == channelValue.profileUuid) {
           existingValue = existingChannelValue.value;
           break;
         }
@@ -103,7 +103,7 @@ export class PreviewService {
 
     // Remove the existant value, if available
     for (let i = 0; i < existingChannelValues.length; i++) {
-      if (existingChannelValues[i].channelName == channelValue.channelName && existingChannelValues[i].fixtureTemplateUuid == channelValue.fixtureTemplateUuid) {
+      if (existingChannelValues[i].channelName == channelValue.channelName && existingChannelValues[i].profileUuid == channelValue.profileUuid) {
         existingChannelValues.splice(i, 1);
         break;
       }
@@ -112,7 +112,7 @@ export class PreviewService {
     // Add the new value
     let fixtureChannelValue = new FixtureChannelValue();
     fixtureChannelValue.channelName = channelValue.channelName;
-    fixtureChannelValue.fixtureTemplateUuid = channelValue.fixtureTemplateUuid;
+    fixtureChannelValue.profileUuid = channelValue.profileUuid;
     fixtureChannelValue.value = newValue;
     existingChannelValues.push(fixtureChannelValue);
   }
@@ -190,7 +190,7 @@ export class PreviewService {
     // mix the preset capability values
     for (let presetCapabilityValue of preset.preset.fixtureCapabilityValues) {
       for (let cachedChannel of cachedFixture.channels) {
-        if (cachedChannel.fixtureChannel) {
+        if (cachedChannel.channel) {
           for (let channelCapability of cachedChannel.capabilities) {
             if (this.fixtureService.capabilitiesMatch(
               presetCapabilityValue.type,
@@ -199,8 +199,8 @@ export class PreviewService {
               channelCapability.capability.color,
               presetCapabilityValue.wheel,
               channelCapability.wheelName,
-              presetCapabilityValue.fixtureTemplateUuid,
-              cachedFixture.template.uuid
+              presetCapabilityValue.profileUuid,
+              cachedFixture.profile.uuid
             )) {
 
               // the capabilities match -> apply the value, if possible
@@ -220,8 +220,8 @@ export class PreviewService {
                 if (cachedChannel.capabilities.length == 1) {
                   // the only capability in this channel
                   let fixtureChannelValue = new FixtureChannelValue();
-                  fixtureChannelValue.channelName = cachedChannel.channelName;
-                  fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+                  fixtureChannelValue.channelName = cachedChannel.name;
+                  fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
                   fixtureChannelValue.value = cachedChannel.maxValue * valuePercentage;
                   this.mixChannelValue(values, fixtureChannelValue, intensityPercentage, defaultValue);
 
@@ -232,8 +232,8 @@ export class PreviewService {
                   // more than one capability in the channel
                   if (channelCapability.capability.brightness == 'off' && valuePercentage == 0) {
                     let fixtureChannelValue = new FixtureChannelValue();
-                    fixtureChannelValue.channelName = cachedChannel.channelName;
-                    fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+                    fixtureChannelValue.channelName = cachedChannel.name;
+                    fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
                     fixtureChannelValue.value = channelCapability.centerValue;
                     this.mixChannelValue(values, fixtureChannelValue, intensityPercentage, defaultValue);
 
@@ -243,8 +243,8 @@ export class PreviewService {
                   } else if ((channelCapability.capability.brightnessStart == 'dark' || channelCapability.capability.brightnessStart == 'off') && channelCapability.capability.brightnessEnd == 'bright') {
                     let value = (channelCapability.capability.dmxRange[1] - channelCapability.capability.dmxRange[0]) * valuePercentage + channelCapability.capability.dmxRange[0];
                     let fixtureChannelValue = new FixtureChannelValue();
-                    fixtureChannelValue.channelName = cachedChannel.channelName;
-                    fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+                    fixtureChannelValue.channelName = cachedChannel.name;
+                    fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
                     fixtureChannelValue.value = value;
                     this.mixChannelValue(values, fixtureChannelValue, intensityPercentage, defaultValue);
 
@@ -258,8 +258,8 @@ export class PreviewService {
 
                 // wheel slot (color, gobo, etc.)
                 let fixtureChannelValue = new FixtureChannelValue();
-                fixtureChannelValue.channelName = cachedChannel.channelName;
-                fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+                fixtureChannelValue.channelName = cachedChannel.name;
+                fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
                 fixtureChannelValue.value = channelCapability.centerValue;
                 this.mixChannelValue(values, fixtureChannelValue, 1);
 
@@ -279,8 +279,8 @@ export class PreviewService {
           if (capability) {
             // we found an approximated color in the available wheel channel
             let fixtureChannelValue = new FixtureChannelValue();
-            fixtureChannelValue.channelName = cachedChannel.channelName;
-            fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+            fixtureChannelValue.channelName = cachedChannel.name;
+            fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
             fixtureChannelValue.value = capability.centerValue;
             this.mixChannelValue(values, fixtureChannelValue, 1);
           }
@@ -292,9 +292,9 @@ export class PreviewService {
   private mixChannelValues(preset: PresetRegionScene, cachedFixture: CachedFixture, values: FixtureChannelValue[], intensityPercentage: number) {
     // mix the preset channel values
     for (let cachedChannel of cachedFixture.channels) {
-      if (cachedChannel.fixtureChannel) {
+      if (cachedChannel.channel) {
         for (let channelValue of preset.preset.fixtureChannelValues) {
-          if (cachedFixture.template.uuid == channelValue.fixtureTemplateUuid && cachedChannel.channelName == channelValue.channelName) {
+          if (cachedFixture.profile.uuid == channelValue.profileUuid && cachedChannel.name == channelValue.channelName) {
             this.mixChannelValue(values, channelValue, intensityPercentage);
           }
         }
@@ -323,8 +323,8 @@ export class PreviewService {
                 null
               )) {
                 let fixtureChannelValue = new FixtureChannelValue();
-                fixtureChannelValue.channelName = cachedChannel.channelName;
-                fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+                fixtureChannelValue.channelName = cachedChannel.name;
+                fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
                 fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex) / 100;
                 this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
               }
@@ -333,14 +333,14 @@ export class PreviewService {
         }
 
         // channels
-        for (let channelTemplate of effectCurve.channels) {
-          if (channelTemplate.templateUuid == cachedFixture.template.uuid) {
-            for (let channel of channelTemplate.channels) {
+        for (let channelProfile of effectCurve.channels) {
+          if (channelProfile.profileUuid == cachedFixture.profile.uuid) {
+            for (let channel of channelProfile.channels) {
               for (let cachedChannel of cachedFixture.channels) {
-                if (cachedChannel.channelName == channel) {
+                if (cachedChannel.name == channel) {
                   let fixtureChannelValue = new FixtureChannelValue();
-                  fixtureChannelValue.channelName = cachedChannel.channelName;
-                  fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+                  fixtureChannelValue.channelName = cachedChannel.name;
+                  fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
                   fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex) / 100;
                   this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
                 }
@@ -375,11 +375,11 @@ export class PreviewService {
       } else {
         // apply the default values
         for (let cachedChannel of cachedFixture.channels) {
-          if (cachedChannel.fixtureChannel) {
-            if (cachedChannel.fixtureChannel.defaultValue) {
+          if (cachedChannel.channel) {
+            if (cachedChannel.channel.defaultValue) {
               let fixtureChannelValue = new FixtureChannelValue();
-              fixtureChannelValue.channelName = cachedChannel.channelName;
-              fixtureChannelValue.fixtureTemplateUuid = cachedFixture.template.uuid;
+              fixtureChannelValue.channelName = cachedChannel.name;
+              fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
               fixtureChannelValue.value = cachedChannel.defaultValue;
               this.mixChannelValue(values, fixtureChannelValue, 1);
             }
@@ -429,11 +429,11 @@ export class PreviewService {
         // match this mode channel with a channel value
         for (let channelValue of channelValues) {
           let channel = this.fixtureService.getChannelByName(cachedFixture, channelName);
-          if (channel && channel.fixtureChannel) {
-            let fineIndex = channel.fixtureChannel.fineChannelAliases.indexOf(channelName);
-            if (channel.channelName == channelValue.channelName || fineIndex > -1) {
+          if (channel && channel.channel) {
+            let fineIndex = channel.channel.fineChannelAliases.indexOf(channelName);
+            if (channel.name == channelValue.channelName || fineIndex > -1) {
               let universeChannel = cachedFixture.fixture.dmxFirstChannel + channelIndex;
-              let dmxValue = Math.floor(channelValue.value / Math.pow(256, channel.fixtureChannel.fineChannelAliases.length - (fineIndex + 1))) % 256;
+              let dmxValue = Math.floor(channelValue.value / Math.pow(256, channel.channel.fineChannelAliases.length - (fineIndex + 1))) % 256;
               // TODO
               break;
             }

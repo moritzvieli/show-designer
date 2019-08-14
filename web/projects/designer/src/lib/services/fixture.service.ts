@@ -1,6 +1,6 @@
 import { Fixture } from '../models/fixture';
 import { Injectable } from '@angular/core';
-import { FixtureTemplate } from '../models/fixture-template';
+import { FixtureProfile } from '../models/fixture-profile';
 import { FixtureMode } from '../models/fixture-mode';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -43,43 +43,43 @@ export class FixtureService {
     }
   }
 
-  // Get all templates to search for (only metadata)
-  getSearchTemplates(): Observable<FixtureTemplate[]> {
+  // Get all profiles to search for (only metadata)
+  getSearchProfiles(): Observable<FixtureProfile[]> {
     return this.http.get('fixture-search').pipe(map((response: Array<Object>) => {
-      let searchTemplates: FixtureTemplate[] = [];
+      let searchProfiles: FixtureProfile[] = [];
 
-      for (let template of response) {
-        searchTemplates.push(new FixtureTemplate(template));
+      for (let profile of response) {
+        searchProfiles.push(new FixtureProfile(profile));
       }
 
-      return searchTemplates;
+      return searchProfiles;
     }));
   }
 
-  getTemplateByUuid(uuid: string): FixtureTemplate {
-    for (let fixtureTemplate of this.projectService.project.fixtureTemplates) {
-      if (fixtureTemplate.uuid == uuid) {
-        return fixtureTemplate;
+  getProfileByUuid(uuid: string): FixtureProfile {
+    for (let FixtureProfile of this.projectService.project.fixtureProfiles) {
+      if (FixtureProfile.uuid == uuid) {
+        return FixtureProfile;
       }
     }
   }
 
-  loadTemplateByUuid(uuid: string): Observable<void> {
-    let loadedTemplate = this.getTemplateByUuid(uuid);
+  loadProfileByUuid(uuid: string): Observable<void> {
+    let loadedProfile = this.getProfileByUuid(uuid);
 
-    if (loadedTemplate) {
-      // This template is already loaded
+    if (loadedProfile) {
+      // This profile is already loaded
       return of(undefined);
     }
 
-    // Load the metadata and the template
+    // Load the metadata and the profile
     return forkJoin(
       this.http.get('fixture-search?uuid=' + encodeURI(uuid)),
       this.http.get('fixture?uuid=' + encodeURI(uuid))
     ).pipe(map(result => {
       let mergedData = { ...result[0][0], ...result[1] }
-      let fixtureTemplate = new FixtureTemplate(mergedData);
-      this.projectService.project.fixtureTemplates.push(fixtureTemplate);
+      let fixtureProfile = new FixtureProfile(mergedData);
+      this.projectService.project.fixtureProfiles.push(fixtureProfile);
     }));
   }
 
@@ -176,10 +176,10 @@ export class FixtureService {
     return false;
   }
 
-  getWheelByName(template: FixtureTemplate, wheelName: string): FixtureWheel {
-    for (let property in template.wheels) {
+  getWheelByName(profile: FixtureProfile, wheelName: string): FixtureWheel {
+    for (let property in profile.wheels) {
       if (property == wheelName) {
-        return template.wheels[property];
+        return profile.wheels[property];
       }
     }
 
@@ -210,8 +210,8 @@ export class FixtureService {
     return slots;
   }
 
-  getModeByFixture(template: FixtureTemplate, fixture: Fixture): FixtureMode {
-    for (let mode of template.modes) {
+  getModeByFixture(profile: FixtureProfile, fixture: Fixture): FixtureMode {
+    for (let mode of profile.modes) {
       if (mode.shortName) {
         if (mode.shortName === fixture.modeShortName) {
           return mode;
@@ -224,7 +224,7 @@ export class FixtureService {
     }
   }
 
-  private getFixtureCapability(capability: FixtureCapability, channelName: string, template: FixtureTemplate): CachedFixtureCapability {
+  private getFixtureCapability(capability: FixtureCapability, channelName: string, profile: FixtureProfile): CachedFixtureCapability {
     let cachedFixtureCapability = new CachedFixtureCapability();
     cachedFixtureCapability.capability = capability;
     if (capability.slotNumber) {
@@ -236,7 +236,7 @@ export class FixtureService {
       } else {
         cachedFixtureCapability.wheelName = channelName;
       }
-      cachedFixtureCapability.wheel = this.getWheelByName(template, cachedFixtureCapability.wheelName);
+      cachedFixtureCapability.wheel = this.getWheelByName(profile, cachedFixtureCapability.wheelName);
       cachedFixtureCapability.wheelSlots = this.getWheelSlots(cachedFixtureCapability.wheel, capability.slotNumber);
       cachedFixtureCapability.wheelIsColor = this.wheelHasSlotType(cachedFixtureCapability.wheel, FixtureWheelSlotType.Color);
     }
@@ -244,14 +244,14 @@ export class FixtureService {
     return cachedFixtureCapability;
   }
 
-  private getCapabilitiesByChannel(fixtureChannel: FixtureChannel, channelName: string, template: FixtureTemplate): CachedFixtureCapability[] {
+  private getCapabilitiesByChannel(fixtureChannel: FixtureChannel, channelName: string, profile: FixtureProfile): CachedFixtureCapability[] {
     let capabilites: CachedFixtureCapability[] = [];
 
     if (fixtureChannel.capability) {
-      capabilites.push(this.getFixtureCapability(fixtureChannel.capability, channelName, template));
+      capabilites.push(this.getFixtureCapability(fixtureChannel.capability, channelName, profile));
     } else if (fixtureChannel.capabilities) {
       for (let capability of fixtureChannel.capabilities) {
-        capabilites.push(this.getFixtureCapability(capability, channelName, template));
+        capabilites.push(this.getFixtureCapability(capability, channelName, profile));
       }
     }
 
@@ -278,7 +278,7 @@ export class FixtureService {
     }
   }
 
-  private getColorWheelByChannel(channel: CachedFixtureChannel, template: FixtureTemplate): FixtureWheel {
+  private getColorWheelByChannel(channel: CachedFixtureChannel, profile: FixtureProfile): FixtureWheel {
     for (let channelCapability of channel.capabilities) {
       if (channelCapability.wheelIsColor) {
         return channelCapability.wheel;
@@ -300,7 +300,7 @@ export class FixtureService {
 
   getChannelByName(fixture: CachedFixture, channelName: string): CachedFixtureChannel {
     for (let channel of fixture.channels) {
-      if (channel.channelName == channelName || (channel.fixtureChannel && channel.fixtureChannel.fineChannelAliases.indexOf(channelName) > -1)) {
+      if (channel.name == channelName || (channel.channel && channel.channel.fineChannelAliases.indexOf(channelName) > -1)) {
         return channel;
       }
     }
@@ -308,15 +308,15 @@ export class FixtureService {
     return undefined;
   }
 
-  getCachedChannels(template: FixtureTemplate, mode: FixtureMode): CachedFixtureChannel[] {
+  getCachedChannels(profile: FixtureProfile, mode: FixtureMode): CachedFixtureChannel[] {
     let channels: CachedFixtureChannel[] = [];
 
     if (!mode) {
       return channels;
     }
 
-    for (let availableChannelName in template.availableChannels) {
-      let availableChannel: FixtureChannel = template.availableChannels[availableChannelName];
+    for (let availableChannelName in profile.availableChannels) {
+      let availableChannel: FixtureChannel = profile.availableChannels[availableChannelName];
 
       for (let channel of mode.channels) {
         // check for string channel. It can get creepy for matrix modes
@@ -326,12 +326,12 @@ export class FixtureService {
           // don't check the fine channels. only add the coarse channel.
           if (modeChannel == availableChannelName) {
             let cachedFixtureChannel = new CachedFixtureChannel();
-            cachedFixtureChannel.fixtureChannel = availableChannel;
-            cachedFixtureChannel.channelName = availableChannelName;
-            cachedFixtureChannel.capabilities = this.getCapabilitiesByChannel(cachedFixtureChannel.fixtureChannel, availableChannelName, template);
-            cachedFixtureChannel.defaultValue = this.getDefaultValueByChannel(cachedFixtureChannel.fixtureChannel);
-            cachedFixtureChannel.maxValue = this.getMaxValueByChannel(cachedFixtureChannel.fixtureChannel);
-            cachedFixtureChannel.colorWheel = this.getColorWheelByChannel(cachedFixtureChannel, template);
+            cachedFixtureChannel.channel = availableChannel;
+            cachedFixtureChannel.name = availableChannelName;
+            cachedFixtureChannel.capabilities = this.getCapabilitiesByChannel(cachedFixtureChannel.channel, availableChannelName, profile);
+            cachedFixtureChannel.defaultValue = this.getDefaultValueByChannel(cachedFixtureChannel.channel);
+            cachedFixtureChannel.maxValue = this.getMaxValueByChannel(cachedFixtureChannel.channel);
+            cachedFixtureChannel.colorWheel = this.getColorWheelByChannel(cachedFixtureChannel, profile);
             channels.push(cachedFixtureChannel);
           }
         } else {
@@ -354,9 +354,9 @@ export class FixtureService {
       let cachedFixture = new CachedFixture();
 
       cachedFixture.fixture = fixture;
-      cachedFixture.template = this.getTemplateByUuid(fixture.fixtureTemplateUuid);
-      cachedFixture.mode = this.getModeByFixture(cachedFixture.template, fixture);
-      cachedFixture.channels = this.getCachedChannels(cachedFixture.template, cachedFixture.mode);
+      cachedFixture.profile = this.getProfileByUuid(fixture.profileUuid);
+      cachedFixture.mode = this.getModeByFixture(cachedFixture.profile, fixture);
+      cachedFixture.channels = this.getCachedChannels(cachedFixture.profile, cachedFixture.mode);
 
       this.cachedFixtures.push(cachedFixture);
     }
@@ -369,14 +369,14 @@ export class FixtureService {
     color2: FixtureCapabilityColor,
     wheel1: string,
     wheel2: string,
-    templateUuid1: string,
-    templateUuid2: string
+    profileUuid1: string,
+    profileUuid2: string
   ): boolean {
     // checks, whether two provided capapabilities match
     if (type1 == type2
       && (!color1 || color1 == color2)
       && (!wheel1 || wheel1 == wheel2)
-      && (!templateUuid1 || templateUuid1 == templateUuid2)) {
+      && (!profileUuid1 || profileUuid1 == profileUuid2)) {
       return true;
     }
     return false;

@@ -7,36 +7,36 @@
 <div class="modal-body">
   <div class="row">
     <div class="col-6">
-      <!-- Upload a template -->
+      <!-- Upload a profile -->
       <!-- TODO -->
       <!-- <a class="btn btn-primary mb-3 btn btn-primary btn-block" href="#" role="button" (click)="ok(); false">
-        <i class="fa fa-plus" aria-hidden="true"></i> {{ 'designer.fixture-pool.create-template' | translate }}
+        <i class="fa fa-plus" aria-hidden="true"></i> {{ 'designer.fixture-pool.create-profile' | translate }}
       </a> -->
 
-      <!-- Search for template -->
+      <!-- Search for profiles -->
       <input type="text" class="form-control input-block mb-3" id="searchSet"
-        placeholder="{{ 'designer.fixture-pool.search-templates' | translate }}"
-        (input)="filterTemplates($event.target.value)">
+        placeholder="{{ 'designer.fixture-pool.search-profiles' | translate }}"
+        (input)="filterProfiles($event.target.value)">
 
-      <!-- Templates -->
+      <!-- Profiles -->
       <div class="card border-secondary" style="height: 200px;">
         <div class="card-body p-0">
           <div class="list-group list-group-flush">
-            <a *ngIf="loadingTemplates"
+            <a *ngIf="loadingProfiles"
               class="list-group-item list-group-item-action flex-column align-items-start d-flex">
               <p class="mb-0 mx-auto">
                 <i class="fa fa-spinner fa-pulse fa-fw"></i>
               </p>
             </a>
 
-            <div class="list-group-item" *ngFor="let template of filteredTemplates | sort:'uuid'">
+            <div class="list-group-item" *ngFor="let profile of filteredProfiles | sort:'uuid'">
               <div class="row">
                 <div class="col-10 col-auto my-auto">
-                  <p class="mb-0">{{ template.manufacturerName }} - {{ template.name }}</p>
+                  <p class="mb-0">{{ profile.manufacturerName }} - {{ profile.name }}</p>
                 </div>
                 <div class="col-2 my-auto">
                   <a class="btn btn-primary btn-sm float-right" href="#" role="button"
-                    (click)="addFixture(template); false">
+                    (click)="addFixture(profile); false">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </a>
                 </div>
@@ -139,7 +139,7 @@
 
         <!-- Fixture settings -->
         <div class="tab-pane" id="settings" role="tabpanel">
-          <div *ngIf="selectedFixture && selectedFixtureTemplate">
+          <div *ngIf="selectedFixture && selectedFixtureProfile">
 
             <div class="form-group row">
               <label class="col-lg-3 col-form-label"
@@ -155,7 +155,7 @@
               <div class="col-lg-9">
                 <select class="custom-select" [ngModel]="selectedFixture.modeShortName"
                   (ngModelChange)="selectedFixture.modeShortName = $event">
-                  <option *ngFor="let mode of selectedFixtureTemplate.modes" [ngValue]="mode.shortName || mode.name">
+                  <option *ngFor="let mode of selectedFixtureProfile.modes" [ngValue]="mode.shortName || mode.name">
                     {{ mode.name }}
                     - {{ mode.channels.length }}
                     {{ 'designer.fixture-pool.channels' | translate }}

@@ -101,21 +101,21 @@
 
     </div>
     <div class="tab-pane h-100 show" id="v-pills-effect-channels" role="tabpanel">
-      <!-- Channels -->
+      <!-- channels -->
 
-      <!-- Template selection -->
-      <div *ngIf="availableTemplates.length > 1">
-        <div *ngFor="let template of availableTemplates; let i = index" class="form-check">
-          <input type="checkbox" class="form-check-input" id="channel_template_{{ curve?.uuid }}_{{ template.uuid }}"
-            [ngModel]="selectedTemplates.indexOf(template) >= 0" (change)="changeTemplateSelection($event, template)">
+      <!-- profile selection -->
+      <div *ngIf="availableProfiles.length > 1">
+        <div *ngFor="let profile of availableProfiles; let i = index" class="form-check">
+          <input type="checkbox" class="form-check-input" id="channel_profile_{{ curve?.uuid }}_{{ profile.uuid }}"
+            [ngModel]="selectedProfiles.indexOf(profile) >= 0" (change)="changeProfileSelection($event, profile)">
           <label class="form-check-label"
-            for="channel_template_{{ curve?.uuid }}_{{ template.uuid }}">{{ template.name }}</label>
+            for="channel_profile_{{ curve?.uuid }}_{{ profile.uuid }}">{{ profile.name }}</label>
         </div>
 
         <hr class="my-1" style="border-color: white;"/>
       </div>
 
-      <!--channels -->
+      <!-- channels -->
       <ng-container *ngFor="let entry of availableChannels | keyvalue; let i = index">
         <div *ngFor="let channel of entry.value; let j = index" class="form-check">
 

@@ -3,7 +3,7 @@ import { FixtureCapabilityType, FixtureCapabilityColor } from "./fixture-capabil
 export class FixtureCapabilityValue {
 
     type: FixtureCapabilityType;
-    fixtureTemplateUuid: string;
+    profileUuid: string;
 
     // value between 0 and 1
     valuePercentage: number;
@@ -16,7 +16,7 @@ export class FixtureCapabilityValue {
             return;
         }
         this.type = FixtureCapabilityType[<string>data.type];
-        this.fixtureTemplateUuid = data.fixtureTemplateUuid;
+        this.profileUuid = data.profileUuid;
 
         this.valuePercentage = data.valuePercentage;
         this.color = FixtureCapabilityColor[<string>data.color];

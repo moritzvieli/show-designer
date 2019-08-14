@@ -3,7 +3,6 @@ import { EffectCurve } from '../models/effect-curve';
 import { UuidService } from '../services/uuid.service';
 import { EffectService } from '../services/effect.service';
 import { EffectPanTilt } from '../models/effect-pan-tilt';
-import { FixtureService } from '../services/fixture.service';
 import { Effect } from '../models/effect';
 import { PresetService } from '../services/preset.service';
 
@@ -18,7 +17,6 @@ export class EffectComponent implements OnInit {
     private uuidService: UuidService,
     public presetService: PresetService,
     public effectService: EffectService,
-    private fixtureService: FixtureService
   ) { }
 
   ngOnInit() {

@@ -5,10 +5,10 @@ import { FixtureWheel } from "./fixture-wheel";
 export class CachedFixtureChannel {
 
     // the corresponding channel
-    fixtureChannel: FixtureChannel;
+    channel: FixtureChannel;
 
     // the name of the channel
-    channelName: string;
+    name: string;
 
     // all channel capabilities
     capabilities: CachedFixtureCapability[] = [];

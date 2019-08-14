@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { PresetService } from '../../../services/preset.service';
 import { FixtureWheel } from '../../../models/fixture-wheel';
-import { FixtureTemplate } from '../../../models/fixture-template';
+import { FixtureProfile } from '../../../models/fixture-profile';
 import { FixtureService } from '../../../services/fixture.service';
-import { FixtureCapability, FixtureCapabilityType } from '../../../models/fixture-capability';
+import { FixtureCapabilityType } from '../../../models/fixture-capability';
 import { Subscription } from 'rxjs';
 import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
 import { CachedFixtureCapability } from '../../../models/cached-fixture-capability';
@@ -15,7 +15,7 @@ import { CachedFixtureCapability } from '../../../models/cached-fixture-capabili
 })
 export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
 
-  _fixtureTemplate: FixtureTemplate;
+  _fixtureProfile: FixtureProfile;
   _channel: CachedFixtureChannel;
   wheelName: string;
   wheel: FixtureWheel;
@@ -23,8 +23,8 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
   colorChangeSubscription: Subscription;
 
   @Input()
-  set template(value: FixtureTemplate) {
-    this._fixtureTemplate = value;
+  set profile(value: FixtureProfile) {
+    this._fixtureProfile = value;
     this.update();
   }
 
@@ -57,7 +57,7 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
   }
 
   private update() {
-    if (this._fixtureTemplate && this._channel) {
+    if (this._fixtureProfile && this._channel) {
       this.wheelName = undefined;
       this.slotCapabilities = [];
 
@@ -69,10 +69,10 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
         }
       }
       if (!this.wheelName) {
-        this.wheelName = this._channel.channelName;
+        this.wheelName = this._channel.name;
       }
 
-      this.wheel = this.fixtureService.getWheelByName(this._fixtureTemplate, this.wheelName);
+      this.wheel = this.fixtureService.getWheelByName(this._fixtureProfile, this.wheelName);
 
       // calculate all available slots
       for (let capability of this._channel.capabilities) {
@@ -124,7 +124,7 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
   }
 
   getCurrentSlotNumber(): number {
-    let capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, this.wheelName, this._fixtureTemplate.uuid);
+    let capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, this.wheelName, this._fixtureProfile.uuid);
     if (capabilityValue) {
       return capabilityValue.slotNumber;
     }
@@ -151,14 +151,14 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
 
   changeActive(active: boolean) {
     if (active) {
-      this.presetService.setCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, 1, undefined, this.wheelName, this._fixtureTemplate.uuid);
+      this.presetService.setCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, 1, undefined, this.wheelName, this._fixtureProfile.uuid);
     } else {
-      this.presetService.deleteCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, this.wheelName, this._fixtureTemplate.uuid);
+      this.presetService.deleteCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, this.wheelName, this._fixtureProfile.uuid);
     }
   }
 
   selectSlotNumber(slotNumber: number) {
-    this.presetService.setCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, slotNumber, undefined, this.wheelName, this._fixtureTemplate.uuid);
+    this.presetService.setCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, slotNumber, undefined, this.wheelName, this._fixtureProfile.uuid);
   }
 
 }
