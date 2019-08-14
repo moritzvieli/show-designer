@@ -7,6 +7,7 @@ export class FixtureCapabilityValue {
 
     // value between 0 and 1
     valuePercentage: number;
+    
     color: FixtureCapabilityColor;
     wheel: string;
     slotNumber: number;

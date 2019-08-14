@@ -67,7 +67,7 @@ export class FixtureCapability {
     color: FixtureCapabilityColor;
     dmxRange: number[] = [];
     // may be empty. in this case, the channel name points to the wheel
-    wheel: string;
+    wheel: any;
     slotNumber: number;
     brightness: string;
     brightnessStart: string;

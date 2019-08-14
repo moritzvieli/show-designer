@@ -22,15 +22,4 @@ export class CachedFixtureChannel {
     // a color wheel, if available
     colorWheel: FixtureWheel;
 
-    getCapabilityInValue(channel: string, value: number): CachedFixtureCapability {
-        // get a capability in a specific dmx value range
-        for (let capability of this.capabilities) {
-            if (capability.capability.dmxRange.length == 0 || (value >= capability.capability.dmxRange[0] && value <= capability.capability.dmxRange[1])) {
-                return capability;
-            }
-        }
-
-        return null;
-    }
-
 }

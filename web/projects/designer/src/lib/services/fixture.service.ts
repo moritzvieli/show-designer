@@ -199,7 +199,7 @@ export class FixtureService {
       // two slots are set
       let number = Math.floor(slotNumber);
       slots.push(wheel.slots[number - 1]);
-      if (wheel.slots[number]) {
+      if (number >= 0 && number < wheel.slots.length) {
         slots.push(wheel.slots[number]);
       }
     } else {
@@ -373,13 +373,10 @@ export class FixtureService {
     profileUuid2: string
   ): boolean {
     // checks, whether two provided capapabilities match
-    if (type1 == type2
+    return type1 == type2
       && (!color1 || color1 == color2)
       && (!wheel1 || wheel1 == wheel2)
-      && (!profileUuid1 || profileUuid1 == profileUuid2)) {
-      return true;
-    }
-    return false;
+      && (!profileUuid1 || profileUuid1 == profileUuid2);
   }
 
 }
