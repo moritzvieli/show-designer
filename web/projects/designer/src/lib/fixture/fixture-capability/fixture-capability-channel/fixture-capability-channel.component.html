@@ -6,7 +6,7 @@
         <input type="checkbox" class="form-check-input" id="capabilityGeneric{{ capabilityIndex }}Active"
           [ngModel]="getValue() != undefined" (ngModelChange)="changeActive($event)">
         <label class="form-check-label" for="capabilityGeneric{{ capabilityIndex }}Active">
-          {{ _channel?.channelName }}
+          {{ _channel?.name }}
         </label>
       </div>
     </div>
