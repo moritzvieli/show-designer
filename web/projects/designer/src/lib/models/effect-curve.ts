@@ -42,7 +42,6 @@ export class EffectCurve extends Effect {
         this.phasingMillis = data.phasingMillis;
     }
 
-    // TODO get value percentage?
     public getValueAtMillis(timeMillis: number, fixtureIndex?: number): number {
         // Calculate the offset for phasing
         let phasingIndex = 0;

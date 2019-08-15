@@ -425,17 +425,20 @@ export class PreviewService {
 
       // loop over each channel for this fixture
       for (let channelIndex = 0; channelIndex < cachedFixture.mode.channels.length; channelIndex++) {
-        let channelName = cachedFixture.mode.channels[channelIndex];
-        // match this mode channel with a channel value
-        for (let channelValue of channelValues) {
-          let channel = this.fixtureService.getChannelByName(cachedFixture, channelName);
-          if (channel && channel.channel) {
-            let fineIndex = channel.channel.fineChannelAliases.indexOf(channelName);
-            if (channel.name == channelValue.channelName || fineIndex > -1) {
-              let universeChannel = cachedFixture.fixture.dmxFirstChannel + channelIndex;
-              let dmxValue = Math.floor(channelValue.value / Math.pow(256, channel.channel.fineChannelAliases.length - (fineIndex + 1))) % 256;
-              // TODO
-              break;
+        let channelObj = cachedFixture.mode.channels[channelIndex];
+        if (typeof channelObj == "string") {
+          let channelName = channelObj;
+          // match this mode channel with a channel value
+          for (let channelValue of channelValues) {
+            let channel = this.fixtureService.getChannelByName(cachedFixture, channelName);
+            if (channel && channel.channel) {
+              let fineIndex = channel.channel.fineChannelAliases.indexOf(channelName);
+              if (channel.name == channelValue.channelName || fineIndex > -1) {
+                let universeChannel = cachedFixture.fixture.dmxFirstChannel + channelIndex;
+                let dmxValue = Math.floor(channelValue.value / Math.pow(256, channel.channel.fineChannelAliases.length - (fineIndex + 1))) % 256;
+                // TODO
+                break;
+              }
             }
           }
         }

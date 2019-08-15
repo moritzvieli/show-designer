@@ -240,7 +240,9 @@ export class FixtureService {
       cachedFixtureCapability.wheelSlots = this.getWheelSlots(cachedFixtureCapability.wheel, capability.slotNumber);
       cachedFixtureCapability.wheelIsColor = this.wheelHasSlotType(cachedFixtureCapability.wheel, FixtureWheelSlotType.Color);
     }
-    cachedFixtureCapability.centerValue = Math.floor((cachedFixtureCapability.capability.dmxRange[0] + cachedFixtureCapability.capability.dmxRange[1]) / 2);
+    if (cachedFixtureCapability.capability.dmxRange && cachedFixtureCapability.capability.dmxRange.length == 2) {
+      cachedFixtureCapability.centerValue = Math.floor((cachedFixtureCapability.capability.dmxRange[0] + cachedFixtureCapability.capability.dmxRange[1]) / 2);
+    }
     return cachedFixtureCapability;
   }
 
@@ -300,7 +302,7 @@ export class FixtureService {
 
   getChannelByName(fixture: CachedFixture, channelName: string): CachedFixtureChannel {
     for (let channel of fixture.channels) {
-      if (channel.name == channelName || (channel.channel && channel.channel.fineChannelAliases.indexOf(channelName) > -1)) {
+      if ((channel.name && channel.name == channelName) || (channel.channel && channel.channel.fineChannelAliases.indexOf(channelName) > -1)) {
         return channel;
       }
     }
@@ -329,7 +331,10 @@ export class FixtureService {
             cachedFixtureChannel.channel = availableChannel;
             cachedFixtureChannel.name = availableChannelName;
             cachedFixtureChannel.capabilities = this.getCapabilitiesByChannel(cachedFixtureChannel.channel, availableChannelName, profile);
-            cachedFixtureChannel.defaultValue = this.getDefaultValueByChannel(cachedFixtureChannel.channel);
+            let defaultValue = this.getDefaultValueByChannel(cachedFixtureChannel.channel);
+            if (defaultValue) {
+              cachedFixtureChannel.defaultValue = defaultValue;
+            }
             cachedFixtureChannel.maxValue = this.getMaxValueByChannel(cachedFixtureChannel.channel);
             cachedFixtureChannel.colorWheel = this.getColorWheelByChannel(cachedFixtureChannel, profile);
             channels.push(cachedFixtureChannel);

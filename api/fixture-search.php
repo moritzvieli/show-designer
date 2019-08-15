@@ -1,8 +1,6 @@
 <?php
 include_once 'global.php';
 
-$fixtures = array();
-
 $where = "";
 
 if (isset($_GET["uuid"])) {
@@ -24,8 +22,10 @@ if (isset($_GET["mainCategory"])) {
 $result = mysqli_query($conn, "SELECT fixture.uuid, fixture.name fixture_name, fixture.main_category, manufacturer.short_name manufacturer_short_name, manufacturer.name manufacturer_name FROM fixture LEFT JOIN manufacturer ON manufacturer.short_name = fixture.manufacturer_short_name WHERE 1 = 1" . $where . " ORDER BY manufacturer.name, fixture.name");
 
 if(!$result) {
-    die("Query failed: " . mysqli_error($conn));
+    error();
 }
+
+$fixtures = array();
 
 while ($row = mysqli_fetch_assoc($result)) {
     $fixture = array(
@@ -39,7 +39,8 @@ while ($row = mysqli_fetch_assoc($result)) {
     array_push($fixtures, $fixture);
 }
 
-http_response_code(200);
-
 echo json_encode(utf8ize($fixtures));
 
+http_response_code(200);
+
+mysqli_close($conn);

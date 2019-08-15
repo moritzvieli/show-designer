@@ -5,6 +5,10 @@ $manufacturers = array();
 
 $result = mysqli_query($conn, "SELECT * FROM manufacturer");
 
+if(!$result) {
+    error();
+}
+
 while ($row = mysqli_fetch_assoc($result)) {
     $manufacturer = array(
         "shortName" => $row["short_name"],
@@ -15,6 +19,8 @@ while ($row = mysqli_fetch_assoc($result)) {
     array_push($manufacturers, $manufacturer);
 }
 
+echo json_encode(utf8ize($manufacturers));
+
 http_response_code(200);
 
-echo json_encode(utf8ize($manufacturers));
+mysqli_close($conn);
