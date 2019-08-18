@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { UserLoginComponent } from '../user-login/user-login.component';
 import { UserService } from '../../services/user.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'lib-user-register',
@@ -18,6 +19,9 @@ export class UserRegisterComponent implements OnInit {
   password: string = '';
   passwordRepeat: string = '';
 
+  // emits, when logged in
+  subject: Subject<void>;
+
   constructor(
     private bsModalRef: BsModalRef,
     private modalService: BsModalService,
@@ -33,7 +37,7 @@ export class UserRegisterComponent implements OnInit {
 
   login() {
     this.bsModalRef.hide();
-    this.modalService.show(UserLoginComponent, { keyboard: true, ignoreBackdropClick: false });
+    this.modalService.show(UserLoginComponent, { keyboard: true, ignoreBackdropClick: false, initialState: { subject: this.subject } });
   }
 
   private emailIsValid(email: string): boolean {

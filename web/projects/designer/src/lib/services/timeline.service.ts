@@ -162,7 +162,7 @@ export class TimelineService {
     if (this.selectedComposition.gridType == 'musical') {
       let interval = 60 / this.selectedComposition.beatsPerMinute / this.selectedComposition.gridResolution;
 
-      if(pxPerSec < 40) {
+      if (pxPerSec < 40) {
         return interval * 4;
       } else if (pxPerSec < 80) {
         return interval * 2;
@@ -440,7 +440,6 @@ export class TimelineService {
 
           this.detectChanges.next();
           this.waveSurferReady.next();
-          console.log("Wavesurfer ready");
         }, 0);
       });
 

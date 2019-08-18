@@ -42,6 +42,7 @@
             "username": "Username",
             "already-have-account": "You already have an account?",
             "no-account-yet": "You don't have an account yet?",
+            "login-required": "Please sign in to proceed.",
             "error": {
                 "internal": "An internal error occured. Please try again or reach out to our support under the menu help.",
                 "fill-all-fields": "Please fill in all fields.",
@@ -50,6 +51,12 @@
                 "wrong-credentials": "The credentials are wrong. Please reach out to our support under the menu help, if needed.",
                 "email-exists": "This email address already exists. Please reach out to our support under the menu help, if needed."
             }
+        },
+        "project": {
+            "save-error-title": "Error on saving project",
+            "save-error": "The project could not be saved. Please reach out to our support under the menu help, if needed.",
+            "save-success-title": "Saved",
+            "save-success": "The project has been saved."
         },
         "scene": {
             "title": "Scenes"

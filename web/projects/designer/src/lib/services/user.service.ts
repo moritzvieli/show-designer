@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -33,10 +33,9 @@ export class UserService {
     return this.http.post('register?email=' + email + '&username=' + username + '&password=' + password, null);
   }
 
-  // login a user
+  // login a user in the api
   login(email: string, password: string): Observable<any> {
     return this.http.post('login?email=' + email + '&password=' + password, null).pipe(map((result: any) => {
-      console.log(result.token);
       this.token = result.token;
       this.username = result.username;
 
@@ -67,10 +66,21 @@ export class UserService {
     }
 
     if (new Date() > this.tokenExpiration) {
+      this.logout();
       return false;
     }
 
     return true;
+  }
+
+  getHeaders(): HttpHeaders {
+    if (!this.isLoggedIn()) {
+      return null;
+    }
+
+    let headers = new HttpHeaders();
+    headers = headers.append('Authorization', this.token);
+    return headers;
   }
 
 }

@@ -6,6 +6,7 @@ import { FixtureProfile } from "./fixture-profile";
 
 export class Project {
 
+    public id: string;
     public uuid: string;
     public name: string;
 
@@ -21,6 +22,8 @@ export class Project {
         if (!data) {
             return;
         }
+
+        this.id = data.id;
 
         this.masterDimmerValue = data.masterDimmerValue;
 

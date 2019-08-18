@@ -24,6 +24,9 @@ function projectShareTokenIsValid($conn, $projectId, $shareToken)
 // Checks, whether a project already exists or not
 function projectExists($conn, $projectId)
 {
+    if (!isset($projectId) || strlen($projectId) == 0) {
+        return false;
+    }
     $result = mysqli_query($conn, "SELECT 1 FROM project WHERE id = " . $projectId);
     if ($result->num_rows > 0) {
         return true;
@@ -122,6 +125,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 error();
             }
         }
+
+        $project = array(
+            "id" => $projectId
+        );
+        echo json_encode(utf8ize($project));
 
         break;
     case 'DELETE':

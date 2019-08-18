@@ -45,7 +45,7 @@ export class FixtureService {
 
   // Get all profiles to search for (only metadata)
   getSearchProfiles(): Observable<FixtureProfile[]> {
-    return this.http.get('fixture-search').pipe(map((response: Array<Object>) => {
+    return this.http.get('fixtures').pipe(map((response: Array<Object>) => {
       let searchProfiles: FixtureProfile[] = [];
 
       for (let profile of response) {

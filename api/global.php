@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-        header('Access-Control-Allow-Headers: Content-Type, Accept');
+        header('Access-Control-Allow-Headers: Content-Type, Accept, Authorization');
 
     exit(0);
 }

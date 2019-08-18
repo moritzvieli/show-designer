@@ -204,6 +204,22 @@ export class FixturePoolComponent implements OnInit {
     if (!this.selectedFixture && this.fixturePool && this.fixturePool.length > 0) {
       this.selectFixture(this.selectedFixture = this.fixturePool[0]);
     }
+
+    // remove unused profiles
+    for (let i = 0; i < this.projectService.project.fixtureProfiles.length; i++) {
+      let profileUsed = false;
+
+      for (let fixture of this.fixturePool) {
+        if (fixture.profileUuid == this.projectService.project.fixtureProfiles[i].uuid) {
+          profileUsed = true;
+          break;
+        }
+      }
+
+      if (!profileUsed) {
+        this.projectService.project.fixtureProfiles.splice(i, 1);
+      }
+    }
   }
 
   channelOccupied(index: number): boolean {

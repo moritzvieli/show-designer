@@ -12,6 +12,8 @@ import { HotkeyTargetExcludeService } from './services/hotkey-target-exclude.ser
 import { UserRegisterComponent } from './user/user-register/user-register.component';
 import { BsModalService } from 'ngx-bootstrap';
 import { UserService } from './services/user.service';
+import { UserEnsureLoginService } from './services/user-ensure-login.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'lib-designer',
@@ -72,7 +74,9 @@ export class DesignerComponent implements AfterViewInit {
     private fixturePoolService: FixturePoolService,
     private hotkeyTargetExcludeService: HotkeyTargetExcludeService,
     private modalService: BsModalService,
-    public userService: UserService
+    public userService: UserService,
+    private userEnsureLoginService: UserEnsureLoginService,
+    private toastrService: ToastrService
   ) {
 
     this.translateService.use('en');
@@ -141,27 +145,24 @@ export class DesignerComponent implements AfterViewInit {
   }
 
   projectSave() {
-    // TODO
-    //this.savingComposition = true;
+    this.userEnsureLoginService.login().subscribe(() => {
+      this.projectService.save(this.projectService.project).subscribe(() => {
+        let msg = 'designer.project.save-success';
+        let title = 'designer.project.save-success-title';
 
-    this.projectService.save(this.projectService.project).pipe(map(() => {
-      // this.loadCompositions();
-      // this.copyInitialComposition();
+        this.translateService.get([msg, title]).subscribe(result => {
+          this.toastrService.success(result[msg], result[title]);
+        });
+      }, (response) => {
+        let msg = 'designer.project.save-error';
+        let title = 'designer.project.save-error-title';
+        let error = response && response.error ? response.error.error : 'unknown';
 
-      // this.compositionService.compositionsChanged.next();
-
-      // this.translateService.get(['editor.toast-composition-save-success', 'editor.toast-save-success-title']).subscribe(result => {
-      //   this.toastrService.success(result['editor.toast-composition-save-success'], result['editor.toast-save-success-title']);
-      // });
-    }),
-      catchError((err) => {
-        //return this.toastGeneralErrorService.show(err);
-        return undefined;
-      }),
-      finalize(() => {
-        //this.savingComposition = false;
-      }))
-      .subscribe();
+        this.translateService.get([msg, title]).subscribe(result => {
+          this.toastrService.error(result[msg] + ' (' + error + ')', result[title]);
+        });
+      });
+    });
   }
 
   userRegister() {

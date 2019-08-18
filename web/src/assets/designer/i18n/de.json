@@ -42,6 +42,7 @@
             "username": "Benutzername",
             "already-have-account": "Du hast bereits ein Konto?",
             "no-account-yet": "Du hast noch kein Konto?",
+            "login-required": "Bitte logge dich ein, um fortzufahren.",
             "error": {
                 "internal": "Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut oder wende dich unter Menü Hilfe an den Support.",
                 "fill-all-fields": "Bitte fülle alle Felder aus.",
@@ -50,6 +51,12 @@
                 "wrong-credentials": "Die Benutzerdaten sind nicht korrekt. Bitte wende dich bei Problemen unter Menü Hilfe an den Support.",
                 "email-exists": "Diese E-Mail Adresse wird bereits benutzt. Bitte wende dich bei Problemen unter Menü Hilfe an den Support."
             }
+        },
+        "project": {
+            "save-error-title": "Fehler beim Speichern",
+            "save-error": "Das Projekt konnte nicht gespeichert werden. Bitte wende dich bei Problemen unter Menü Hilfe an den Support.",
+            "save-success-title": "Gespeichert",
+            "save-success": "Das Projekt wurde gespeichert."
         },
         "scene": {
             "title": "Szenen"

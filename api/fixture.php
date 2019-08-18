@@ -11,12 +11,12 @@ if (isset($_GET["uuid"])) {
 
 $result = mysqli_query($conn, "SELECT object FROM fixture WHERE 1 = 1" . $where);
 
-if(!$result) {
+if (!$result) {
     error();
 }
 
 $row = mysqli_fetch_assoc($result);
-echo json_encode(utf8ize($row["object"]));
+echo $row["object"];
 
 http_response_code(200);
 

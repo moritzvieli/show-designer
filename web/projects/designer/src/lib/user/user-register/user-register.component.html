@@ -6,6 +6,9 @@
     </button>
   </div>
   <div class="modal-body">
+    <div *ngIf="subject" class="alert alert-success" role="alert">
+      {{ 'designer.user.login-required' | translate }}
+    </div>
     <div class="form-group row">
       <label for="username" class="col-sm-4 col-form-label">{{ 'designer.user.username' | translate }}</label>
       <div class="col-sm-8">
