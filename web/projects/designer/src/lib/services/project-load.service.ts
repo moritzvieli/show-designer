@@ -60,15 +60,15 @@ export class ProjectLoadService {
     this.projectService.project = project;
 
     // Add a default scene and preset
-    this.sceneService.addScene();
-
     let preset = new Preset();
     preset.uuid = this.uuidService.getUuid();
     preset.name = 'Preset';
-    this.projectService.project.scenes[0].presetUuids.push(preset.uuid);
-
     this.projectService.project.presets.push(preset);
     this.presetService.selectPreset(0);
+
+    this.sceneService.addScene();
+    this.projectService.project.scenes[0].presetUuids.push(preset.uuid);
+
     this.projectService.project.previewPreset = true;
 
     this.afterLoad();
