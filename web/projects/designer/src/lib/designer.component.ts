@@ -9,6 +9,9 @@ import { map, catchError, finalize } from 'rxjs/operators';
 import { ConfigService } from './services/config.service';
 import { FixturePoolService } from './services/fixture-pool.service';
 import { HotkeyTargetExcludeService } from './services/hotkey-target-exclude.service';
+import { UserRegisterComponent } from './user/user-register/user-register.component';
+import { BsModalService } from 'ngx-bootstrap';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'lib-designer',
@@ -41,6 +44,11 @@ export class DesignerComponent implements AfterViewInit {
     this.configService.enableMediaLibrary = value;
   }
 
+  @Input()
+  set loginAvailable(value: boolean) {
+    this.configService.loginAvailable = value;
+  }
+
   // the size of the menu used in the designer
   private designerMenuSizePx = 20;
 
@@ -62,7 +70,9 @@ export class DesignerComponent implements AfterViewInit {
     private timelineService: TimelineService,
     private configService: ConfigService,
     private fixturePoolService: FixturePoolService,
-    private hotkeyTargetExcludeService: HotkeyTargetExcludeService
+    private hotkeyTargetExcludeService: HotkeyTargetExcludeService,
+    private modalService: BsModalService,
+    public userService: UserService
   ) {
 
     this.translateService.use('en');
@@ -130,10 +140,6 @@ export class DesignerComponent implements AfterViewInit {
     // TODO
   }
 
-  projectClose() {
-    // TODO
-  }
-
   projectSave() {
     // TODO
     //this.savingComposition = true;
@@ -156,6 +162,10 @@ export class DesignerComponent implements AfterViewInit {
         //this.savingComposition = false;
       }))
       .subscribe();
+  }
+
+  userRegister() {
+    this.modalService.show(UserRegisterComponent, { keyboard: true, ignoreBackdropClick: false });
   }
 
   projectExport() {

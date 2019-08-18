@@ -11,6 +11,15 @@
 
 // Styles only for the designer
 #designer {
+  .nav-link {
+    cursor: pointer;
+  }
+
+  // dropdown menus should appear over the 3d preview
+  .dropdown-menu {
+    z-index: 100000;
+  }
+
   // no row wrapping for the designer (it's not responsive anyway)
   .row {
     flex-wrap: unset;

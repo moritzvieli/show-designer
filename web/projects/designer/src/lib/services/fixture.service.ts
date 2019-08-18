@@ -74,7 +74,7 @@ export class FixtureService {
 
     // Load the metadata and the profile
     return forkJoin(
-      this.http.get('fixture-search?uuid=' + encodeURI(uuid)),
+      this.http.get('fixtures?uuid=' + encodeURI(uuid)),
       this.http.get('fixture?uuid=' + encodeURI(uuid))
     ).pipe(map(result => {
       let mergedData = { ...result[0][0], ...result[1] }

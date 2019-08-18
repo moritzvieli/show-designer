@@ -19,7 +19,7 @@
             "description": "Bitte warte, bis die App geladen ist."
         },
         "navigation": {
-            "file": "Datei",
+            "file": "Projekt",
             "settings": "Einstellungen",
             "help": "Hilfe",
             "fixture-pool": "Fixture pool",
@@ -27,7 +27,29 @@
             "project-save": "Speichern",
             "project-open": "Öffnen",
             "project-export": "Exportieren",
-            "project-close": "Schliessen"
+            "login": "Einloggen",
+            "logout": "Ausloggen",
+            "support": "Support"
+        },
+        "user": {
+            "register-title": "Registrieren",
+            "login-title": "Einloggen",
+            "register": "Jetzt registrieren",
+            "login": "Einloggen",
+            "email": "E-Mail",
+            "password": "Passwort",
+            "password-repeat": "Passwort (Wiederholung)",
+            "username": "Benutzername",
+            "already-have-account": "Du hast bereits ein Konto?",
+            "no-account-yet": "Du hast noch kein Konto?",
+            "error": {
+                "internal": "Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut oder wende dich unter Menü Hilfe an den Support.",
+                "fill-all-fields": "Bitte fülle alle Felder aus.",
+                "email-valid": "Bitte fülle eine gültige E-Mail Adresse aus.",
+                "password-mismatch": "Die beiden Passwörter stimmen nicht überein.",
+                "wrong-credentials": "Die Benutzerdaten sind nicht korrekt. Bitte wende dich bei Problemen unter Menü Hilfe an den Support.",
+                "email-exists": "Diese E-Mail Adresse wird bereits benutzt. Bitte wende dich bei Problemen unter Menü Hilfe an den Support."
+            }
         },
         "scene": {
             "title": "Szenen"

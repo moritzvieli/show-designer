@@ -34,6 +34,9 @@ import { FixtureCapabilityPanTiltComponent } from './fixture/fixture-capability/
 import { FixtureCapabilityChannelComponent } from './fixture/fixture-capability/fixture-capability-channel/fixture-capability-channel.component';
 import { FixtureChannelComponent } from './fixture/fixture-channel/fixture-channel.component';
 import { FixtureCapabilityColorWheelComponent } from './fixture/fixture-capability/fixture-capability-color-wheel/fixture-capability-color-wheel.component';
+import { UserLoginComponent } from './user/user-login/user-login.component';
+import { UserRegisterComponent } from './user/user-register/user-register.component';
+import { ProjectBrowserComponent } from './project-browser/project-browser.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -63,7 +66,10 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     FixtureCapabilityPanTiltComponent,
     FixtureCapabilityChannelComponent,
     FixtureChannelComponent,
-    FixtureCapabilityColorWheelComponent
+    FixtureCapabilityColorWheelComponent,
+    UserLoginComponent,
+    UserRegisterComponent,
+    ProjectBrowserComponent
   ],
   imports: [
     BrowserModule,
@@ -85,7 +91,10 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     FixturePoolComponent,
     TimelineGridComponent,
     CompositionSettingsComponent,
-    WarningDialogComponent
+    WarningDialogComponent,
+    UserLoginComponent,
+    UserRegisterComponent,
+    ProjectBrowserComponent
   ],
   exports: [DesignerComponent]
 })

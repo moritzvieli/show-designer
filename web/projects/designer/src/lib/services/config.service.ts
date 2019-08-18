@@ -7,6 +7,7 @@ export class ConfigService {
 
   public restUrl: string;
   public enableMediaLibrary: boolean = false;
+  public loginAvailable: boolean = false;
 
   constructor() { }
 }

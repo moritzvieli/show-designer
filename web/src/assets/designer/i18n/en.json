@@ -19,7 +19,7 @@
             "description": "Please wait while the application is being loaded."
         },
         "navigation": {
-            "file": "File",
+            "project": "Project",
             "settings": "Settings",
             "help": "Help",
             "fixture-pool": "Fixture pool",
@@ -27,7 +27,29 @@
             "project-save": "Save",
             "project-open": "Open",
             "project-export": "Exportieren",
-            "project-close": "Close"
+            "login": "Sign in",
+            "logout": "Log out",
+            "support": "Support"
+        },
+        "user": {
+            "register-title": "Register",
+            "login-title": "Login",
+            "register": "Register now",
+            "login": "Login",
+            "email": "Email",
+            "password": "Password",
+            "password-repeat": "Password (repeat)",
+            "username": "Username",
+            "already-have-account": "You already have an account?",
+            "no-account-yet": "You don't have an account yet?",
+            "error": {
+                "internal": "An internal error occured. Please try again or reach out to our support under the menu help.",
+                "fill-all-fields": "Please fill in all fields.",
+                "email-valid": "Please fill in a valid email address.",
+                "password-mismatch": "The passwords do not match.",
+                "wrong-credentials": "The credentials are wrong. Please reach out to our support under the menu help, if needed.",
+                "email-exists": "This email address already exists. Please reach out to our support under the menu help, if needed."
+            }
         },
         "scene": {
             "title": "Scenes"
