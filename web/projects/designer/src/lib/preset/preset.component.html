@@ -16,8 +16,8 @@
     <!-- List of presets -->
     <div class="list-group" [sortablejs]="projectService.project.presets">
       <div class="list-group-item" *ngFor="let item of projectService.project.presets; let i = index" (click)="selectPreset(i)" 
-        [class.active-light]="!presetService.previewPreset && item == presetService.selectedPreset"
-        [class.active]="presetService.previewPreset && item == presetService.selectedPreset"
+        [class.active-light]="!projectService.project.previewPreset && item == presetService.selectedPreset"
+        [class.active]="projectService.project.previewPreset && item == presetService.selectedPreset"
         [class.inactive-list-item]="!sceneService.presetIsSelected(item)">
         <div class="row d-flex" style="cursor: pointer;">
           <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">

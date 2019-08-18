@@ -1,44 +1,44 @@
 <form (ngSubmit)="login()">
-    <div class="modal-header">
-      <h4 class="modal-title pull-left">{{ 'designer.user.login-title' | translate }}</h4>
-      <button type="button" class="close pull-right" aria-label="Close" (click)="cancel(); false;">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group row">
-        <label for="email" class="col-sm-4 col-form-label">{{ 'designer.user.email' | translate }}</label>
-        <div class="col-sm-8">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fa fa-fw fa-envelope-o" aria-hidden="true"></i></div>
-            </div>
-            <input required [disabled]="loggingIn" name="email" [(ngModel)]="email" type="email" class="form-control"
-              id="email" placeholder="email@example.com">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{ 'designer.user.login-title' | translate }}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cancel(); false;">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group row">
+      <label for="email" class="col-sm-4 col-form-label">{{ 'designer.user.email' | translate }}</label>
+      <div class="col-sm-8">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i class="fa fa-fw fa-envelope-o" aria-hidden="true"></i></div>
           </div>
+          <input required [disabled]="loggingIn" name="email" [(ngModel)]="email" type="email" class="form-control"
+            id="email" placeholder="email@example.com">
         </div>
       </div>
-      <div class="form-group row">
-        <label for="password" class="col-sm-4 col-form-label">{{ 'designer.user.password' | translate }}</label>
-        <div class="col-sm-8">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><i class="fa fa-fw fa-lock" aria-hidden="true"></i></div>
-            </div>
-            <input required [disabled]="loggingIn" name="password" [(ngModel)]="password" type="password"
-              class="form-control" id="password" placeholder="{{ 'designer.user.password' | translate }}">
+    </div>
+    <div class="form-group row">
+      <label for="password" class="col-sm-4 col-form-label">{{ 'designer.user.password' | translate }}</label>
+      <div class="col-sm-8">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i class="fa fa-fw fa-lock" aria-hidden="true"></i></div>
           </div>
+          <input required [disabled]="loggingIn" name="password" [(ngModel)]="password" type="password"
+            class="form-control" id="password" placeholder="{{ 'designer.user.password' | translate }}">
         </div>
       </div>
-      <div *ngIf="error" class="alert alert-primary" role="alert">
-        {{ 'designer.user.error.' + error | translate }}
-      </div>
     </div>
-    <div class="modal-footer">
-      <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
-        {{ 'designer.misc.cancel' | translate }}
-      </a>
-      <button [disabled]="loggingIn" type="submit" class="btn btn-primary"><i *ngIf="loggingIn"
-          class="fa fa-spinner fa-pulse fa-fw"> </i>{{ 'designer.user.login' | translate }}</button>
+    <div *ngIf="error" class="alert alert-primary" role="alert">
+      {{ 'designer.user.error.' + error | translate }}
     </div>
-  </form>
+  </div>
+  <div class="modal-footer">
+    <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
+      {{ 'designer.misc.cancel' | translate }}
+    </a>
+    <button [disabled]="loggingIn" type="submit" class="btn btn-primary"><i *ngIf="loggingIn"
+        class="fa fa-spinner fa-pulse fa-fw"></i> {{ 'designer.user.login' | translate }}</button>
+  </div>
+</form>

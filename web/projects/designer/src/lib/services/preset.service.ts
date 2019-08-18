@@ -31,9 +31,6 @@ export class PresetService {
   // because detectChanges is not enough to trigger different components.
   fixtureColorChanged: Subject<void> = new Subject<void>();
 
-  // true = show the preset, false = show the selected scene
-  previewPreset: boolean = true;
-
   constructor(
     private effectService: EffectService,
     private uuidService: UuidService,
@@ -340,6 +337,7 @@ export class PresetService {
   selectPreset(index: number) {
     this.effectService.selectedEffect = undefined;
     this.selectedPreset = this.projectService.project.presets[index];
+    this.projectService.project.selectedPresetUuid = this.projectService.project.presets[index].uuid;
     this.previewSelectionChanged.next();
   }
 

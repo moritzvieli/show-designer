@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ProjectService } from './services/project.service';
 import Split from 'split.js';
 import { TimelineService } from './services/timeline.service';
-import { map, catchError, finalize } from 'rxjs/operators';
 import { ConfigService } from './services/config.service';
 import { FixturePoolService } from './services/fixture-pool.service';
 import { HotkeyTargetExcludeService } from './services/hotkey-target-exclude.service';
@@ -14,6 +13,9 @@ import { BsModalService } from 'ngx-bootstrap';
 import { UserService } from './services/user.service';
 import { UserEnsureLoginService } from './services/user-ensure-login.service';
 import { ToastrService } from 'ngx-toastr';
+import { ProjectBrowserComponent } from './project-browser/project-browser.component';
+import { ProjectLoadService } from './services/project-load.service';
+import { Project } from './models/project';
 
 @Component({
   selector: 'lib-designer',
@@ -76,11 +78,18 @@ export class DesignerComponent implements AfterViewInit {
     private modalService: BsModalService,
     public userService: UserService,
     private userEnsureLoginService: UserEnsureLoginService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private projectLoadService: ProjectLoadService
   ) {
 
     this.translateService.use('en');
     this.calcTotalMenuHeight();
+
+    if (this.userService.isLoggedIn() && this.userService.getAutoLoadProjectId()) {
+      this.projectLoadService.load(this.userService.getAutoLoadProjectId()).subscribe();
+    } else {
+      this.projectLoadService.new();
+    }
   }
 
   private calcTotalMenuHeight() {
@@ -140,8 +149,14 @@ export class DesignerComponent implements AfterViewInit {
     this.fixturePoolService.open();
   }
 
+  projectNew() {
+    this.projectLoadService.new();
+  }
+
   projectOpen() {
-    // TODO
+    this.userEnsureLoginService.login().subscribe(() => {
+      this.modalService.show(ProjectBrowserComponent, { keyboard: true, ignoreBackdropClick: false });
+    });
   }
 
   projectSave() {
@@ -153,6 +168,8 @@ export class DesignerComponent implements AfterViewInit {
         this.translateService.get([msg, title]).subscribe(result => {
           this.toastrService.success(result[msg], result[title]);
         });
+
+        this.userService.setAutoLoadProjectId(this.projectService.project.id);
       }, (response) => {
         let msg = 'designer.project.save-error';
         let title = 'designer.project.save-error-title';

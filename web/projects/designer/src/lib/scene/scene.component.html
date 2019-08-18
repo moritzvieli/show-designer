@@ -5,8 +5,8 @@
     </div>
     <div class="ml-auto">
       <a href="#" class="btn btn-secondary m-0, p-0" [class.text-primary]="sceneService.multipleSelection == true"
-        (click)="sceneService.multipleSelection = !sceneService.multipleSelection; false;"><i class="fa fa-object-group fa-fw"
-          aria-hidden="true"></i></a>
+        (click)="sceneService.multipleSelection = !sceneService.multipleSelection; false;"><i
+          class="fa fa-object-group fa-fw" aria-hidden="true"></i></a>
       <a href="#" class="btn btn-secondary m-0, p-0" (click)="removeScene(); false;"><i class="fa fa-minus-circle fa-fw"
           aria-hidden="true"></i></a>
       <a href="#" class="btn btn-secondary m-0, p-0" (click)="sceneService.addScene(); false;"><i
@@ -17,10 +17,9 @@
 
     <!-- List of scenes -->
     <div class="list-group" [sortablejs]="projectService.project.scenes">
-      <div *ngFor="let scene of projectService.project.scenes; let i = index"
-        class="list-group-item"
-        [class.active-light]="presetService.previewPreset && sceneService.sceneIsSelected(scene)"
-        [class.active]="!presetService.previewPreset && sceneService.sceneIsSelected(scene)">
+      <div *ngFor="let scene of projectService.project.scenes; let i = index" class="list-group-item"
+        [class.active-light]="projectService.project.previewPreset && sceneService.sceneIsSelected(scene)"
+        [class.active]="!projectService.project.previewPreset && sceneService.sceneIsSelected(scene)">
         <div class="row d-flex" (click)="selectScene($event, i)" style="cursor: pointer;">
           <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
             <i class="fa fa-bars" aria-hidden="true"></i>

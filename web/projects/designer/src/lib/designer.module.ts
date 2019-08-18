@@ -37,6 +37,7 @@ import { FixtureCapabilityColorWheelComponent } from './fixture/fixture-capabili
 import { UserLoginComponent } from './user/user-login/user-login.component';
 import { UserRegisterComponent } from './user/user-register/user-register.component';
 import { ProjectBrowserComponent } from './project-browser/project-browser.component';
+import { WaitDialogComponent } from './wait-dialog/wait-dialog.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -69,7 +70,8 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     FixtureCapabilityColorWheelComponent,
     UserLoginComponent,
     UserRegisterComponent,
-    ProjectBrowserComponent
+    ProjectBrowserComponent,
+    WaitDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -94,9 +96,10 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     WarningDialogComponent,
     UserLoginComponent,
     UserRegisterComponent,
-    ProjectBrowserComponent
+    ProjectBrowserComponent,
+    WaitDialogComponent
   ],
   exports: [DesignerComponent]
 })
 
-export class DesignerModule {}
+export class DesignerModule { }

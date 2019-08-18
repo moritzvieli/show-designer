@@ -361,7 +361,6 @@ export class FixturePoolComponent implements OnInit {
     this.projectService.project.fixtures = this.fixturePool;
 
     this.fixtureService.updateCachedFixtures();
-
     this.presetService.removeDeletedFixtures();
     this.previewService.updateFixtureSetup();
     this.presetService.updateFixtureSelection();

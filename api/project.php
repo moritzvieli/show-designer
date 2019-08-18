@@ -72,7 +72,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             error();
         }
         if ($result->num_rows == 0) {
-            error('wrong_id', 400);
+            error('wrong-id', 400);
         }
 
         $row = mysqli_fetch_assoc($result);

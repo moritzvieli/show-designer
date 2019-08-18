@@ -83,4 +83,12 @@ export class UserService {
     return headers;
   }
 
+  setAutoLoadProjectId(id: number) {
+    localStorage.setItem('projectId', id.toString());
+  }
+
+  getAutoLoadProjectId(): number {
+    return Number.parseInt(localStorage.getItem('projectId'));
+  }
+
 }

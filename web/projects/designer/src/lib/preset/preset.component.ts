@@ -20,7 +20,7 @@ export class PresetComponent implements OnInit {
   }
 
   selectPreset(index: number) {
-    this.presetService.previewPreset = true;
+    this.projectService.project.previewPreset = true;
     this.presetService.selectPreset(index);
   }
 

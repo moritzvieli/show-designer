@@ -12,7 +12,8 @@
             "settings": "Settings",
             "effects": "Effects",
             "search": "Suchen",
-            "warning": "Warning"
+            "warning": "Warning",
+            "please-wait": "Please wait..."
         },
         "loading": {
             "title": "Loading...",
@@ -24,9 +25,10 @@
             "help": "Help",
             "fixture-pool": "Fixture pool",
             "stage": "Stage",
+            "project-new": "New",
             "project-save": "Save",
             "project-open": "Open",
-            "project-export": "Exportieren",
+            "project-export": "Export",
             "login": "Sign in",
             "logout": "Log out",
             "support": "Support"
@@ -56,7 +58,9 @@
             "save-error-title": "Error on saving project",
             "save-error": "The project could not be saved. Please reach out to our support under the menu help, if needed.",
             "save-success-title": "Saved",
-            "save-success": "The project has been saved."
+            "save-success": "The project has been saved.",
+            "browser-title": "Projects",
+            "browser-empty": "No projects available"
         },
         "scene": {
             "title": "Scenes"

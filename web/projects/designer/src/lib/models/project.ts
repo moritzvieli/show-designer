@@ -6,11 +6,17 @@ import { FixtureProfile } from "./fixture-profile";
 
 export class Project {
 
-    public id: string;
+    public id: number;
     public uuid: string;
     public name: string;
 
     public masterDimmerValue: number = 1;
+
+    public selectedPresetUuid: string;
+    public selectedSceneUuids: string[] = [];
+
+    // true = show the preset, false = show the selected scene
+    public previewPreset: boolean = true;
 
     public compositions: Composition[] = [];
     public fixtureProfiles: FixtureProfile[] = [];
@@ -24,8 +30,14 @@ export class Project {
         }
 
         this.id = data.id;
+        this.uuid = data.uuid;
+        this.name = data.name;
 
         this.masterDimmerValue = data.masterDimmerValue;
+
+        this.selectedPresetUuid = data.selectedPresetUuid;
+        this.selectedSceneUuids = data.selectedSceneUuids;
+        this.previewPreset = data.previewPreset;
 
         if (data.compositions) {
             for (let composition of data.compositions) {

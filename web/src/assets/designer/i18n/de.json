@@ -12,7 +12,8 @@
             "settings": "Einstellungen",
             "effects": "Effekte",
             "search": "Suchen",
-            "warning": "Warnung"
+            "warning": "Warnung",
+            "please-wait": "Einen Moment bitte..."
         },
         "loading": {
             "title": "Laden...",
@@ -24,6 +25,7 @@
             "help": "Hilfe",
             "fixture-pool": "Fixture pool",
             "stage": "Bühne",
+            "project-new": "Neu",
             "project-save": "Speichern",
             "project-open": "Öffnen",
             "project-export": "Exportieren",
@@ -56,7 +58,9 @@
             "save-error-title": "Fehler beim Speichern",
             "save-error": "Das Projekt konnte nicht gespeichert werden. Bitte wende dich bei Problemen unter Menü Hilfe an den Support.",
             "save-success-title": "Gespeichert",
-            "save-success": "Das Projekt wurde gespeichert."
+            "save-success": "Das Projekt wurde gespeichert.",
+            "browser-title": "Projekte",
+            "browser-empty": "Keine Projekte verfügbar"
         },
         "scene": {
             "title": "Szenen"
