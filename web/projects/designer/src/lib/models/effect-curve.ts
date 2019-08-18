@@ -23,13 +23,13 @@ export class EffectCurve extends Effect {
         }
 
         if (data.capabilities) {
-            for (let capability in data.capabilities) {
+            for (let capability of data.capabilities) {
                 this.capabilities.push(new FixtureCapability(capability));
             }
         }
 
         if (data.channels) {
-            for (let channel in data.channels) {
+            for (let channel of data.channels) {
                 this.channels.push(new EffectCurveProfileChannels(channel));
             }
         }

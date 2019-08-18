@@ -4,13 +4,10 @@ import { PreviewService } from './preview.service';
 import { FixtureService } from './fixture.service';
 import { PresetService } from './preset.service';
 import { SceneService } from './scene.service';
-import { map } from 'rxjs/operators';
+import { map, finalize } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { BsModalService } from 'ngx-bootstrap';
 import { WaitDialogComponent } from '../wait-dialog/wait-dialog.component';
-import { Project } from '../models/project';
-import { Preset } from '../models/preset';
-import { UuidService } from './uuid.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +20,7 @@ export class ProjectLoadService {
     private fixtureService: FixtureService,
     private presetService: PresetService,
     private sceneService: SceneService,
-    private modalService: BsModalService,
-    private uuidService: UuidService
+    private modalService: BsModalService
   ) { }
 
   private afterLoad() {
@@ -47,7 +43,7 @@ export class ProjectLoadService {
       }
 
       this.afterLoad();
-
+    }), finalize(() => {
       setTimeout(() => {
         ref.hide();
       }, 0);
@@ -55,23 +51,10 @@ export class ProjectLoadService {
   }
 
   new() {
-    let project = new Project();
-    project.name = 'New Project';
-    this.projectService.project = project;
-
-    // Add a default scene and preset
-    let preset = new Preset();
-    preset.uuid = this.uuidService.getUuid();
-    preset.name = 'Preset';
-    this.projectService.project.presets.push(preset);
-    this.presetService.selectPreset(0);
-
-    this.sceneService.addScene();
-    this.projectService.project.scenes[0].presetUuids.push(preset.uuid);
-
-    this.projectService.project.previewPreset = true;
-
-    this.afterLoad();
+    // load the template project with id 1
+    this.load(1).subscribe(() => {
+      this.projectService.project.id = undefined;
+    });
   }
 
 }

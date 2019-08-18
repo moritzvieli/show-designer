@@ -81,6 +81,8 @@ CREATE TABLE project (
 
     PRIMARY KEY(id)
 );
+-- Insert the default project template
+INSERT INTO project(name) VALUES('New Project');
 
 CREATE TABLE project_role (
     id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,

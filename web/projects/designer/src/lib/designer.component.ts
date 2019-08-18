@@ -86,7 +86,17 @@ export class DesignerComponent implements AfterViewInit {
     this.calcTotalMenuHeight();
 
     if (this.userService.isLoggedIn() && this.userService.getAutoLoadProjectId()) {
-      this.projectLoadService.load(this.userService.getAutoLoadProjectId()).subscribe();
+      this.projectLoadService.load(this.userService.getAutoLoadProjectId()).subscribe(() => {
+        // success
+      }, (response) => {
+        let msg = 'designer.project.open-error';
+        let title = 'designer.project.open-error-title';
+        let error = response && response.error ? response.error.error : 'unknown';
+
+        this.translateService.get([msg, title]).subscribe(result => {
+          this.toastrService.error(result[msg] + ' (' + error + ')', result[title]);
+        });
+      });
     } else {
       this.projectLoadService.new();
     }

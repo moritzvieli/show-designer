@@ -60,7 +60,9 @@
             "save-success-title": "Gespeichert",
             "save-success": "Das Projekt wurde gespeichert.",
             "browser-title": "Projekte",
-            "browser-empty": "Keine Projekte verfügbar"
+            "browser-empty": "Keine Projekte verfügbar",
+            "open-error-title": "Fehler beim Öffnen",
+            "open-error": "Das Projekt konnte nicht geöffnet werden. Bitte wende dich bei Problemen unter Menü Hilfe an den Support."
         },
         "scene": {
             "title": "Szenen"
