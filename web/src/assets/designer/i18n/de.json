@@ -28,6 +28,7 @@
             "project-new": "Neu",
             "project-save": "Speichern",
             "project-open": "Öffnen",
+            "project-import": "Importieren",
             "project-export": "Exportieren",
             "login": "Einloggen",
             "logout": "Ausloggen",
@@ -92,6 +93,10 @@
             "no-free-space-title": "Kein freier Bereich",
             "channel-occupied": "Die eingestellte Konfiguration hat überlappende Kanäle.",
             "channel-occupied-title": "Überlappende Kanäle"
+        },
+        "effect": {
+            "add-new": "Neuen Effekt hinzufügen",
+            "curve": "Kurve"
         },
         "composition": {
             "new": "Neue Komposition erstellen..."

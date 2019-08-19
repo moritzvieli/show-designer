@@ -9,19 +9,23 @@
       <!-- Dimmer -->
       <!-- the height attribute is required to avoid performance issues with many layouts (reflows)
       in Chrome during sliding -->
-      <div *ngIf="presetService.hasCapabilityDimmer()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+      <div *ngIf="presetService.hasCapabilityDimmer()" class="col col-auto p-0 my-3 mr-3"
+        style="height: calc(100% - 2rem)">
         <app-fixture-capability-dimmer></app-fixture-capability-dimmer>
       </div>
 
       <!-- Color -->
       <!-- Also show for color wheel fixtures to approx. the color -->
-      <div *ngIf="presetService.hasCapabilityColorOrColorWheel()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+      <div *ngIf="presetService.hasCapabilityColorOrColorWheel()" class="col col-auto p-0 my-3 mr-3"
+        style="height: calc(100% - 2rem)">
         <app-fixture-capability-color></app-fixture-capability-color>
       </div>
 
       <!-- Color wheels -->
-      <div *ngFor="let entry of colorWheelChannels | keyvalue; let i = index" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
-        <app-fixture-capability-color-wheel [profile]="entry.key" [channel]="entry.value" [wheelIndex]="i" [showContainer]="colorWheelChannels.size > 1"></app-fixture-capability-color-wheel>
+      <div *ngFor="let entry of colorWheelChannels | keyvalue; let i = index" class="col col-auto p-0 my-3 mr-3"
+        style="height: calc(100% - 2rem)">
+        <app-fixture-capability-color-wheel [profile]="entry.key" [channel]="entry.value" [wheelIndex]="i"
+          [showContainer]="colorWheelChannels.size > 1"></app-fixture-capability-color-wheel>
       </div>
 
       <!-- Pan/Tilt -->
@@ -37,6 +41,10 @@
 
     <div *ngIf="presetService.selectedPreset && presetService.selectedPreset.fixtureUuids.length == 0" class="m-auto">
       <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures-selected' | translate }}</p>
+    </div>
+
+    <div *ngIf="projectService.project.fixtures.length == 0" class="m-auto">
+      <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures' | translate }}</p>
     </div>
 
   </div>

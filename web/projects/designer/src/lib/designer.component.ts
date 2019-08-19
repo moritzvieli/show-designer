@@ -15,7 +15,6 @@ import { UserEnsureLoginService } from './services/user-ensure-login.service';
 import { ToastrService } from 'ngx-toastr';
 import { ProjectBrowserComponent } from './project-browser/project-browser.component';
 import { ProjectLoadService } from './services/project-load.service';
-import { Project } from './models/project';
 
 @Component({
   selector: 'lib-designer',
@@ -98,7 +97,7 @@ export class DesignerComponent implements AfterViewInit {
         });
       });
     } else {
-      this.projectLoadService.new();
+      this.projectLoadService.template();
     }
   }
 
@@ -194,6 +193,10 @@ export class DesignerComponent implements AfterViewInit {
 
   userRegister() {
     this.modalService.show(UserRegisterComponent, { keyboard: true, ignoreBackdropClick: false });
+  }
+
+  projectImport() {
+    // TODO
   }
 
   projectExport() {

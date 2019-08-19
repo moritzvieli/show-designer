@@ -28,6 +28,7 @@
             "project-new": "New",
             "project-save": "Save",
             "project-open": "Open",
+            "project-import": "Import",
             "project-export": "Export",
             "login": "Sign in",
             "logout": "Log out",
@@ -92,6 +93,10 @@
             "no-free-space-title": "No space left",
             "channel-occupied": "The current configuration contains overlapping channels.",
             "channel-occupied-title": "Overlapping channels"
+        },
+        "effect": {
+            "add-new": "Add new Effekt",
+            "curve": "Curve"
         },
         "composition": {
             "new": "Create new composition..."

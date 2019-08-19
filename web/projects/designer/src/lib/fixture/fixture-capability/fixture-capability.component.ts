@@ -4,6 +4,7 @@ import { FixtureService } from '../../services/fixture.service';
 import { FixtureProfile } from '../../models/fixture-profile';
 import { FixtureWheelSlotType } from '../../models/fixture-wheel-slot';
 import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'app-fixture-capability',
@@ -19,7 +20,8 @@ export class FixtureCapabilityComponent implements OnInit {
   constructor(
     public presetService: PresetService,
     private fixtureService: FixtureService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    public projectService: ProjectService
   ) {
     this.presetService.fixtureSelectionChanged.subscribe(() => {
       this.update();
@@ -46,7 +48,7 @@ export class FixtureCapabilityComponent implements OnInit {
   private updateColorWheels() {
     this.colorWheelChannels = new Map<FixtureProfile, CachedFixtureChannel>();
 
-    if(!this.presetService.selectedPreset) {
+    if (!this.presetService.selectedPreset) {
       return;
     }
 

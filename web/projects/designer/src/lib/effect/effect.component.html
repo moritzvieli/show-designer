@@ -9,8 +9,10 @@
 
           <button class="btn btn-link btn-block clearfix" accordion-heading>
             <div class="pull-left float-left d-flex w-100">
-              <i *ngIf="item.constructor.name == 'EffectCurve'" class="fa fa-area-chart fa-fw my-auto" aria-hidden="true"></i>
-              <i *ngIf="item.constructor.name == 'EffectPanTilt'" class="fa fa-arrows-alt fa-fw my-auto" aria-hidden="true"></i>
+              <i *ngIf="item.constructor.name == 'EffectCurve'" class="fa fa-area-chart fa-fw my-auto"
+                aria-hidden="true"></i>
+              <i *ngIf="item.constructor.name == 'EffectPanTilt'" class="fa fa-arrows-alt fa-fw my-auto"
+                aria-hidden="true"></i>
               <span class="ml-2">{{ item.constructor.name }}</span>
               <div class="ml-auto mr-2">
                 <i *ngIf="item == effectService.selectedEffect" class="fa fa-caret-down" aria-hidden="true"></i>
@@ -34,12 +36,12 @@
         <div class="dropdown show d-flex">
           <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-plus" aria-hidden="true"></i> Add new effect
+            <i class="fa fa-plus" aria-hidden="true"></i> {{ 'designer.effect.add-new' | translate }}
           </a>
 
           <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
             <a class="dropdown-item" href="#" (click)="addCurveEffect(); false;">
-              <i class="fa fa-area-chart fa-fw" aria-hidden="true"></i> Curve</a>
+              <i class="fa fa-area-chart fa-fw" aria-hidden="true"></i> {{ 'designer.effect.curve' | translate }}</a>
             <!-- <a class="dropdown-item" href="#" (click)="addPanTiltEffect()">
               <i class="fa fa-arrows-alt fa-fw" aria-hidden="true"></i> Pan/Tilt</a> -->
           </div>

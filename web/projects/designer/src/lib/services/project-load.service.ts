@@ -8,11 +8,13 @@ import { map, finalize } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { BsModalService } from 'ngx-bootstrap';
 import { WaitDialogComponent } from '../wait-dialog/wait-dialog.component';
+import { Project } from '../models/project';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectLoadService {
+
 
   constructor(
     private projectService: ProjectService,
@@ -44,13 +46,31 @@ export class ProjectLoadService {
 
       this.afterLoad();
     }), finalize(() => {
+      // hide the modal again because of:
+      // https://github.com/valor-software/ngx-bootstrap/issues/3711
       setTimeout(() => {
         ref.hide();
-      }, 0);
+      }, 250);
+      setTimeout(() => {
+        ref.hide();
+      }, 500);
+      setTimeout(() => {
+        ref.hide();
+      }, 1500);
     }));
   }
 
   new() {
+    // create an empty new project
+    let project = new Project();
+    project.name = 'New Project';
+    this.projectService.project = project;
+    this.sceneService.selectedScenes = [];
+    this.presetService.selectedPreset = null;
+    this.afterLoad();
+  }
+
+  template() {
     // load the template project with id 1
     this.load(1).subscribe(() => {
       this.projectService.project.id = undefined;

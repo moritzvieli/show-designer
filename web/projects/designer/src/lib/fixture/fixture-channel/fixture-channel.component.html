@@ -39,5 +39,9 @@
       <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures-selected' | translate }}</p>
     </div>
 
+    <div *ngIf="projectService.project.fixtures.length == 0" class="m-auto">
+      <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures' | translate }}</p>
+    </div>
+
   </div>
 </div>
