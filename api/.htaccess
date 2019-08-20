@@ -1,4 +1,7 @@
-# No .php endings
+# Disable directory listing
+Options -Indexes
+
+# Remove .php endings
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f

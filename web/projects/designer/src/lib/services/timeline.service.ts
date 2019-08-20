@@ -373,17 +373,17 @@ export class TimelineService {
         ]
       });
 
-      let audioFileName;
+      let audioFileName: string;
 
       if (this.selectedComposition.audioFileInLibrary) {
         // the file name is also used for the real file name
-        audioFileName = this.selectedComposition.audioFileName;
+        audioFileName = 'file/get?name=' + this.selectedComposition.audioFileName + '&type=AUDIO';
       } else {
-        // the composition uuid is used as the file name
-        audioFileName = this.selectedComposition.uuid;
+        // the composition uuid and extension is used as the file name
+        audioFileName = 'composition-files/?file=' + this.selectedComposition.uuid + '.' + this.selectedComposition.audioFileName.substr(this.selectedComposition.audioFileName.lastIndexOf('.') + 1);
       }
 
-      this.waveSurfer.load(this.configService.restUrl + 'file/get?name=' + audioFileName + '&type=AUDIO');
+      this.waveSurfer.load(this.configService.restUrl + audioFileName);
 
       this.waveSurfer.on('ready', () => {
         setTimeout(() => {
@@ -695,6 +695,10 @@ export class TimelineService {
     this.selectedCompositionIndex = index;
     this.projectService.project.selectedCompositionUuid = this.selectedComposition.uuid;
     this.createWaveSurfer();
+
+    // required to trigger timeline.component.resize()
+    this.waveSurferReady.next();
+
     this.applyZoom(0);
   }
 
