@@ -1,0 +1,14 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">{{ 'designer.project.import-title' | translate }}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <!-- Dropzone -->
+  <dropzone [config]="dropzoneConfig" [useDropzoneClass]="'false'" [message]="uploadMessage"
+    (error)="onUploadError($event)" (success)="onUploadSuccess($event)"></dropzone>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>
+</div>

@@ -25,8 +25,7 @@ export class ProjectService {
   }
 
   save(project: Project): Observable<Object> {
-    let id: string = project.id ? project.id.toString() : '';
-    return this.http.post('project?id=' + id + '&name=' + project.name, JSON.stringify(project), { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
+    return this.http.post('project', JSON.stringify(project), { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
       project.id = response.id;
       return null;
     }));

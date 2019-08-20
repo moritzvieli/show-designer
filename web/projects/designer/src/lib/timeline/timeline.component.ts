@@ -149,13 +149,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   selectComposition(index: number) {
-    this.timelineService.selectedComposition = this.projectService.project.compositions[index];
-    this.timelineService.selectedCompositionIndex = index;
-
-    this.timelineService.createWaveSurfer();
-
-    this.onResize();
-    this.timelineService.applyZoom(0);
+    this.timelineService.selectCompositionIndex(index);
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -164,7 +158,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    if(!this.timelineService.selectedComposition) {
+    if (!this.timelineService.selectedComposition) {
       return;
     }
 

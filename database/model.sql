@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS manufacturer;
 DROP TABLE IF EXISTS project_user_role;
 DROP TABLE IF EXISTS project_role;
 DROP TABLE IF EXISTS project;
+DROP TABLE IF EXISTS composition_file;
 DROP TABLE IF EXISTS session;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS user_role;
@@ -104,4 +105,18 @@ CREATE TABLE project_user_role (
     FOREIGN KEY(project_id) REFERENCES project(id),
     FOREIGN KEY(user_id) REFERENCES user(id),
     FOREIGN KEY(role_id) REFERENCES project_role(id)
+);
+
+CREATE TABLE composition_file (
+    id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    composition_uuid VARCHAR(255) NOT NULL,
+    project_id INTEGER UNSIGNED NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    name VARCHAR(255) NOT NULL,
+    size_bytes BIGINT NOT NULL,
+    type VARCHAR(100) NOT NULL,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY(project_id) REFERENCES project(id),
+    INDEX (composition_uuid)
 );

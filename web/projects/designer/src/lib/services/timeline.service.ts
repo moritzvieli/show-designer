@@ -690,4 +690,12 @@ export class TimelineService {
     }));
   }
 
+  selectCompositionIndex(index: number) {
+    this.selectedComposition = this.projectService.project.compositions[index];
+    this.selectedCompositionIndex = index;
+    this.projectService.project.selectedCompositionUuid = this.selectedComposition.uuid;
+    this.createWaveSurfer();
+    this.applyZoom(0);
+  }
+
 }

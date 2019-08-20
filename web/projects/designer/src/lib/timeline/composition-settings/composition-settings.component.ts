@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { WarningDialogService } from '../../services/warning-dialog.service';
 import { ToastrService } from 'ngx-toastr';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'app-composition-settings',
@@ -36,13 +37,14 @@ export class CompositionSettingsComponent implements OnInit {
     private translateService: TranslateService,
     private http: HttpClient,
     private warningDialogService: WarningDialogService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private projectService: ProjectService
   ) {
   }
 
   ngOnInit() {
     this.dropzoneConfig = {
-      url: this.configService.restUrl + 'file/upload?compositionUuid=' + this.composition.uuid,
+      url: this.configService.restUrl + 'file/upload?compositionUuid=' + this.composition.uuid + '&projectId=' + this.projectService.project.id,
       addRemoveLinks: false,
       maxFilesize: 100 /* 100 MB */,
       acceptedFiles: 'audio/*',
@@ -129,13 +131,11 @@ export class CompositionSettingsComponent implements OnInit {
     args[0].previewElement.hidden = true;
 
     // Select this file
-    if (args[1].audioFile) {
-      this.composition.audioFileName = this.getNameFromFile(args[1].audioFile);
+    this.composition.audioFileName = args[0].name;
 
-      if (this.configService.enableMediaLibrary) {
-        // the file has been uploaded to the media library
-        this.composition.audioFileInLibrary = true;
-      }
+    if (this.configService.enableMediaLibrary) {
+      // the file has been uploaded to the media library
+      this.composition.audioFileInLibrary = true;
     }
   }
 

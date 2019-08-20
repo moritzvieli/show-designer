@@ -1,5 +1,6 @@
 <!-- Navigation -->
-<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light border-secondary" style="border-bottom: 1px solid #444;">
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light border-secondary"
+  style="border-bottom: 1px solid #444;">
   <a class="navbar-brand d-flex" href="#" routerLink="/">
     <!-- <img class="my-auto d-none d-sm-block" src="assets/img/logo.png?v=1.4" height="30px" style="margin-right: 0px;">
     <span class="my-auto d-none d-sm-block">&nbsp;|&nbsp;</span> -->
@@ -12,7 +13,8 @@
       </li>
       <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
       <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-        <a class="nav-link" routerLink="/editor" routerLinkActive="active">{{ 'navigation.compositions' | translate }}</a>
+        <a class="nav-link" routerLink="/editor"
+          routerLinkActive="active">{{ 'navigation.compositions' | translate }}</a>
       </li>
       <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
         <a class="nav-link" routerLink="/designer" routerLinkActive="active">{{ 'navigation.designer' | translate }}</a>
@@ -23,22 +25,20 @@
     </ul>
   </div>
 
-  <button class="navbar-toggler navbar-toggler-left ml-3" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler navbar-toggler-left ml-3" type="button" data-toggle="collapse"
+    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+    aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 </nav>
 
-<!-- <lib-designer 
-  [menuHeightPx]="73.375"
-  [externalCompositionsAvailable]="false"
-  [restUrl]="appHttpInterceptor.getRestUrl()">
-</lib-designer> -->
+<lib-designer [menuHeightPx]="73.375" [externalCompositionsAvailable]="false"
+  [restUrl]="appHttpInterceptor.getRestUrl()" [loginAvailable]="true">
+</lib-designer>
 
-<lib-designer
+<!-- <lib-designer
     [menuHeightPx]="73.375"
     [externalCompositionsAvailable]="true"
     [restUrl]="appHttpInterceptor.getRestUrl()"
-    [loginAvailable]="true"
     [enableMediaLibrary]="true">
-</lib-designer>
+</lib-designer> -->

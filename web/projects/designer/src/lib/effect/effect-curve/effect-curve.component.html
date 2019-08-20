@@ -6,7 +6,7 @@
 <div class="mr-4" style="float: left">
   <div class="d-flex">
     <div class="my-auto" style="width: 100px; float: left;">
-      Length
+      {{ 'designer.effect.curve-length' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.lengthMillis" style="width: 80px;" [tooltip]="'hide'" [value]="0"
@@ -19,7 +19,7 @@
 
   <div class="d-flex">
     <div class="my-auto" style="width: 100px; float: left;">
-      Amplitude
+      {{ 'designer.effect.curve-amplitude' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.amplitude" style="width: 80px;" [tooltip]="'hide'" [min]="0"
@@ -32,7 +32,7 @@
 
   <div class="d-flex">
     <div class="my-auto" style="width: 100px; float: left;">
-      Position
+      {{ 'designer.effect.curve-position' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.position" style="width: 80px; height: 18px;" [tooltip]="'hide'"
@@ -45,7 +45,7 @@
 
   <div class="d-flex">
     <div class="my-auto" style="width: 100px; float: left;">
-      Phase
+      {{ 'designer.effect.curve-phase' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.phaseMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'"
@@ -58,7 +58,7 @@
 
   <div class="d-flex">
     <div class="my-auto" style="width: 100px; float: left;">
-      Chase
+      {{ 'designer.effect.curve-chase' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.phasingMillis" style="width: 80px; height: 18px;"
@@ -112,7 +112,7 @@
             for="channel_profile_{{ curve?.uuid }}_{{ profile.uuid }}">{{ profile.name }}</label>
         </div>
 
-        <hr class="my-1" style="border-color: white;"/>
+        <hr class="my-1" style="border-color: white;" />
       </div>
 
       <!-- channels -->
@@ -121,7 +121,8 @@
 
           <input type="checkbox" class="form-check-input" id="channel_{{ curve?.uuid }}_{{ i }}_{{ j }}"
             [ngModel]="channelChecked(entry.key, channel)" (change)="toggleChannel($event, entry.key, channel)">
-          <label class="form-check-label" for="channel_{{ curve?.uuid }}_{{ i }}_{{ j }}">{{ getChannelName(entry.key.name, channel.channelName) }}</label>
+          <label class="form-check-label"
+            for="channel_{{ curve?.uuid }}_{{ i }}_{{ j }}">{{ getChannelName(entry.key.name, channel.channelName) }}</label>
 
         </div>
       </ng-container>

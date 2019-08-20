@@ -15,6 +15,7 @@ import { UserEnsureLoginService } from './services/user-ensure-login.service';
 import { ToastrService } from 'ngx-toastr';
 import { ProjectBrowserComponent } from './project-browser/project-browser.component';
 import { ProjectLoadService } from './services/project-load.service';
+import { ProjectImportComponent } from './project-import/project-import.component';
 
 @Component({
   selector: 'lib-designer',
@@ -196,7 +197,7 @@ export class DesignerComponent implements AfterViewInit {
   }
 
   projectImport() {
-    // TODO
+    this.modalService.show(ProjectImportComponent, { keyboard: true, ignoreBackdropClick: false });
   }
 
   projectExport() {

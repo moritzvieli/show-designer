@@ -92,7 +92,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $newProject = true;
         $authorized = false;
 
-        if (isset($projectId) && projectExists($conn, $projectId)) {
+        $projectString = file_get_contents('php://input');
+        $projectObject = json_decode($projectString);
+
+        $name = mysqli_real_escape_string($conn, $projectObject->{'name'});
+        if (isset($projectObject->{'id'})) {
+            $projectId = mysqli_real_escape_string($conn, $projectObject->{'id'});
+        }
+
+        if (isset($projectId) && strlen($projectId) > 0 && projectExists($conn, $projectId)) {
             $newProject = false;
 
             if (
@@ -109,12 +117,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
             errorUnauthorized();
         }
 
-        $object = mysqli_real_escape_string($conn, file_get_contents('php://input'));
-        $name = mysqli_real_escape_string($conn, $_GET['name']);
-
+        // store/update the project
         if ($newProject) {
             $shareToken = bin2hex(openssl_random_pseudo_bytes(26));
-            $result = mysqli_query($conn, "INSERT INTO project(object, name, share_token) VALUES('" . $object . "', '" . $name . "', '" . $shareToken . "')");
+            $result = mysqli_query($conn, "INSERT INTO project(object, name, share_token) VALUES('" . mysqli_real_escape_string($conn, $projectString) . "', '" . $name . "', '" . $shareToken . "')");
             if (!$result) {
                 error();
             }
@@ -124,7 +130,21 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 error();
             }
         } else {
-            $result = mysqli_query($conn, "UPDATE project SET object = '" . $object . "', name = '" . $name . "' WHERE id = " . $projectId);
+            $result = mysqli_query($conn, "UPDATE project SET object = '" . mysqli_real_escape_string($conn, $projectString) . "', name = '" . $name . "' WHERE id = " . $projectId);
+            if (!$result) {
+                error();
+            }
+        }
+
+        // remove all composition files from the project
+        $result = mysqli_query($conn, "UPDATE composition_file SET project_id = NULL WHERE project_id = " . $projectId);
+        if (!$result) {
+            error();
+        }
+
+        // reconnect all still existing composition files to the project
+        foreach ($projectObject->{'compositions'} as $composition) {
+            $result = mysqli_query($conn, "UPDATE composition_file SET project_id = " . $projectId . " WHERE composition_uuid = '" . mysqli_real_escape_string($conn, $composition->{'uuid'}) . "'");
             if (!$result) {
                 error();
             }
@@ -143,7 +163,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         if (!isset($projectId)) {
-            error('missing_parameters', 400);
+            error('missing-parameters', 400);
         }
 
         if (

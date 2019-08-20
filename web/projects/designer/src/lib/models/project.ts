@@ -18,6 +18,8 @@ export class Project {
     // true = show the preset, false = show the selected scene
     public previewPreset: boolean = true;
 
+    public selectedCompositionUuid: string;
+
     public compositions: Composition[] = [];
     public fixtureProfiles: FixtureProfile[] = [];
     public fixtures: Fixture[] = [];
@@ -38,6 +40,7 @@ export class Project {
         this.selectedPresetUuid = data.selectedPresetUuid;
         this.selectedSceneUuids = data.selectedSceneUuids;
         this.previewPreset = data.previewPreset;
+        this.selectedCompositionUuid = data.selectedCompositionUuid;
 
         if (data.compositions) {
             for (let composition of data.compositions) {

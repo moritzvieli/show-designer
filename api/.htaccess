@@ -1,8 +1,12 @@
+# No .php endings
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule (.*) $1.php [L]
+
+# Redirect file/upload to file-upload.php
+RewriteRule ^file/upload$ file-upload.php [L]
 
 # Preserve the Authorization header
 RewriteCond %{HTTP:Authorization} ^(.*)

@@ -63,7 +63,8 @@
             "browser-title": "Projects",
             "browser-empty": "No projects available",
             "open-error-title": "Error on opening project",
-            "open-error": "The project could not be opened. Please reach out to our support under the menu help, if needed."
+            "open-error": "The project could not be opened. Please reach out to our support under the menu help, if needed.",
+            "import-title": "Import project"
         },
         "scene": {
             "title": "Scenes"
@@ -96,7 +97,12 @@
         },
         "effect": {
             "add-new": "Add new Effekt",
-            "curve": "Curve"
+            "curve": "Curve",
+            "curve-length": "Period",
+            "curve-amplitude": "Amplitude",
+            "curve-position": "Position",
+            "curve-phase": "Phase",
+            "curve-chase": "Chase"
         },
         "composition": {
             "new": "Create new composition..."
