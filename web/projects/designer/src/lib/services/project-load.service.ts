@@ -45,6 +45,9 @@ export class ProjectLoadService {
         this.sceneService.selectedScenes.push(this.sceneService.getSceneByUuid(uuid));
       }
     }
+    this.timelineService.selectedComposition = undefined;
+    this.timelineService.selectedCompositionIndex = undefined;
+    this.timelineService.destroyWaveSurfer();
     for (let i = 0; i < this.projectService.project.compositions.length; i++) {
       if (this.projectService.project.compositions[i].uuid == this.projectService.project.selectedCompositionUuid) {
         this.timelineService.selectCompositionIndex(i);
@@ -96,6 +99,10 @@ export class ProjectLoadService {
 
     this.sceneService.selectedScenes = [this.projectService.project.scenes[0]];
     this.presetService.selectedPreset = this.projectService.project.presets[0];
+
+    this.timelineService.selectedComposition = undefined;
+    this.timelineService.selectedCompositionIndex = undefined;
+    this.timelineService.destroyWaveSurfer();
 
     this.afterLoad();
   }

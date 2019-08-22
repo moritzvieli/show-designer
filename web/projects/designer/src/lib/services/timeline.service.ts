@@ -326,10 +326,21 @@ export class TimelineService {
     return this.selectedComposition.gridOffsetMillis / 1000;
   }
 
-  createWaveSurfer() {
+  destroyWaveSurfer() {
+    this.duration = undefined;
+    this.loadingAudioFile = false;
+
     if (this.waveSurfer) {
       this.waveSurfer.destroy();
       this.waveSurfer = undefined;
+    }
+  }
+
+  createWaveSurfer() {
+    this.destroyWaveSurfer();
+
+    if (!this.selectedComposition.audioFileName) {
+      return;
     }
 
     this.loadingAudioFile = true;

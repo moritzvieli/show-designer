@@ -104,7 +104,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $projectString = file_get_contents('php://input');
         $projectObject = json_decode($projectString);
         $name = mysqli_real_escape_string($conn, $projectObject->{'name'});
-        $shareToken = mysqli_real_escape_string($conn, $projectObject->{'shareToken'});
+        if (isset($projectObject->{'shareToken'})) {
+            $shareToken = mysqli_real_escape_string($conn, $projectObject->{'shareToken'});
+        }
 
         if (isset($projectObject->{'id'})) {
             $projectId = mysqli_real_escape_string($conn, $projectObject->{'id'});
@@ -157,7 +159,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 }
             }
 
-            if (!fileFound) {
+            if (!$fileFound) {
                 deleteCompositionFile($conn, $compositionFileDirectory, $row['id']);
             }
         }

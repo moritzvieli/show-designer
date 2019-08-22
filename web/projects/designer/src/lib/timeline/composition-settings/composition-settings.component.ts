@@ -43,8 +43,9 @@ export class CompositionSettingsComponent implements OnInit {
   }
 
   ngOnInit() {
+    let projectId = this.projectService.project.id ? this.projectService.project.id : '';
     this.dropzoneConfig = {
-      url: this.configService.restUrl + 'file/upload?compositionUuid=' + this.composition.uuid + '&projectId=' + this.projectService.project.id,
+      url: this.configService.restUrl + 'file/upload?compositionUuid=' + this.composition.uuid + '&projectId=' + projectId,
       addRemoveLinks: false,
       maxFilesize: 100 /* 100 MB */,
       acceptedFiles: 'audio/*',

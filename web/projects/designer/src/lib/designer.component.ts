@@ -218,7 +218,7 @@ export class DesignerComponent implements AfterViewInit {
   }
 
   projectShare() {
-    if (!this.projectService.project.shareToken) {
+    if (!this.projectService.project.id) {
       // a save is required first
       let msg = 'designer.project.share-no-save';
       let title = 'designer.project.share-no-save-title';

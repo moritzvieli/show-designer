@@ -1,8 +1,8 @@
 <?php
 include_once 'global.php';
 
-$projectId = '';
-if (isset($_GET['projectId'])) {
+$projectId = 'NULL';
+if (isset($_GET['projectId']) && strlen($_GET['projectId']) > 0) {
     $projectId = mysqli_real_escape_string($conn, $_GET['projectId']);
 }
 
@@ -13,8 +13,6 @@ if (isset($_GET['compositionUuid'])) {
 if (!isset($compositionUuid)) {
     error('missing-parameters', 400);
 }
-
-
 
 // delete an existing file, if available
 $result = mysqli_query($conn, "SELECT id FROM composition_file WHERE composition_uuid = '" . $compositionUuid . "'");
