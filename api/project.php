@@ -80,10 +80,19 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         $row = mysqli_fetch_assoc($result);
-        echo $row["object"];
+        echo $row['object'];
 
         break;
     case 'POST':
+        // Cleanup: Delete all composition files without project_id, older than 30 days.
+        // Such files may be created, if the user creates a new project with some compositions, but
+        // never saves the project.
+        $removeOlderDays = 30;
+        $result = mysqli_query($conn, "SELECT id FROM composition_file WHERE created < CURRENT_DATE() - INTERVAL " . $removeOlderDays . " DAY AND project_id IS NULL");
+        while ($row = $result->fetch_assoc()) {
+            deleteCompositionFile($conn, $compositionFileDirectory, $row['id']);
+        }
+
         // Save a project
         if (is_null($userId)) {
             errorUnauthorized();
@@ -94,8 +103,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
         $projectString = file_get_contents('php://input');
         $projectObject = json_decode($projectString);
-
         $name = mysqli_real_escape_string($conn, $projectObject->{'name'});
+        $shareToken = mysqli_real_escape_string($conn, $projectObject->{'shareToken'});
+
         if (isset($projectObject->{'id'})) {
             $projectId = mysqli_real_escape_string($conn, $projectObject->{'id'});
         }
@@ -119,7 +129,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
         // store/update the project
         if ($newProject) {
-            $shareToken = bin2hex(openssl_random_pseudo_bytes(26));
             $result = mysqli_query($conn, "INSERT INTO project(object, name, share_token) VALUES('" . mysqli_real_escape_string($conn, $projectString) . "', '" . $name . "', '" . $shareToken . "')");
             if (!$result) {
                 error();
@@ -136,15 +145,26 @@ switch ($_SERVER['REQUEST_METHOD']) {
             }
         }
 
-        // remove all composition files from the project
-        $result = mysqli_query($conn, "UPDATE composition_file SET project_id = NULL WHERE project_id = " . $projectId);
-        if (!$result) {
-            error();
+        // delete unused composition files from this project
+        $result = mysqli_query($conn, "SELECT id, composition_uuid FROM composition_file WHERE project_id = " . $projectId);
+        while ($row = $result->fetch_assoc()) {
+            $fileFound = false;
+
+            foreach ($projectObject->{'compositions'} as $composition) {
+                if ($composition->{'uuid'} == $row['composition_uuid']) {
+                    $fileFound = true;
+                    break;
+                }
+            }
+
+            if (!fileFound) {
+                deleteCompositionFile($conn, $compositionFileDirectory, $row['id']);
+            }
         }
 
-        // reconnect all still existing composition files to the project
+        // connect all required files to the project, which are not already connected
         foreach ($projectObject->{'compositions'} as $composition) {
-            $result = mysqli_query($conn, "UPDATE composition_file SET project_id = " . $projectId . " WHERE composition_uuid = '" . mysqli_real_escape_string($conn, $composition->{'uuid'}) . "'");
+            $result = mysqli_query($conn, "UPDATE composition_file SET project_id = " . $projectId . " WHERE project_id IS NULL and composition_uuid = '" . mysqli_real_escape_string($conn, $composition->{'uuid'}) . "'");
             if (!$result) {
                 error();
             }

@@ -51,14 +51,18 @@
       </li>
     </ul>
 
-    <ul *ngIf="configService.loginAvailable && !userService.isLoggedIn()" class="navbar-nav">
-      <li class="nav-item" data-toggle="collapse">
+    <ul class="navbar-nav">
+      <li *ngIf="configService.shareAvailable" class="nav-item" data-toggle="collapse">
+        <a class="nav-link text-primary" (click)="projectShare(); false;" routerLinkActive="active"><i
+            class="fa fa-share" aria-hidden="true"></i> {{ 'designer.navigation.project-share' | translate }}</a>
+      </li>
+
+      <li *ngIf="configService.loginAvailable && !userService.isLoggedIn()" class="nav-item" data-toggle="collapse">
         <a class="nav-link" (click)="userRegister(); false;" routerLinkActive="active"><i class="fa fa-user"
             aria-hidden="true"></i> {{ 'designer.navigation.login' | translate }}</a>
       </li>
-    </ul>
-    <ul *ngIf="configService.loginAvailable && userService.isLoggedIn()" class="navbar-nav">
-      <li class="nav-item dropdown">
+
+      <li *ngIf="configService.loginAvailable && userService.isLoggedIn()" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" data-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false"><i class="fa fa-user" aria-hidden="true"></i> {{ userService.username }}
         </a>

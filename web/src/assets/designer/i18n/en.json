@@ -30,6 +30,7 @@
             "project-open": "Open",
             "project-import": "Import",
             "project-export": "Export",
+            "project-share": "Share",
             "login": "Sign in",
             "logout": "Log out",
             "support": "Support"
@@ -64,7 +65,9 @@
             "browser-empty": "No projects available",
             "open-error-title": "Error on opening project",
             "open-error": "The project could not be opened. Please reach out to our support under the menu help, if needed.",
-            "import-title": "Import project"
+            "import-title": "Import project",
+            "share-no-save-title": "Please save first",
+            "share-no-save": "Please save the project before to sharing it."
         },
         "scene": {
             "title": "Scenes"

@@ -39,6 +39,7 @@ import { UserRegisterComponent } from './user/user-register/user-register.compon
 import { ProjectBrowserComponent } from './project-browser/project-browser.component';
 import { WaitDialogComponent } from './wait-dialog/wait-dialog.component';
 import { ProjectImportComponent } from './project-import/project-import.component';
+import { ProjectShareComponent } from './project-share/project-share.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -73,7 +74,8 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     UserRegisterComponent,
     ProjectBrowserComponent,
     WaitDialogComponent,
-    ProjectImportComponent
+    ProjectImportComponent,
+    ProjectShareComponent
   ],
   imports: [
     BrowserModule,
@@ -100,7 +102,8 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     UserRegisterComponent,
     ProjectBrowserComponent,
     WaitDialogComponent,
-    ProjectImportComponent
+    ProjectImportComponent,
+    ProjectShareComponent
   ],
   exports: [DesignerComponent]
 })

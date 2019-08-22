@@ -30,6 +30,7 @@
             "project-open": "Öffnen",
             "project-import": "Importieren",
             "project-export": "Exportieren",
+            "project-share": "Teilen",
             "login": "Einloggen",
             "logout": "Ausloggen",
             "support": "Support"
@@ -64,7 +65,9 @@
             "browser-empty": "Keine Projekte verfügbar",
             "open-error-title": "Fehler beim Öffnen",
             "open-error": "Das Projekt konnte nicht geöffnet werden. Bitte wende dich bei Problemen unter Menü Hilfe an den Support.",
-            "import-title": "Projekt importieren"
+            "import-title": "Projekt importieren",
+            "share-no-save-title": "Bitte zuerst speichern",
+            "share-no-save": "Bitte speichere das Projekt zuerst, bevor du es teilst."
         },
         "scene": {
             "title": "Szenen"

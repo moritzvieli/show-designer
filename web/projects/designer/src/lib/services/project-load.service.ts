@@ -80,6 +80,7 @@ export class ProjectLoadService {
     let project = new Project();
     project.name = 'New Project';
     this.projectService.project = project;
+    this.projectService.project.shareToken = this.uuidService.getUuid();
 
     // Add a default scene and preset
     let preset = new Preset();

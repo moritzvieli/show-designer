@@ -1,6 +1,8 @@
 <?php
 include_once 'database.php';
 
+$compositionFileDirectory = 'composition-files';
+
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header('Access-Control-Allow-Origin: *');
@@ -70,4 +72,21 @@ function userHasRole($conn, $userId, $roleAlias)
         return $row['user_id'];
     }
     return null;
+}
+
+// Deletes a composition file and the entry in the databse
+function deleteCompositionFile($conn, $compositionFileDirectory, $id)
+{
+    $result = mysqli_query($conn, "SELECT name FROM composition_file WHERE id = '" . $id . "'");
+    if ($result->num_rows > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $oldFileName = $row['name'];
+        if (file_exists($compositionFileDirectory . '/' . $oldFileName)) {
+            unlink($compositionFileDirectory . '/' . $oldFileName);
+        }
+        $result = mysqli_query($conn, "DELETE FROM composition_file WHERE id = '" . $id . "'");
+        if (!$result) {
+            error();
+        }
+    }
 }

@@ -27,6 +27,9 @@ export class ProjectService {
   save(project: Project): Observable<Object> {
     return this.http.post('project', JSON.stringify(project), { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
       project.id = response.id;
+      if(response.shareToken) {
+        project.shareToken = response.shareToken;
+      }
       return null;
     }));
   }

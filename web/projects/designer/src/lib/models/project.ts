@@ -9,6 +9,7 @@ export class Project {
     public id: number;
     public uuid: string;
     public name: string;
+    public shareToken: string;
 
     public masterDimmerValue: number = 1;
 
@@ -34,6 +35,7 @@ export class Project {
         this.id = data.id;
         this.uuid = data.uuid;
         this.name = data.name;
+        this.shareToken = data.shareToken;
 
         this.masterDimmerValue = data.masterDimmerValue;
 

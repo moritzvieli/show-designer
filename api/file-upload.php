@@ -14,10 +14,13 @@ if (!isset($compositionUuid)) {
     error('missing-parameters', 400);
 }
 
+
+
 // delete an existing file, if available
-$result = mysqli_query($conn, "DELETE FROM composition_file WHERE composition_uuid = '" . $compositionUuid . "'");
-if (!$result) {
-    error();
+$result = mysqli_query($conn, "SELECT id FROM composition_file WHERE composition_uuid = '" . $compositionUuid . "'");
+if ($result->num_rows > 0) {
+    $row = mysqli_fetch_assoc($result);
+    deleteCompositionFile($conn, $compositionFileDirectory, $row['id']);
 }
 
 $file = $_FILES['file'];
@@ -35,7 +38,7 @@ if (in_array($fileExtension, $allowed)) {
     if ($fileError === 0) {
         if ($fileSize < 100000000) { // 100 MB
             $fileNameNew = $compositionUuid . "." . $fileExtension;
-            $fileDestination = 'composition-files/' . $fileNameNew;
+            $fileDestination = $compositionFileDirectory . '/' . $fileNameNew;
             move_uploaded_file($fileTmpName, $fileDestination);
             $result = mysqli_query($conn, "INSERT INTO composition_file(composition_uuid, project_id, name, size_bytes, type) VALUES('" . $compositionUuid . "', " . $projectId . ", '" . $fileNameNew . "', " . $fileSize . ", '" . $fileType . "')");
             if (!$result) {

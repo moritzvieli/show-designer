@@ -118,5 +118,6 @@ CREATE TABLE composition_file (
 
     PRIMARY KEY(id),
     FOREIGN KEY(project_id) REFERENCES project(id),
-    INDEX (composition_uuid)
+    INDEX (composition_uuid),
+    INDEX (created)
 );

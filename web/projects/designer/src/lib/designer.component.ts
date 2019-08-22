@@ -16,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ProjectBrowserComponent } from './project-browser/project-browser.component';
 import { ProjectLoadService } from './services/project-load.service';
 import { ProjectImportComponent } from './project-import/project-import.component';
+import { ProjectShareComponent } from './project-share/project-share.component';
 
 @Component({
   selector: 'lib-designer',
@@ -51,6 +52,11 @@ export class DesignerComponent implements AfterViewInit {
   @Input()
   set loginAvailable(value: boolean) {
     this.configService.loginAvailable = value;
+  }
+
+  @Input()
+  set shareAvailable(value: boolean) {
+    this.configService.shareAvailable = value;
   }
 
   // the size of the menu used in the designer
@@ -209,6 +215,21 @@ export class DesignerComponent implements AfterViewInit {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+  }
+
+  projectShare() {
+    if (!this.projectService.project.shareToken) {
+      // a save is required first
+      let msg = 'designer.project.share-no-save';
+      let title = 'designer.project.share-no-save-title';
+
+      this.translateService.get([msg, title]).subscribe(result => {
+        this.toastrService.error(result[msg], result[title]);
+      });
+      return;
+    }
+
+    this.modalService.show(ProjectShareComponent, { keyboard: true, ignoreBackdropClick: false });
   }
 
   @HostListener('document:keydown', ['$event'])
