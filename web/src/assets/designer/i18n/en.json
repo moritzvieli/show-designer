@@ -137,7 +137,7 @@
             "composition-dropzone-message": "Drop a file here or click to upload",
             "composition-file-upload": "Upload",
             "composition-file-library": "Media library",
-            "warning-delete-file": "Do you really want to delete this file?",
+            "warning-delete-composition": "Do you really want to delete this composition? This action cannot be undone.",
             "toast-composition-upload-error": "Die Datei konnte aus dem folgenden Grund nicht hochgeladen werden: ",
             "toast-composition-upload-error-title": "Fehler beim Hochladen"
         },

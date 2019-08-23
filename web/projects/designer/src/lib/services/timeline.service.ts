@@ -326,6 +326,16 @@ export class TimelineService {
     return this.selectedComposition.gridOffsetMillis / 1000;
   }
 
+  deleteSelectedComposition() {
+    this.projectService.project.compositions.splice(this.selectedCompositionIndex, 1);
+    this.selectedComposition = undefined;
+    this.selectedCompositionIndex = undefined;
+    this.destroyWaveSurfer();
+    if (this.projectService.project.compositions.length > 0) {
+      this.selectCompositionIndex(0);
+    }
+  }
+
   destroyWaveSurfer() {
     this.duration = undefined;
     this.loadingAudioFile = false;
@@ -386,7 +396,7 @@ export class TimelineService {
 
       let audioFileName: string;
 
-      if (this.selectedComposition.audioFileInLibrary) {
+      if (this.configService.enableMediaLibrary) {
         // the file name is also used for the real file name
         audioFileName = 'file/get?name=' + this.selectedComposition.audioFileName + '&type=AUDIO';
       } else {
@@ -452,6 +462,12 @@ export class TimelineService {
           this.detectChanges.next();
           this.waveSurferReady.next();
         }, 0);
+      });
+
+      this.waveSurfer.on('error', (error: any) => {
+        // could not load the composition --> delete it
+        // (this may occur, when the composition has been deleted but the project is not saved afterwards)
+        this.deleteSelectedComposition();
       });
 
       this.waveSurfer.on('seek', () => {

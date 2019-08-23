@@ -8,8 +8,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule (.*) $1.php [L]
 
-# Redirect file/upload to file-upload.php
+# Redirect some addresses
 RewriteRule ^file/upload$ file-upload.php [L]
+RewriteRule ^file/delete$ file-delete.php [L]
 
 # Preserve the Authorization header
 RewriteCond %{HTTP:Authorization} ^(.*)

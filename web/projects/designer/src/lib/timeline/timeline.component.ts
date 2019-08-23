@@ -7,6 +7,10 @@ import { Composition } from '../models/composition';
 import { UuidService } from '../services/uuid.service';
 import { ProjectService } from '../services/project.service';
 import { HotkeyTargetExcludeService } from '../services/hotkey-target-exclude.service';
+import { WarningDialogService } from '../services/warning-dialog.service';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'app-timeline',
@@ -30,7 +34,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     private modalService: BsModalService,
     private uuidService: UuidService,
     public projectService: ProjectService,
-    private hotkeyTargetExcludeService: HotkeyTargetExcludeService
+    private hotkeyTargetExcludeService: HotkeyTargetExcludeService,
+    private warningDialogService: WarningDialogService,
+    private http: HttpClient,
+    private configService: ConfigService
   ) {
     this.timelineService.waveSurferReady.subscribe(() => {
       this.onResize();
@@ -99,15 +106,24 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     let bsModalRef = this.modalService.show(TimelineGridComponent, { keyboard: true, ignoreBackdropClick: false, class: '' });
   }
 
+  private afterDeleteFile() {
+    this.timelineService.deleteSelectedComposition();
+  }
+
   removeComposition() {
-    // this.warningDialogService.show('designer.timeline.warning-delete-file').pipe(map(result => {
-    //   if (result) {
-    //     this.http.post('file/delete?name=' + existingFile + '&type=AUDIO', undefined).pipe(map((response: Response) => {
-    //       this.loadFiles();
-    //     })).subscribe();
-    //   }
-    // })).subscribe();
-    // TODO confirm and delete composition
+    this.warningDialogService.show('designer.timeline.warning-delete-composition').pipe(map(result => {
+      if (result) {
+        if (this.configService.enableMediaLibrary) {
+          // don't delete the file from the library
+          this.afterDeleteFile();
+        } else {
+          // the composition uuid and extension is used as the file name
+          this.http.post('file/delete?compositionUuid=' + this.timelineService.selectedComposition.uuid, undefined).pipe(map((response: Response) => {
+            this.afterDeleteFile();
+          })).subscribe();
+        }
+      }
+    })).subscribe();
   }
 
   private openCompositionSettings(compositionIndex?: number, newComposition?: Composition) {
