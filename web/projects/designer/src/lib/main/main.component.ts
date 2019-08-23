@@ -254,6 +254,24 @@ export class MainComponent implements AfterViewInit, OnInit {
       event.stopPropagation();
       event.preventDefault();
     }
+
+    if ((event.ctrlKey || event.metaKey) && event.key == 'n') {
+      this.projectNew();
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key == 's') {
+      this.projectSave();
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key == 'o') {
+      this.projectOpen();
+      event.stopPropagation();
+      event.preventDefault();
+    }
   }
 
 }
