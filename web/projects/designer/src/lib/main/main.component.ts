@@ -89,7 +89,9 @@ export class MainComponent implements AfterViewInit, OnInit {
           msg = 'designer.project.open-error';
         }
 
-        this.errorDialogService.show(msg, error).subscribe();
+        this.errorDialogService.show(msg, error).subscribe(() => {
+          this.projectLoadService.new();
+        });
       });
     } else if (this.userService.isLoggedIn() && this.userService.getAutoLoadProjectId()) {
       // restore the last saved project
@@ -97,7 +99,9 @@ export class MainComponent implements AfterViewInit, OnInit {
         let msg = 'designer.project.open-error';
         let error = response && response.error ? response.error.error : 'unknown';
 
-        this.errorDialogService.show(msg, error).subscribe();
+        this.errorDialogService.show(msg, error).subscribe(() => {
+          this.projectLoadService.new();
+        });
       });
     } else {
       // load the new project template

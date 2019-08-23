@@ -8,6 +8,8 @@ import { PresetService } from '../services/preset.service';
 import { SceneService } from '../services/scene.service';
 import { ProjectLoadService } from '../services/project-load.service';
 import { UserService } from '../services/user.service';
+import { WarningDialogService } from '../services/warning-dialog.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'lib-project-browser',
@@ -23,7 +25,8 @@ export class ProjectBrowserComponent implements OnInit {
     private bsModalRef: BsModalRef,
     private projectService: ProjectService,
     private projectLoadService: ProjectLoadService,
-    private userService: UserService
+    private userService: UserService,
+    private warningDialogService: WarningDialogService
   ) {
     this.loadProjects();
   }
@@ -50,9 +53,13 @@ export class ProjectBrowserComponent implements OnInit {
   }
 
   deleteProject(project: Project) {
-    this.projectService.deleteProject(project).subscribe(projects => {
-      this.loadProjects();
-    });
+    this.warningDialogService.show('designer.project.delete-warning').pipe(map(result => {
+      if (result) {
+        this.projectService.deleteProject(project).subscribe(projects => {
+          this.loadProjects();
+        });
+      }
+    })).subscribe();
   }
 
 }

@@ -70,7 +70,8 @@
             "import-title": "Projekt importieren",
             "share-no-save": "Bitte speichere das Projekt zuerst, bevor du es teilst.",
             "share-title": "Project teilen",
-            "share-link": "Link"
+            "share-link": "Link",
+            "delete-warning": "Möchtest du dieses Projekt wirklich löschen?"
         },
         "scene": {
             "title": "Szenen"

@@ -70,7 +70,8 @@
             "import-title": "Import project",
             "share-no-save": "Please save the project before sharing it.",
             "share-title": "Share project",
-            "share-link": "Link"
+            "share-link": "Link",
+            "delete-warning": "Do you really want to delete this project?"
         },
         "scene": {
             "title": "Scenes"
