@@ -12,6 +12,7 @@ import { Project } from '../models/project';
 import { Preset } from '../models/preset';
 import { UuidService } from './uuid.service';
 import { TimelineService } from './timeline.service';
+import { Params, Router, ActivatedRoute } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,9 @@ export class ProjectLoadService {
     private sceneService: SceneService,
     private modalService: BsModalService,
     private uuidService: UuidService,
-    private timelineService: TimelineService
+    private timelineService: TimelineService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   private afterLoad() {
@@ -56,13 +59,25 @@ export class ProjectLoadService {
     }
   }
 
-  load(id: number): Observable<void> {
+  load(id: number, shareToken?: string): Observable<void> {
     let ref = this.modalService.show(WaitDialogComponent, { keyboard: false, ignoreBackdropClick: true });
 
-    return this.projectService.getProject(id).pipe(map(project => {
+    return this.projectService.getProject(id, shareToken).pipe(map(project => {
       this.projectService.project = project;
       this.selectScenesPresetComposition();
       this.afterLoad();
+
+      const queryParams: Params = {
+        id: id,
+        token: project.shareToken
+      };
+      this.router.navigate(
+        [],
+        {
+          relativeTo: this.activatedRoute,
+          queryParams: queryParams,
+          queryParamsHandling: 'merge', // remove to replace all query params by provided
+        });
     }), finalize(() => {
       // hide the modal again because of:
       // https://github.com/valor-software/ngx-bootstrap/issues/3711
@@ -105,6 +120,18 @@ export class ProjectLoadService {
     this.timelineService.destroyWaveSurfer();
 
     this.afterLoad();
+
+    const queryParams: Params = {
+      id: '',
+      token: ''
+    };
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.activatedRoute,
+        queryParams: queryParams,
+        queryParamsHandling: 'merge', // remove to replace all query params by provided
+      });
   }
 
   template() {

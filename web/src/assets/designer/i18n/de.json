@@ -13,7 +13,9 @@
             "effects": "Effekte",
             "search": "Suchen",
             "warning": "Warnung",
-            "please-wait": "Einen Moment bitte..."
+            "error": "Fehler",
+            "please-wait": "Einen Moment bitte...",
+            "warning-proceed-unsaved": "Nicht gespeicherte Änderungen gehen verloren. Möchtest du wirklihc fortfahren?"
         },
         "loading": {
             "title": "Laden...",
@@ -63,11 +65,12 @@
             "save-success": "Das Projekt wurde gespeichert.",
             "browser-title": "Projekte",
             "browser-empty": "Keine Projekte verfügbar",
-            "open-error-title": "Fehler beim Öffnen",
             "open-error": "Das Projekt konnte nicht geöffnet werden. Bitte wende dich bei Problemen unter Menü Hilfe an den Support.",
+            "open-no-permission": "Das Projekt konnte nicht geöffnet werden, weil du keine Berechtigungen dafür besitzt. Bitte den Ersteller, dir den Link über die Teilen-Funktion zu senden.",
             "import-title": "Projekt importieren",
-            "share-no-save-title": "Bitte zuerst speichern",
-            "share-no-save": "Bitte speichere das Projekt zuerst, bevor du es teilst."
+            "share-no-save": "Bitte speichere das Projekt zuerst, bevor du es teilst.",
+            "share-title": "Project teilen",
+            "share-link": "Link"
         },
         "scene": {
             "title": "Szenen"

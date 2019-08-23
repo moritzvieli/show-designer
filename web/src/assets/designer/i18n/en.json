@@ -13,7 +13,9 @@
             "effects": "Effects",
             "search": "Suchen",
             "warning": "Warning",
-            "please-wait": "Please wait..."
+            "error": "Error",
+            "please-wait": "Please wait...",
+            "warning-proceed-unsaved": "Unsaved changes will be lost. Do you really want to proceed?"
         },
         "loading": {
             "title": "Loading...",
@@ -63,11 +65,12 @@
             "save-success": "The project has been saved.",
             "browser-title": "Projects",
             "browser-empty": "No projects available",
-            "open-error-title": "Error on opening project",
             "open-error": "The project could not be opened. Please reach out to our support under the menu help, if needed.",
+            "open-no-permission": "The project could not be opened, because you don't have the permissions. Ask the project creator to share it over the share-link.",
             "import-title": "Import project",
-            "share-no-save-title": "Please save first",
-            "share-no-save": "Please save the project before sharing it."
+            "share-no-save": "Please save the project before sharing it.",
+            "share-title": "Share project",
+            "share-link": "Link"
         },
         "scene": {
             "title": "Scenes"

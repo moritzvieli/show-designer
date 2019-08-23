@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from './user.service';
 import { map } from 'rxjs/operators';
+import { Params, Router, ActivatedRoute } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,9 @@ export class ProjectService {
   constructor(
     private uuidService: UuidService,
     private http: HttpClient,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     this.project = new Project();
     this.project.uuid = this.uuidService.getUuid();
@@ -27,9 +30,20 @@ export class ProjectService {
   save(project: Project): Observable<Object> {
     return this.http.post('project', JSON.stringify(project), { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
       project.id = response.id;
-      if(response.shareToken) {
+      if (response.shareToken) {
         project.shareToken = response.shareToken;
       }
+      const queryParams: Params = {
+        id: project.id,
+        token: project.shareToken
+      };
+      this.router.navigate(
+        [],
+        {
+          relativeTo: this.activatedRoute,
+          queryParams: queryParams,
+          queryParamsHandling: 'merge', // remove to replace all query params by provided
+        });
       return null;
     }));
   }
@@ -49,8 +63,8 @@ export class ProjectService {
     return this.http.delete('project?id=' + project.id, { headers: this.userService.getHeaders() });
   }
 
-  getProject(id: number): Observable<Project> {
-    return this.http.get('project?id=' + id, { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
+  getProject(id: number, shareToken?: string): Observable<Project> {
+    return this.http.get('project?id=' + id + '&token=' + shareToken, { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
       let project = new Project(response);
       project.id = id;
 

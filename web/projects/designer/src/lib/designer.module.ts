@@ -40,9 +40,17 @@ import { ProjectBrowserComponent } from './project-browser/project-browser.compo
 import { WaitDialogComponent } from './wait-dialog/wait-dialog.component';
 import { ProjectImportComponent } from './project-import/project-import.component';
 import { ProjectShareComponent } from './project-share/project-share.component';
+import { RouterModule, Routes } from '@angular/router';
+import { MainComponent } from './main/main.component';
+import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
+
+// use a router to be able to grab the query params
+const appRoutes: Routes = [
+  { path: '**', component: MainComponent }
+];
 
 @NgModule({
   declarations: [
@@ -75,9 +83,15 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     ProjectBrowserComponent,
     WaitDialogComponent,
     ProjectImportComponent,
-    ProjectShareComponent
+    ProjectShareComponent,
+    MainComponent,
+    ErrorDialogComponent
   ],
   imports: [
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: false } // <-- debugging purposes only
+    ),
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -98,6 +112,7 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     TimelineGridComponent,
     CompositionSettingsComponent,
     WarningDialogComponent,
+    ErrorDialogComponent,
     UserLoginComponent,
     UserRegisterComponent,
     ProjectBrowserComponent,

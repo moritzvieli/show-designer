@@ -1,0 +1,30 @@
+<div class="card-modal">
+  <div class="card">
+    <div class="card-header">
+      {{ 'designer.misc.error' | translate }}
+    </div>
+
+    <div class="card-body">
+      <div class="row">
+        <div class="col-auto">
+          <h2 class="mb-0">
+            <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
+          </h2>
+        </div>
+        <div class="col pl-0">
+          <p class="mb-0">{{ message }}</p>
+          <p *ngIf="details" class="mt-1 mb-0">({{ details }})</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="d-flex float-right">
+        <button type="button" class="btn btn-primary" (click)="ok(); false">
+          {{ 'designer.misc.ok' | translate }}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
