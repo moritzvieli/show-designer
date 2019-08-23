@@ -12,6 +12,7 @@ import { PreviewService } from '../services/preview.service';
 import { TimelineService } from '../services/timeline.service';
 import { ProjectService } from '../services/project.service';
 import { PreviewMeshService } from '../services/preview-mesh.service';
+import { Par3d } from './models/par-3d';
 
 // declare var THREEx: any;
 
@@ -66,8 +67,13 @@ export class PreviewComponent implements AfterViewInit {
 
     // add all fixtures from the project
     for (let fixture of this.fixtureService.cachedFixtures) {
-      if (fixture.profile.categories[0] == FixtureCategory['Moving Head']) {
-        this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
+      switch (fixture.profile.categories[0]) {
+        case FixtureCategory['Moving Head']:
+          this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
+        case FixtureCategory['Color Changer']:
+          this.fixtures3d.push(new Par3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
+        case FixtureCategory['Blinder']:
+          this.fixtures3d.push(new Par3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
       }
     }
   }

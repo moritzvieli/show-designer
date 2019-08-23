@@ -65,7 +65,12 @@ export class MainComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit() {
-    this.translateService.use('en');
+    if (localStorage.getItem('language')) {
+      this.translateService.use(localStorage.getItem('language'));
+    } else {
+      this.translateService.use('en');
+    }
+
     this.calcTotalMenuHeight();
 
     let projectId = this.activatedRoute.snapshot.queryParamMap.get('id');
@@ -272,6 +277,11 @@ export class MainComponent implements AfterViewInit, OnInit {
       event.stopPropagation();
       event.preventDefault();
     }
+  }
+
+  switchLanguage(language: string) {
+    this.translateService.use(language);
+    localStorage.setItem('language', language);
   }
 
 }

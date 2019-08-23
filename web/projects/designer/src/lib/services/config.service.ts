@@ -11,6 +11,7 @@ export class ConfigService {
   public loginAvailable: boolean = false;
   public shareAvailable: boolean = false;
   public menuHeightPx: number = 0;
+  public languageSwitch: boolean = false;
 
   public menuHeightChanged: Subject<void> = new Subject<void>();
 

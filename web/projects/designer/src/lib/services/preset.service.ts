@@ -111,7 +111,7 @@ export class PresetService {
     // after changing the configuration in the fixture pool, we might need to
     // delete some fixtures
     for (let preset of this.projectService.project.presets) {
-      for (let i = 0; i < preset.fixtureUuids.length; i++) {
+      for (let i = preset.fixtureUuids.length; i >= 0; i--) {
         let presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
         if (!presetFixture) {
           preset.fixtureUuids.splice(i, 1);

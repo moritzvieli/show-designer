@@ -15,7 +15,8 @@
             "warning": "Warning",
             "error": "Error",
             "please-wait": "Please wait...",
-            "warning-proceed-unsaved": "Unsaved changes will be lost. Do you really want to proceed?"
+            "warning-proceed-unsaved": "Unsaved changes will be lost. Do you really want to proceed?",
+            "language": "Language"
         },
         "loading": {
             "title": "Loading...",

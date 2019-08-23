@@ -1,7 +1,6 @@
 import { Fixture3d } from './fixture-3d';
 import * as THREE from 'three';
-import { Positioning, Fixture } from '../../models/fixture';
-import { FixtureCapabilityValue } from '../../models/fixture-capability-value';
+import { Positioning } from '../../models/fixture';
 import { FixtureCapabilityType } from '../../models/fixture-capability';
 import { forkJoin } from 'rxjs';
 import { PreviewMeshService } from '../../services/preview-mesh.service';

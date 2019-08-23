@@ -41,6 +41,11 @@ export class DesignerComponent implements OnInit {
     this.configService.shareAvailable = value;
   }
 
+  @Input()
+  set languageSwitch(value: boolean) {
+    this.configService.languageSwitch = value;
+  }
+
   constructor(
     private timelineService: TimelineService,
     private configService: ConfigService
