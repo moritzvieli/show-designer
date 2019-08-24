@@ -7,14 +7,12 @@ import { map } from 'rxjs/operators';
 import { FixtureService } from '../../services/fixture.service';
 import { FixtureChannelValue } from '../../models/fixture-channel-value';
 import { CachedFixture } from '../../models/cached-fixture';
+import { Mesh } from 'three';
 
-export class Par3d extends Fixture3d {
+export class ColorChanger3d extends Fixture3d {
 
     private readonly pointLightMaxIntensity: number = 2;
-    private readonly spotLightLightMaxIntensity: number = 10;
-
-    private pan: number;
-    private tilt: number;
+    private readonly spotLightMaxIntensity: number = 5;
 
     private mesh: THREE.Mesh;
 
@@ -101,11 +99,9 @@ export class Par3d extends Fixture3d {
 
         // TODO update the correct angle from the profile
         let beamAngleDegrees = 14;
-        let geometry = new THREE.CylinderGeometry(0.1, beamAngleDegrees * 1.2, 100, 64, 20, false);
+        let geometry = new THREE.CylinderGeometry(0.8, beamAngleDegrees * 1.2, 100, 64, 20, false);
         geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
         geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
-
-        //var zrak_mat = new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, opacity: 0.1 });
 
         this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMat());
         this.spotLightBeam.position.set(0, -0.02, 0);
@@ -165,9 +161,9 @@ export class Par3d extends Fixture3d {
         super(fixtureService, fixture, scene);
 
         forkJoin(
-            previewMeshService.getMesh('par')
-        ).pipe(map(([par]) => {
-            this.mesh = par;
+            previewMeshService.getMesh('color-changer')
+        ).pipe(map(([colorChanger]) => {
+            this.mesh = colorChanger;
 
             this.createObjects();
         })).subscribe();
@@ -208,25 +204,16 @@ export class Par3d extends Fixture3d {
             }
         }
 
-        // calculate the y/x rotation in radiants based on pan/tilt (0-1) respecting the max pan/tilt
-        // this.armGroup.rotation.y = THREE.Math.degToRad(panEnd * this.pan + panStart) - THREE.Math.degToRad(panEnd / 2);
-        // this.headGroup.rotation.x = THREE.Math.degToRad(tiltEnd * this.tilt + tiltStart) - THREE.Math.degToRad(tiltEnd / 2);
-
-        // Update the angle (only on change, because it's expensive)
-        // TODO update the correct angle from the profile
-        // let beamAngleDregrees = 14;
-        // if (this.lastBeamAngleDegrees != beamAngleDregrees) {
-        //     this.spotLight.angle = THREE.Math.degToRad(beamAngleDregrees);
-        //     this.createSpotLightBeam();
-        //     this.lastBeamAngleDegrees = beamAngleDregrees;
-        // }
-
         // Update the material
         if (this.lastSelected != this.isSelected) {
             if (this.isSelected) {
-                this.mesh.material = this.selectedMaterial;
+                for (let child of this.mesh.children) {
+                    (<Mesh>child).material = this.selectedMaterial;
+                }
             } else {
-                this.mesh.material = this.material;
+                for (let child of this.mesh.children) {
+                    (<Mesh>child).material = this.material;
+                }
             }
 
             this.lastSelected = this.isSelected;
@@ -246,13 +233,10 @@ export class Par3d extends Fixture3d {
         // Apply the dimmer value
         // Take the color into account for the beam (don't show a black beam)
         let intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue);
-        (<any>this.spotLightBeam.material).uniforms.opacity.value = Math.min(intensityColor, this.dimmer);
+        (<any>this.spotLightBeam.material).uniforms.opacity.value = Math.min(intensityColor, this.dimmer) * 0.5;
 
-        this.spotLight.intensity = this.spotLightLightMaxIntensity * this.dimmer;
+        this.spotLight.intensity = this.spotLightMaxIntensity * this.dimmer;
         this.pointLight.intensity = this.pointLightMaxIntensity * this.dimmer;
-
-        // this.spotLightBeam.material.uniforms.viewVector.value =
-        //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);
     }
 
     destroy() {

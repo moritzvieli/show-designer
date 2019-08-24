@@ -8,6 +8,7 @@
     "postuninstall": "npm run assets-delete"
   },
   "dependencies": {
+    "angular-sortablejs": "^2.7.0",
     "d3": "^5.6.0",
     "wavesurfer.js": "git+https://git@github.com/katspaugh/wavesurfer.js.git"
   },

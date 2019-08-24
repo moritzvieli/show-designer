@@ -12,7 +12,7 @@ import { PreviewService } from '../services/preview.service';
 import { TimelineService } from '../services/timeline.service';
 import { ProjectService } from '../services/project.service';
 import { PreviewMeshService } from '../services/preview-mesh.service';
-import { Par3d } from './models/par-3d';
+import { ColorChanger3d } from './models/color-changer-3d';
 
 // declare var THREEx: any;
 
@@ -70,10 +70,13 @@ export class PreviewComponent implements AfterViewInit {
       switch (fixture.profile.categories[0]) {
         case FixtureCategory['Moving Head']:
           this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
-        case FixtureCategory['Color Changer']:
-          this.fixtures3d.push(new Par3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
-        case FixtureCategory['Blinder']:
-          this.fixtures3d.push(new Par3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
+          break;
+        case FixtureCategory["Color Changer"]:
+          this.fixtures3d.push(new ColorChanger3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
+          break;
+        case FixtureCategory["Blinder"]:
+          this.fixtures3d.push(new ColorChanger3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
+          break;
       }
     }
   }
