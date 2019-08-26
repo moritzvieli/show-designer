@@ -112,7 +112,7 @@ CREATE TABLE composition_file (
     composition_uuid VARCHAR(255) NOT NULL,
     project_id INTEGER UNSIGNED NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(500) NOT NULL,
     size_bytes BIGINT NOT NULL,
     type VARCHAR(100) NOT NULL,
 

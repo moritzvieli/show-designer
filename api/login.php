@@ -19,8 +19,8 @@ if ($result->num_rows > 0) {
         error();
     }
     $tokenResponse = array(
-        "token" => $token,
-        "username" => $username
+        'token' => $token,
+        'username' => $username
     );
     echo json_encode(utf8ize($tokenResponse));
 } else {

@@ -23,9 +23,9 @@ if ($result->num_rows > 0) {
 
 $file = $_FILES['file'];
 $fileTmpName = $_FILES['file']['tmp_name'];
-$fileName = $_FILES['file']['name'];
-$fileSize = $_FILES['file']['size'];
-$fileType = $_FILES['file']['type'];
+$fileName = mysqli_real_escape_string($conn, $_FILES['file']['name']);
+$fileSize = mysqli_real_escape_string($conn, $_FILES['file']['size']);
+$fileType = mysqli_real_escape_string($conn, $_FILES['file']['type']);
 $fileNameSplitted = explode('.', $fileName);
 $fileExtension = strtolower(end($fileNameSplitted));
 $fileError = $_FILES['file']['error'];

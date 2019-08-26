@@ -11,7 +11,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
 
   selectedPositioning: string = Positioning[Positioning.topFront];
 
-  constructor(private fixtureService: FixtureService) { }
+  constructor(
+    private fixtureService: FixtureService
+  ) { }
 
   ngOnInit() {
   }
@@ -19,13 +21,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
   changePosition(positioningStr: string) {
     let positioning: Positioning = Positioning[positioningStr];
 
-    // TODO Update the position for which fixtures? Are selected fixtures for the setting tracked separately in the fixture service?
-    // --> Move the whole settings part into the library editor modal?
-    // this.fixtureService.fixtures.forEach(fixture => {
-    //   if (fixture.isSelected) {
-    //     fixture.positioning = positioning;
-    //   }
-    // });
+    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+      fixture.positioning = positioning;
+    }
   }
 
   changeSlider(event: any) {

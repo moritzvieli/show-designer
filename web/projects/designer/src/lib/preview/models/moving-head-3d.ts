@@ -94,7 +94,7 @@ export class MovingHead3d extends Fixture3d {
             fragmentShader: fragmentShader,
             //blending: THREE.AdditiveBlending,
             transparent: true,
-            depthWrite: true
+            depthWrite: false
         });
 
         return material;

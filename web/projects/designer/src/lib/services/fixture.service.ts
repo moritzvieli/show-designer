@@ -22,6 +22,9 @@ export class FixtureService {
 
   cachedFixtures: CachedFixture[] = [];
 
+  settingsSelection: boolean = false;
+  selectedSettingsFixtures: Fixture[] = [];
+
   constructor(
     private http: HttpClient,
     private projectService: ProjectService
@@ -382,6 +385,24 @@ export class FixtureService {
       && (!color1 || color1 == color2)
       && (!wheel1 || wheel1 == wheel2)
       && (!profileUuid1 || profileUuid1 == profileUuid2);
+  }
+
+  settingsFixtureIsSelected(fixture: Fixture): boolean {
+    for (let selectedFixture of this.selectedSettingsFixtures) {
+      if (selectedFixture == fixture) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  switchSettingsFixtureSelection(fixture: Fixture) {
+    if (this.settingsFixtureIsSelected(fixture)) {
+      this.selectedSettingsFixtures.splice(this.selectedSettingsFixtures.indexOf(fixture), 1);
+    } else {
+      this.selectedSettingsFixtures.push(fixture);
+    }
   }
 
 }

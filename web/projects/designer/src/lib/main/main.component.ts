@@ -20,6 +20,7 @@ import { ActivatedRoute } from '@angular/router';
 import { WarningDialogService } from '../services/warning-dialog.service';
 import { map } from 'rxjs/operators';
 import { ErrorDialogService } from '../services/error-dialog.service';
+import { FixtureService } from '../services/fixture.service';
 
 @Component({
   selector: 'lib-main',
@@ -57,7 +58,8 @@ export class MainComponent implements AfterViewInit, OnInit {
     private projectLoadService: ProjectLoadService,
     private activatedRoute: ActivatedRoute,
     private warningDialogService: WarningDialogService,
-    private errorDialogService: ErrorDialogService
+    private errorDialogService: ErrorDialogService,
+    private fixtureService: FixtureService
   ) {
     this.configService.menuHeightChanged.subscribe(() => {
       this.calcTotalMenuHeight();
@@ -160,8 +162,10 @@ export class MainComponent implements AfterViewInit, OnInit {
   }
 
   openTab(tab: string) {
-    if (tab == 'properties' && this.currentTab != 'properties') {
-      // Nothing to do currently
+    if(tab == 'settings') {
+      this.fixtureService.settingsSelection = true;
+    } else {
+      this.fixtureService.settingsSelection = false;
     }
 
     this.currentTab = tab;

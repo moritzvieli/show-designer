@@ -3,6 +3,7 @@ import { Fixture } from '../models/fixture';
 import { PresetService } from '../services/preset.service';
 import { ProjectService } from '../services/project.service';
 import { FixturePoolService } from '../services/fixture-pool.service';
+import { FixtureService } from '../services/fixture.service';
 
 @Component({
   selector: 'app-fixture',
@@ -14,18 +15,27 @@ export class FixtureComponent implements OnInit {
   constructor(
     public projectService: ProjectService,
     public presetService: PresetService,
-    private fixturePoolService: FixturePoolService
+    private fixturePoolService: FixturePoolService,
+    private fixtureService: FixtureService
   ) { }
 
   ngOnInit() { }
 
-  deleteFixture() {
-    // TODO Also delete the all sceneFixtureProperties for all scenes, if any
+  fixtureIsSelected(fixture: Fixture): boolean {
+    if (this.fixtureService.settingsSelection) {
+      return this.fixtureService.settingsFixtureIsSelected(fixture);
+    } else {
+      return this.presetService.fixtureIsSelected(fixture);
+    }
   }
 
   selectFixture(event: any, fixture: Fixture) {
-    this.presetService.switchFixtureSelection(fixture);
-    this.presetService.fixtureSelectionChanged.next();
+    if (this.fixtureService.settingsSelection) {
+      this.fixtureService.switchSettingsFixtureSelection(fixture);
+    } else {
+      this.presetService.switchFixtureSelection(fixture);
+      this.presetService.fixtureSelectionChanged.next();
+    }
   }
 
   selectAll() {
