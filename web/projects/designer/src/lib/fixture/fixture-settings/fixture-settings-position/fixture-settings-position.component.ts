@@ -26,8 +26,16 @@ export class FixtureSettingsPositionComponent implements OnInit {
     }
   }
 
-  changeSlider(event: any) {
-    // TODO
+  changePositionManual(position: string, event: any) {
+    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+      if (position == 'x') {
+        fixture.positionX = event.newValue;
+      } else if (position == 'y') {
+        fixture.positionY = event.newValue;
+      } else if (position == 'z') {
+        fixture.positionZ = event.newValue;
+      }
+    }
   }
 
 }

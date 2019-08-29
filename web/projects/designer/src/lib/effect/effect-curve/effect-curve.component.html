@@ -122,7 +122,7 @@
           <input type="checkbox" class="form-check-input" id="channel_{{ curve?.uuid }}_{{ i }}_{{ j }}"
             [ngModel]="channelChecked(entry.key, channel)" (change)="toggleChannel($event, entry.key, channel)">
           <label class="form-check-label"
-            for="channel_{{ curve?.uuid }}_{{ i }}_{{ j }}">{{ getChannelName(entry.key.name, channel.channelName) }}</label>
+            for="channel_{{ curve?.uuid }}_{{ i }}_{{ j }}">{{ getChannelName(entry.key.name, channel.name) }}</label>
 
         </div>
       </ng-container>

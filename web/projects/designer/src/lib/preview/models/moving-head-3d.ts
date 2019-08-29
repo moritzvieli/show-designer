@@ -263,29 +263,7 @@ export class MovingHead3d extends Fixture3d {
             }
         }
 
-        // Update the position
-        switch (this.fixture.fixture.positioning) {
-            case Positioning.topFront: {
-                this.objectGroup.rotation.x = THREE.Math.degToRad(0);
-                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
-                break;
-            }
-            case Positioning.bottomFront: {
-                this.objectGroup.rotation.x = THREE.Math.degToRad(180);
-                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
-                break;
-            }
-            case Positioning.topBack: {
-                this.objectGroup.rotation.x = THREE.Math.degToRad(0);
-                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
-                break;
-            }
-            case Positioning.bottomBack: {
-                this.objectGroup.rotation.x = THREE.Math.degToRad(180);
-                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
-                break;
-            }
-        }
+        this.updatePosition(this.objectGroup);
 
         // calculate the y/x rotation in radiants based on pan/tilt (0-1) respecting the max pan/tilt
         this.armGroup.rotation.y = THREE.Math.degToRad(panEnd * this.pan + panStart) - THREE.Math.degToRad(panEnd / 2);

@@ -5,6 +5,7 @@ import { FixtureChannelValue } from "../../models/fixture-channel-value";
 import { CachedFixture } from "../../models/cached-fixture";
 import { CachedFixtureCapability } from "../../models/cached-fixture-capability";
 import { CachedFixtureChannel } from "../../models/cached-fixture-channel";
+import { Positioning } from '../../models/fixture';
 
 export abstract class Fixture3d {
 
@@ -126,6 +127,38 @@ export abstract class Fixture3d {
                         break;
                     }
                 }
+            }
+        }
+    }
+
+    updatePosition(object: THREE.Object3D) {
+        // Update the position
+        switch (this.fixture.fixture.positioning) {
+            case Positioning.topFront: {
+                object.rotation.x = THREE.Math.degToRad(0);
+                object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
+                break;
+            }
+            case Positioning.bottomFront: {
+                object.rotation.x = THREE.Math.degToRad(180);
+                object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
+                break;
+            }
+            case Positioning.topBack: {
+                object.rotation.x = THREE.Math.degToRad(0);
+                object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
+                break;
+            }
+            case Positioning.bottomBack: {
+                object.rotation.x = THREE.Math.degToRad(180);
+                object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
+                break;
+            }
+            case Positioning.manual: {
+                // TODO
+                //object.rotation.x = THREE.Math.degToRad(180);
+                object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY, this.fixture.fixture.positionZ);
+                break;
             }
         }
     }

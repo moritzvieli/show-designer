@@ -1,6 +1,5 @@
 import { Fixture3d } from './fixture-3d';
 import * as THREE from 'three';
-import { Positioning } from '../../models/fixture';
 import { forkJoin } from 'rxjs';
 import { PreviewMeshService } from '../../services/preview-mesh.service';
 import { map } from 'rxjs/operators';
@@ -179,30 +178,8 @@ export class ColorChanger3d extends Fixture3d {
         if (!this.isLoaded) {
             return;
         }
-
-        // Update the position
-        switch (this.fixture.fixture.positioning) {
-            case Positioning.topFront: {
-                this.objectGroup.rotation.x = THREE.Math.degToRad(0);
-                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
-                break;
-            }
-            case Positioning.bottomFront: {
-                this.objectGroup.rotation.x = THREE.Math.degToRad(180);
-                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
-                break;
-            }
-            case Positioning.topBack: {
-                this.objectGroup.rotation.x = THREE.Math.degToRad(0);
-                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
-                break;
-            }
-            case Positioning.bottomBack: {
-                this.objectGroup.rotation.x = THREE.Math.degToRad(180);
-                this.objectGroup.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
-                break;
-            }
-        }
+        
+        this.updatePosition(this.objectGroup);
 
         // Update the material
         if (this.lastSelected != this.isSelected) {

@@ -5,7 +5,8 @@
 
   <div class="card-body h-100">
     <div>
-      <select class="mb-2" style="width: 140px;" [(ngModel)]="selectedPositioning" (change)="changePosition($event.target.value)">
+      <select class="mb-2" style="width: 140px;" [(ngModel)]="selectedPositioning"
+        (change)="changePosition($event.target.value)">
         <option value="topFront">Front Top</option>
         <option value="bottomFront">Front Bottom</option>
         <option value="topBack">Back Top</option>
@@ -20,7 +21,8 @@
           X
         </div>
         <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changeSlider($event)"></mv-slider>
+          <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="-400" [max]="400" [step]="1"
+            (change)="changePositionManual('x', $event)"></mv-slider>
         </div>
         <div class="my-auto">
           <input type="text" class="slider-input">
@@ -32,7 +34,8 @@
           Y
         </div>
         <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="-3" [max]="3" [step]="0.001" (change)="changeSlider($event)"></mv-slider>
+          <mv-slider style="width: 80px;" [tooltip]="'hide'" [value]="0" [min]="0" [max]="300" [step]="1"
+            (change)="changePositionManual('y', $event)"></mv-slider>
         </div>
         <div class="my-auto">
           <input type="text" class="slider-input">
@@ -44,8 +47,8 @@
           Z
         </div>
         <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'" [value]="0" [min]="-3" [max]="3" [step]="0.001"
-            (change)="changeSlider($event)"></mv-slider>
+          <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'" [value]="0" [min]="-400" [max]="400"
+            [step]="1" (change)="changePositionManual('z', $event)"></mv-slider>
         </div>
         <div class="my-auto">
           <input type="text" class="slider-input">
