@@ -163,6 +163,8 @@ export abstract class Fixture3d {
         }
     }
 
-    destroy() { }
+    destroy() {
+        this.selectedMaterial.dispose();
+    }
 
 }

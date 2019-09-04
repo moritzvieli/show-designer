@@ -71,7 +71,7 @@ export class MovingHead3d extends Fixture3d {
 
         // create custom material from the shader code above
         // that is within specially labeled script tags
-        var material = new THREE.ShaderMaterial({
+        let material = new THREE.ShaderMaterial({
             uniforms: {
                 coeficient: {
                     type: 'f',
@@ -113,7 +113,8 @@ export class MovingHead3d extends Fixture3d {
 
         //var zrak_mat = new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, opacity: 0.1 });
 
-        this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMat());
+        this.atmosphereMaterial = this.atmosphereMat();
+        this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMaterial);
         this.spotLightBeam.position.set(0, -0.02, 0);
 
         this.spotlightGroup.add(this.spotLightBeam);
@@ -318,6 +319,8 @@ export class MovingHead3d extends Fixture3d {
 
     destroy() {
         this.scene.remove(this.objectGroup);
+        this.material.dispose();
+        this.atmosphereMaterial.dispose();
     }
 
 }

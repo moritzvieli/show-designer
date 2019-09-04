@@ -43,6 +43,7 @@ import { ProjectShareComponent } from './project-share/project-share.component';
 import { RouterModule, Routes } from '@angular/router';
 import { MainComponent } from './main/main.component';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
+import { FixtureSettingsStageComponent } from './fixture/fixture-settings/fixture-settings-stage/fixture-settings-stage.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -85,7 +86,8 @@ const appRoutes: Routes = [
     ProjectImportComponent,
     ProjectShareComponent,
     MainComponent,
-    ErrorDialogComponent
+    ErrorDialogComponent,
+    FixtureSettingsStageComponent
   ],
   imports: [
     RouterModule.forRoot(

@@ -1,0 +1,25 @@
+<div class="card border-secondary h-100">
+  <div class="card-header">
+    {{ 'designer.fixture.setting-stage' | translate }}
+  </div>
+
+  <div class="card-body h-100">
+    <div class="d-flex">
+      <div class="my-auto" style="width: 80px; float: left;">
+        {{ 'designer.fixture.setting-stage-width' | translate }}
+      </div>
+      <div class="my-auto" style="float: left;">
+        <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageWidthCm" [min]="100"
+          [max]="1000" [step]="1" (change)="projectService.project.stageWidthCm = $event.newValue; update();">
+        </mv-slider>
+      </div>
+      <div class="my-auto">
+        <input type="text" [ngModel]="projectService.project.stageWidthCm"
+          (change)="projectService.project.stageWidthCm = $event; update();" class="slider-input">
+      </div>
+      <div class="my-auto ml-1">
+        m
+      </div>
+    </div>
+  </div>
+</div>

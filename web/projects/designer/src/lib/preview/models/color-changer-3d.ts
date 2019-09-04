@@ -26,6 +26,7 @@ export class ColorChanger3d extends Fixture3d {
     private lastSelected: boolean;
 
     private material: THREE.MeshStandardMaterial;
+    private atmosphereMaterial: THREE.ShaderMaterial;
 
     private atmosphereMat() {
         var vertexShader = [
@@ -102,7 +103,8 @@ export class ColorChanger3d extends Fixture3d {
         geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
         geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 
-        this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMat());
+        this.atmosphereMaterial = this.atmosphereMat();
+        this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMaterial);
         this.spotLightBeam.position.set(0, -0.02, 0);
 
         this.spotlightGroup.add(this.spotLightBeam);
@@ -178,7 +180,7 @@ export class ColorChanger3d extends Fixture3d {
         if (!this.isLoaded) {
             return;
         }
-        
+
         this.updatePosition(this.objectGroup);
 
         // Update the material
@@ -218,6 +220,8 @@ export class ColorChanger3d extends Fixture3d {
 
     destroy() {
         this.scene.remove(this.objectGroup);
+        this.material.dispose();
+        this.atmosphereMaterial.dispose();
     }
 
 }

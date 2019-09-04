@@ -85,7 +85,9 @@
             "capability-color": "Farbe",
             "capability-color-wheel": "Farbrad",
             "capability-pan-tilt": "Pan/Tilt",
-            "profiles": "Profiles"
+            "profiles": "Profiles",
+            "setting-position": "Fixture Position",
+            "setting-stage": "Bühne"
         },
         "fixture-pool": {
             "title": "Fixture Pool",

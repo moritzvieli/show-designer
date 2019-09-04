@@ -29,8 +29,8 @@
       </div>
 
       <!-- display a slider to select the value for the currently selected capability, if it has a range -->
-      <div *ngIf="capabilityHasRange()" class="col col-auto d-flex mx-auto" [class.pl-0]="_channel.capabilities?.length > 1"
-        style="flex-direction: column;">
+      <div *ngIf="capabilityHasRange()" class="col col-auto d-flex mx-auto"
+        [class.pl-0]="_channel.capabilities?.length > 1" style="flex-direction: column;">
         <div class="mb-4 w-100 d-flex">
           <input #sliderValue class="mx-auto" type="text" [ngModel]="getValue() >= 0 ? getValue() : getDefaultValue()"
             (ngModelChange)="setValue($event)"

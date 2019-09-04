@@ -11,6 +11,14 @@ export class Project {
     public name: string;
     public shareToken: string;
 
+    public stageWidthCm: number = 600;
+    public stageHeightCm: number = 350;
+    public stageDepthCm: number = 600;
+
+    public stageFloorHeightCm: number = 30;
+    public stageCeilingHeightCm: number = 5;
+    public stagePillarWidthCm: number = 20;
+
     public masterDimmerValue: number = 1;
 
     public selectedPresetUuid: string;
@@ -36,6 +44,14 @@ export class Project {
         this.uuid = data.uuid;
         this.name = data.name;
         this.shareToken = data.shareToken;
+
+        this.stageWidthCm = data.stageWidthCm;
+        this.stageHeightCm = data.stageHeightCm;
+        this.stageDepthCm = data.stageDepthCm;
+
+        this.stageFloorHeightCm = data.stageFloorHeightCm;
+        this.stageCeilingHeightCm = data.stageCeilingHeightCm;
+        this.stagePillarWidthCm = data.stagePillarWidthCm;
 
         this.masterDimmerValue = data.masterDimmerValue;
 
