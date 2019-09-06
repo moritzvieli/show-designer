@@ -310,40 +310,25 @@ export class PreviewService {
 
   private mixEffects(timeMillis: number, fixtureIndex: number, preset: PresetRegionScene, cachedFixture: CachedFixture, values: FixtureChannelValue[], intensityPercentage: number) {
     for (let effect of preset.preset.effects) {
-      // EffectCurve
-      if (effect instanceof EffectCurve) {
-        let effectCurve = <EffectCurve>effect;
+      if (effect.visible) {
+        // EffectCurve
+        if (effect instanceof EffectCurve) {
+          let effectCurve = <EffectCurve>effect;
 
-        // capabilities
-        for (let capability of effectCurve.capabilities) {
-          for (let cachedChannel of cachedFixture.channels) {
-            for (let channelCapability of cachedChannel.capabilities) {
-              if (this.fixtureService.capabilitiesMatch(
-                capability.type,
-                channelCapability.capability.type,
-                capability.color,
-                channelCapability.capability.color,
-                null,
-                null,
-                null,
-                null
-              )) {
-                let fixtureChannelValue = new FixtureChannelValue();
-                fixtureChannelValue.channelName = cachedChannel.name;
-                fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
-                fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex) / 100;
-                this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
-              }
-            }
-          }
-        }
-
-        // channels
-        for (let channelProfile of effectCurve.channels) {
-          if (channelProfile.profileUuid == cachedFixture.profile.uuid) {
-            for (let channel of channelProfile.channels) {
-              for (let cachedChannel of cachedFixture.channels) {
-                if (cachedChannel.name == channel) {
+          // capabilities
+          for (let capability of effectCurve.capabilities) {
+            for (let cachedChannel of cachedFixture.channels) {
+              for (let channelCapability of cachedChannel.capabilities) {
+                if (this.fixtureService.capabilitiesMatch(
+                  capability.type,
+                  channelCapability.capability.type,
+                  capability.color,
+                  channelCapability.capability.color,
+                  null,
+                  null,
+                  null,
+                  null
+                )) {
                   let fixtureChannelValue = new FixtureChannelValue();
                   fixtureChannelValue.channelName = cachedChannel.name;
                   fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
@@ -352,13 +337,30 @@ export class PreviewService {
                 }
               }
             }
+          }
 
-            break;
+          // channels
+          for (let channelProfile of effectCurve.channels) {
+            if (channelProfile.profileUuid == cachedFixture.profile.uuid) {
+              for (let channel of channelProfile.channels) {
+                for (let cachedChannel of cachedFixture.channels) {
+                  if (cachedChannel.name == channel) {
+                    let fixtureChannelValue = new FixtureChannelValue();
+                    fixtureChannelValue.channelName = cachedChannel.name;
+                    fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
+                    fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex) / 100;
+                    this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
+                  }
+                }
+              }
+
+              break;
+            }
           }
         }
-      }
 
-      // TODO other effects (PanTilt, etc.)
+        // TODO other effects (PanTilt, etc.)
+      }
     }
   }
 
@@ -483,12 +485,21 @@ export class PreviewService {
     }
     this.stageMeshes = [];
 
+    // Floor
+    geometry = new THREE.BoxBufferGeometry(this.projectService.project.stageWidthCm, this.projectService.project.stageFloorHeightCm, this.projectService.project.stageDepthCm);
+    mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
+    mesh.receiveShadow = false;
+    mesh.castShadow = false;
+    mesh.position.set(0, this.projectService.project.stageFloorHeightCm / 2, 0);
+    this.scene.add(mesh);
+    this.stageMeshes.push(mesh);
+
     // Pillar front left
     geometry = new THREE.BoxBufferGeometry(this.projectService.project.stagePillarWidthCm, this.projectService.project.stageHeightCm, this.projectService.project.stagePillarWidthCm);
     mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
     mesh.receiveShadow = false;
     mesh.castShadow = false;
-    mesh.position.set(-this.projectService.project.stageWidthCm / 2 + this.projectService.project.stagePillarWidthCm / 2, this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm, this.projectService.project.stageWidthCm / 2 - this.projectService.project.stagePillarWidthCm / 2);
+    mesh.position.set(-this.projectService.project.stageWidthCm / 2 + this.projectService.project.stagePillarWidthCm / 2, this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm, this.projectService.project.stageDepthCm / 2 - this.projectService.project.stagePillarWidthCm / 2);
     this.scene.add(mesh);
     this.stageMeshes.push(mesh);
 
@@ -497,7 +508,7 @@ export class PreviewService {
     mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
     mesh.receiveShadow = false;
     mesh.castShadow = false;
-    mesh.position.set(this.projectService.project.stageWidthCm / 2 - this.projectService.project.stagePillarWidthCm / 2, this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm, this.projectService.project.stageWidthCm / 2 - this.projectService.project.stagePillarWidthCm / 2);
+    mesh.position.set(this.projectService.project.stageWidthCm / 2 - this.projectService.project.stagePillarWidthCm / 2, this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm, this.projectService.project.stageDepthCm / 2 - this.projectService.project.stagePillarWidthCm / 2);
     this.scene.add(mesh);
     this.stageMeshes.push(mesh);
 
@@ -506,7 +517,7 @@ export class PreviewService {
     mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
     mesh.receiveShadow = false;
     mesh.castShadow = false;
-    mesh.position.set(-this.projectService.project.stageWidthCm / 2 + this.projectService.project.stagePillarWidthCm / 2, this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm, -this.projectService.project.stageWidthCm / 2 + this.projectService.project.stagePillarWidthCm / 2);
+    mesh.position.set(-this.projectService.project.stageWidthCm / 2 + this.projectService.project.stagePillarWidthCm / 2, this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm, -this.projectService.project.stageDepthCm / 2 + this.projectService.project.stagePillarWidthCm / 2);
     this.scene.add(mesh);
     this.stageMeshes.push(mesh);
 
@@ -515,7 +526,7 @@ export class PreviewService {
     mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
     mesh.receiveShadow = false;
     mesh.castShadow = false;
-    mesh.position.set(this.projectService.project.stageWidthCm / 2 - this.projectService.project.stagePillarWidthCm / 2, this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm, -this.projectService.project.stageWidthCm / 2 + this.projectService.project.stagePillarWidthCm / 2);
+    mesh.position.set(this.projectService.project.stageWidthCm / 2 - this.projectService.project.stagePillarWidthCm / 2, this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm, -this.projectService.project.stageDepthCm / 2 + this.projectService.project.stagePillarWidthCm / 2);
     this.scene.add(mesh);
     this.stageMeshes.push(mesh);
 

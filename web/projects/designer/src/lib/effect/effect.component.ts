@@ -5,6 +5,8 @@ import { EffectService } from '../services/effect.service';
 import { EffectPanTilt } from '../models/effect-pan-tilt';
 import { Effect } from '../models/effect';
 import { PresetService } from '../services/preset.service';
+import { WarningDialogService } from '../services/warning-dialog.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-effect',
@@ -17,6 +19,7 @@ export class EffectComponent implements OnInit {
     private uuidService: UuidService,
     public presetService: PresetService,
     public effectService: EffectService,
+    private warningDialogService: WarningDialogService
   ) { }
 
   ngOnInit() {
@@ -25,7 +28,7 @@ export class EffectComponent implements OnInit {
   private addEffect(effect: Effect) {
     this.effectService.selectedEffect = effect;
 
-    if(this.presetService.selectedPreset) {
+    if (this.presetService.selectedPreset) {
       this.presetService.selectedPreset.effects.push(effect);
     }
   }
@@ -48,6 +51,14 @@ export class EffectComponent implements OnInit {
         this.effectService.selectedEffect = undefined;
       }
     }
+  }
+
+  deleteEffect(effect: Effect) {
+    this.warningDialogService.show('designer.effect.delete-warning').pipe(map(result => {
+      if (result) {
+        this.presetService.selectedPreset.effects.splice(this.presetService.selectedPreset.effects.indexOf(effect), 1);
+      }
+    })).subscribe();
   }
 
 }

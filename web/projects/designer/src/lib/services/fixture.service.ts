@@ -405,4 +405,17 @@ export class FixtureService {
     }
   }
 
+  getFixtureIconClass(profile: FixtureProfile): string {
+    if (!profile) {
+      return '';
+    }
+    if (profile.categories.length == 0) {
+      return '';
+    }
+    if (!profile.categories[0]) {
+      return '';
+    }
+    return profile.categories[0].replace(' ', '-').toLocaleLowerCase();
+  }
+
 }

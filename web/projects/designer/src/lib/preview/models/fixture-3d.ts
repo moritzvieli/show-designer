@@ -12,6 +12,7 @@ export abstract class Fixture3d {
     fixture: CachedFixture;
     fixtureSupportsDimmer: boolean = false;
     fixtureHasColorWheel: boolean = false;
+    fixtureHasColor: boolean = false;
 
     scene: any;
 
@@ -44,8 +45,13 @@ export abstract class Fixture3d {
         for (let cachedChannel of this.fixture.channels) {
             if (cachedChannel.channel) {
                 for (let capability of cachedChannel.capabilities) {
-                    if (capability.capability.type == FixtureCapabilityType.Intensity) {
-                        this.fixtureSupportsDimmer = true;
+                    switch (capability.capability.type) {
+                        case FixtureCapabilityType.Intensity:
+                            this.fixtureSupportsDimmer = true;
+                            break;
+                        case FixtureCapabilityType.ColorIntensity:
+                            this.fixtureHasColor = true;
+                            break;
                     }
                 }
 
@@ -73,7 +79,7 @@ export abstract class Fixture3d {
         this.colorGreen = 255;
         this.colorBlue = 255;
 
-        if (!this.fixtureHasColorWheel) {
+        if (!this.fixtureHasColorWheel && this.fixtureHasColor) {
             this.colorRed = 0;
             this.colorGreen = 0;
             this.colorBlue = 0;

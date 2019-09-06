@@ -4,6 +4,8 @@ import { EffectCurveProfileChannels } from './effect-curve-profile-channel';
 
 export class EffectCurve extends Effect {
 
+    type: string = 'sine';
+
     capabilities: FixtureCapability[] = [];
     channels: EffectCurveProfileChannels[] = [];
 
@@ -53,7 +55,29 @@ export class EffectCurve extends Effect {
         let phase = this.phaseMillis + phasingIndex * this.phasingMillis;
 
         // Calculate the value according to the curve
-        let value = this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) / 2 + this.position;
+        let value: number = 0;
+
+        // Calculate a value between 0 and 100
+        switch (this.type) {
+            case 'sine':
+                value = this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) / 2;
+                break;
+            case 'square':
+                value = Math.sign(Math.sin(2 * Math.PI * 100 * timeMillis));
+                console.log(value);
+                break;
+            case 'triangle':
+
+                break;
+            case 'sawtooth':
+
+                break;
+            case 'reverse-sawtooth':
+
+                break;
+        }
+
+        value += this.position;
 
         if (value < this.minValue) {
             value = this.minValue;
@@ -62,7 +86,7 @@ export class EffectCurve extends Effect {
         if (value > this.maxValue) {
             value = this.maxValue;
         }
-
+        console.log(value);
         return value;
     }
 

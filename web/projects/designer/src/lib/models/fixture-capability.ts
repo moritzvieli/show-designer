@@ -72,6 +72,7 @@ export class FixtureCapability {
     brightness: string;
     brightnessStart: string;
     brightnessEnd: string;
+    comment: string;
 
     constructor(data?: any) {
         if (!data) {
@@ -90,6 +91,7 @@ export class FixtureCapability {
         this.brightness = data.brightness;
         this.brightnessStart = data.brightnessStart;
         this.brightnessEnd = data.brightnessEnd;
+        this.comment = data.comment;
     }
 
 }

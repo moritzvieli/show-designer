@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
-import { FixtureProfile } from '../models/fixture-profile';
+import { FixtureProfile, FixtureCategory } from '../models/fixture-profile';
 import { FixtureService } from '../services/fixture.service';
 import { Fixture } from '../models/fixture';
 import { UuidService } from '../services/uuid.service';

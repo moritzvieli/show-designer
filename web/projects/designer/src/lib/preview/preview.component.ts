@@ -63,10 +63,10 @@ export class PreviewComponent implements AfterViewInit {
         case FixtureCategory['Moving Head']:
           this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
           break;
-        case FixtureCategory["Color Changer"]:
+        case FixtureCategory['Color Changer']:
           this.fixtures3d.push(new ColorChanger3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
           break;
-        case FixtureCategory["Blinder"]:
+        case FixtureCategory['Blinder']:
           this.fixtures3d.push(new ColorChanger3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
           break;
       }
@@ -208,18 +208,6 @@ export class PreviewComponent implements AfterViewInit {
     let height = 1;
 
     let geometry = new THREE.BoxGeometry(width, height, width);
-
-    // let texture = new THREE.TextureLoader().load('./assets/textures/planks.jpg');
-    // texture.wrapS = THREE.RepeatWrapping;
-    // texture.wrapT = THREE.RepeatWrapping;
-    // texture.repeat.set(10, 10);
-    //let floorMaterial = new THREE.MeshBasicMaterial({ map: texture });
-
-    // let material = new THREE.MeshLambertMaterial({
-    //   color: 0x0d0d0d,
-    //   emissive: 0x0d0d0d,
-    // });
-
     let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
 
     let floor = new THREE.Mesh(geometry.clone(), material);
@@ -227,20 +215,6 @@ export class PreviewComponent implements AfterViewInit {
     floor.castShadow = false;
     floor.position.set(0, -height / 2, 0);
     this.scene.add(floor);
-  }
-
-  private setupStage() {
-    let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
-    var geometry: any;
-    let mesh: any;
-
-    // Floor
-    geometry = new THREE.BoxBufferGeometry(this.projectService.project.stageWidthCm, this.projectService.project.stageFloorHeightCm, this.projectService.project.stageDepthCm);
-    mesh = new THREE.Mesh(geometry.clone(), material);
-    mesh.receiveShadow = false;
-    mesh.castShadow = false;
-    mesh.position.set(0, this.projectService.project.stageFloorHeightCm / 2, 0);
-    this.scene.add(mesh);
   }
 
   private setupStats() {
@@ -267,10 +241,7 @@ export class PreviewComponent implements AfterViewInit {
     // Add a floor
     this.setupFloor();
 
-    // Create the stage
-    this.setupStage();
-
-    // Update the stage dimensions
+    // Create the stage dimensions
     this.previewService.updateStage();
 
     // TODO

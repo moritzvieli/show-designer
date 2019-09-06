@@ -38,6 +38,8 @@ export class ProjectLoadService {
     this.presetService.removeDeletedFixtures();
     this.previewService.updateFixtureSetup();
     this.presetService.fixtureSelectionChanged.next();
+    this.presetService.autoOpenFirstEffect();
+    this.previewService.updateStage();
   }
 
   private selectScenesPresetComposition() {

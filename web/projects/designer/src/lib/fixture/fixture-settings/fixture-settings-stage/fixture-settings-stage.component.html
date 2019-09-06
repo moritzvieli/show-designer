@@ -4,13 +4,14 @@
   </div>
 
   <div class="card-body h-100">
+
     <div class="d-flex">
-      <div class="my-auto" style="width: 80px; float: left;">
+      <div class="my-auto" style="width: 120px; float: left;">
         {{ 'designer.fixture.setting-stage-width' | translate }}
       </div>
       <div class="my-auto" style="float: left;">
         <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageWidthCm" [min]="100"
-          [max]="1000" [step]="1" (change)="projectService.project.stageWidthCm = $event.newValue; update();">
+          [max]="2000" [step]="1" (change)="projectService.project.stageWidthCm = $event.newValue; update();">
         </mv-slider>
       </div>
       <div class="my-auto">
@@ -18,8 +19,102 @@
           (change)="projectService.project.stageWidthCm = $event; update();" class="slider-input">
       </div>
       <div class="my-auto ml-1">
-        m
+        cm
       </div>
     </div>
+
+    <div class="d-flex">
+      <div class="my-auto" style="width: 120px; float: left;">
+        {{ 'designer.fixture.setting-stage-height' | translate }}
+      </div>
+      <div class="my-auto" style="float: left;">
+        <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageHeightCm" [min]="100"
+          [max]="2000" [step]="1" (change)="projectService.project.stageHeightCm = $event.newValue; update();">
+        </mv-slider>
+      </div>
+      <div class="my-auto">
+        <input type="text" [ngModel]="projectService.project.stageHeightCm"
+          (change)="projectService.project.stageHeightCm = $event; update();" class="slider-input">
+      </div>
+      <div class="my-auto ml-1">
+        cm
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="my-auto" style="width: 120px; float: left;">
+        {{ 'designer.fixture.setting-stage-depth' | translate }}
+      </div>
+      <div class="my-auto" style="float: left;">
+        <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageDepthCm" [min]="100"
+          [max]="2000" [step]="1" (change)="projectService.project.stageDepthCm = $event.newValue; update();">
+        </mv-slider>
+      </div>
+      <div class="my-auto">
+        <input type="text" [ngModel]="projectService.project.stageDepthCm"
+          (change)="projectService.project.stageDepthCm = $event; update();" class="slider-input">
+      </div>
+      <div class="my-auto ml-1">
+        cm
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="my-auto" style="width: 120px; float: left;">
+        {{ 'designer.fixture.setting-stage-floor-height' | translate }}
+      </div>
+      <div class="my-auto" style="float: left;">
+        <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageFloorHeightCm"
+          [min]="1" [max]="1000" [step]="1"
+          (change)="projectService.project.stageFloorHeightCm = $event.newValue; update();">
+        </mv-slider>
+      </div>
+      <div class="my-auto">
+        <input type="text" [ngModel]="projectService.project.stageFloorHeightCm"
+          (change)="projectService.project.stageFloorHeightCm = $event; update();" class="slider-input">
+      </div>
+      <div class="my-auto ml-1">
+        cm
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="my-auto" style="width: 120px; float: left;">
+        {{ 'designer.fixture.setting-stage-ceiling-height' | translate }}
+      </div>
+      <div class="my-auto" style="float: left;">
+        <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageCeilingHeightCm"
+          [min]="1" [max]="1000" [step]="1"
+          (change)="projectService.project.stageCeilingHeightCm = $event.newValue; update();">
+        </mv-slider>
+      </div>
+      <div class="my-auto">
+        <input type="text" [ngModel]="projectService.project.stageCeilingHeightCm"
+          (change)="projectService.project.stageCeilingHeightCm = $event; update();" class="slider-input">
+      </div>
+      <div class="my-auto ml-1">
+        cm
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="my-auto" style="width: 120px; float: left;">
+        {{ 'designer.fixture.setting-stage-pillar-width' | translate }}
+      </div>
+      <div class="my-auto" style="float: left;">
+        <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stagePillarWidthCm"
+          [min]="1" [max]="200" [step]="1"
+          (change)="projectService.project.stagePillarWidthCm = $event.newValue; update();">
+        </mv-slider>
+      </div>
+      <div class="my-auto">
+        <input type="text" [ngModel]="projectService.project.stagePillarWidthCm"
+          (change)="projectService.project.stagePillarWidthCm = $event; update();" class="slider-input">
+      </div>
+      <div class="my-auto ml-1">
+        cm
+      </div>
+    </div>
+
   </div>
 </div>

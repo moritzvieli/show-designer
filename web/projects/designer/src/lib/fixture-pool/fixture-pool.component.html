@@ -31,8 +31,9 @@
 
             <div class="list-group-item" *ngFor="let profile of filteredProfiles | sort:'uuid'">
               <div class="row">
-                <div class="col-10 col-auto my-auto">
-                  <p class="mb-0">{{ profile.manufacturerName }} - {{ profile.name }}</p>
+                <div class="col-10 col-auto my-auto pl-2">
+                  <p class="mb-0"><span class="icon-{{ fixtureService.getFixtureIconClass(profile) }} mr-1"></span>
+                    {{ profile.manufacturerName }} - {{ profile.name }}</p>
                 </div>
                 <div class="col-2 my-auto">
                   <a class="btn btn-primary btn-sm float-right" href="#" role="button"
@@ -69,7 +70,9 @@
                   <i class="fa fa-bars" aria-hidden="true"></i>
                 </div>
                 <div class="col-auto flex-grow pl-0 my-auto">
-                  <p class="mb-0">{{ fixture.name }}</p>
+                  <p class="mb-0"><span
+                      class="icon-{{ fixtureService.getFixtureIconClass(fixtureService.getProfileByUuid(fixture.profileUuid)) }} mr-1">
+                    </span>{{ fixture.name }}</p>
                 </div>
                 <div class="col-auto my-auto">
                   <a class="btn btn-primary btn-sm float-right" href="#" role="button"

@@ -338,7 +338,15 @@ export class PresetService {
     this.effectService.selectedEffect = undefined;
     this.selectedPreset = this.projectService.project.presets[index];
     this.projectService.project.selectedPresetUuid = this.projectService.project.presets[index].uuid;
+    this.autoOpenFirstEffect();
     this.previewSelectionChanged.next();
+  }
+
+  autoOpenFirstEffect() {
+    // open the first effect, if the preset only has one
+    if (this.selectedPreset && this.selectedPreset.effects.length == 1) {
+      this.effectService.selectedEffect = this.selectedPreset.effects[0];
+    }
   }
 
   addPreset(name?: string): void {

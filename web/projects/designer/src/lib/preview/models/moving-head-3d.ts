@@ -35,6 +35,7 @@ export class MovingHead3d extends Fixture3d {
     private lastSelected: boolean;
 
     private material: THREE.MeshStandardMaterial;
+    private atmosphereMaterial: THREE.ShaderMaterial;
 
     private atmosphereMat() {
         var vertexShader = [

@@ -1,10 +1,9 @@
-<div class="card border-secondary h-100" [class.capability-deactivated]="getValue() == undefined"
-  style="min-height: 200px;">
+<div class="card border-secondary h-100" [class.capability-deactivated]="value == undefined" style="min-height: 200px;">
   <div class="card-header">
     <div class="my-auto">
       <div class="form-check">
         <input type="checkbox" class="form-check-input" id="capabilityGeneric{{ capabilityIndex }}Active"
-          [ngModel]="getValue() != undefined" (ngModelChange)="changeActive($event)">
+          [ngModel]="value != undefined" (ngModelChange)="changeActive($event)">
         <label class="form-check-label" for="capabilityGeneric{{ capabilityIndex }}Active">
           {{ _channel?.name }}
         </label>
@@ -21,8 +20,9 @@
           <input [(ngModel)]="selectedCapability" (change)="capabilitySelected()" class="form-check-input" type="radio"
             name="capabilityGeneric{{ capabilityIndex }}Option" id="capabilityGeneric{{ capabilityIndex }}Option{{ i }}"
             [value]="capability">
-          <label class="form-check-label" for="capabilityGeneric{{ capabilityIndex }}Option{{ i }}">
-            {{ 'designer.fixtureCapabilityType.' + capability.capability.type | translate }}
+          <label style="max-width: 200px;" class="form-check-label" for="capabilityGeneric{{ capabilityIndex }}Option{{ i }}">
+            {{ 'designer.fixtureCapabilityType.' + capability.capability.type | translate }}<small><span
+                *ngIf="capability.capability.comment"> - </span> {{ capability.capability.comment }}</small>
           </label>
         </div>
 
@@ -32,15 +32,14 @@
       <div *ngIf="capabilityHasRange()" class="col col-auto d-flex mx-auto"
         [class.pl-0]="_channel.capabilities?.length > 1" style="flex-direction: column;">
         <div class="mb-4 w-100 d-flex">
-          <input #sliderValue class="mx-auto" type="text" [ngModel]="getValue() >= 0 ? getValue() : getDefaultValue()"
-            (ngModelChange)="setValue($event)"
+          <input #sliderValue class="mx-auto" type="text" [ngModel]="templateValue" (ngModelChange)="setValue($event)"
             style="width: 45px; height: 20px; text-align: center; font-size: 12px; font-family: monospace;">
         </div>
 
         <div class="h-100 w-100 d-flex">
-          <mv-slider #slider class="mx-auto" [value]="getValue() >= 0 ? getValue() : getDefaultValue()"
-            (change)="setValue($event.newValue)" [orientation]="'vertical'" [reversed]="true" style="height: 100%"
-            [tooltip]="'hide'" [min]="getRangeMin()" [max]="getRangeMax()" [step]="1"></mv-slider>
+          <mv-slider #slider class="mx-auto" [value]="templateValue" (change)="setValue($event.newValue)"
+            [orientation]="'vertical'" [reversed]="true" style="height: 100%" [tooltip]="'hide'" [min]="rangeMin"
+            [max]="rangeMax" [step]="1"></mv-slider>
         </div>
       </div>
     </div>

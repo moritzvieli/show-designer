@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { PresetService } from '../../../services/preset.service';
 import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
 import { CachedFixtureCapability } from '../../../models/cached-fixture-capability';
@@ -16,6 +16,14 @@ export class FixtureCapabilityChannelComponent implements OnInit {
 
   selectedCapability: CachedFixtureCapability;
   _channel: CachedFixtureChannel;
+
+  rangeMin: number = 0;
+  rangeMax: number = 0;
+  defaultValue: number = 0;
+  value: number = 0;
+  templateValue: number = 0;
+
+  valueSetTimer: NodeJS.Timer;
 
   @Input()
   profile: FixtureProfile;
@@ -37,15 +45,21 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   private updateChannel() {
     this.selectedCapability = this._channel.capabilities[0];
 
-    let currentValue = this.getValue();
-    if (currentValue >= 0) {
+    this.value = this.presetService.getChannelValue(this._channel.name, this.profile.uuid);
+    this.calculateTemplateValue();
+
+    if (this.value >= 0) {
       for (let capability of this._channel.capabilities) {
-        if (capability.capability.dmxRange.length > 0 && capability.centerValue == currentValue) {
+        if (capability.capability.dmxRange.length > 0 && capability.centerValue == this.value) {
           this.selectedCapability = capability;
           break;
         }
       }
     }
+
+    this.rangeMin = this.getRangeMin();
+    this.rangeMax = this.getRangeMax();
+    this.defaultValue = this.getDefaultValue();
   }
 
   capabilityHasRange(): boolean {
@@ -60,7 +74,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     return false;
   }
 
-  getRangeMin(): number {
+  private getRangeMin(): number {
     if (this.selectedCapability.capability.dmxRange.length > 0) {
       return this.selectedCapability.capability.dmxRange[0];
     }
@@ -68,7 +82,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     return 0;
   }
 
-  getRangeMax(): number {
+  private getRangeMax(): number {
     if (this.selectedCapability.capability.dmxRange.length > 0) {
       return this.selectedCapability.capability.dmxRange[1];
     }
@@ -77,10 +91,6 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
-
-  getValue(): number {
-    return this.presetService.getChannelValue(this._channel.name, this.profile.uuid);
   }
 
   setValue(value: any, ignoreCapabilityRange: boolean = false) {
@@ -92,15 +102,28 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       return;
     }
 
+    this.value = value;
+    this.calculateTemplateValue();
+
     this.presetService.setChannelValue(this._channel.name, this.profile.uuid, value);
     if (this.sliderValue) {
-      // update the value without change detector for performance reasons
+      // update the value without change detector for performance reasons and only in a specific
+      // interval. each value set will trigger a layout/reflow event and slow down the performance
       // TODO use the same technique in the dimmer/pan/tilt/color sliders
-      this.sliderValue.nativeElement.value = value;
+      if(!this.valueSetTimer) {
+        this.valueSetTimer = setTimeout(() => {
+          this.sliderValue.nativeElement.value = this.value;
+          this.valueSetTimer = undefined;
+        }, 30);
+      }
     }
   }
 
-  getDefaultValue(): number {
+  private calculateTemplateValue() {
+    this.templateValue = this.value ? this.value : this.getDefaultValue();
+  }
+
+  private getDefaultValue(): number {
     if (this._channel.defaultValue) {
       return this._channel.defaultValue;
     }
@@ -114,6 +137,8 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     } else {
       this.presetService.deleteChannelValue(this._channel.name, this.profile.uuid);
       this.selectedCapability = this._channel.capabilities[0];
+      this.value = undefined;
+      this.calculateTemplateValue();
     }
   }
 

@@ -1,0 +1,8 @@
+.card {
+  position: absolute;
+  bottom: 100px;
+  left: 100px;
+  width: 400px;
+  height: 300px !important;
+  z-index: 999999;
+}

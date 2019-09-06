@@ -1,0 +1,15 @@
+<div *ngIf="introService.showIntro" class="card border-secondary h-100 panel card-intro-active">
+  <div class="card-header d-flex">
+    <div>
+      {{ 'designer.preset.title' | translate }}
+    </div>
+    <div class="ml-auto">
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="close(); false;"><i class="fa fa-times"
+          aria-hidden="true"></i></a>
+    </div>
+  </div>
+
+  <div class="card-body h-100 ">
+    <p>Dies ist ein Text blablabla.</p>
+  </div>
+</div>

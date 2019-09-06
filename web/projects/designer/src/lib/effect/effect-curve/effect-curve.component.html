@@ -1,6 +1,22 @@
 <div class="mr-3" style="float: left">
-  <canvas #curveGrid class="curve-grid" width="200" height="100" viewBox="150 -75 4850 5150"
-    preserveAspectRatio="none"></canvas>
+  <div class="mb-2">
+    <select [ngModel]="curve.type" (ngModelChange)="curve.type = $event" style="width: 200px; height: 20px;">
+      <option [value]="'sine'">
+        {{ 'designer.effect.curve-sine' | translate }}</option>
+      <option [value]="'square'">
+        {{ 'designer.effect.curve-square' | translate }}</option>
+      <option [value]="'triangle'">
+        {{ 'designer.effect.curve-triangle' | translate }}</option>
+      <option [value]="'sawtooth'">
+        {{ 'designer.effect.curve-sawtooth' | translate }}</option>
+      <option [value]="'reverse-sawtooth'">
+        {{ 'designer.effect.curve-reverse-sawtooth' | translate }}</option>
+    </select>
+  </div>
+  <div>
+    <canvas #curveGrid class="curve-grid" width="200" height="100" viewBox="150 -75 4850 5150"
+      preserveAspectRatio="none"></canvas>
+  </div>
 </div>
 
 <div class="mr-4" style="float: left">

@@ -1,7 +1,7 @@
-<div class="card border-secondary h-100 panel">
+<div class="card border-secondary h-100 panel card-intro-preset card-intro-active" [class.card-intro-active]="introService.showStep('preset')">
   <div class="card-header d-flex">
     <div>
-      Presets
+      {{ 'designer.preset.title' | translate }}
     </div>
     <div class="ml-auto">
       <a href="#" class="btn btn-secondary m-0, p-0" (click)="removePreset(); false;"><i class="fa fa-minus-circle fa-fw"

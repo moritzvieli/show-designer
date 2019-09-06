@@ -27,6 +27,8 @@
             <input type="checkbox" class="form-check-input" id="active" [ngModel]="fixtureIsSelected(item)">
           </div>
           <div>
+            <span
+              class="icon-{{ fixtureService.getFixtureIconClass(fixtureService.getProfileByUuid(item.profileUuid)) }} mr-1"></span>
             {{ item.name }}
           </div>
         </div>

@@ -77,6 +77,9 @@
         "scene": {
             "title": "Szenen"
         },
+        "preset": {
+            "title": "Presets"
+        },
         "fixture": {
             "no-fixtures": "Füge neue Fixtures zum Projekt hinzu",
             "no-fixtures-selected": "Wähle für dieses Preset mindestens eine Fixture aus",
@@ -87,7 +90,13 @@
             "capability-pan-tilt": "Pan/Tilt",
             "profiles": "Profiles",
             "setting-position": "Fixture Position",
-            "setting-stage": "Bühne"
+            "setting-stage": "Bühne",
+            "setting-stage-width": "Breite",
+            "setting-stage-height": "Höhe",
+            "setting-stage-depth": "Tiefe",
+            "setting-stage-floor-height": "Bodenhöhe",
+            "setting-stage-ceiling-height": "Deckenhöhe",
+            "setting-stage-pillar-width": "Trägerdicke"
         },
         "fixture-pool": {
             "title": "Fixture Pool",
@@ -112,7 +121,13 @@
             "curve-amplitude": "Amplitude",
             "curve-position": "Position",
             "curve-phase": "Phase",
-            "curve-chase": "Chase"
+            "curve-chase": "Chase",
+            "delete-warning": "Möchtest du diesen Effekt wirklich löschen?",
+            "curve-sine": "Sinus",
+            "curve-square": "Rechteck",
+            "curve-triangle": "Dreieck",
+            "curve-sawtooth": "Sägezahn",
+            "curve-reverse-sawtooth": "Entgegengesetzter Sägezahn"
         },
         "composition": {
             "new": "Neue Komposition erstellen..."

@@ -77,6 +77,9 @@
         "scene": {
             "title": "Scenes"
         },
+        "preset": {
+            "title": "Presets"
+        },
         "fixture": {
             "no-fixtures": "Add new fixtures to the project",
             "no-fixtures-selected": "Select at least one fixture for this preset",
@@ -90,7 +93,10 @@
             "setting-stage": "Stage",
             "setting-stage-width": "Width",
             "setting-stage-height": "Height",
-            "setting-stage-depth": "Depth"
+            "setting-stage-depth": "Depth",
+            "setting-stage-floor-height": "Floor height",
+            "setting-stage-ceiling-height": "Ceiling height",
+            "setting-stage-pillar-width": "Pillar width"
         },
         "fixture-pool": {
             "title": "Fixture pool",
@@ -115,7 +121,13 @@
             "curve-amplitude": "Amplitude",
             "curve-position": "Position",
             "curve-phase": "Phase",
-            "curve-chase": "Chase"
+            "curve-chase": "Chase",
+            "delete-warning": "Do you really want to delete this effect?",
+            "curve-sine": "Sine",
+            "curve-square": "Square",
+            "curve-triangle": "Triangle",
+            "curve-sawtooth": "Sawtooth",
+            "curve-reverse-sawtooth": "Reverse sawtooth"
         },
         "composition": {
             "new": "Create new composition..."

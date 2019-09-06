@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PresetService } from '../services/preset.service';
 import { SceneService } from '../services/scene.service';
 import { ProjectService } from '../services/project.service';
+import { IntroService } from '../services/intro.service';
 
 @Component({
   selector: 'app-preset',
@@ -13,7 +14,8 @@ export class PresetComponent implements OnInit {
   constructor(
     public presetService: PresetService,
     public sceneService: SceneService,
-    public projectService: ProjectService
+    public projectService: ProjectService,
+    public introService: IntroService
   ) { }
 
   ngOnInit() {

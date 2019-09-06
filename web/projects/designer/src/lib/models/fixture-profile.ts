@@ -46,12 +46,14 @@ export class FixtureProfile {
         this.manufacturerName = data.manufacturerName;
         this.manufacturerShortName = data.manufacturerShortName;
 
-        if(data.categories) {
-            for(let category of data.categories) {
+        if (data.categories) {
+            for (let category of data.categories) {
                 this.categories.push(FixtureCategory[<string>category]);
             }
+        } else if (data.mainCategory) {
+            this.categories.push(FixtureCategory[<string>data.mainCategory]);
         }
-        if(data.wheels) {
+        if (data.wheels) {
             for (let property in data.wheels) {
                 let wheel = new FixtureWheel(data.wheels[property]);
                 this.wheels[property] = wheel;
