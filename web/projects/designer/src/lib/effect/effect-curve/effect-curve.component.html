@@ -1,6 +1,6 @@
 <div class="mr-3" style="float: left">
   <div class="mb-2">
-    <select [ngModel]="curve.type" (ngModelChange)="curve.type = $event" style="width: 200px; height: 20px;">
+    <select [ngModel]="curve.curveType" (ngModelChange)="curve.curveType = $event" style="width: 200px; height: 20px;">
       <option [value]="'sine'">
         {{ 'designer.effect.curve-sine' | translate }}</option>
       <option [value]="'square'">
@@ -39,7 +39,7 @@
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.amplitude" style="width: 80px;" [tooltip]="'hide'" [min]="0"
-        [max]="400" [step]="1"></mv-slider>
+        [max]="4" [step]="0.01"></mv-slider>
     </div>
     <div class="my-auto">
       <input type="text" class="slider-input" [(ngModel)]="curve.amplitude">
@@ -52,7 +52,7 @@
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.position" style="width: 80px; height: 18px;" [tooltip]="'hide'"
-        [min]="0" [max]="100" [step]="1"></mv-slider>
+        [min]="0" [max]="1" [step]="0.01"></mv-slider>
     </div>
     <div class="my-auto">
       <input type="text" class="slider-input" [(ngModel)]="curve.position">

@@ -332,7 +332,7 @@ export class PreviewService {
                   let fixtureChannelValue = new FixtureChannelValue();
                   fixtureChannelValue.channelName = cachedChannel.name;
                   fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
-                  fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex) / 100;
+                  fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex);
                   this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
                 }
               }
@@ -348,7 +348,7 @@ export class PreviewService {
                     let fixtureChannelValue = new FixtureChannelValue();
                     fixtureChannelValue.channelName = cachedChannel.name;
                     fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
-                    fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex) / 100;
+                    fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex);
                     this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
                   }
                 }

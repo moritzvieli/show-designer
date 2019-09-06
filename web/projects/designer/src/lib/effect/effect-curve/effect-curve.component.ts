@@ -74,10 +74,11 @@ export class EffectCurveComponent implements OnInit {
     this.redraw();
   }
 
-  private drawCurrentValue(currMillis: number, radius: number, lineWidth: number, durationMillis: number, maxValue: number) {
+  private drawCurrentValue(currMillis: number, radius: number, lineWidth: number, durationMillis: number, maxHeight: number) {
     let currVal = this.curve.getValueAtMillis(currMillis);
+
     let x = this.maxWidth * (currMillis % durationMillis) / durationMillis;
-    let y = this.maxHeight - ((this.maxHeight - lineWidth * 4) * currVal / maxValue + lineWidth * 2);
+    let y = maxHeight * currVal + lineWidth;
 
     this.ctx.beginPath();
     this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
@@ -124,7 +125,7 @@ export class EffectCurveComponent implements OnInit {
     }
 
     let durationMillis = this.curve.lengthMillis * Math.round(4 - this.curve.lengthMillis / 1000);
-    let maxValue = this.curve.maxValue;
+    let maxHeight = this.maxHeight - width * 2;
 
     // draw the curve
     for (var i = -step * 2; i < durationMillis + step * 2; i += step) {
@@ -132,7 +133,7 @@ export class EffectCurveComponent implements OnInit {
 
       // Scale the values to the grid dimensions
       let x = this.maxWidth * i / durationMillis;
-      let y = this.maxHeight - ((this.maxHeight - width * 4) * val / maxValue + width * 2);
+      let y = maxHeight * val + width;
 
       if (oldY) {
         this.ctx.beginPath();
@@ -146,7 +147,7 @@ export class EffectCurveComponent implements OnInit {
     }
 
     // draw the current value
-    this.drawCurrentValue(this.animationService.timeMillis % durationMillis, 5, width, durationMillis, maxValue);
+    this.drawCurrentValue(this.animationService.timeMillis % durationMillis, 5, width, durationMillis, maxHeight);
 
     // draw the phasing values (chase), if required
     let phasingCount = 0;
@@ -156,7 +157,7 @@ export class EffectCurveComponent implements OnInit {
     }
 
     for (let i = 1; i < phasingCount; i++) {
-      this.drawCurrentValue((this.animationService.timeMillis - i * this.curve.phasingMillis) % durationMillis, 3, width, durationMillis, maxValue);
+      this.drawCurrentValue((this.animationService.timeMillis - i * this.curve.phasingMillis) % durationMillis, 3, width, durationMillis, maxHeight);
     }
   }
 

@@ -4,17 +4,15 @@ import { EffectCurveProfileChannels } from './effect-curve-profile-channel';
 
 export class EffectCurve extends Effect {
 
-    type: string = 'sine';
+    curveType: string = 'sine';
 
     capabilities: FixtureCapability[] = [];
     channels: EffectCurveProfileChannels[] = [];
 
     lengthMillis = 2500;
     phaseMillis = 0;
-    amplitude = 100;
-    position = 50;
-    minValue = 0;
-    maxValue = 100;
+    amplitude = 1;
+    position = 0.5;
     phasingMillis = 0;
 
     constructor(data?: any) {
@@ -40,7 +38,6 @@ export class EffectCurve extends Effect {
         this.phaseMillis = data.phaseMillis;
         this.amplitude = data.amplitude;
         this.position = data.position;
-        this.maxValue = data.maxValue;
         this.phasingMillis = data.phasingMillis;
     }
 
@@ -54,42 +51,30 @@ export class EffectCurve extends Effect {
 
         let phase = this.phaseMillis + phasingIndex * this.phasingMillis;
 
-        // Calculate the value according to the curve
+        // Calculate the value between 0 and 1 according to the curve
         let value: number = 0;
 
-        // Calculate a value between 0 and 100
-        switch (this.type) {
+        switch (this.curveType) {
             case 'sine':
                 value = this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) / 2;
                 break;
             case 'square':
-                value = Math.sign(Math.sin(2 * Math.PI * 100 * timeMillis));
-                console.log(value);
+                // TODO
                 break;
             case 'triangle':
-
+                // TODO
                 break;
             case 'sawtooth':
-
+                // TODO
                 break;
             case 'reverse-sawtooth':
-
+                // TODO
                 break;
         }
 
         value += this.position;
 
-        if (value < this.minValue) {
-            value = this.minValue;
-        }
-
-        if (value > this.maxValue) {
-            value = this.maxValue;
-        }
-        console.log(value);
-        return value;
+        return Math.max(Math.min(value, 1), 0);
     }
-
-
 
 }
