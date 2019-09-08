@@ -35,6 +35,7 @@
             "project-import": "Import",
             "project-export": "Export",
             "project-share": "Share",
+            "project-settings": "Settings",
             "login": "Sign in",
             "logout": "Log out",
             "support": "Support"

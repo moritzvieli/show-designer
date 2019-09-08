@@ -21,6 +21,7 @@ import { WarningDialogService } from '../services/warning-dialog.service';
 import { map } from 'rxjs/operators';
 import { ErrorDialogService } from '../services/error-dialog.service';
 import { FixtureService } from '../services/fixture.service';
+import { ProjectSettingsComponent } from '../project-settings/project-settings.component';
 
 @Component({
   selector: 'lib-main',
@@ -162,7 +163,7 @@ export class MainComponent implements AfterViewInit, OnInit {
   }
 
   openTab(tab: string) {
-    if(tab == 'settings') {
+    if (tab == 'settings') {
       this.fixtureService.settingsSelection = true;
     } else {
       this.fixtureService.settingsSelection = false;
@@ -286,6 +287,10 @@ export class MainComponent implements AfterViewInit, OnInit {
   switchLanguage(language: string) {
     this.translateService.use(language);
     localStorage.setItem('language', language);
+  }
+
+  projectSettings() {
+    let bsModalRef = this.modalService.show(ProjectSettingsComponent, { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { project: this.projectService.project } });
   }
 
 }

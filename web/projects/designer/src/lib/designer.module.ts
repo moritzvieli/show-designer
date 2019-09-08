@@ -47,6 +47,7 @@ import { FixtureSettingsStageComponent } from './fixture/fixture-settings/fixtur
 import { IntroComponent } from './intro/intro.component';
 import { PresetSettingsComponent } from './preset/preset-settings/preset-settings.component';
 import { SceneSettingsComponent } from './scene/scene-settings/scene-settings.component';
+import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -93,7 +94,8 @@ const appRoutes: Routes = [
     FixtureSettingsStageComponent,
     IntroComponent,
     PresetSettingsComponent,
-    SceneSettingsComponent
+    SceneSettingsComponent,
+    ProjectSettingsComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -128,7 +130,8 @@ const appRoutes: Routes = [
     ProjectImportComponent,
     ProjectShareComponent,
     PresetSettingsComponent,
-    SceneSettingsComponent
+    SceneSettingsComponent,
+    ProjectSettingsComponent
   ],
   exports: [DesignerComponent]
 })
