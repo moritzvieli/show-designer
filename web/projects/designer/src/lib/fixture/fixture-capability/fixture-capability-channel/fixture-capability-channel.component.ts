@@ -23,7 +23,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   value: number = 0;
   templateValue: number = 0;
 
-  valueSetTimer: NodeJS.Timer;
+  valueSetTimer: any;
 
   @Input()
   profile: FixtureProfile;
@@ -110,7 +110,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       // update the value without change detector for performance reasons and only in a specific
       // interval. each value set will trigger a layout/reflow event and slow down the performance
       // TODO use the same technique in the dimmer/pan/tilt/color sliders
-      if(!this.valueSetTimer) {
+      if (!this.valueSetTimer) {
         this.valueSetTimer = setTimeout(() => {
           this.sliderValue.nativeElement.value = this.value;
           this.valueSetTimer = undefined;

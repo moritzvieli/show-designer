@@ -45,6 +45,8 @@ import { MainComponent } from './main/main.component';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { FixtureSettingsStageComponent } from './fixture/fixture-settings/fixture-settings-stage/fixture-settings-stage.component';
 import { IntroComponent } from './intro/intro.component';
+import { PresetSettingsComponent } from './preset/preset-settings/preset-settings.component';
+import { SceneSettingsComponent } from './scene/scene-settings/scene-settings.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -89,7 +91,9 @@ const appRoutes: Routes = [
     MainComponent,
     ErrorDialogComponent,
     FixtureSettingsStageComponent,
-    IntroComponent
+    IntroComponent,
+    PresetSettingsComponent,
+    SceneSettingsComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -122,7 +126,9 @@ const appRoutes: Routes = [
     ProjectBrowserComponent,
     WaitDialogComponent,
     ProjectImportComponent,
-    ProjectShareComponent
+    ProjectShareComponent,
+    PresetSettingsComponent,
+    SceneSettingsComponent
   ],
   exports: [DesignerComponent]
 })

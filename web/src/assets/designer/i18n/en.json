@@ -16,7 +16,8 @@
             "error": "Error",
             "please-wait": "Please wait...",
             "warning-proceed-unsaved": "Unsaved changes will be lost. Do you really want to proceed?",
-            "language": "Language"
+            "language": "Language",
+            "ms": "ms"
         },
         "loading": {
             "title": "Loading...",
@@ -75,10 +76,17 @@
             "delete-warning": "Do you really want to delete this project?"
         },
         "scene": {
-            "title": "Scenes"
+            "title": "Scenes",
+            "settings-fade-in": "Fade In",
+            "settings-fade-out": "Fade Out"
         },
         "preset": {
-            "title": "Presets"
+            "title": "Presets",
+            "settings-name": "Name",
+            "settings-start": "Start",
+            "settings-end": "End",
+            "settings-fade-in": "Fade in",
+            "settings-fade-out": "Fade out"
         },
         "fixture": {
             "no-fixtures": "Add new fixtures to the project",

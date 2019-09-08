@@ -3,6 +3,8 @@ import { PresetService } from '../services/preset.service';
 import { SceneService } from '../services/scene.service';
 import { ProjectService } from '../services/project.service';
 import { IntroService } from '../services/intro.service';
+import { BsModalService } from 'ngx-bootstrap';
+import { PresetSettingsComponent } from './preset-settings/preset-settings.component';
 
 @Component({
   selector: 'app-preset',
@@ -15,7 +17,8 @@ export class PresetComponent implements OnInit {
     public presetService: PresetService,
     public sceneService: SceneService,
     public projectService: ProjectService,
-    public introService: IntroService
+    public introService: IntroService,
+    private modalService: BsModalService
   ) { }
 
   ngOnInit() {
@@ -64,6 +67,10 @@ export class PresetComponent implements OnInit {
 
     this.projectService.project.presets.splice(this.projectService.project.presets.indexOf(this.presetService.selectedPreset), 1);
     this.presetService.selectPreset(0);
+  }
+
+  openSettings() {
+    let bsModalRef = this.modalService.show(PresetSettingsComponent, { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { preset: this.presetService.selectedPreset } });
   }
 
 }

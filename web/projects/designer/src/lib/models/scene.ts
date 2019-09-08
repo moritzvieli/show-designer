@@ -11,8 +11,8 @@ export class Scene {
     presetUuids: string[] = [];
 
     // Fading times
-    fadeInMillis: number = 2000;
-    fadeOutMillis: number = 2000;
+    fadeInMillis: number = 0;
+    fadeOutMillis: number = 0;
 
     constructor(data?: any) {
         if (!data) {
