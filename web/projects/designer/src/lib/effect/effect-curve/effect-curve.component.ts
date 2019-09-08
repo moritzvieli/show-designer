@@ -75,7 +75,7 @@ export class EffectCurveComponent implements OnInit {
   }
 
   private drawCurrentValue(currMillis: number, radius: number, lineWidth: number, durationMillis: number, maxHeight: number) {
-    let currVal = this.curve.getValueAtMillis(currMillis);
+    let currVal = 1 - this.curve.getValueAtMillis(currMillis);
 
     let x = this.maxWidth * (currMillis % durationMillis) / durationMillis;
     let y = maxHeight * currVal + lineWidth;
@@ -129,7 +129,7 @@ export class EffectCurveComponent implements OnInit {
 
     // draw the curve
     for (var i = -step * 2; i < durationMillis + step * 2; i += step) {
-      let val = this.curve.getValueAtMillis(i);
+      let val = 1 - this.curve.getValueAtMillis(i);
 
       // Scale the values to the grid dimensions
       let x = this.maxWidth * i / durationMillis;
