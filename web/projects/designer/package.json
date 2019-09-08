@@ -10,7 +10,7 @@
   "dependencies": {
     "angular-sortablejs": "^2.7.0",
     "d3": "^5.6.0",
-    "wavesurfer.js": "git+https://git@github.com/katspaugh/wavesurfer.js.git"
+    "wavesurfer.js": "^3.0.0"
   },
   "peerDependencies": {
     "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
