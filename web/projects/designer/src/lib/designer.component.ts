@@ -11,7 +11,6 @@ import { BsModalService } from 'ngx-bootstrap';
 import { UserService } from './services/user.service';
 import { UserEnsureLoginService } from './services/user-ensure-login.service';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute } from '@angular/router';
 import { ErrorDialogService } from './services/error-dialog.service';
 import { FixtureService } from './services/fixture.service';
 import Split from 'split.js';
@@ -96,7 +95,6 @@ export class DesignerComponent implements OnInit {
     private userEnsureLoginService: UserEnsureLoginService,
     private toastrService: ToastrService,
     private projectLoadService: ProjectLoadService,
-    private activatedRoute: ActivatedRoute,
     private warningDialogService: WarningDialogService,
     private errorDialogService: ErrorDialogService,
     private fixtureService: FixtureService,
@@ -116,8 +114,9 @@ export class DesignerComponent implements OnInit {
 
     this.calcTotalMenuHeight();
 
-    let projectId = this.activatedRoute.snapshot.queryParamMap.get('id');
-    let shareToken = this.activatedRoute.snapshot.queryParamMap.get('token');
+    let urlParams = new URLSearchParams(window.location.search);
+    let projectId = urlParams.get('id');
+    let shareToken = urlParams.get('token');
 
     if (projectId) {
       // load a project by query param ID

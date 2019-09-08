@@ -46,6 +46,7 @@ import { IntroComponent } from './intro/intro.component';
 import { PresetSettingsComponent } from './preset/preset-settings/preset-settings.component';
 import { SceneSettingsComponent } from './scene/scene-settings/scene-settings.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { RouterModule } from '@angular/router';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -90,6 +91,7 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     ProjectSettingsComponent
   ],
   imports: [
+    RouterModule.forRoot([]),
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
