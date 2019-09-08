@@ -16,7 +16,7 @@ export class FixtureComponent implements OnInit {
     public projectService: ProjectService,
     public presetService: PresetService,
     private fixturePoolService: FixturePoolService,
-    private fixtureService: FixtureService
+    public fixtureService: FixtureService
   ) { }
 
   ngOnInit() { }

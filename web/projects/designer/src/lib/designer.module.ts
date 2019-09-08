@@ -40,8 +40,6 @@ import { ProjectBrowserComponent } from './project-browser/project-browser.compo
 import { WaitDialogComponent } from './wait-dialog/wait-dialog.component';
 import { ProjectImportComponent } from './project-import/project-import.component';
 import { ProjectShareComponent } from './project-share/project-share.component';
-import { RouterModule, Routes } from '@angular/router';
-import { MainComponent } from './main/main.component';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { FixtureSettingsStageComponent } from './fixture/fixture-settings/fixture-settings-stage/fixture-settings-stage.component';
 import { IntroComponent } from './intro/intro.component';
@@ -51,11 +49,6 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
-
-// use a router to be able to grab the query params
-const appRoutes: Routes = [
-  { path: '**', component: MainComponent }
-];
 
 @NgModule({
   declarations: [
@@ -89,7 +82,6 @@ const appRoutes: Routes = [
     WaitDialogComponent,
     ProjectImportComponent,
     ProjectShareComponent,
-    MainComponent,
     ErrorDialogComponent,
     FixtureSettingsStageComponent,
     IntroComponent,
@@ -98,10 +90,6 @@ const appRoutes: Routes = [
     ProjectSettingsComponent
   ],
   imports: [
-    RouterModule.forRoot(
-      appRoutes,
-      { enableTracing: false } // <-- debugging purposes only
-    ),
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,

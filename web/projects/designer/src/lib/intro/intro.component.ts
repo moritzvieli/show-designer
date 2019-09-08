@@ -15,4 +15,8 @@ export class IntroComponent implements OnInit {
   ngOnInit() {
   }
 
+  close() {
+    this.introService.showIntro = false;
+  }
+
 }

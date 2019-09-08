@@ -32,10 +32,18 @@ export class PresetSettingsComponent implements OnInit {
 
   ok() {
     this.preset.name = this.name;
-    this.preset.startMillis = this.startMillis;
-    this.preset.endMillis = this.endMillis;
-    this.preset.fadeInMillis = this.fadeInMillis;
-    this.preset.fadeOutMillis = this.fadeOutMillis;
+    if (!this.startMillis || (!isNaN(this.startMillis) && this.startMillis > 0)) {
+      this.preset.startMillis = this.startMillis;
+    }
+    if (!this.endMillis || (!isNaN(this.endMillis) && this.endMillis > 0)) {
+      this.preset.endMillis = this.endMillis;
+    }
+    if (!isNaN(this.fadeInMillis) && this.fadeInMillis > 0) {
+      this.preset.fadeInMillis = this.fadeInMillis;
+    }
+    if (!isNaN(this.fadeOutMillis) && this.fadeOutMillis > 0) {
+      this.preset.fadeOutMillis = this.fadeOutMillis;
+    }
 
     this.bsModalRef.hide();
   }
