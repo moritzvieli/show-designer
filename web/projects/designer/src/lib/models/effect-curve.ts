@@ -9,11 +9,11 @@ export class EffectCurve extends Effect {
     capabilities: FixtureCapability[] = [];
     channels: EffectCurveProfileChannels[] = [];
 
-    lengthMillis = 2500;
-    phaseMillis = 0;
-    amplitude = 1;
-    position = 0.5;
-    phasingMillis = 0;
+    lengthMillis: number = 2500;
+    phaseMillis: number = 0;
+    amplitude: number = 1;
+    position: number = 0.5;
+    phasingMillis: number = 0;
 
     constructor(data?: any) {
         super('curve', data);

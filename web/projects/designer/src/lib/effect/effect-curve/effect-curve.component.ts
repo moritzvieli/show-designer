@@ -23,6 +23,17 @@ export class EffectCurveComponent implements OnInit {
   private maxWidth: number;
   private maxHeight: number;
 
+  public lengthMillisMin: number = 50;
+  public lengthMillisMax: number = 2500;
+  public amplitudeMin: number = 0;
+  public amplitudeMax: number = 4;
+  public percentageMin: number = 0;
+  public percentageMax: number = 1;
+  public phaseMillisMin: number = -1000;
+  public phaseMillisMax: number = 1000;
+  public phasingMillisMin: number = 0;
+  public phasingMillisMax: number = 1000;
+
   // the selected capabilities
   public availableCapabilities: FixtureCapability[] = [];
 
@@ -333,6 +344,36 @@ export class EffectCurveComponent implements OnInit {
 
         break;
       }
+    }
+  }
+
+  setLengthMillis(value: any) {
+    if (!isNaN(value) && value >= this.lengthMillisMin && value <= this.lengthMillisMax) {
+      this.curve.lengthMillis = +value;
+    }
+  }
+
+  setAmplitude(value: any) {
+    if (!isNaN(value) && value >= this.amplitudeMin && value <= this.amplitudeMax) {
+      this.curve.amplitude = +value;
+    }
+  }
+
+  setPosition(value: any) {
+    if (!isNaN(value) && value >= this.percentageMin && value <= this.percentageMax) {
+      this.curve.position = +value;
+    }
+  }
+
+  setPhaseMillis(value: any) {
+    if (!isNaN(value) && value >= this.phaseMillisMin && value <= this.phaseMillisMax) {
+      this.curve.phaseMillis = +value;
+    }
+  }
+
+  setPhasingMillis(value: any) {
+    if (!isNaN(value) && value >= this.phasingMillisMin && value <= this.phasingMillisMax) {
+      this.curve.phasingMillis = +value;
     }
   }
 

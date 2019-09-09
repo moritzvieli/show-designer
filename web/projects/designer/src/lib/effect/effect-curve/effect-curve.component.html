@@ -26,10 +26,11 @@
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.lengthMillis" style="width: 80px;" [tooltip]="'hide'" [value]="0"
-        [min]="50" [max]="2500" [step]="1"></mv-slider>
+        [min]="lengthMillisMin" [max]="lengthMillisMax" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
-      <input type="text" class="slider-input" [(ngModel)]="curve.lengthMillis">
+      <input type="text" class="slider-input" [ngModel]="curve.lengthMillis"
+        (ngModelChange)="setLengthMillis($event); redraw()">
     </div>
     <div class="my-auto ml-1">
       {{ 'designer.misc.ms' | translate }}
@@ -41,11 +42,12 @@
       {{ 'designer.effect.curve-amplitude' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.amplitude" style="width: 80px;" [tooltip]="'hide'" [min]="0"
-        [max]="4" [step]="0.01"></mv-slider>
+      <mv-slider (change)="redraw()" [(value)]="curve.amplitude" style="width: 80px;" [tooltip]="'hide'"
+        [min]="amplitudeMin" [max]="amplitudeMax" [step]="0.01"></mv-slider>
     </div>
     <div class="my-auto">
-      <input type="text" class="slider-input" [(ngModel)]="curve.amplitude">
+      <input type="text" class="slider-input" [ngModel]="curve.amplitude"
+        (ngModelChange)="setAmplitude($event); redraw()">
     </div>
   </div>
 
@@ -55,10 +57,12 @@
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.position" style="width: 80px; height: 18px;" [tooltip]="'hide'"
-        [min]="0" [max]="1" [step]="0.01"></mv-slider>
+        [min]="percentageMin" [max]="percentageMax" [step]="0.01">
+      </mv-slider>
     </div>
     <div class="my-auto">
-      <input type="text" class="slider-input" [(ngModel)]="curve.position">
+      <input type="text" class="slider-input" [ngModel]="curve.position"
+        (ngModelChange)="setPosition($event); redraw()">
     </div>
   </div>
 
@@ -68,10 +72,11 @@
     </div>
     <div class="my-auto" style="float: left;">
       <mv-slider (change)="redraw()" [(value)]="curve.phaseMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'"
-        [min]="-1000" [max]="1000" [step]="1"></mv-slider>
+        [min]="phaseMillisMin" [max]="phaseMillisMax" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
-      <input type="text" class="slider-input" [(ngModel)]="curve.phaseMillis">
+      <input type="text" class="slider-input" [ngModel]="curve.phaseMillis"
+        (ngModelChange)="setPhaseMillis($event); redraw()">
     </div>
     <div class="my-auto ml-1">
       {{ 'designer.misc.ms' | translate }}
@@ -83,11 +88,12 @@
       {{ 'designer.effect.curve-chase' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.phasingMillis" style="width: 80px; height: 18px;"
-        [tooltip]="'hide'" [min]="0" [max]="700" [step]="1"></mv-slider>
+      <mv-slider (change)="redraw()" [(value)]="curve.phasingMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'"
+        [min]="phasingMillisMin" [max]="phasingMillisMax" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
-      <input type="text" class="slider-input" [(ngModel)]="curve.phasingMillis">
+      <input type="text" class="slider-input" [ngModel]="curve.phasingMillis"
+        (ngModelChange)="setPhasingMillis($event); redraw()">
     </div>
     <div class="my-auto ml-1">
       {{ 'designer.misc.ms' | translate }}
