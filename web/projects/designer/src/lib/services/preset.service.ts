@@ -435,11 +435,12 @@ export class PresetService {
     }
 
     var previewObject: any = {};
+    previewObject.projectName = this.projectService.project.name;
     previewObject.presetPreview = this.projectService.project.previewPreset;
     previewObject.sceneUuids = this.projectService.project.selectedSceneUuids;
     previewObject.presetUuid = this.projectService.project.selectedPresetUuid;
 
-    this.http.post('designer-preview', previewObject).subscribe();
+    this.http.post('preview', previewObject).subscribe();
   }
 
 }

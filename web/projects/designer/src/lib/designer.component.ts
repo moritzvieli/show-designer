@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnInit, Input, ViewChild, HostListener } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, Input, ViewChild, HostListener, AfterViewInit } from '@angular/core';
 import { TimelineService } from './services/timeline.service';
 import { ConfigService } from './services/config.service';
 import { PreviewComponent } from './preview/preview.component';
@@ -30,7 +30,7 @@ import { ProjectService } from './services/project.service';
   styleUrls: ['./designer.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class DesignerComponent implements OnInit {
+export class DesignerComponent implements OnInit, AfterViewInit {
 
   @Input()
   set menuHeightPx(value: number) {
@@ -66,6 +66,11 @@ export class DesignerComponent implements OnInit {
   @Input()
   set languageSwitch(value: boolean) {
     this.configService.languageSwitch = value;
+  }
+
+  @Input()
+  set autoLoadProject(value: boolean) {
+    this.configService.autoLoadProject = value;
   }
 
   @Input()
@@ -122,41 +127,45 @@ export class DesignerComponent implements OnInit {
     let projectId = urlParams.get('id');
     let shareToken = urlParams.get('token');
 
-    if (projectId) {
-      // load a project by query param ID
-      if (!shareToken) {
-        shareToken = '';
-      }
-
-      this.projectLoadService.load(Number.parseInt(projectId), shareToken).subscribe(() => { }, (response) => {
-        let error = response && response.error ? response.error.error : 'unknown';
-
-        let msg = '';
-
-        if (error == 'no-permission') {
-          msg = 'designer.project.open-no-permission-error';
-          error = undefined;
-        } else {
-          msg = 'designer.project.open-error';
+    if (this.configService.autoLoadProject) {
+      if (projectId) {
+        // load a project by query param ID
+        if (!shareToken) {
+          shareToken = '';
         }
 
-        this.errorDialogService.show(msg, error).subscribe(() => {
-          this.projectLoadService.new();
-        });
-      });
-    } else if (this.userService.isLoggedIn() && this.userService.getAutoLoadProjectId()) {
-      // restore the last saved project
-      this.projectLoadService.load(this.userService.getAutoLoadProjectId()).subscribe(() => { }, (response) => {
-        let msg = 'designer.project.open-error';
-        let error = response && response.error ? response.error.error : 'unknown';
+        this.projectLoadService.load(Number.parseInt(projectId), shareToken).subscribe(() => { }, (response) => {
+          let error = response && response.error ? response.error.error : 'unknown';
 
-        this.errorDialogService.show(msg, error).subscribe(() => {
-          this.projectLoadService.new();
+          let msg = '';
+
+          if (error == 'no-permission') {
+            msg = 'designer.project.open-no-permission-error';
+            error = undefined;
+          } else {
+            msg = 'designer.project.open-error';
+          }
+
+          this.errorDialogService.show(msg, error).subscribe(() => {
+            this.projectLoadService.new();
+          });
         });
-      });
+      } else if (this.userService.isLoggedIn() && this.userService.getAutoLoadProjectId()) {
+        // restore the last saved project
+        this.projectLoadService.load(this.userService.getAutoLoadProjectId()).subscribe(() => { }, (response) => {
+          let msg = 'designer.project.open-error';
+          let error = response && response.error ? response.error.error : 'unknown';
+
+          this.errorDialogService.show(msg, error).subscribe(() => {
+            this.projectLoadService.new();
+          });
+        });
+      } else {
+        // load the new project template
+        this.projectLoadService.template();
+      }
     } else {
-      // load the new project template
-      this.projectLoadService.template();
+      this.projectLoadService.new();
     }
   }
 
