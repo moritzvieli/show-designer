@@ -4,13 +4,31 @@
       {{ 'designer.scene.title' | translate }}
     </div>
     <div class="ml-auto">
-      <a href="#" class="btn btn-secondary m-0, p-0" [class.text-primary]="sceneService.multipleSelection == true"
-        (click)="sceneService.multipleSelection = !sceneService.multipleSelection; false;"><i
-          class="fa fa-object-group fa-fw" aria-hidden="true"></i></a>
-      <a href="#" class="btn btn-secondary m-0, p-0" (click)="removeScene(); false;"><i class="fa fa-minus-circle fa-fw"
-          aria-hidden="true"></i></a>
-      <a href="#" class="btn btn-secondary m-0, p-0" (click)="sceneService.addScene(); false;"><i
-          class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
+      <a href="#" class="d-none d-md-inline-block btn btn-secondary m-0 p-0" (click)="removeScene(); false;"><i
+          class="fa fa-minus-circle fa-fw" aria-hidden="true"></i></a>
+      <a href="#" class="d-none d-md-inline-block btn btn-secondary m-0 p-0"
+        (click)="sceneService.addScene(); false;"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i></a>
+
+      <div id="sceneExtendedButton" class="d-none d-md-inline-block dropdown m-0 p-0">
+        <a class="btn btn-secondary dropdown-toggle m-0 p-0" href="#" role="button" id="dropdownMenuLink"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-ellipsis-v fa-fw" aria-hidden="true"></i></a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a href="#" class="dropdown-item" [class.text-primary]="projectService.project.liveMode == true"
+            (click)="projectService.project.liveMode = !projectService.project.liveMode; presetService.previewLive(); false;"><i
+              class="fa fa-eye fa-fw" aria-hidden="true"></i> {{ 'designer.scene.live-mode' | translate }}</a>
+          <a href="#" class="dropdown-item" [class.text-primary]="sceneService.multipleSelection == true"
+            (click)="sceneService.multipleSelection = !sceneService.multipleSelection; false;"><i
+              class="fa fa-object-group fa-fw" aria-hidden="true"></i>
+            {{ 'designer.scene.multiple-selection' | translate }}</a>
+        </div>
+      </div>
+
+      <a href="#" class="d-inline-block d-md-none btn btn-secondary m-0 p-0"
+        [class.text-primary]="projectService.project.liveMode == true"
+        (click)="projectService.project.liveMode = !projectService.project.liveMode; presetService.previewLive(); false;"><i
+          class="fa fa-eye fa-fw" aria-hidden="true"></i> {{ 'designer.scene.live-mode' | translate }}</a>
     </div>
   </div>
   <div class="card-body border-secondary p-0">
@@ -21,7 +39,8 @@
         [class.active-light]="projectService.project.previewPreset && sceneService.sceneIsSelected(scene)"
         [class.active]="!projectService.project.previewPreset && sceneService.sceneIsSelected(scene)">
         <div class="row d-flex" (click)="selectScene($event, i)" style="cursor: pointer;">
-          <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
+          <div class="d-none d-md-block col-auto list-sort-handle my-auto"
+            style="cursor: move; cursor: -webkit-grabbing;">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div class="my-auto">
@@ -32,7 +51,7 @@
               <circle cx="10" cy="10" r="9" stroke="white" stroke-width="1" [attr.fill]="scene.color" />
             </svg>
           </div>
-          <div class="my-auto mr-2 d-flex">
+          <div class="d-none d-md-flex my-auto mr-2">
             <button type="button" class="btn btn-secondary btn-sm py-0 px-1"
               (click)="openSettings(scene); false">...</button>
           </div>

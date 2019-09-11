@@ -1,19 +1,40 @@
 <div class="card border-secondary h-100">
-  <div class="card-body h-100 d-flex" style="flex-direction: column;">
+  <!-- For larger screens vertically -->
+  <div class="d-none d-md-flex card-body h-100" style="flex-direction: column;">
 
     <div class="mb-3 w-100 d-flex">
-        <i class="icon-dimmer m-auto" style="font-size: 2em"></i>
+      <i class="icon-dimmer m-auto" style="font-size: 2em"></i>
     </div>
 
     <div class="mb-4 w-100 d-flex">
-      <input class="mx-auto" type="text" [ngModel]="getValue()"
-        (ngModelChange)="setValue($event)"
+      <input class="mx-auto" type="text" [ngModel]="getValue()" (ngModelChange)="setValue($event)"
         style="width: 42px; height: 23px; text-align: center; font-size: 12px; font-family: monospace;">
     </div>
 
     <div class="h-100 w-100 d-flex">
-      <mv-slider class="mx-auto" [value]="projectService?.project?.masterDimmerValue" (change)="setValue($event.newValue)" [orientation]="'vertical'"
-        [reversed]="true" style="height: 100%;" [tooltip]="'hide'" [min]="0" [max]="1" [step]="0.001"></mv-slider>
+      <mv-slider class="mx-auto" [value]="projectService?.project?.masterDimmerValue"
+        (change)="setValue($event.newValue)" [orientation]="'vertical'" [reversed]="true" style="height: 100%;"
+        [tooltip]="'hide'" [min]="0" [max]="1" [step]="0.001"></mv-slider>
+    </div>
+
+  </div>
+
+  <!-- For smaller screens horizontally -->
+  <div class="d-flex d-md-none card-body h-100">
+
+    <div class="mb-3 d-flex my-auto">
+      <i class="icon-dimmer m-auto" style="font-size: 2em"></i>
+    </div>
+
+    <div class="h-100 w-100 d-flex my-auto mx-3">
+      <mv-slider class="mx-auto" [value]="projectService?.project?.masterDimmerValue"
+        (change)="setValue($event.newValue)" [orientation]="'horizontal'" style="width: 100%;" [tooltip]="'hide'"
+        [min]="0" [max]="1" [step]="0.001"></mv-slider>
+    </div>
+
+    <div class="mb-4 d-flex my-auto">
+      <input class="mx-auto" type="text" [ngModel]="getValue()" (ngModelChange)="setValue($event)"
+        style="width: 42px; height: 23px; text-align: center; font-size: 12px; font-family: monospace;">
     </div>
 
   </div>

@@ -88,6 +88,7 @@ export class SceneService {
       this.projectService.project.selectedSceneUuids.push(scene.uuid);
     }
     this.presetService.previewSelectionChanged.next();
+    this.presetService.previewLive();
   }
 
   addScene(name?: string): void {

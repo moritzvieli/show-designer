@@ -79,7 +79,9 @@
         "scene": {
             "title": "Scenes",
             "settings-fade-in": "Fade In",
-            "settings-fade-out": "Fade Out"
+            "settings-fade-out": "Fade Out",
+            "multiple-selection": "Multiple selection",
+            "live-mode": "Live mode"
         },
         "preset": {
             "title": "Presets",

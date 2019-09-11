@@ -13,6 +13,8 @@ import { CachedFixtureChannel } from '../models/cached-fixture-channel';
 import { CachedFixtureCapability } from '../models/cached-fixture-capability';
 import { FixtureProfile } from '../models/fixture-profile';
 import { FixtureMode } from '../models/fixture-mode';
+import { ConfigService } from './config.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +40,9 @@ export class PresetService {
     private effectService: EffectService,
     private uuidService: UuidService,
     private projectService: ProjectService,
-    private fixtureService: FixtureService
+    private fixtureService: FixtureService,
+    private configService: ConfigService,
+    private http: HttpClient
   ) { }
 
   getPresetByUuid(uuid: string): Preset {
@@ -343,6 +347,7 @@ export class PresetService {
     this.projectService.project.selectedPresetUuid = this.projectService.project.presets[index].uuid;
     this.autoOpenFirstEffect();
     this.previewSelectionChanged.next();
+    this.previewLive();
   }
 
   autoOpenFirstEffect() {
@@ -422,6 +427,19 @@ export class PresetService {
     });
 
     return availableChannels;
+  }
+
+  previewLive() {
+    if (!this.configService.livePreview) {
+      return;
+    }
+
+    var previewObject: any = {};
+    previewObject.presetPreview = this.projectService.project.previewPreset;
+    previewObject.sceneUuids = this.projectService.project.selectedSceneUuids;
+    previewObject.presetUuid = this.projectService.project.selectedPresetUuid;
+
+    this.http.post('designer-preview', previewObject).subscribe();
   }
 
 }

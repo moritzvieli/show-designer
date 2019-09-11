@@ -68,6 +68,10 @@ export class DesignerComponent implements OnInit {
     this.configService.languageSwitch = value;
   }
 
+  @Input()
+  set livePreview(value: boolean) {
+    this.configService.livePreview = value;
+  }
 
   // the size of the menu used in the designer
   private designerMenuSizePx = 20;

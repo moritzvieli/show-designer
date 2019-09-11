@@ -12,6 +12,7 @@ export class ConfigService {
   public shareAvailable: boolean = false;
   public menuHeightPx: number = 0;
   public languageSwitch: boolean = false;
+  public livePreview: boolean = false;
 
   public menuHeightChanged: Subject<void> = new Subject<void>();
 
