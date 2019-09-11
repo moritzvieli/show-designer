@@ -33,7 +33,7 @@ export class FixtureSettingsPositionComponent implements OnInit {
   rotationMax: number = 360;
 
   constructor(
-    private fixtureService: FixtureService,
+    public fixtureService: FixtureService,
     private presetService: PresetService
   ) {
     presetService.fixtureSelectionSettingsChanged.subscribe(() => {
