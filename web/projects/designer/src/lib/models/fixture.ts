@@ -17,9 +17,15 @@ export class Fixture {
     positioning: Positioning = Positioning.topFront;
 
     // Only relevant when positioning = manual
+    // in CM
     positionX: number = 0;
     positionY: number = 0;
     positionZ: number = 0;
+
+    // in DEG
+    rotationX: number = 0;
+    rotationY: number = 0;
+    rotationZ: number = 0;
 
     constructor(data?: any) {
         if(!data) {
@@ -36,6 +42,9 @@ export class Fixture {
         this.positionX = data.positionX;
         this.positionY = data.positionY;
         this.positionZ = data.positionZ;
+        this.rotationX = data.rotationX;
+        this.rotationY = data.rotationY;
+        this.rotationZ = data.rotationZ;
     }
 
 }

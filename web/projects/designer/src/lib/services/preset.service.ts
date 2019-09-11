@@ -27,6 +27,9 @@ export class PresetService {
   // fires, when the fixture selection has changed
   fixtureSelectionChanged: Subject<void> = new Subject<void>();
 
+  // fires, when the fixture selection has changed for settings
+  fixtureSelectionSettingsChanged: Subject<void> = new Subject<void>();
+
   // fires, when the selected color has changed. This is required,
   // because detectChanges is not enough to trigger different components.
   fixtureColorChanged: Subject<void> = new Subject<void>();

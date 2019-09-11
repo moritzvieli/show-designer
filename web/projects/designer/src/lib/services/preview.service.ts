@@ -418,6 +418,9 @@ export class PreviewService {
   }
 
   public setUniverseValues(fixtures: Map<CachedFixture, FixtureChannelValue[]>, masterDimmerValue: number) {
+    // TODO only, if monitoring is enabled
+    return;
+    
     // Reset all DMX universes
     for (let universe of this.universeService.universes) {
       universe.channelValues = [];

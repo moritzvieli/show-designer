@@ -141,6 +141,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           // create the composition, if externally necessary
           if (this.timelineService.externalCompositionsAvailable) {
             // TODO check, if this composition already exists externally and create it, if not
+            // maybe not needed and even confusing?
           }
         } else {
           this.projectService.project.compositions[compositionIndex] = editComposition;

@@ -244,7 +244,7 @@ export class PreviewComponent implements AfterViewInit {
     // Create the stage dimensions
     this.previewService.updateStage();
 
-    // TODO
+    // TODO refine. background light in a color of the fixtures?
     var lights = [];
     lights[0] = new THREE.PointLight(0xffffff, 0.5, 0);
     lights[1] = new THREE.PointLight(0xffffff, 0.5, 0);

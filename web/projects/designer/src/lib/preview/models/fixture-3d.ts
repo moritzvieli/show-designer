@@ -161,9 +161,10 @@ export abstract class Fixture3d {
                 break;
             }
             case Positioning.manual: {
-                // TODO
-                //object.rotation.x = THREE.Math.degToRad(180);
                 object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY, this.fixture.fixture.positionZ);
+                object.rotation.x = THREE.Math.degToRad(this.fixture.fixture.rotationX);
+                object.rotation.y = THREE.Math.degToRad(this.fixture.fixture.rotationY);
+                object.rotation.z = THREE.Math.degToRad(this.fixture.fixture.rotationZ);
                 break;
             }
         }

@@ -123,25 +123,6 @@ export class MovingHead3d extends Fixture3d {
     }
 
     private createObjects() {
-        // TODO
-        // let path = './assets/textures/SwedishRoyalCastle/';
-        // let format = '.jpg';
-        // let urls = [
-        //     path + 'px' + format, path + 'nx' + format,
-        //     path + 'py' + format, path + 'ny' + format,
-        //     path + 'pz' + format, path + 'nz' + format
-        // ];
-
-        // var reflectionCube = new THREE.CubeTextureLoader().load(urls);
-
-        // this.material = new THREE.MeshStandardMaterial({
-        //     color: 0xffffff,
-        //     roughness: 0.07,
-        //     metalness: 1,
-        //     envMap: reflectionCube,
-        //     envMapIntensity: 1.4
-        // });
-
         (<any>this.material) = new THREE.MeshLambertMaterial({
             color: 0x0d0d0d,
             emissive: 0x0d0d0d
