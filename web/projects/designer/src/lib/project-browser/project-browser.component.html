@@ -21,7 +21,8 @@
           </a>
         </div>
         <div class="my-auto">
-          <div class="col-auto my-auto pl-0 text-danger float-right" style="cursor: pointer;" (click)="deleteProject(project); false">
+          <div class="col-auto my-auto pl-0 text-danger float-right" style="cursor: pointer;"
+            (click)="deleteProject(project); false">
             <i class="fa fa-trash-o" aria-hidden="true"></i>
           </div>
         </div>
@@ -30,5 +31,8 @@
   </div>
 </div>
 <div class="modal-footer">
+  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
+    {{ 'designer.misc.cancel' | translate }}
+  </a>
   <button (click)="cancel(); false;" type="button" class="btn btn-primary">{{ 'designer.misc.ok' | translate }}</button>
 </div>
