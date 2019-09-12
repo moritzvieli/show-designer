@@ -125,6 +125,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
 
     let urlParams = new URLSearchParams(window.location.search);
     let projectId = urlParams.get('id');
+    let projectName = urlParams.get('name');
     let shareToken = urlParams.get('token');
 
     if (this.configService.autoLoadProject) {
@@ -134,7 +135,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
           shareToken = '';
         }
 
-        this.projectLoadService.load(Number.parseInt(projectId), shareToken).subscribe(() => { }, (response) => {
+        this.projectLoadService.load(Number.parseInt(projectId), projectName, shareToken).subscribe(() => { }, (response) => {
           let error = response && response.error ? response.error.error : 'unknown';
 
           let msg = '';
@@ -152,7 +153,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
         });
       } else if (this.userService.isLoggedIn() && this.userService.getAutoLoadProjectId()) {
         // restore the last saved project
-        this.projectLoadService.load(this.userService.getAutoLoadProjectId()).subscribe(() => { }, (response) => {
+        this.projectLoadService.load(this.userService.getAutoLoadProjectId(), null).subscribe(() => { }, (response) => {
           let msg = 'designer.project.open-error';
           let error = response && response.error ? response.error.error : 'unknown';
 
@@ -256,7 +257,9 @@ export class DesignerComponent implements OnInit, AfterViewInit {
           this.toastrService.success(result[msg], result[title]);
         });
 
-        this.userService.setAutoLoadProjectId(this.projectService.project.id);
+        if (this.projectService.project.id) {
+          this.userService.setAutoLoadProjectId(this.projectService.project.id);
+        }
       }, (response) => {
         let msg = 'designer.project.save-error';
         let title = 'designer.project.save-error-title';

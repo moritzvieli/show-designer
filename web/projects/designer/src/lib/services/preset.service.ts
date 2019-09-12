@@ -36,6 +36,9 @@ export class PresetService {
   // because detectChanges is not enough to trigger different components.
   fixtureColorChanged: Subject<void> = new Subject<void>();
 
+  livePreviewTimer: any;
+  liveChangePending: boolean = false;
+
   constructor(
     private effectService: EffectService,
     private uuidService: UuidService,
@@ -434,7 +437,20 @@ export class PresetService {
       return;
     }
 
+    // collect all changes and delay them to not flood the backend
+    if (this.livePreviewTimer) {
+      this.liveChangePending = true;
+      return;
+    }
+
     this.http.post('preview', JSON.stringify(this.projectService.project)).subscribe();
+
+    this.livePreviewTimer = setTimeout(() => {
+      this.livePreviewTimer = undefined;
+      if (this.liveChangePending) {
+        this.http.post('preview', JSON.stringify(this.projectService.project)).subscribe();
+      }
+    }, 50);
   }
 
 }

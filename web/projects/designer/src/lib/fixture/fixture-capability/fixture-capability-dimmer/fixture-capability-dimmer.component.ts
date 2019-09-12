@@ -44,6 +44,7 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
 
     this.presetService.setCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity, value);
     this.changeDetectorRef.detectChanges();
+    this.presetService.previewLive();
   }
 
   changeActive(active: boolean) {
@@ -53,6 +54,7 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
       this.presetService.deleteCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity);
       this.changeDetectorRef.detectChanges();
     }
+    this.presetService.previewLive();
   }
 
 }

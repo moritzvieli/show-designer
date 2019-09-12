@@ -109,6 +109,7 @@ export class FixtureCapabilityColorComponent implements OnInit, OnDestroy {
       }
       this.changeDetectorRef.detectChanges();
       this.presetService.fixtureColorChanged.next();
+      this.presetService.previewLive();
     }
   }
 
@@ -122,6 +123,7 @@ export class FixtureCapabilityColorComponent implements OnInit, OnDestroy {
       this.setPickerColor(255, 255, 255);
       this.color = '#ffffff';
     }
+    this.presetService.previewLive();
   }
 
   changeColor(color: any) {

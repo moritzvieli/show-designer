@@ -36,6 +36,7 @@ export class FixtureComponent implements OnInit {
     } else {
       this.presetService.switchFixtureSelection(fixture);
       this.presetService.fixtureSelectionChanged.next();
+      this.presetService.previewLive();
     }
   }
 

@@ -155,10 +155,13 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
     } else {
       this.presetService.deleteCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, this.wheelName, this._fixtureProfile.uuid);
     }
+
+    this.presetService.previewLive();
   }
 
   selectSlotNumber(slotNumber: number) {
     this.presetService.setCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.WheelSlot, undefined, slotNumber, undefined, this.wheelName, this._fixtureProfile.uuid);
+    this.presetService.previewLive();
   }
 
 }

@@ -37,6 +37,7 @@ export class EffectComponent implements OnInit {
     let effect = new EffectCurve();
     effect.uuid = this.uuidService.getUuid();
     this.addEffect(effect);
+    this.presetService.previewLive();
   }
 
   addPanTiltEffect() {
@@ -57,6 +58,7 @@ export class EffectComponent implements OnInit {
     this.warningDialogService.show('designer.effect.delete-warning').pipe(map(result => {
       if (result) {
         this.presetService.selectedPreset.effects.splice(this.presetService.selectedPreset.effects.indexOf(effect), 1);
+        this.presetService.previewLive();
       }
     })).subscribe();
   }

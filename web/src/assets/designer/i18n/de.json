@@ -131,7 +131,8 @@
             "no-free-space": "Im aktuellen Universum ist kein Bereich mehr frei, um dieses Fixture hinzuzufügen.",
             "no-free-space-title": "Kein freier Bereich",
             "channel-occupied": "Die eingestellte Konfiguration hat überlappende Kanäle.",
-            "channel-occupied-title": "Überlappende Kanäle"
+            "channel-occupied-title": "Überlappende Kanäle",
+            "add-profile": "Fehlendes Profil erfassen"
         },
         "effect": {
             "add-new": "Neuen Effekt hinzufügen",
@@ -220,7 +221,8 @@
             "Time": "Zeit",
             "Maintenance": "Wartung",
             "Generic": "Generisch",
-            "Effect": "Effekt"
+            "Effect": "Effekt",
+            "BeamPosition": "Beleuchtungsposition"
         },
         "fixtureCapabilityColor": {
             "Red": "Rot",

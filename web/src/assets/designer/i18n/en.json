@@ -131,7 +131,8 @@
             "no-free-space": "There is no space left anymore in the current universe to add this fixture.",
             "no-free-space-title": "No space left",
             "channel-occupied": "The current configuration contains overlapping channels.",
-            "channel-occupied-title": "Overlapping channels"
+            "channel-occupied-title": "Overlapping channels",
+            "add-profile": "Add missing profile"
         },
         "effect": {
             "add-new": "Add new Effekt",
@@ -220,7 +221,8 @@
             "Time": "Time",
             "Maintenance": "Maintenance",
             "Generic": "Generic",
-            "Effect": "Effect"
+            "Effect": "Effect",
+            "BeamPosition": "Beam position"
         },
         "fixtureCapabilityColor": {
             "Red": "Red",

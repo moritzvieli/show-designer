@@ -291,6 +291,8 @@ export class EffectCurveComponent implements OnInit {
         }
       }
     }
+
+    this.presetService.previewLive();
   }
 
   getChannelName(profileName: string, channelName: string) {
@@ -345,35 +347,43 @@ export class EffectCurveComponent implements OnInit {
         break;
       }
     }
+
+    this.presetService.previewLive();
   }
 
   setLengthMillis(value: any) {
     if (!isNaN(value) && value >= this.lengthMillisMin && value <= this.lengthMillisMax) {
       this.curve.lengthMillis = +value;
+      this.presetService.previewLive();
     }
   }
 
   setAmplitude(value: any) {
     if (!isNaN(value) && value >= this.amplitudeMin && value <= this.amplitudeMax) {
       this.curve.amplitude = +value;
+      this.presetService.previewLive();
+      console.log('aaa');
     }
   }
 
   setPosition(value: any) {
     if (!isNaN(value) && value >= this.percentageMin && value <= this.percentageMax) {
       this.curve.position = +value;
+      this.presetService.previewLive();
     }
   }
 
   setPhaseMillis(value: any) {
     if (!isNaN(value) && value >= this.phaseMillisMin && value <= this.phaseMillisMax) {
       this.curve.phaseMillis = +value;
+      this.presetService.previewLive();
     }
   }
 
   setPhasingMillis(value: any) {
     if (!isNaN(value) && value >= this.phasingMillisMin && value <= this.phasingMillisMax) {
       this.curve.phasingMillis = +value;
+      this.presetService.previewLive();
     }
   }
 

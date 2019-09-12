@@ -25,7 +25,7 @@
       {{ 'designer.effect.curve-length' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.lengthMillis" style="width: 80px;" [tooltip]="'hide'" [value]="0"
+      <mv-slider (change)="redraw(); presetService.previewLive();" [(value)]="curve.lengthMillis" style="width: 80px;" [tooltip]="'hide'" [value]="0"
         [min]="lengthMillisMin" [max]="lengthMillisMax" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
@@ -42,7 +42,7 @@
       {{ 'designer.effect.curve-amplitude' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.amplitude" style="width: 80px;" [tooltip]="'hide'"
+      <mv-slider (change)="redraw(); presetService.previewLive();" [(value)]="curve.amplitude" style="width: 80px;" [tooltip]="'hide'"
         [min]="amplitudeMin" [max]="amplitudeMax" [step]="0.01"></mv-slider>
     </div>
     <div class="my-auto">
@@ -56,7 +56,7 @@
       {{ 'designer.effect.curve-position' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.position" style="width: 80px; height: 18px;" [tooltip]="'hide'"
+      <mv-slider (change)="redraw(); presetService.previewLive();" [(value)]="curve.position" style="width: 80px; height: 18px;" [tooltip]="'hide'"
         [min]="percentageMin" [max]="percentageMax" [step]="0.01">
       </mv-slider>
     </div>
@@ -71,7 +71,7 @@
       {{ 'designer.effect.curve-phase' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.phaseMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'"
+      <mv-slider (change)="redraw(); presetService.previewLive();" [(value)]="curve.phaseMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'"
         [min]="phaseMillisMin" [max]="phaseMillisMax" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">
@@ -88,7 +88,7 @@
       {{ 'designer.effect.curve-chase' | translate }}
     </div>
     <div class="my-auto" style="float: left;">
-      <mv-slider (change)="redraw()" [(value)]="curve.phasingMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'"
+      <mv-slider (change)="redraw(); presetService.previewLive();" [(value)]="curve.phasingMillis" style="width: 80px; height: 18px;" [tooltip]="'hide'"
         [min]="phasingMillisMin" [max]="phasingMillisMax" [step]="1"></mv-slider>
     </div>
     <div class="my-auto">

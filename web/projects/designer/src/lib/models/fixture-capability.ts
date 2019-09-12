@@ -40,7 +40,8 @@ export enum FixtureCapabilityType {
     Time = "Time",
     Maintenance = "Maintenance",
     Generic = "Generic",
-    Effect = "Effect"
+    Effect = "Effect",
+    BeamPosition = "BeamPosition"
 }
 
 export enum FixtureCapabilityColor {

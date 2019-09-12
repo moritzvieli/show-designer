@@ -117,6 +117,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
         }, 30);
       }
     }
+    this.presetService.previewLive();
   }
 
   private calculateTemplateValue() {
@@ -140,6 +141,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       this.value = undefined;
       this.calculateTemplateValue();
     }
+    this.presetService.previewLive();
   }
 
   capabilitySelected() {

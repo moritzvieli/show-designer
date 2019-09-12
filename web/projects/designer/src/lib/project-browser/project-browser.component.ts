@@ -47,7 +47,7 @@ export class ProjectBrowserComponent implements OnInit {
 
   openProject(project: Project) {
     this.bsModalRef.hide();
-    this.projectLoadService.load(project.id).subscribe(() => {
+    this.projectLoadService.load(project.id, project.name).subscribe(() => {
       this.userService.setAutoLoadProjectId(project.id);
     });
   }

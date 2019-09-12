@@ -20,11 +20,11 @@ export class FixtureCapabilityPanTiltComponent implements OnInit {
   }
 
   setValue(value: any) {
-
+    this.presetService.previewLive();
   }
 
   changeActive(active: boolean) {
-
+    this.presetService.previewLive();
   }
 
 }

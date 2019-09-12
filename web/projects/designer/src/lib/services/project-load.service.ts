@@ -62,10 +62,10 @@ export class ProjectLoadService {
     }
   }
 
-  load(id: number, shareToken?: string): Observable<void> {
+  load(id: number, name: string, shareToken?: string): Observable<void> {
     let ref = this.modalService.show(WaitDialogComponent, { keyboard: false, ignoreBackdropClick: true });
 
-    return this.projectService.getProject(id, shareToken).pipe(map(project => {
+    return this.projectService.getProject(id, name, shareToken).pipe(map(project => {
       this.projectService.project = project;
       this.selectScenesPresetComposition();
       this.afterLoad();
@@ -139,7 +139,7 @@ export class ProjectLoadService {
 
   template() {
     // load the template project with id 1
-    this.load(1).subscribe(() => {
+    this.load(1, null).subscribe(() => {
       this.projectService.project.id = undefined;
     });
   }

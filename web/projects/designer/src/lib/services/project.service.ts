@@ -29,21 +29,23 @@ export class ProjectService {
 
   save(project: Project): Observable<Object> {
     return this.http.post('project', JSON.stringify(project), { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
-      project.id = response.id;
-      if (response.shareToken) {
-        project.shareToken = response.shareToken;
+      if (response) {
+        project.id = response.id;
+        if (response.shareToken) {
+          project.shareToken = response.shareToken;
+        }
+        const queryParams: Params = {
+          id: project.id,
+          token: project.shareToken
+        };
+        this.router.navigate(
+          [],
+          {
+            relativeTo: this.activatedRoute,
+            queryParams: queryParams,
+            queryParamsHandling: 'merge', // remove to replace all query params by provided
+          });
       }
-      const queryParams: Params = {
-        id: project.id,
-        token: project.shareToken
-      };
-      this.router.navigate(
-        [],
-        {
-          relativeTo: this.activatedRoute,
-          queryParams: queryParams,
-          queryParamsHandling: 'merge', // remove to replace all query params by provided
-        });
       return null;
     }));
   }
@@ -63,8 +65,8 @@ export class ProjectService {
     return this.http.delete('project?id=' + project.id, { headers: this.userService.getHeaders() });
   }
 
-  getProject(id: number, shareToken?: string): Observable<Project> {
-    return this.http.get('project?id=' + id + '&token=' + shareToken, { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
+  getProject(id: number, name: string, shareToken?: string): Observable<Project> {
+    return this.http.get('project?id=' + id + '&name=' + name + '&token=' + shareToken, { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
       let project = new Project(response);
       project.id = id;
 
