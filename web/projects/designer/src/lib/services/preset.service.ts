@@ -15,6 +15,7 @@ import { FixtureProfile } from '../models/fixture-profile';
 import { FixtureMode } from '../models/fixture-mode';
 import { ConfigService } from './config.service';
 import { HttpClient } from '@angular/common/http';
+import { AnimationService } from './animation.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,8 @@ export class PresetService {
     private projectService: ProjectService,
     private fixtureService: FixtureService,
     private configService: ConfigService,
-    private http: HttpClient
+    private http: HttpClient,
+    private animationService: AnimationService
   ) { }
 
   getPresetByUuid(uuid: string): Preset {
@@ -432,25 +434,42 @@ export class PresetService {
     return availableChannels;
   }
 
-  previewLive() {
+  previewLive(compositionName: string = "", positionMillis: number = undefined) {
     if (!this.configService.livePreview) {
       return;
     }
 
     // collect all changes and delay them to not flood the backend
-    if (this.livePreviewTimer) {
+    // (except play events. they need to be delivered all)
+    if (this.livePreviewTimer && !compositionName) {
       this.liveChangePending = true;
       return;
     }
 
-    this.http.post('preview', JSON.stringify(this.projectService.project)).subscribe();
+    let position = positionMillis;
 
-    this.livePreviewTimer = setTimeout(() => {
-      this.livePreviewTimer = undefined;
-      if (this.liveChangePending) {
-        this.http.post('preview', JSON.stringify(this.projectService.project)).subscribe();
-      }
-    }, 50);
+    if (position == undefined) {
+      position = Math.round(this.animationService.timeMillis)
+    }
+
+    this.http.post('preview?positionMillis=' + position + '&compositionName=' + compositionName, JSON.stringify(this.projectService.project)).subscribe();
+
+    if (!compositionName) {
+      this.livePreviewTimer = setTimeout(() => {
+        this.livePreviewTimer = undefined;
+        if (this.liveChangePending) {
+          this.http.post('preview?positionMillis=' + position + '&compositionName=' + compositionName, JSON.stringify(this.projectService.project)).subscribe();
+        }
+      }, 50);
+    }
+  }
+
+  stopPreviewPlay() {
+    if (!this.configService.livePreview) {
+      return;
+    }
+
+    this.http.post('stop-preview-play', null).subscribe();
   }
 
 }

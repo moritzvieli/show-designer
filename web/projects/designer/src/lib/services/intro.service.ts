@@ -12,6 +12,10 @@ export class IntroService {
   constructor(
     private configService: ConfigService
   ) {
+  }
+
+  refresh() {
+    // called, as soon as the config has been updated
     if (this.configService.intro) {
       if (localStorage.getItem('showIntro')) {
         this.showIntro = localStorage.getItem('showIntro') == 'true';

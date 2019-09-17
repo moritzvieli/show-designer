@@ -22,7 +22,7 @@ import { ProjectLoadService } from './services/project-load.service';
 import { WarningDialogService } from './services/warning-dialog.service';
 import { ProjectImportComponent } from './project-import/project-import.component';
 import { ProjectService } from './services/project.service';
-
+import { IntroService } from './services/intro.service';
 
 @Component({
   selector: 'lib-designer',
@@ -86,6 +86,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   @Input()
   set intro(value: boolean) {
     this.configService.intro = value;
+    this.introService.refresh();
   }
 
   // the size of the menu used in the designer
@@ -118,6 +119,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     private errorDialogService: ErrorDialogService,
     private fixtureService: FixtureService,
     private timelineService: TimelineService,
+    public introService: IntroService
   ) {
     this.configService.menuHeightChanged.subscribe(() => {
       this.calcTotalMenuHeight();

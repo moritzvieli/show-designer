@@ -31,7 +31,7 @@ export class Composition {
     public scenePlaybackRegions: ScenePlaybackRegion[] = [];
 
     constructor(data?: any) {
-        if(!data) {
+        if (!data) {
             return;
         }
 
@@ -49,9 +49,9 @@ export class Composition {
         this.gridResolution = data.gridResolution;
         this.durationMillis = data.durationMillis;
 
-        if(data.scenePlaybackRegions) {
+        if (data.scenePlaybackRegions) {
             for (let scenePlaybackRegion of data.scenePlaybackRegions) {
-                this.scenePlaybackRegions.push(new ScenePlaybackRegion(ScenePlaybackRegion));
+                this.scenePlaybackRegions.push(new ScenePlaybackRegion(scenePlaybackRegion));
             }
         }
     }

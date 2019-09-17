@@ -38,7 +38,8 @@
             "project-settings": "Settings",
             "login": "Sign in",
             "logout": "Log out",
-            "support": "Support"
+            "support": "Support",
+            "reset-intro": "Show intro"
         },
         "user": {
             "register-title": "Register",

@@ -49,6 +49,8 @@
                     {{ 'designer.navigation.help' | translate }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="settingsDropdown">
+                    <a class="dropdown-item" href="#"
+                        (click)="introService.reset(); false;">{{ 'designer.navigation.reset-intro' | translate }}</a>
                     <a class="dropdown-item" href="https://rocketshow.net/support/"
                         target="_blank">{{ 'designer.navigation.support' | translate }}</a>
                 </div>

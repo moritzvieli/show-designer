@@ -247,6 +247,7 @@ export class TimelineService {
     setTimeout(() => {
       this.waveSurfer.seekTo(progress);
       this.detectChanges.next();
+      this.presetService.previewLive(this.selectedComposition.name, Math.round(this.waveSurfer.getCurrentTime() * 1000));
     }, 0);
   }
 
@@ -312,6 +313,8 @@ export class TimelineService {
     } else {
       this.drawRegion(scenePlaybackRegion, this.sceneService.selectedScenes[0]);
     }
+
+    this.presetService.previewLive();
   }
 
   private getSnapToGridInterval(): number {
@@ -495,6 +498,7 @@ export class TimelineService {
 
       this.waveSurfer.on('region-updated', (region: any) => {
         this.detectChanges.next();
+        this.presetService.previewLive();
       });
     }, 0);
   }
@@ -650,6 +654,8 @@ export class TimelineService {
         return;
       }
     }
+
+    this.presetService.previewLive();
   }
 
   getPresetsInTime(timeMillis: number): PresetRegionScene[] {

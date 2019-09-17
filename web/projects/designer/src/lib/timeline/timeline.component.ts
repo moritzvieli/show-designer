@@ -11,6 +11,7 @@ import { WarningDialogService } from '../services/warning-dialog.service';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
+import { PresetService } from '../services/preset.service';
 
 @Component({
   selector: 'app-timeline',
@@ -37,7 +38,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     private hotkeyTargetExcludeService: HotkeyTargetExcludeService,
     private warningDialogService: WarningDialogService,
     private http: HttpClient,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private presetService: PresetService
   ) {
     this.timelineService.waveSurferReady.subscribe(() => {
       this.onResize();
@@ -80,11 +82,13 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   play() {
     this.timelineService.playState = 'playing';
+    this.presetService.previewLive(this.timelineService.selectedComposition.name, Math.round(this.timelineService.waveSurfer.getCurrentTime() * 1000));
     this.timelineService.waveSurfer.play();
   }
 
   pause() {
     this.timelineService.playState = 'paused';
+    this.presetService.stopPreviewPlay();
     this.timelineService.waveSurfer.pause();
   }
 

@@ -24,7 +24,7 @@ export class EffectCurveComponent implements OnInit {
   private maxHeight: number;
 
   public lengthMillisMin: number = 50;
-  public lengthMillisMax: number = 2500;
+  public lengthMillisMax: number = 8000;
   public amplitudeMin: number = 0;
   public amplitudeMax: number = 4;
   public percentageMin: number = 0;
@@ -135,7 +135,7 @@ export class EffectCurveComponent implements OnInit {
       step = 5;
     }
 
-    let durationMillis = this.curve.lengthMillis * Math.round(4 - this.curve.lengthMillis / 1000);
+    let durationMillis = this.curve.lengthMillis * Math.max(Math.round(4 - this.curve.lengthMillis / 1000), 1);
     let maxHeight = this.maxHeight - width * 2;
 
     // draw the curve

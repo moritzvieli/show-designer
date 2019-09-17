@@ -10,6 +10,7 @@ import { ProjectLoadService } from '../services/project-load.service';
 import { UserService } from '../services/user.service';
 import { WarningDialogService } from '../services/warning-dialog.service';
 import { map } from 'rxjs/operators';
+import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'lib-project-browser',
@@ -26,7 +27,8 @@ export class ProjectBrowserComponent implements OnInit {
     private projectService: ProjectService,
     private projectLoadService: ProjectLoadService,
     private userService: UserService,
-    private warningDialogService: WarningDialogService
+    private warningDialogService: WarningDialogService,
+    private configService: ConfigService
   ) {
     this.loadProjects();
   }
@@ -48,7 +50,9 @@ export class ProjectBrowserComponent implements OnInit {
   openProject(project: Project) {
     this.bsModalRef.hide();
     this.projectLoadService.load(project.id, project.name).subscribe(() => {
-      this.userService.setAutoLoadProjectId(project.id);
+      if (this.configService.autoLoadProject) {
+        this.userService.setAutoLoadProjectId(project.id);
+      }
     });
   }
 

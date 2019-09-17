@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { IntroService } from '../services/intro.service';
-import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'app-intro',
