@@ -78,6 +78,16 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     this.configService.livePreview = value;
   }
 
+  @Input()
+  set localProfiles(value: boolean) {
+    this.configService.localProfiles = value;
+  }
+
+  @Input()
+  set intro(value: boolean) {
+    this.configService.intro = value;
+  }
+
   // the size of the menu used in the designer
   private designerMenuSizePx = 20;
 

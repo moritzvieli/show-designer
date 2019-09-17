@@ -418,4 +418,8 @@ export class FixtureService {
     return profile.categories[0].replace(' ', '-').toLocaleLowerCase();
   }
 
+  updateProfiles() {
+    return this.http.post('update-profiles', null);
+  }
+
 }

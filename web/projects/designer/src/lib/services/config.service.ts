@@ -14,6 +14,8 @@ export class ConfigService {
   public languageSwitch: boolean = false;
   public autoLoadProject: boolean = false;
   public livePreview: boolean = false;
+  public localProfiles: boolean = false;
+  public intro: boolean = false;
 
   public menuHeightChanged: Subject<void> = new Subject<void>();
 

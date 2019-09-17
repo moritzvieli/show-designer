@@ -132,7 +132,12 @@
             "no-free-space-title": "No space left",
             "channel-occupied": "The current configuration contains overlapping channels.",
             "channel-occupied-title": "Overlapping channels",
-            "add-profile": "Add missing profile"
+            "add-profile": "Add missing profile",
+            "update-profiles": "Update profiles",
+            "profiles-updated": "The profiles have been updated.",
+            "profiles-updated-title": "Update successful",
+            "profiles-update-error": "The profiles could not be updated. Please check the internet connection to your device.",
+            "profiles-update-error-title": "Update error"
         },
         "effect": {
             "add-new": "Add new Effekt",

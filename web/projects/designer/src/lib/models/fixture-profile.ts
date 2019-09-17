@@ -18,7 +18,8 @@ export enum FixtureCategory {
     Smoke = "Smoke",
     Stand = "Stand",
     Strobe = "Strobe",
-    Other = "Other"
+    Other = "Other",
+    'Barrel Scanner' = "Barrel Scanner",
 }
 
 export class FixtureProfile {

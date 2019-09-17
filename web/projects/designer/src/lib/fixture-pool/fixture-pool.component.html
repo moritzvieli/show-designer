@@ -47,11 +47,20 @@
         </div>
       </div>
       <div>
-        <p class="d-inline-block mb-0 mt-2">Powered by the <a href="https://open-fixture-library.org/" target="_blank">Open Fixture Library</a></p>
+        <p class="d-inline-block mb-0 mt-2">Powered by the <a href="https://open-fixture-library.org/"
+            target="_blank">Open Fixture Library</a></p>
         <a class="mt-2 btn btn-secondary btn-sm float-right" href="https://open-fixture-library.org/fixture-editor"
           target="_blank" role="button">
           <i class="fa fa-file-o" aria-hidden="true"></i> {{ 'designer.fixture-pool.add-profile' | translate }}
         </a>
+        <button *ngIf="configService.localProfiles" type="button" class="mr-2 mt-2 btn btn-secondary btn-sm float-right" (click)="updateProfiles(); false;"
+          [disabled]="updatingProfiles" role="button">
+
+          <i *ngIf="updatingProfiles" class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true"></i>
+          <i *ngIf="!updatingProfiles" class="fa fa-download fa-fw" aria-hidden="true"></i> {{ 'designer.fixture-pool.update-profiles' |
+          translate
+          }}
+        </button>
       </div>
     </div>
     <div class="col-6">

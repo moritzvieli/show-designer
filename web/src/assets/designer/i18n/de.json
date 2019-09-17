@@ -132,7 +132,12 @@
             "no-free-space-title": "Kein freier Bereich",
             "channel-occupied": "Die eingestellte Konfiguration hat überlappende Kanäle.",
             "channel-occupied-title": "Überlappende Kanäle",
-            "add-profile": "Fehlendes Profil erfassen"
+            "add-profile": "Fehlendes Profil erfassen",
+            "update-profiles": "Profile aktualisieren",
+            "profiles-updated": "Die Profile wurden erfolgreich aktualisiert.",
+            "profiles-updated-title": "Aktualisierung erfolgreich",
+            "profiles-update-error": "Die Profile konnten nicht aktualisiert werden. Bitte prüfe die Internetverbindung zum Gerät.",
+            "profiles-update-error-title": "Fehler bei der Aktualisierung"
         },
         "effect": {
             "add-new": "Neuen Effekt hinzufügen",

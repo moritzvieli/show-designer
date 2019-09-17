@@ -10,6 +10,8 @@ import { PreviewService } from '../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { PresetService } from '../services/preset.service';
+import { catchError, finalize } from 'rxjs/operators';
+import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'app-fixture-pool',
@@ -35,6 +37,8 @@ export class FixturePoolComponent implements OnInit {
 
   private lastAddedFixture: Fixture;
 
+  public updatingProfiles: boolean;
+
   constructor(
     public bsModalRef: BsModalRef,
     public fixtureService: FixtureService,
@@ -43,7 +47,8 @@ export class FixturePoolComponent implements OnInit {
     private previewService: PreviewService,
     private translateService: TranslateService,
     private toastrService: ToastrService,
-    private presetService: PresetService
+    private presetService: PresetService,
+    public configService: ConfigService
   ) {
     this.fixturePool = [...this.projectService.project.fixtures];
 
@@ -57,6 +62,10 @@ export class FixturePoolComponent implements OnInit {
       this.dmxChannels.push(0);
     }
 
+    this.loadProfiles();
+  }
+
+  private loadProfiles() {
     this.loadingProfiles = true;
 
     this.fixtureService.getSearchProfiles().subscribe(profiles => {
@@ -374,6 +383,34 @@ export class FixturePoolComponent implements OnInit {
   cancel() {
     this.onClose.next(2);
     this.bsModalRef.hide()
+  }
+
+  updateProfiles() {
+    this.updatingProfiles = true;
+
+    // TODO
+    this.fixtureService.updateProfiles().pipe(finalize(() => {
+      this.updatingProfiles = false;
+    }), catchError(() => {
+      let msg = 'designer.fixture-pool.profiles-update-error';
+      let title = 'designer.fixture-pool.profiles-update-error-title';
+
+      this.translateService.get([msg, title]).subscribe(result => {
+        this.toastrService.error(result[msg], result[title]);
+      });
+
+      return undefined;
+    }))
+      .subscribe(() => {
+        this.loadProfiles();
+
+        let msg = 'designer.fixture-pool.profiles-updated';
+        let title = 'designer.fixture-pool.profiles-updated-title';
+
+        this.translateService.get([msg, title]).subscribe(result => {
+          this.toastrService.success(result[msg], result[title]);
+        });
+      });
   }
 
 }
