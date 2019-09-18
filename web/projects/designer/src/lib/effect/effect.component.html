@@ -9,11 +9,11 @@
 
           <button class="btn btn-link btn-block clearfix" accordion-heading>
             <div class="pull-left float-left d-flex w-100">
-              <i *ngIf="item.constructor.name == 'EffectCurve'" class="fa fa-area-chart fa-fw my-auto"
+              <i *ngIf="item.type == 'curve'" class="fa fa-area-chart fa-fw my-auto"
                 aria-hidden="true"></i>
-              <i *ngIf="item.constructor.name == 'EffectPanTilt'" class="fa fa-arrows-alt fa-fw my-auto"
+              <i *ngIf="item.type == 'pan-tilt'" class="fa fa-arrows-alt fa-fw my-auto"
                 aria-hidden="true"></i>
-              <span class="ml-2">{{ item.constructor.name }}</span>
+              <span class="ml-2">{{ 'designer.effect.type-' + item.type | translate }}</span>
               <div class="ml-auto mr-2"><i (click)="item.visible = !item.visible; presetService.previewLive(); $event.stopPropagation();" class="fa fa-eye fa-fw"
                   [class.text-primary]="item.visible" aria-hidden="true"></i></div>
               <div class="mr-2"><i (click)="this.deleteEffect(item); $event.stopPropagation();" class="fa fa-trash fa-fw" aria-hidden="true"></i></div>
@@ -24,11 +24,11 @@
             </div>
           </button>
 
-          <div *ngIf="item.constructor.name == 'EffectCurve'" style="min-width: 670px;">
+          <div *ngIf="item.type == 'curve'" style="min-width: 670px;">
             <app-effect-curve [curve]="item" [isSelected]="item == effectService.selectedEffect"></app-effect-curve>
           </div>
 
-          <div *ngIf="item.constructor.name == 'EffectPanTilt'" style="min-width: 500px;">
+          <div *ngIf="item.type == 'pan-tilt'" style="min-width: 500px;">
             <app-effect-pan-tilt></app-effect-pan-tilt>
           </div>
 

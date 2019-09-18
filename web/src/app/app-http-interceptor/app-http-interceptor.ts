@@ -12,13 +12,7 @@ export class AppHttpInterceptor implements HttpInterceptor {
 
   constructor() {
     // Create the backend-url
-    if (environment.name == 'dev') {
-      this.restUrl = environment.localBackend + '/';
-    } else {
-      this.restUrl = '/'
-    }
-
-    this.restUrl += 'api/';
+    this.restUrl = environment.localBackend + '/api/';
   }
 
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

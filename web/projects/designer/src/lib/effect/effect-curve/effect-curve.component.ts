@@ -78,7 +78,7 @@ export class EffectCurveComponent implements OnInit {
 
   ngOnInit() {
     let canvas = this.curveGrid.nativeElement;
-    this.ctx = canvas.getContext("2d");
+    this.ctx = canvas.getContext('2d');
     this.maxWidth = canvas.width;
     this.maxHeight = canvas.height;
 

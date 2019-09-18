@@ -3,7 +3,7 @@ export const environment = {
   name: "prod",
 
   // Local backend
-  localBackend: "",
+  localBackend: "/designer",
 
   debug: false
 };

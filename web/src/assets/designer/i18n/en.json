@@ -142,6 +142,8 @@
         },
         "effect": {
             "add-new": "Add new Effekt",
+            "type-curve": "Curve",
+            "type-pan-tilt": "Pan-Tilt",
             "curve": "Curve",
             "curve-length": "Period",
             "curve-amplitude": "Amplitude",
