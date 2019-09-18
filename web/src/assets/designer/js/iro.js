@@ -5,15 +5,16 @@
  * github.com/jaames/iro.js
  */
 
- /*
-  Color wheel with minor modifications: No rounded slider, vertical.
- */
+/*
+ Color wheel with minor modifications: No rounded slider, vertical.
+*/
 
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.iro = factory());
-}(this, (function () { 'use strict';
+    typeof define === 'function' && define.amd ? define(factory) :
+      (global.iro = factory());
+}(this, (function () {
+  'use strict';
 
   // css class prefix for this element
   var CLASS_PREFIX = "iro__marker";
@@ -22,7 +23,7 @@
       class: CLASS_PREFIX
     });
 
-    if(isLine) {
+    if (isLine) {
       baseGroup.rectangle(-10, 0, 20, 5, {
         style: "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"
       });
@@ -49,23 +50,23 @@
   */
 
 
-  marker.prototype.move = function move (x, y) {
+  marker.prototype.move = function move(x, y) {
     this.g.setTransform("translate", [x, y]);
   };
 
   var CLASS_PREFIX$1 = "iro__wheel"; // Quick references to reused math functions
 
   var PI = Math.PI,
-      sqrt = Math.sqrt,
-      abs = Math.abs,
-      round = Math.round;
+    sqrt = Math.sqrt,
+    abs = Math.abs,
+    round = Math.round;
   var wheel = function wheel(svg, opts) {
     this._opts = opts;
     this.type = "wheel";
     var cY = opts.cY,
-        cX = opts.cX,
-        r = opts.r,
-        border = opts.border;
+      cX = opts.cX,
+      r = opts.r,
+      border = opts.border;
     var baseGroup = svg.g({
       class: CLASS_PREFIX$1
     });
@@ -112,7 +113,7 @@
   */
 
 
-  wheel.prototype.update = function update (color, changes) {
+  wheel.prototype.update = function update(color, changes) {
     var opts = this._opts;
     var hsv = color.hsv; // If the V channel has changed, redraw the wheel UI with the new value
 
@@ -140,18 +141,18 @@
   */
 
 
-  wheel.prototype.input = function input (x, y) {
+  wheel.prototype.input = function input(x, y) {
     var opts = this._opts,
-        rangeMax = opts.rMax,
-        _x = opts.cX - x,
-        _y = opts.cY - y;
+      rangeMax = opts.rMax,
+      _x = opts.cX - x,
+      _y = opts.cY - y;
 
     var angle = Math.atan2(_y, _x),
-        // Calculate the hue by converting the angle to radians
-    hue = round(angle * (180 / PI)) + 180,
-        // Find the point's distance from the center of the wheel
-    // This is used to show the saturation level
-    dist = Math.min(sqrt(_x * _x + _y * _y), rangeMax);
+      // Calculate the hue by converting the angle to radians
+      hue = round(angle * (180 / PI)) + 180,
+      // Find the point's distance from the center of the wheel
+      // This is used to show the saturation level
+      dist = Math.min(sqrt(_x * _x + _y * _y), rangeMax);
     hue = opts.anticlockwise ? 360 - hue : hue; // Return just the H and S channels, the wheel element doesn't do anything with the L channel
 
     return {
@@ -167,12 +168,12 @@
   */
 
 
-  wheel.prototype.checkHit = function checkHit (x, y) {
+  wheel.prototype.checkHit = function checkHit(x, y) {
     var opts = this._opts; // Check if the point is within the hue ring by comparing the point's distance from the centre to the ring's radius
     // If the distance is smaller than the radius, then we have a hit
 
     var dx = abs(x - opts.cX),
-        dy = abs(y - opts.cY);
+      dy = abs(y - opts.cY);
     return sqrt(dx * dx + dy * dy) < opts.r;
   };
 
@@ -187,9 +188,9 @@
 
   function parseColorStr(str, maxValues) {
     var parsed = str.match(/(\S+)\((\d+)(%?)(?:\D+?)(\d+)(%?)(?:\D+?)(\d+)(%?)(?:\D+?)?([0-9\.]+?)?\)/i),
-        val1 = parseInt(parsed[2]),
-        val2 = parseInt(parsed[4]),
-        val3 = parseInt(parsed[6]);
+      val1 = parseInt(parsed[2]),
+      val2 = parseInt(parsed[4]),
+      val3 = parseInt(parsed[6]);
     return [parsed[1], parsed[3] == "%" ? val1 / 100 * maxValues[0] : val1, parsed[5] == "%" ? val2 / 100 * maxValues[1] : val2, parsed[7] == "%" ? val3 / 100 * maxValues[2] : val3, parseFloat(parsed[8]) || undefined];
   }
   /**
@@ -238,7 +239,7 @@
     if (value) { this.set(value); }
   };
 
-  var prototypeAccessors = { hsv: { configurable: true },rgb: { configurable: true },hsl: { configurable: true },rgbString: { configurable: true },hexString: { configurable: true },hslString: { configurable: true } };
+  var prototypeAccessors = { hsv: { configurable: true }, rgb: { configurable: true }, hsl: { configurable: true }, rgbString: { configurable: true }, hexString: { configurable: true }, hslString: { configurable: true } };
   /**
     * @desc mix two colors
     * @param {Object | String | color} color1 - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
@@ -248,9 +249,9 @@
   */
 
 
-  color.mix = function mix (color1, color2, weight) {
+  color.mix = function mix(color1, color2, weight) {
     var rgb1 = getColor(color1).rgb,
-        rgb2 = getColor(color2).rgb;
+      rgb2 = getColor(color2).rgb;
     weight = clamp(weight / 100 || 0.5, 0, 1);
     return new color({
       r: floor(rgb1.r + (rgb2.r - rgb1.r) * weight),
@@ -266,9 +267,9 @@
   */
 
 
-  color.lighten = function lighten (color, amount) {
+  color.lighten = function lighten(color, amount) {
     var col = getColor(color),
-        hsv = col.hsv;
+      hsv = col.hsv;
     hsv.v = clamp(hsv.v + amount, 0, 100);
     col.hsv = hsv;
     return col;
@@ -281,9 +282,9 @@
   */
 
 
-  color.darken = function darken (color, amount) {
+  color.darken = function darken(color, amount) {
     var col = getColor(color),
-        hsv = col.hsv;
+      hsv = col.hsv;
     hsv.v = clamp(hsv.v - amount, 0, 100);
     col.hsv = hsv;
     return col;
@@ -295,11 +296,11 @@
   */
 
 
-  color.hsv2Rgb = function hsv2Rgb (hsv) {
+  color.hsv2Rgb = function hsv2Rgb(hsv) {
     var r, g, b, i, f, p, q, t;
     var h = hsv.h / 360,
-        s = hsv.s / 100,
-        v = hsv.v / 100;
+      s = hsv.s / 100,
+      v = hsv.v / 100;
     i = floor(h * 6);
     f = h * 6 - i;
     p = v * (1 - s);
@@ -345,15 +346,15 @@
   */
 
 
-  color.rgb2Hsv = function rgb2Hsv (rgb) {
+  color.rgb2Hsv = function rgb2Hsv(rgb) {
     // Modified from https://github.com/bgrins/TinyColor/blob/master/tinycolor.js#L446
     var r = rgb.r / 255,
-        g = rgb.g / 255,
-        b = rgb.b / 255,
-        max = Math.max(r, g, b),
-        min = Math.min(r, g, b),
-        delta = max - min,
-        hue;
+      g = rgb.g / 255,
+      b = rgb.b / 255,
+      max = Math.max(r, g, b),
+      min = Math.min(r, g, b),
+      delta = max - min,
+      hue;
 
     switch (max) {
       case min:
@@ -387,9 +388,9 @@
   */
 
 
-  color.hsv2Hsl = function hsv2Hsl (hsv) {
+  color.hsv2Hsl = function hsv2Hsl(hsv) {
     var s = hsv.s / 100,
-        v = hsv.v / 100;
+      v = hsv.v / 100;
     var l = 0.5 * v * (2 - s);
     s = v * s / (1 - Math.abs(2 * l - 1));
     return {
@@ -405,9 +406,9 @@
   */
 
 
-  color.hsl2Hsv = function hsl2Hsv (hsl) {
+  color.hsl2Hsv = function hsl2Hsv(hsl) {
     var s = hsl.s / 100,
-        l = hsl.l / 100;
+      l = hsl.l / 100;
     l *= 2;
     s *= l <= 1 ? l : 2 - l;
     return {
@@ -423,7 +424,7 @@
   */
 
 
-  color.hsl2Str = function hsl2Str (hsl) {
+  color.hsl2Str = function hsl2Str(hsl) {
     return "hsl" + (hsl.a ? "a" : "") + "(" + hsl.h + ", " + hsl.s + "%, " + hsl.l + "%" + (hsl.a ? ", " + hsl.a : "") + ")";
   };
   /**
@@ -433,7 +434,7 @@
   */
 
 
-  color.rgb2Str = function rgb2Str (rgb) {
+  color.rgb2Str = function rgb2Str(rgb) {
     return "rgb" + (rgb.a ? "a" : "") + "(" + rgb.r + ", " + rgb.g + ", " + rgb.b + (rgb.a ? ", " + rgb.a : "") + ")";
   };
   /**
@@ -443,7 +444,7 @@
   */
 
 
-  color.rgb2Hex = function rgb2Hex (rgb) {
+  color.rgb2Hex = function rgb2Hex(rgb) {
     var str = "#";
     str += rgb.r.toString(16).padStart(2, "0");
     str += rgb.g.toString(16).padStart(2, "0");
@@ -457,19 +458,19 @@
   */
 
 
-  color.parseHexStr = function parseHexStr (hex) {
+  color.parseHexStr = function parseHexStr(hex) {
     // Strip any "#" characters
     hex = hex.replace("#", ""); // Prefix the hex string with "0x" which indicates a number in hex notation, then convert to an integer
 
     var int = parseInt("0x" + hex),
-        // If the length of the input is only 3, then it is a shorthand hex color
-    isShorthand = hex.length == 3,
-        // bitMask for isolating each channel
-    bitMask = isShorthand ? 0xF : 0xFF,
-        // bitLength of each channel (for example, F is 4 bits long while FF is 8 bits long)
-    bitLength = isShorthand ? 4 : 8,
-        // If we're using shorthand notation, multiply each channel by 17
-    multiplier = isShorthand ? 17 : 1;
+      // If the length of the input is only 3, then it is a shorthand hex color
+      isShorthand = hex.length == 3,
+      // bitMask for isolating each channel
+      bitMask = isShorthand ? 0xF : 0xFF,
+      // bitLength of each channel (for example, F is 4 bits long while FF is 8 bits long)
+      bitLength = isShorthand ? 4 : 8,
+      // If we're using shorthand notation, multiply each channel by 17
+      multiplier = isShorthand ? 17 : 1;
     return {
       r: (int >> bitLength * 2 & bitMask) * multiplier,
       g: (int >> bitLength & bitMask) * multiplier,
@@ -483,7 +484,7 @@
   */
 
 
-  color.parseHslStr = function parseHslStr (str) {
+  color.parseHslStr = function parseHslStr(str) {
     var parsed = parseColorStr(str, [360, 100, 100]);
     return {
       h: parsed[2],
@@ -498,7 +499,7 @@
   */
 
 
-  color.parseRgbStr = function parseRgbStr (str) {
+  color.parseRgbStr = function parseRgbStr(str) {
     var parsed = parseColorStr(str, [255, 255, 255]);
     return {
       r: parsed[1],
@@ -592,7 +593,7 @@
   */
 
 
-  color.prototype.set = function set (value) {
+  color.prototype.set = function set(value) {
     if (typeof value == "object") {
       if (value instanceof color) {
         this.hsv = color.hsv;
@@ -621,7 +622,7 @@
   */
 
 
-  color.prototype.setChannel = function setChannel (model, channel, value) {
+  color.prototype.setChannel = function setChannel(model, channel, value) {
     var v = this[model];
     v[channel] = value;
     this[model] = v;
@@ -632,7 +633,7 @@
   */
 
 
-  color.prototype.clone = function clone () {
+  color.prototype.clone = function clone() {
     return new color(this);
   };
   /**
@@ -643,7 +644,7 @@
   */
 
 
-  color.prototype.compare = function compare (color, model) {
+  color.prototype.compare = function compare(color, model) {
     model = model || "hsv";
     return compareObjs(this[model], getColor(color)[model]);
   };
@@ -654,7 +655,7 @@
   */
 
 
-  color.prototype.mix = function mix$1 (color, weight) {
+  color.prototype.mix = function mix$1(color, weight) {
     this.hsv = mix(this, color, weight).hsv;
   };
   /**
@@ -663,7 +664,7 @@
   */
 
 
-  color.prototype.lighten = function lighten$1 (amount) {
+  color.prototype.lighten = function lighten$1(amount) {
     lighten(this, amount);
   };
   /**
@@ -672,20 +673,20 @@
   */
 
 
-  color.prototype.darken = function darken$1 (amount) {
+  color.prototype.darken = function darken$1(amount) {
     darken(this, amount);
   };
 
-  Object.defineProperties( color.prototype, prototypeAccessors );
+  Object.defineProperties(color.prototype, prototypeAccessors);
 
   var CLASS_PREFIX$2 = "iro__slider";
   var slider = function slider(svg, opts) {
     var r = opts.r,
-        w = opts.w,
-        h = opts.h,
-        x = opts.x,
-        y = opts.y,
-        borderWidth = opts.border.w; // "range" limits how far the slider's marker can travel, and where it stops and starts along the X axis
+      w = opts.w,
+      h = opts.h,
+      x = opts.x,
+      y = opts.y,
+      borderWidth = opts.border.w; // "range" limits how far the slider's marker can travel, and where it stops and starts along the X axis
 
     opts.range = {
       min: y + 2,
@@ -733,7 +734,7 @@
   */
 
 
-  slider.prototype.update = function update (color$$1, changes) {
+  slider.prototype.update = function update(color$$1, changes) {
     var opts = this._opts;
     var range = opts.range;
     var hsv = color$$1.hsv;
@@ -764,7 +765,7 @@
   */
 
 
-  slider.prototype.input = function input (x, y) {
+  slider.prototype.input = function input(x, y) {
     var opts = this._opts;
     var range = opts.range;
     var dist = Math.max(Math.min(y, range.max), range.min) - range.min;
@@ -781,7 +782,7 @@
   */
 
 
-  slider.prototype.checkHit = function checkHit (x, y) {
+  slider.prototype.checkHit = function checkHit(x, y) {
     var opts = this._opts;
     return x > opts.x && x < opts.x + opts.w && y > opts.y && y < opts.y + opts.h;
   };
@@ -808,7 +809,7 @@
 
   var ua = window.navigator.userAgent.toLowerCase();
   var IS_IE = /msie|trident|edge/.test(ua);
-  var IS_SAFARI = false;
+  var IS_SAFARI = /^((?!chrome|android).)*safari/i.test(ua);
 
   var svgElement = function svgElement(root, parent, type, attrs) {
     var el = document.createElementNS(SVG_NAMESPACE, type);
@@ -826,7 +827,7 @@
   */
 
 
-  svgElement.prototype.insert = function insert (type, attrs) {
+  svgElement.prototype.insert = function insert(type, attrs) {
     return new svgElement(this._root, this, type, attrs);
   };
   /**
@@ -835,7 +836,7 @@
   */
 
 
-  svgElement.prototype.g = function g (attrs) {
+  svgElement.prototype.g = function g(attrs) {
     return this.insert("g", attrs);
   };
   /**
@@ -849,14 +850,14 @@
   */
 
 
-  svgElement.prototype.arc = function arc (cx, cy, radius, startAngle, endAngle, attrs) {
+  svgElement.prototype.arc = function arc(cx, cy, radius, startAngle, endAngle, attrs) {
     var largeArcFlag = endAngle - startAngle <= 180 ? 0 : 1;
     startAngle *= Math.PI / 180;
     endAngle *= Math.PI / 180;
     var x1 = cx + radius * Math.cos(endAngle),
-        y1 = cy + radius * Math.sin(endAngle),
-        x2 = cx + radius * Math.cos(startAngle),
-        y2 = cy + radius * Math.sin(startAngle);
+      y1 = cy + radius * Math.sin(endAngle),
+      x2 = cx + radius * Math.cos(startAngle),
+      y2 = cy + radius * Math.sin(startAngle);
     attrs = attrs || {};
     attrs.d = ["M", x1, y1, "A", radius, radius, 0, largeArcFlag, 0, x2, y2].join(" ");
     return this.insert("path", attrs);
@@ -870,14 +871,14 @@
   */
 
 
-  svgElement.prototype.circle = function circle (cx, cy, radius, attrs) {
+  svgElement.prototype.circle = function circle(cx, cy, radius, attrs) {
     attrs = attrs || {};
     attrs.cx = cx;
     attrs.cy = cy;
     attrs.r = radius;
     return this.insert("circle", attrs);
   };
-  svgElement.prototype.rectangle = function rectangle (x, y, width, height, attrs) {
+  svgElement.prototype.rectangle = function rectangle(x, y, width, height, attrs) {
     attrs = attrs || {};
     attrs.x = x;
     attrs.y = y;
@@ -892,7 +893,7 @@
   */
 
 
-  svgElement.prototype.setTransform = function setTransform (type, args) {
+  svgElement.prototype.setTransform = function setTransform(type, args) {
     if (!IS_IE) {
       var transform, transformFn;
       var svgTransforms = this._svgTransforms;
@@ -922,8 +923,8 @@
   */
 
 
-  svgElement.prototype.setAttrs = function setAttrs (attrs) {
-      var this$1 = this;
+  svgElement.prototype.setAttrs = function setAttrs(attrs) {
+    var this$1 = this;
 
     for (var attr in attrs) {
       var name = attr in SVG_ATTRIBUTE_SHORTHANDS ? SVG_ATTRIBUTE_SHORTHANDS[attr] : attr;
@@ -931,7 +932,7 @@
     }
   };
 
-  svgElement.prototype.setGradient = function setGradient (attr, gradient) {
+  svgElement.prototype.setGradient = function setGradient(attr, gradient) {
     var attrs = {};
     attrs[attr] = gradient.getUrl();
     gradient._refs[attr] = this;
@@ -942,7 +943,7 @@
   var svgGradient = function svgGradient(root, type, stops) {
     var stopElements = [];
 
-    if(type == 'linear') {
+    if (type == 'linear') {
       var gradient = root._defs.insert(type + GRADIENT_SUFFIX, {
         id: "iro" + GRADIENT_SUFFIX + GRADIENT_INDEX++,
         x1: "0",
@@ -970,8 +971,9 @@
     this._refs = {};
   };
 
-  svgGradient.prototype.getUrl = function getUrl (base) {
-    var root = IS_SAFARI ? base || window.location.href : "";
+  svgGradient.prototype.getUrl = function getUrl(base) {
+    var loc = location;
+    var root = IS_SAFARI ? base || loc.protocol + "//" + loc.host + loc.pathname + loc.search : "";
     return "url(" + root + "#" + this.el.id + ")";
   };
 
@@ -987,11 +989,11 @@
       this._gradients = [];
     }
 
-    if ( svgElement ) svgRoot.__proto__ = svgElement;
-    svgRoot.prototype = Object.create( svgElement && svgElement.prototype );
+    if (svgElement) svgRoot.__proto__ = svgElement;
+    svgRoot.prototype = Object.create(svgElement && svgElement.prototype);
     svgRoot.prototype.constructor = svgRoot;
 
-    svgRoot.prototype.gradient = function gradient (type, stops) {
+    svgRoot.prototype.gradient = function gradient(type, stops) {
       var gradient = new svgGradient(this, type, stops);
 
       this._gradients.push(gradient);
@@ -999,7 +1001,7 @@
       return gradient;
     };
 
-    svgRoot.prototype.updateUrls = function updateUrls (base) {
+    svgRoot.prototype.updateUrls = function updateUrls(base) {
       if (IS_SAFARI) {
         var gradients = this._gradients;
 
@@ -1037,7 +1039,7 @@
     this.map = {};
   };
 
-  var prototypeAccessors$1 = { enabled: { configurable: true },cssText: { configurable: true },css: { configurable: true } };
+  var prototypeAccessors$1 = { enabled: { configurable: true }, cssText: { configurable: true }, css: { configurable: true } };
 
   prototypeAccessors$1.enabled.get = function () {
     return !this.sheet.disabled;
@@ -1083,7 +1085,7 @@
   */
 
 
-  stylesheet.prototype.setRule = function setRule (selector, property, value) {
+  stylesheet.prototype.setRule = function setRule(selector, property, value) {
     var sheet = this.sheet;
     var rules = sheet.rules || sheet.cssRules;
     var map = this.map; // Convert property from camelCase to snake-case
@@ -1114,16 +1116,16 @@
     }
   };
 
-  Object.defineProperties( stylesheet.prototype, prototypeAccessors$1 );
+  Object.defineProperties(stylesheet.prototype, prototypeAccessors$1);
 
   var EVENT_MOUSEDOWN = "mousedown",
-        EVENT_MOUSEMOVE = "mousemove",
-        EVENT_MOUSEUP = "mouseup",
-        EVENT_TOUCHSTART = "touchstart",
-        EVENT_TOUCHMOVE = "touchmove",
-        EVENT_TOUCHEND = "touchend",
-        EVENT_READYSTATE_CHANGE = "readystatechange",
-        READYSTATE_COMPLETE = "complete";
+    EVENT_MOUSEMOVE = "mousemove",
+    EVENT_MOUSEUP = "mouseup",
+    EVENT_TOUCHSTART = "touchstart",
+    EVENT_TOUCHMOVE = "touchmove",
+    EVENT_TOUCHEND = "touchend",
+    EVENT_READYSTATE_CHANGE = "readystatechange",
+    READYSTATE_COMPLETE = "complete";
   /**
     * @desc listen to one or more events on an element
     * @param {Element} el target element
@@ -1133,7 +1135,7 @@
   */
 
   function listen(el, eventList, callback, params) {
-    if ( params === void 0 ) params = {};
+    if (params === void 0) params = {};
 
     for (var i = 0; i < eventList.length; i++) {
       el.addEventListener(eventList[i], callback, params);
@@ -1190,8 +1192,8 @@
   */
 
 
-  colorPicker.prototype._mount = function _mount (el, opts) {
-      var this$1 = this;
+  colorPicker.prototype._mount = function _mount(el, opts) {
+    var this$1 = this;
 
     // If `el` is a string, use it to select an Element, else assume it's an element
     el = "string" == typeof el ? document.querySelector(el) : el; // Find the width and height for the UI
@@ -1200,15 +1202,15 @@
     var width = opts.width || parseInt(el.width) || 320;
 
     var padding = opts.padding + 2 || 6,
-        borderWidth = opts.borderWidth || 0,
-        markerRadius = opts.markerRadius || 8,
-        sliderMargin = opts.sliderMargin || 24,
-        topMargin = 10,
-        leftMargin = 10,
-        sliderWidth = opts.sliderWidth || markerRadius * 2 + padding * 2 + borderWidth * 2,
-        sliderHeight = opts.sliderHeight || markerRadius * 2 + padding * 2 + borderWidth * 2,
-        bodyHeight = width - sliderWidth - sliderMargin + topMargin * 2,
-        wheelRadius = bodyHeight / 2 - borderWidth;
+      borderWidth = opts.borderWidth || 0,
+      markerRadius = opts.markerRadius || 8,
+      sliderMargin = opts.sliderMargin || 24,
+      topMargin = 10,
+      leftMargin = 10,
+      sliderWidth = opts.sliderWidth || markerRadius * 2 + padding * 2 + borderWidth * 2,
+      sliderHeight = opts.sliderHeight || markerRadius * 2 + padding * 2 + borderWidth * 2,
+      bodyHeight = width - sliderWidth - sliderMargin + topMargin * 2,
+      wheelRadius = bodyHeight / 2 - borderWidth;
     var marker = {
       r: markerRadius
     };
@@ -1274,8 +1276,8 @@
   */
 
 
-  colorPicker.prototype._update = function _update (color$$1, changes) {
-      var this$1 = this;
+  colorPicker.prototype._update = function _update(color$$1, changes) {
+    var this$1 = this;
 
     var rgb = color$$1.rgbString;
     var css = this.css; // Loop through each UI element and update it
@@ -1308,7 +1310,7 @@
   */
 
 
-  colorPicker.prototype.on = function on (eventType, callback) {
+  colorPicker.prototype.on = function on(eventType, callback) {
     var events = this._events;
     (events[eventType] || (events[eventType] = [])).push(callback);
   };
@@ -1319,7 +1321,7 @@
   */
 
 
-  colorPicker.prototype.off = function off (eventType, callback) {
+  colorPicker.prototype.off = function off(eventType, callback) {
     var eventList = this._events[eventType];
     if (eventList) { eventList.splice(eventList.indexOf(callback), 1); }
   };
@@ -1330,12 +1332,12 @@
   */
 
 
-  colorPicker.prototype.emit = function emit (eventType) {
-      var args = [], len = arguments.length - 1;
-      while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+  colorPicker.prototype.emit = function emit(eventType) {
+    var args = [], len = arguments.length - 1;
+    while (len-- > 0) args[len] = arguments[len + 1];
 
     var events = this._events,
-        callbackList = (events[eventType] || []).concat(events["*"] || []);
+      callbackList = (events[eventType] || []).concat(events["*"] || []);
 
     for (var i = 0; i < callbackList.length; i++) {
       callbackList[i].apply(null, args);
@@ -1347,17 +1349,17 @@
   */
 
 
-  colorPicker.prototype.handleEvent = function handleEvent (e) {
-      var this$1 = this;
+  colorPicker.prototype.handleEvent = function handleEvent(e) {
+    var this$1 = this;
 
     // Detect if the event is a touch event by checking if it has the `touches` property
     // If it is a touch event, use the first touch input
     var point = e.touches ? e.changedTouches[0] : e,
-        // Get the screen position of the UI
-    rect = this.svg.el.getBoundingClientRect(),
-        // Convert the screen-space pointer position to local-space
-    x = point.clientX - rect.left,
-        y = point.clientY - rect.top;
+      // Get the screen position of the UI
+      rect = this.svg.el.getBoundingClientRect(),
+      // Convert the screen-space pointer position to local-space
+      x = point.clientX - rect.left,
+      y = point.clientY - rect.top;
 
     switch (e.type) {
       case EVENT_MOUSEDOWN:

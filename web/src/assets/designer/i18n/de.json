@@ -24,7 +24,7 @@
             "description": "Bitte warte, bis die App geladen ist."
         },
         "navigation": {
-            "file": "Projekt",
+            "project": "Projekt",
             "settings": "Einstellungen",
             "help": "Hilfe",
             "fixture-pool": "Fixture pool",

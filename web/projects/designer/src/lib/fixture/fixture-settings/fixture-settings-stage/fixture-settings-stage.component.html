@@ -16,7 +16,7 @@
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageWidthCm"
-          (change)="projectService.project.stageWidthCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageWidthCm = $event; update();" class="slider-input">
       </div>
       <div class="my-auto ml-1">
         cm
@@ -34,7 +34,7 @@
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageHeightCm"
-          (change)="projectService.project.stageHeightCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageHeightCm = $event; update();" class="slider-input">
       </div>
       <div class="my-auto ml-1">
         cm
@@ -52,7 +52,7 @@
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageDepthCm"
-          (change)="projectService.project.stageDepthCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageDepthCm = $event; update();" class="slider-input">
       </div>
       <div class="my-auto ml-1">
         cm
@@ -71,7 +71,7 @@
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageFloorHeightCm"
-          (change)="projectService.project.stageFloorHeightCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageFloorHeightCm = $event; update();" class="slider-input">
       </div>
       <div class="my-auto ml-1">
         cm
@@ -90,7 +90,7 @@
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageCeilingHeightCm"
-          (change)="projectService.project.stageCeilingHeightCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageCeilingHeightCm = $event; update();" class="slider-input">
       </div>
       <div class="my-auto ml-1">
         cm
@@ -109,7 +109,7 @@
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stagePillarWidthCm"
-          (change)="projectService.project.stagePillarWidthCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stagePillarWidthCm = $event; update();" class="slider-input">
       </div>
       <div class="my-auto ml-1">
         cm
