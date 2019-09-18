@@ -1,4 +1,4 @@
-<div class="card border-secondary panel h-100">
+<div class="card border-secondary panel h-100" [class.card-intro-active]="introService.showStep('scenes')">
   <div class="card-header d-flex">
     <div>
       {{ 'designer.scene.title' | translate }}

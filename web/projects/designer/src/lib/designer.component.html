@@ -112,7 +112,7 @@
 
             <!-- 3D preview -->
             <div id="preview" class="split split-horizontal h-100 pr-3">
-                <div class="card border-secondary h-100">
+                <div class="card border-secondary h-100" [class.card-intro-active]="introService.showStep('preview')">
                     <div class="card-body p-0 h-100">
                         <app-preview class="h-100"></app-preview>
                     </div>
@@ -153,9 +153,7 @@
             </div>
 
             <div id="capabilities" class="split split-horizontal h-100" style="padding-left: 1rem;">
-
                 <div class="row h-100">
-
                     <!-- Content for the capabilities, channels, effects and settings -->
                     <div class="col pl-0 h-100">
                         <div class="tab-content h-100" id="v-pills-tabContent">
@@ -210,4 +208,4 @@
 
 </div>
 
-<app-intro></app-intro>
+<app-intro class="d-none d-md-flex"></app-intro>

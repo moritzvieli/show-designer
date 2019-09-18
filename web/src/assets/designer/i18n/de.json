@@ -185,6 +185,27 @@
             "toast-composition-upload-error": "Die Datei konnte aus dem folgenden Grund nicht hochgeladen werden: ",
             "toast-composition-upload-error-title": "Fehler beim Hochladen"
         },
+        "intro": {
+            "next": "Weiter",
+            "back": "Zurück",
+            "close": "Schliessen",
+            "title-start": "Schnelleinführung",
+            "step-start": "Wer das liest ist doof! 🤪 Scherz beiseite. Du wirst sehen, Rocket Show ist anders als die Anderen. Diese zwei-Minuten-Einführung bringt dir die Funktionalitäten etwas näher. 🏆 Du kannst die Einführung jederzeit oben rechts schliessen.",
+            "title-preview": "Vorschau",
+            "step-preview": "Hier siehst du eine 3D-Vorschau deiner Show. Das kann dir einen Anhaltspunkt geben beim Designen, aber in Echt sieht es natürlich noch viel besser aus! 🤩",
+            "title-fixtures": "Fixtures",
+            "step-fixtures": "Was wäre eine Lichtshow ohne Lichtelemente? 💩 Füge neue Fixtures im Fixture Pool hinzu (Zanhrad oben rechts oder Taste 'P') und platziere sie im DMX-Universum. Markiere anschliessend hier die Fixtures, die du im Preset einsetzen möchtest. Aber was zum Henker ist ein Preset? 🧐",
+            "title-presets": "Presets",
+            "step-presets": "In einem Preset wird einer Gruppe von Fixtures ein paar Eigenschaften und Effekte zugewiesen. Ein Preset ist zum Beispiel dafür zuständig, dass alle Moving Heads der vordersten Reihe rot leuchten.",
+            "title-capabilities": "Fähigkeiten, Kanäle und Effekte",
+            "step-capabilities": "Das Preset enthält eine Reihe von Fähigkeiten (zum Beispiel einen Dimmer-Wert oder eine Farbe). Du kannst aber auch die Kanäle der einzelnen Fixtures manuell editieren, oder sogar Effekte hinzufügen. 🎉",
+            "title-scenes": "Szenen",
+            "step-scenes": "Eine Szene enthält ein oder mehrere Presets. Damit kannst du komplexe Kombinationen erstellen und einfach wieder abrufen. Höher platzierte Presets überschreiben die Eigenschaften von darunterliegenden Presets.",
+            "title-timeline": "Zeitleiste",
+            "step-timeline": "In der Zeitleiste kannst du Szenen platzieren und synchronisiert zu einer Audio-Datei abspielen. ⏱ Auf dem Rocket Show-Gerät entspricht diese Datei einer Komposition, die beim Abspielen auch deine Lichtshow automatisch steuert.",
+            "title-finish": "Das Ende naht...",
+            "step-finish": "Was!? Du liest immer noch!? 😂 Höchste Zeit, dass du es selbst ausprobierst! Teile deine Shows mit deinen Freunden und schaue, was sie darüber denken. 👫"
+        },
         "fixtureCapabilityType": {
             "NoFunction": "Keine Funktion",
             "ShutterStrobe": "Shutter/Strobe",

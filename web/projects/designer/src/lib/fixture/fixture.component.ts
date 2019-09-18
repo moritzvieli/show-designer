@@ -4,6 +4,7 @@ import { PresetService } from '../services/preset.service';
 import { ProjectService } from '../services/project.service';
 import { FixturePoolService } from '../services/fixture-pool.service';
 import { FixtureService } from '../services/fixture.service';
+import { IntroService } from '../services/intro.service';
 
 @Component({
   selector: 'app-fixture',
@@ -16,7 +17,8 @@ export class FixtureComponent implements OnInit {
     public projectService: ProjectService,
     public presetService: PresetService,
     private fixturePoolService: FixturePoolService,
-    public fixtureService: FixtureService
+    public fixtureService: FixtureService,
+    public introService: IntroService
   ) { }
 
   ngOnInit() { }

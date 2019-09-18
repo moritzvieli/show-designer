@@ -1,7 +1,9 @@
-<div *ngIf="introService.showIntro" class="card border-secondary h-100 panel card-intro-active">
+<div *ngIf="introService.showIntro" class="card border-secondary h-100 panel card-intro-active"
+  [ngStyle]="{'top': 'calc(' + introService.positionTopPercentage + '% - 150px)', 'left': 'calc(' + introService.positionLeftPercentage + '% - 200px)'}">
   <div class="card-header d-flex">
     <div>
-      {{ 'designer.preset.title' | translate }}
+      <i class="fa fa-info-circle mr-1" aria-hidden="true"></i>
+      {{ 'designer.intro.title-'  + introService.activeStep | translate }}
     </div>
     <div class="ml-auto">
       <a href="#" class="btn btn-secondary m-0, p-0" (click)="close(); false;"><i class="fa fa-times"
@@ -10,6 +12,16 @@
   </div>
 
   <div class="card-body h-100 ">
-    <p>Dies ist ein Text blablabla.</p>
+    <p>{{ 'designer.intro.step-' + introService.activeStep | translate }}</p>
   </div>
-</div>
+
+  <div class="card-footer">
+    <button *ngIf="introService.activeStep != 'start'" type="button" class="btn btn-secondary"
+      (click)="introService.back()"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+      {{ 'designer.intro.back' | translate }}</button>
+    <button *ngIf="introService.activeStep != 'finish'" type="button" class="btn btn-secondary pull-right"
+      (click)="introService.next()">{{ 'designer.intro.next' | translate }} <i class="fa fa-chevron-right"
+        aria-hidden="true"></i></button>
+    <button *ngIf="introService.activeStep == 'finish'" type="button" class="btn btn-secondary pull-right"
+      (click)="close()">{{ 'designer.intro.close' | translate }}</button>
+  </div>

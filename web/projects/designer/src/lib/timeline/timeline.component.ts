@@ -12,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 import { PresetService } from '../services/preset.service';
+import { IntroService } from '../services/intro.service';
 
 @Component({
   selector: 'app-timeline',
@@ -39,7 +40,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     private warningDialogService: WarningDialogService,
     private http: HttpClient,
     private configService: ConfigService,
-    private presetService: PresetService
+    private presetService: PresetService,
+    public introService: IntroService
   ) {
     this.timelineService.waveSurferReady.subscribe(() => {
       this.onResize();

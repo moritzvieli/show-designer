@@ -5,6 +5,7 @@ import { FixtureProfile } from '../../models/fixture-profile';
 import { FixtureWheelSlotType } from '../../models/fixture-wheel-slot';
 import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 import { ProjectService } from '../../services/project.service';
+import { IntroService } from '../../services/intro.service';
 
 @Component({
   selector: 'app-fixture-capability',
@@ -21,7 +22,8 @@ export class FixtureCapabilityComponent implements OnInit {
     public presetService: PresetService,
     private fixtureService: FixtureService,
     private changeDetectorRef: ChangeDetectorRef,
-    public projectService: ProjectService
+    public projectService: ProjectService,
+    public introService: IntroService
   ) {
     this.presetService.fixtureSelectionChanged.subscribe(() => {
       this.update();
@@ -29,6 +31,10 @@ export class FixtureCapabilityComponent implements OnInit {
 
     this.presetService.previewSelectionChanged.subscribe(() => {
       this.update();
+    });
+
+    this.introService.stepChanged.subscribe(() => {
+      this.changeDetectorRef.detectChanges();
     });
   }
 

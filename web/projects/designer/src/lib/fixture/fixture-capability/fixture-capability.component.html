@@ -1,4 +1,4 @@
-<div class="card border-secondary panel h-100">
+<div class="card border-secondary panel h-100" [class.card-intro-active]="introService.showStep('capabilities')">
   <div class="card-body capability-container d-flex h-100" style="overflow-y: hidden;">
 
     <!-- h-100 needs to be applied in chrome to avoid performance issues with many layouts (reflows)

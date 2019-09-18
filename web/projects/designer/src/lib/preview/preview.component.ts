@@ -14,8 +14,6 @@ import { ProjectService } from '../services/project.service';
 import { PreviewMeshService } from '../services/preview-mesh.service';
 import { ColorChanger3d } from './models/color-changer-3d';
 
-// declare var THREEx: any;
-
 @Component({
   selector: 'app-preview',
   templateUrl: './preview.component.html',

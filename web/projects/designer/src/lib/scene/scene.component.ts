@@ -5,6 +5,7 @@ import { ProjectService } from '../services/project.service';
 import { Scene } from '../models/scene';
 import { BsModalService } from 'ngx-bootstrap';
 import { SceneSettingsComponent } from './scene-settings/scene-settings.component';
+import { IntroService } from '../services/intro.service';
 
 @Component({
   selector: 'app-scene',
@@ -17,7 +18,8 @@ export class SceneComponent implements OnInit {
     public sceneService: SceneService,
     public presetService: PresetService,
     public projectService: ProjectService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    public introService: IntroService
   ) {
   }
 
