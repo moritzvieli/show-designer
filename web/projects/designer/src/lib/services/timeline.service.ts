@@ -546,6 +546,27 @@ export class TimelineService {
     }
   }
 
+  updateSelectedRegion() {
+    if (!this.waveSurfer) {
+      return;
+    }
+
+    if (!this.selectedPlaybackRegion) {
+      return;
+    }
+
+    for (let key of Object.keys(this.waveSurfer.regions.list)) {
+      let region: any = this.waveSurfer.regions.list[key];
+
+      if (this.selectedPlaybackRegion == region.scenePlaybackRegion) {
+        region.start = this.selectedPlaybackRegion.startMillis / 1000;
+        region.end = this.selectedPlaybackRegion.endMillis / 1000;
+        region.updateRender();
+        break;
+      }
+    }
+  }
+
   private setSelectedRegion(scenePlaybackRegion?: ScenePlaybackRegion) {
     if (this.selectedPlaybackRegion && this.selectedPlaybackRegion == scenePlaybackRegion) {
       // No update required
@@ -668,17 +689,21 @@ export class TimelineService {
       let scene = this.projectService.project.scenes[sceneIndex];
 
       for (let region of this.selectedComposition.scenePlaybackRegions) {
-        if (region.sceneUuid == scene.uuid && region.startMillis <= timeMillis && region.endMillis >= timeMillis) {
-          // This region is currently being played -> check all scene presets
+        if (region.sceneUuid == scene.uuid) {
           for (let presetIndex = this.projectService.project.presets.length - 1; presetIndex >= 0; presetIndex--) {
             for (let presetUuid of scene.presetUuids) {
               if (presetUuid == this.projectService.project.presets[presetIndex].uuid) {
                 let preset = this.presetService.getPresetByUuid(presetUuid);
 
                 if (preset) {
-                  if ((!preset.startMillis || preset.startMillis + region.startMillis <= timeMillis)
-                    && (!preset.endMillis || preset.endMillis + region.startMillis >= timeMillis)) {
+                  let presetStartMillis = preset.startMillis == undefined ? region.startMillis : region.startMillis + preset.startMillis;
+                  let presetEndMillis = preset.endMillis == undefined ? region.endMillis : region.startMillis + preset.endMillis;
 
+                  // extend the running time, if fading is done outside the boundaries
+                  presetStartMillis -= preset.fadeInPre ? preset.fadeInMillis : 0;
+                  presetEndMillis += preset.fadeOutPost ? preset.fadeOutMillis : 0;
+
+                  if (presetStartMillis <= timeMillis && presetEndMillis >= timeMillis) {
                     activePresets.push(new PresetRegionScene(preset, region, scene));
                   }
                 }

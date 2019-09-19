@@ -198,4 +198,30 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     }
   }
 
+  setRegionStartMillis(value: any) {
+    if (!this.timelineService.selectedPlaybackRegion) {
+      return;
+    }
+
+    if (isNaN(value) || value < 0) {
+      return;
+    }
+
+    this.timelineService.selectedPlaybackRegion.startMillis = +value;
+    this.timelineService.updateSelectedRegion();
+  }
+
+  setRegionEndMillis(value: any) {
+    if (!this.timelineService.selectedPlaybackRegion) {
+      return;
+    }
+
+    if (isNaN(value) || value < 0) {
+      return;
+    }
+
+    this.timelineService.selectedPlaybackRegion.endMillis = +value;
+    this.timelineService.updateSelectedRegion();
+  }
+
 }

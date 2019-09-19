@@ -16,6 +16,8 @@ export class PresetSettingsComponent implements OnInit {
   endMillis: number;
   fadeInMillis: number;
   fadeOutMillis: number;
+  fadeInPre: boolean;
+  fadeOutPost: boolean;
 
   constructor(
     public bsModalRef: BsModalRef
@@ -28,6 +30,8 @@ export class PresetSettingsComponent implements OnInit {
     this.endMillis = this.preset.endMillis;
     this.fadeInMillis = this.preset.fadeInMillis;
     this.fadeOutMillis = this.preset.fadeOutMillis;
+    this.fadeInPre = this.preset.fadeInPre;
+    this.fadeOutPost = this.preset.fadeOutPost;
   }
 
   ok() {
@@ -49,6 +53,9 @@ export class PresetSettingsComponent implements OnInit {
     if (!isNaN(this.fadeOutMillis) && this.fadeOutMillis >= 0) {
       this.preset.fadeOutMillis = +this.fadeOutMillis;
     }
+
+    this.preset.fadeInPre = this.fadeInPre;
+    this.preset.fadeOutPost = this.fadeOutPost;
 
     this.bsModalRef.hide();
   }

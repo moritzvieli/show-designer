@@ -81,6 +81,8 @@
             "title": "Szenen",
             "settings-fade-in": "Fade In",
             "settings-fade-out": "Fade Out",
+            "settings-fade-in-pre": "Davor",
+            "settings-fade-out-post": "Danach",
             "multiple-selection": "Mehrfachauswahl",
             "live-mode": "Live Modus"
         },
@@ -90,7 +92,9 @@
             "settings-start": "Start",
             "settings-end": "Ende",
             "settings-fade-in": "Fade In",
-            "settings-fade-out": "Fade Out"
+            "settings-fade-out": "Fade Out",
+            "settings-fade-in-pre": "Davor",
+            "settings-fade-out-post": "Danach"
         },
         "fixture": {
             "no-fixtures": "Füge neue Fixtures zum Projekt hinzu",

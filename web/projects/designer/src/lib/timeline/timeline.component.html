@@ -40,8 +40,9 @@
         </div>
 
         <div class="my-auto mr-3">
-          <input type="text" [value]="timelineService.selectedPlaybackRegion?.startMillis"> - <input type="text"
-            [value]="timelineService.selectedPlaybackRegion?.endMillis">
+          <input type="text" [ngModel]="timelineService.selectedPlaybackRegion?.startMillis"
+            (ngModelChange)="setRegionStartMillis($event)"> - <input type="text"
+            [ngModel]="timelineService.selectedPlaybackRegion?.endMillis" (ngModelChange)="setRegionEndMillis($event)">
         </div>
 
         <a href="#" class="btn btn-secondary m-0 py-1 mr-3" (click)="openGridSettings(); false;"

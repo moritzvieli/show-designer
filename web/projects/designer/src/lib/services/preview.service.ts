@@ -162,33 +162,37 @@ export class PreviewService {
       // Fade out is stronger than fade in (if they overlap)
 
       // Take away intensity for scene fading
-      if (timeMillis > preset.region.endMillis - preset.scene.fadeOutMillis) {
+      let sceneStartMillis = preset.scene.fadeInPre ? preset.region.startMillis - preset.scene.fadeInMillis : preset.region.startMillis;
+      let sceneEndMillis = preset.scene.fadeOutPost ? preset.region.endMillis + preset.scene.fadeOutMillis : preset.region.endMillis;
+
+      if (timeMillis > sceneEndMillis - preset.scene.fadeOutMillis
+        && timeMillis < sceneEndMillis) {
         // Scene fades out
-        intensityPercentageScene = (preset.region.endMillis - timeMillis) / preset.scene.fadeOutMillis;
-      } else if (timeMillis < preset.region.startMillis + preset.scene.fadeInMillis) {
+        intensityPercentageScene = (sceneEndMillis - timeMillis) / preset.scene.fadeOutMillis;
+      } else if (timeMillis < sceneStartMillis + preset.scene.fadeInMillis
+        && timeMillis > sceneStartMillis) {
         // Scene fades in
-        intensityPercentageScene = (timeMillis - preset.region.startMillis) / preset.scene.fadeInMillis;
+        intensityPercentageScene = (timeMillis - sceneStartMillis) / preset.scene.fadeInMillis;
       }
     }
 
     if (preset.region && preset.preset) {
       // Take away intensity for preset fading
-      let presetEnd = preset.region.endMillis;
-      if (preset.preset.endMillis >= 0) {
-        presetEnd = preset.region.startMillis + preset.preset.endMillis;
-      }
-      if (timeMillis > presetEnd - preset.preset.fadeOutMillis) {
-        // Preset fades out
-        intensityPercentagePreset = (presetEnd - timeMillis) / preset.preset.fadeOutMillis;
-      }
+      let presetStartMillis = preset.preset.startMillis == undefined ? preset.region.startMillis : preset.region.startMillis + preset.preset.startMillis;
+      let presetEndMillis = preset.preset.endMillis == undefined ? preset.region.endMillis : preset.region.startMillis + preset.preset.endMillis;
 
-      let presetStart = preset.region.startMillis;
-      if (preset.preset.startMillis >= 0) {
-        presetStart = preset.region.startMillis + preset.preset.startMillis;
-      }
-      if (timeMillis < presetStart + preset.preset.fadeInMillis) {
+      // extend the running time, if fading is done outside the boundaries
+      presetStartMillis -= preset.preset.fadeInPre ? preset.preset.fadeInMillis : 0;
+      presetEndMillis += preset.preset.fadeOutPost ? preset.preset.fadeOutMillis : 0;
+
+      if (timeMillis > presetEndMillis - preset.preset.fadeOutMillis
+        && timeMillis < presetEndMillis) {
+        // Preset fades out
+        intensityPercentagePreset = (presetEndMillis - timeMillis) / preset.preset.fadeOutMillis;
+      } else if (timeMillis < presetStartMillis + preset.preset.fadeInMillis
+        && timeMillis > presetStartMillis) {
         // Preset fades in
-        intensityPercentagePreset = (timeMillis - presetStart) / preset.preset.fadeInMillis;
+        intensityPercentagePreset = (timeMillis - presetStartMillis) / preset.preset.fadeInMillis;
       }
 
       // If the preset and the scene, both are fading, take the stronger one

@@ -5,6 +5,7 @@ import { ProjectService } from '../services/project.service';
 import { IntroService } from '../services/intro.service';
 import { BsModalService } from 'ngx-bootstrap';
 import { PresetSettingsComponent } from './preset-settings/preset-settings.component';
+import { Preset } from '../models/preset';
 
 @Component({
   selector: 'app-preset',
@@ -69,8 +70,8 @@ export class PresetComponent implements OnInit {
     this.presetService.selectPreset(0);
   }
 
-  openSettings() {
-    let bsModalRef = this.modalService.show(PresetSettingsComponent, { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { preset: this.presetService.selectedPreset } });
+  openSettings(preset: Preset) {
+    let bsModalRef = this.modalService.show(PresetSettingsComponent, { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { preset: preset } });
   }
 
 }

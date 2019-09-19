@@ -14,6 +14,10 @@ export class Scene {
     fadeInMillis: number = 0;
     fadeOutMillis: number = 0;
 
+    // fade in/out outside the start/end times?
+    fadeInPre: boolean = false;
+    fadeOutPost: boolean = false;
+
     constructor(data?: any) {
         if (!data) {
             return;
@@ -27,6 +31,8 @@ export class Scene {
         }
         this.fadeInMillis = data.fadeInMillis;
         this.fadeOutMillis = data.fadeOutMillis;
+        this.fadeInPre = data.fadeInPre;
+        this.fadeOutPost = data.fadeOutPost;
     }
 
 }
