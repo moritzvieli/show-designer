@@ -173,17 +173,25 @@ export class PreviewService {
 
     if (preset.region && preset.preset) {
       // Take away intensity for preset fading
-      if (preset.preset.endMillis && timeMillis > preset.region.startMillis + preset.preset.endMillis - preset.preset.fadeOutMillis) {
+      let presetEnd = preset.region.endMillis;
+      if (preset.preset.endMillis >= 0) {
+        presetEnd = preset.region.startMillis + preset.preset.endMillis;
+      }
+      if (timeMillis > presetEnd - preset.preset.fadeOutMillis) {
         // Preset fades out
-        intensityPercentagePreset = (preset.region.startMillis + preset.preset.endMillis - timeMillis) / preset.preset.fadeOutMillis;
+        intensityPercentagePreset = (presetEnd - timeMillis) / preset.preset.fadeOutMillis;
       }
 
-      if (preset.preset.startMillis && timeMillis < preset.region.startMillis + preset.preset.startMillis + preset.preset.fadeInMillis) {
+      let presetStart = preset.region.startMillis;
+      if (preset.preset.startMillis >= 0) {
+        presetStart = preset.region.startMillis + preset.preset.startMillis;
+      }
+      if (timeMillis < presetStart + preset.preset.fadeInMillis) {
         // Preset fades in
-        intensityPercentagePreset = (timeMillis - preset.region.startMillis + preset.preset.startMillis) / preset.preset.fadeInMillis;
+        intensityPercentagePreset = (timeMillis - presetStart) / preset.preset.fadeInMillis;
       }
 
-      // If the preset and the scene, both are fading, take the stronger
+      // If the preset and the scene, both are fading, take the stronger one
       intensityPercentage = Math.min(intensityPercentageScene, intensityPercentagePreset);
     }
 
@@ -420,7 +428,7 @@ export class PreviewService {
   public setUniverseValues(fixtures: Map<CachedFixture, FixtureChannelValue[]>, masterDimmerValue: number) {
     // TODO only, if monitoring is enabled
     return;
-    
+
     // Reset all DMX universes
     for (let universe of this.universeService.universes) {
       universe.channelValues = [];

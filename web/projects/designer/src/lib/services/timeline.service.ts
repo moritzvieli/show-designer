@@ -244,6 +244,8 @@ export class TimelineService {
         this.waveSurfer.timeline.wrapper.scrollWidth || 0;
     }
 
+    progress = Math.max(progress, 0);
+
     setTimeout(() => {
       this.waveSurfer.seekTo(progress);
       this.detectChanges.next();

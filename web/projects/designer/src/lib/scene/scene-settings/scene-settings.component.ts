@@ -28,11 +28,11 @@ export class SceneSettingsComponent implements OnInit {
 
   ok() {
     this.scene.name = this.name;
-    if (!isNaN(this.fadeInMillis) && this.fadeInMillis > 0) {
-      this.scene.fadeInMillis = this.fadeInMillis;
+    if (!isNaN(this.fadeInMillis) && this.fadeInMillis >= 0) {
+      this.scene.fadeInMillis = +this.fadeInMillis;
     }
-    if (!isNaN(this.fadeOutMillis) && this.fadeOutMillis > 0) {
-      this.scene.fadeOutMillis = this.fadeOutMillis;
+    if (!isNaN(this.fadeOutMillis) && this.fadeOutMillis >= 0) {
+      this.scene.fadeOutMillis = +this.fadeOutMillis;
     }
 
     this.bsModalRef.hide();
