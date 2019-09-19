@@ -195,8 +195,7 @@ export class PreviewService {
         intensityPercentagePreset = (timeMillis - presetStartMillis) / preset.preset.fadeInMillis;
       }
 
-      // If the preset and the scene, both are fading, take the stronger one
-      intensityPercentage = Math.min(intensityPercentageScene, intensityPercentagePreset);
+      intensityPercentage = intensityPercentageScene * intensityPercentagePreset;
     }
 
     return intensityPercentage;
