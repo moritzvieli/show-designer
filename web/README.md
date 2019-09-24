@@ -14,5 +14,5 @@ npm run publish
 
 ## Build for production
 ```
-ng build --prod --base-href /designer/
+ng build --prod --base-href /designer/app/
 ```
