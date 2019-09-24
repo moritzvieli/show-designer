@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Scene } from '../../models/scene';
 import { BsModalRef } from 'ngx-bootstrap';
 
@@ -48,6 +48,11 @@ export class SceneSettingsComponent implements OnInit {
 
   cancel() {
     this.bsModalRef.hide();
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleKeyboardEvent(event: any) {
+    this.ok();
   }
 
 }

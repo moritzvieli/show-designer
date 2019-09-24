@@ -50,7 +50,7 @@ export class EffectCurveComponent implements OnInit {
     if (value) {
       // start the update timer
       if (!this.gridUpdateSubscription) {
-        this.gridUpdateSubscription = timer(15, 0).subscribe(() => { this.redraw(); });
+        this.gridUpdateSubscription = timer(0, 15).subscribe(() => { this.redraw(); });
       }
     } else {
       // stop the update timer

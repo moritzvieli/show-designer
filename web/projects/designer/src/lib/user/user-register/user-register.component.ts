@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { UserLoginComponent } from '../user-login/user-login.component';
 import { UserService } from '../../services/user.service';
@@ -81,6 +81,11 @@ export class UserRegisterComponent implements OnInit {
       }
       this.registering = false;
     });
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleKeyboardEvent(event: any) {
+    this.register();
   }
 
 }

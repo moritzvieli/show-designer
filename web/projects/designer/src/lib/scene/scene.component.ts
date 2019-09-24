@@ -35,8 +35,7 @@ export class SceneComponent implements OnInit {
       return;
     }
 
-    this.projectService.project.scenes.splice(this.projectService.project.scenes.indexOf(this.sceneService.selectedScenes[0]), 1);
-    this.sceneService.selectScene(0);
+    this.sceneService.removeScene(this.sceneService.selectedScenes[0]);
   }
 
   openSettings(scene: Scene) {

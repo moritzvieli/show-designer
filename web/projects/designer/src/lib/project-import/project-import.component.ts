@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { TranslateService } from '@ngx-translate/core';
@@ -70,6 +70,11 @@ export class ProjectImportComponent implements OnInit {
 
   cancel() {
     this.bsModalRef.hide();
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleKeyboardEvent(event: any) {
+    this.ok();
   }
 
 }

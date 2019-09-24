@@ -5,6 +5,7 @@ import { EffectService } from './effect.service';
 import { Preset } from '../models/preset';
 import { PresetService } from './preset.service';
 import { ProjectService } from './project.service';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,16 +18,19 @@ export class SceneService {
     '#61da5f',
     '#5fc3da',
     '#dad65f',
-    '#da5f5f'
+    '#da5f5f',
+    '#246db7'
   ];
 
   multipleSelection: boolean = false;
+
+  sceneDeleted: Subject<void> = new Subject<void>();
 
   constructor(
     private uuidService: UuidService,
     private effectService: EffectService,
     private presetService: PresetService,
-    private projectService: ProjectService,
+    private projectService: ProjectService
   ) {
   }
 
@@ -96,7 +100,7 @@ export class SceneService {
     scene.uuid = this.uuidService.getUuid();
     scene.name = name || 'Scene 1';
 
-    if (this.projectService.project.scenes.length <= this.sceneColors.length) {
+    if (this.projectService.project.scenes.length < this.sceneColors.length) {
       scene.color = this.sceneColors[this.projectService.project.scenes.length];
     } else {
       scene.color = '#' + Math.random().toString(16).slice(2, 8).toUpperCase();
@@ -114,6 +118,26 @@ export class SceneService {
 
     this.projectService.project.scenes.splice(highestSelectedSceneIndex, 0, scene);
     this.selectScene(highestSelectedSceneIndex);
+  }
+
+  removeScene(scene: Scene): void {
+    // remove all playback regions
+    for (let composition of this.projectService.project.compositions) {
+      for (let i = composition.scenePlaybackRegions.length - 1; i >= 0; i--) {
+        let compositionPlaybackRegion = composition.scenePlaybackRegions[i];
+        if (compositionPlaybackRegion.sceneUuid == scene.uuid) {
+          composition.scenePlaybackRegions.splice(i, 1);
+        }
+      }
+    }
+
+    // remove the scene
+    this.projectService.project.scenes.splice(this.projectService.project.scenes.indexOf(scene), 1);
+    if (this.projectService.project.scenes.length > 0) {
+      this.selectScene(0);
+    }
+
+    this.sceneDeleted.next();
   }
 
   getSceneByUuid(uuid: string): Scene {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Subject } from 'rxjs';
 import { BsModalRef } from 'ngx-bootstrap';
 
@@ -28,6 +28,11 @@ export class ErrorDialogComponent implements OnInit {
   public cancel(): void {
     this.onClose.next(2);
     this.bsModalRef.hide();
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleKeyboardEvent(event: any) {
+    this.ok();
   }
 
 }

@@ -57,6 +57,18 @@ export class TimelineService {
       this.selectedPlaybackRegion = undefined;
       this.updateRegionSelection();
     });
+    this.sceneService.sceneDeleted.subscribe(() => {
+      // remove all regions from wavesurver
+      if (this.waveSurfer) {
+        for (let key of Object.keys(this.waveSurfer.regions.list)) {
+          let region: any = this.waveSurfer.regions.list[key];
+          region.remove();
+        }
+      }
+
+      // draw all regions
+      this.drawAllRegions();
+    });
   }
 
   private pad(num: number, size: number): string {
@@ -128,11 +140,9 @@ export class TimelineService {
   }
 
   private startTimeUpdater() {
-    if (this.timeUpdateSubscription) {
-      this.timeUpdateSubscription.unsubscribe;
-    }
+    this.stopTimeUpdater();
 
-    let timeUpdater = timer(0, 10);
+    let timeUpdater = timer(0, 40);
     this.timeUpdateSubscription = timeUpdater.subscribe(() => {
       this.updateCurrentTime();
     });
@@ -140,7 +150,7 @@ export class TimelineService {
 
   private stopTimeUpdater() {
     if (this.timeUpdateSubscription) {
-      this.timeUpdateSubscription.unsubscribe;
+      this.timeUpdateSubscription.unsubscribe();
     }
   }
 

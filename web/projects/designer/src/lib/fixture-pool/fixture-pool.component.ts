@@ -413,4 +413,9 @@ export class FixturePoolComponent implements OnInit {
       });
   }
 
+  @HostListener('document:keydown.enter', ['$event'])
+  handleKeyboardEvent(event: any) {
+    this.ok();
+  }
+
 }

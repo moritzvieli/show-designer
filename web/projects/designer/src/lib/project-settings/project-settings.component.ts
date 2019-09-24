@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Project } from '../models/project';
 import { BsModalRef } from 'ngx-bootstrap';
 
@@ -30,6 +30,11 @@ export class ProjectSettingsComponent implements OnInit {
 
   cancel() {
     this.bsModalRef.hide();
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleKeyboardEvent(event: any) {
+    this.ok();
   }
 
 }

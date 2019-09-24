@@ -66,7 +66,7 @@
 
           <!-- Dropzone -->
           <dropzone [config]="dropzoneConfig" [useDropzoneClass]="'false'" [message]="uploadMessage"
-            (error)="onUploadError($event)" (success)="onUploadSuccess($event)"></dropzone>
+            (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (queuecomplete)="onQueueComplete($event)" (addedfile)="onAddedFile($event)"></dropzone>
         </div>
 
         <!-- Media library -->
@@ -106,5 +106,5 @@
   <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
     {{ 'designer.misc.cancel' | translate }}
   </a>
-  <button type="button" class="btn btn-primary" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>
+  <button [disabled]="uploading" type="button" class="btn btn-primary" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>
 </div>

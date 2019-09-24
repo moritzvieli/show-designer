@@ -19,7 +19,6 @@ import { Params, Router, ActivatedRoute } from '@angular/router';
 })
 export class ProjectLoadService {
 
-
   constructor(
     private projectService: ProjectService,
     private previewService: PreviewService,

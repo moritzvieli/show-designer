@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Composition } from '../../models/composition';
 import { BsModalRef } from 'ngx-bootstrap';
 import { TimelineService } from '../../services/timeline.service';
@@ -30,6 +30,8 @@ export class CompositionSettingsComponent implements OnInit {
   public existingFiles: string[] = [];
   public filteredExistingFiles: string[] = [];
 
+  public uploading: boolean = false;
+
   constructor(
     public bsModalRef: BsModalRef,
     private timelineService: TimelineService,
@@ -50,6 +52,7 @@ export class CompositionSettingsComponent implements OnInit {
       maxFilesize: 100 /* 100 MB */,
       acceptedFiles: 'audio/*',
       timeout: 0,
+      parallelUploads: 1,
       previewTemplate: `
       <div class="dz-preview dz-file-preview">
         <!-- The attachment details -->
@@ -89,6 +92,11 @@ export class CompositionSettingsComponent implements OnInit {
   cancel() {
     this.onClose.next(2);
     this.bsModalRef.hide()
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleKeyboardEvent(event: any) {
+    this.ok();
   }
 
   private getNameFromFile(data: any): string {
@@ -138,6 +146,14 @@ export class CompositionSettingsComponent implements OnInit {
       // the file has been uploaded to the media library
       this.composition.audioFileInLibrary = true;
     }
+  }
+
+  public onQueueComplete(args: any) {
+    this.uploading = false;
+  }
+
+  public onAddedFile(args: any) {
+    this.uploading = true;
   }
 
   // Filter the existing files

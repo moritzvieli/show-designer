@@ -1,6 +1,6 @@
 import { BsModalRef } from 'ngx-bootstrap';
 import { Subject } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-warning-dialog',
@@ -26,6 +26,11 @@ export class WarningDialogComponent implements OnInit {
   public cancel(): void {
     this.onClose.next(2);
     this.bsModalRef.hide();
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleKeyboardEvent(event: any) {
+    this.ok();
   }
 
 }
