@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { PresetService } from '../../services/preset.service';
 import { FixtureService } from '../../services/fixture.service';
 import { FixtureProfile } from '../../models/fixture-profile';
@@ -6,6 +6,7 @@ import { FixtureWheelSlotType } from '../../models/fixture-wheel-slot';
 import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 import { ProjectService } from '../../services/project.service';
 import { IntroService } from '../../services/intro.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-fixture-capability',
@@ -13,10 +14,13 @@ import { IntroService } from '../../services/intro.service';
   styleUrls: ['./fixture-capability.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FixtureCapabilityComponent implements OnInit {
+export class FixtureCapabilityComponent implements OnInit, OnDestroy {
 
   // map containing the profile and the channel name containing the wheel
   colorWheelChannels: Map<FixtureProfile, CachedFixtureChannel> = new Map<FixtureProfile, CachedFixtureChannel>();
+
+  private fixtureSelectionChangedSubscription: Subscription;
+  private previewSelectionChangedSubscription: Subscription;
 
   constructor(
     public presetService: PresetService,
@@ -25,11 +29,11 @@ export class FixtureCapabilityComponent implements OnInit {
     public projectService: ProjectService,
     public introService: IntroService
   ) {
-    this.presetService.fixtureSelectionChanged.subscribe(() => {
+    this.fixtureSelectionChangedSubscription = this.presetService.fixtureSelectionChanged.subscribe(() => {
       this.update();
     });
 
-    this.presetService.previewSelectionChanged.subscribe(() => {
+    this.previewSelectionChangedSubscription = this.presetService.previewSelectionChanged.subscribe(() => {
       this.update();
     });
 
@@ -39,6 +43,11 @@ export class FixtureCapabilityComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.fixtureSelectionChangedSubscription.unsubscribe();
+    this.previewSelectionChangedSubscription.unsubscribe();
   }
 
   private wheelInList(wheels: Map<FixtureProfile, CachedFixtureChannel>, profile: FixtureProfile, channel: CachedFixtureChannel) {

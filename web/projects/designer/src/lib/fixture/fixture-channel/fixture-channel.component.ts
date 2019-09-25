@@ -1,35 +1,44 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { PresetService } from '../../services/preset.service';
 import { FixtureProfile } from '../../models/fixture-profile';
 import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 import { ProjectService } from '../../services/project.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-fixture-channel',
   templateUrl: './fixture-channel.component.html',
   styleUrls: ['./fixture-channel.component.css']
 })
-export class FixtureChannelComponent implements OnInit {
+export class FixtureChannelComponent implements OnInit, OnDestroy {
 
   public channelCapabilities: Map<FixtureProfile, CachedFixtureChannel[]> = new Map<FixtureProfile, CachedFixtureChannel[]>();
   public profiles: FixtureProfile[] = [];
   public selectedProfiles: FixtureProfile[] = [];
+
+  private fixtureSelectionChangedSubscription: Subscription;
+  private previewSelectionChangedSubscription: Subscription;
 
   constructor(
     public presetService: PresetService,
     private changeDetectorRef: ChangeDetectorRef,
     public projectService: ProjectService
   ) {
-    this.presetService.fixtureSelectionChanged.subscribe(() => {
+    this.fixtureSelectionChangedSubscription = this.presetService.fixtureSelectionChanged.subscribe(() => {
       this.calculateProfiles();
     });
 
-    this.presetService.previewSelectionChanged.subscribe(() => {
+    this.previewSelectionChangedSubscription = this.presetService.previewSelectionChanged.subscribe(() => {
       this.calculateProfiles();
     });
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.fixtureSelectionChangedSubscription.unsubscribe();
+    this.previewSelectionChangedSubscription.unsubscribe();
   }
 
   private calculateChannelCapabilities() {

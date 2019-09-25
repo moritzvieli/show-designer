@@ -20,7 +20,8 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
   wheelName: string;
   wheel: FixtureWheel;
   slotCapabilities: CachedFixtureCapability[];
-  colorChangeSubscription: Subscription;
+  
+  private colorChangeSubscription: Subscription;
 
   @Input()
   set profile(value: FixtureProfile) {
