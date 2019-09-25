@@ -39,6 +39,7 @@ export class EffectCurve extends Effect {
         this.amplitude = data.amplitude;
         this.position = data.position;
         this.phasingMillis = data.phasingMillis;
+        this.curveType = data.curveType;
     }
 
     public getValueAtMillis(timeMillis: number, fixtureIndex?: number): number {
@@ -56,10 +57,14 @@ export class EffectCurve extends Effect {
 
         switch (this.curveType) {
             case 'sine':
-                value = this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) / 2;
+                value = this.position + this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) / 2;
                 break;
             case 'square':
-                // TODO
+                if (Math.sign(Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) / 2) == -1) {
+                    value = this.position + this.amplitude / 2;
+                } else {
+                    value = this.position - this.amplitude / 2;
+                }
                 break;
             case 'triangle':
                 // TODO
@@ -71,8 +76,6 @@ export class EffectCurve extends Effect {
                 // TODO
                 break;
         }
-
-        value += this.position;
 
         return Math.max(Math.min(value, 1), 0);
     }
