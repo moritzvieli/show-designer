@@ -106,13 +106,13 @@
   <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
     <a class="nav-link px-3 active" id="v-pills-effect-capabilities-tab"
       popover="{{ 'designer.misc.capabilities' | translate }}" container="body" placement="right"
-      triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-effect-capabilities" role="tab"
+      triggers="mouseenter:mouseleave" data-toggle="pill" href="#v-pills-effect-capabilities-{{ curve?.uuid }}" role="tab"
       aria-controls="v-pills-capabilities" aria-selected="true">
       <i class="fa fa-bolt fa-fw" aria-hidden="true"></i>
     </a>
     <a class="nav-link px-3" id="v-pills-effect-channels-tab" popover="{{ 'designer.misc.channels' | translate }}"
       container="body" placement="right" triggers="mouseenter:mouseleave" data-toggle="pill"
-      href="#v-pills-effect-channels" role="tab" aria-controls="v-pills-channels" aria-selected="false">
+      href="#v-pills-effect-channels-{{ curve?.uuid }}" role="tab" aria-controls="v-pills-channels" aria-selected="false">
       <i class="fa fa-sliders fa-fw" aria-hidden="true"></i>
     </a>
   </div>
@@ -120,7 +120,7 @@
 
 <div class="h-100" class="applying-to">
   <div class="tab-content h-100" id="v-pills-tabContent">
-    <div class="tab-pane h-100 show active" id="v-pills-effect-capabilities" role="tabpanel">
+    <div class="tab-pane h-100 show active" id="v-pills-effect-capabilities-{{ curve?.uuid }}" role="tabpanel">
 
       <!-- Capabilities-->
       <div *ngFor="let capability of availableCapabilities; let i = index;" class="form-check">
@@ -131,7 +131,7 @@
       </div>
 
     </div>
-    <div class="tab-pane h-100 show" id="v-pills-effect-channels" role="tabpanel">
+    <div class="tab-pane h-100 show" id="v-pills-effect-channels-{{ curve?.uuid }}" role="tabpanel">
       <!-- channels -->
 
       <!-- profile selection -->
