@@ -67,7 +67,7 @@ export class EffectCurve extends Effect {
                 }
                 break;
             case 'triangle':
-                // TODO
+                // TODO check wikipedia formula
                 break;
             case 'sawtooth':
                 // TODO
