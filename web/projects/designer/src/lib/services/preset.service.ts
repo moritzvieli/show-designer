@@ -67,7 +67,7 @@ export class PresetService {
       }
     }
 
-    for (let selectedFixtureUuid of this.selectedPreset.fixtureUuids) {
+    for (let selectedFixtureUuid of preset.fixtureUuids) {
       if (selectedFixtureUuid == fixture.uuid) {
         return true;
       }
@@ -123,7 +123,7 @@ export class PresetService {
     // after changing the configuration in the fixture pool, we might need to
     // delete some fixtures
     for (let preset of this.projectService.project.presets) {
-      for (let i = preset.fixtureUuids.length; i >= 0; i--) {
+      for (let i = preset.fixtureUuids.length - 1; i >= 0; i--) {
         let presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
         if (!presetFixture) {
           preset.fixtureUuids.splice(i, 1);
@@ -136,8 +136,8 @@ export class PresetService {
     // after changing the configuration in the fixture pool, we might need to
     // select some more fixtures on the same channel as already selected ones
     for (let preset of this.projectService.project.presets) {
-      for (let presetFixtureUuid of preset.fixtureUuids) {
-        let presetFixture = this.fixtureService.getFixtureByUuid(presetFixtureUuid);
+      for (let i = preset.fixtureUuids.length - 1; i >= 0; i--) {
+        let presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
         for (let projectFixture of this.projectService.project.fixtures) {
           if (projectFixture.dmxFirstChannel == presetFixture.dmxFirstChannel && !this.fixtureIsSelected(projectFixture, preset)) {
             preset.fixtureUuids.push(projectFixture.uuid);
@@ -365,7 +365,7 @@ export class PresetService {
   addPreset(name?: string): void {
     let preset: Preset = new Preset();
     preset.uuid = this.uuidService.getUuid();
-    preset.name = name || 'Preset';
+    preset.name = name || 'New Preset';
 
     // Insert the new preset before the highest currently selected preset
     let highestSelectedPresetIndex = 0;

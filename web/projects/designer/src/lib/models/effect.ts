@@ -12,6 +12,7 @@ export abstract class Effect {
         }
 
         this.uuid = data.uuid;
+        this.visible = data.visible;
     }
 
 }
