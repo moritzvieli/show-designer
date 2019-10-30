@@ -36,17 +36,17 @@ import { FixtureChannelComponent } from './fixture/fixture-channel/fixture-chann
 import { FixtureCapabilityColorWheelComponent } from './fixture/fixture-capability/fixture-capability-color-wheel/fixture-capability-color-wheel.component';
 import { UserLoginComponent } from './user/user-login/user-login.component';
 import { UserRegisterComponent } from './user/user-register/user-register.component';
-import { ProjectBrowserComponent } from './project-browser/project-browser.component';
+import { ProjectBrowserComponent } from './project/project-browser/project-browser.component';
 import { WaitDialogComponent } from './wait-dialog/wait-dialog.component';
-import { ProjectImportComponent } from './project-import/project-import.component';
-import { ProjectShareComponent } from './project-share/project-share.component';
+import { ProjectImportComponent } from './project/project-import/project-import.component';
+import { ProjectShareComponent } from './project/project-share/project-share.component';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { FixtureSettingsStageComponent } from './fixture/fixture-settings/fixture-settings-stage/fixture-settings-stage.component';
 import { IntroComponent } from './intro/intro.component';
 import { PresetSettingsComponent } from './preset/preset-settings/preset-settings.component';
 import { SceneSettingsComponent } from './scene/scene-settings/scene-settings.component';
-import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { RouterModule } from '@angular/router';
+import { ProjectSaveComponent } from './project/project-save/project-save.component';
 
 const DROPZONE_CONFIG: DropzoneConfigInterface = {
 };
@@ -88,7 +88,7 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     IntroComponent,
     PresetSettingsComponent,
     SceneSettingsComponent,
-    ProjectSettingsComponent
+    ProjectSaveComponent
   ],
   imports: [
     RouterModule.forRoot([]),
@@ -121,7 +121,7 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     ProjectShareComponent,
     PresetSettingsComponent,
     SceneSettingsComponent,
-    ProjectSettingsComponent
+    ProjectSaveComponent
   ],
   exports: [DesignerComponent]
 })

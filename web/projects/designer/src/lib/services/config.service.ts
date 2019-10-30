@@ -12,10 +12,11 @@ export class ConfigService {
   public shareAvailable: boolean = false;
   public menuHeightPx: number = 0;
   public languageSwitch: boolean = false;
-  public autoLoadProject: boolean = false;
+  public newProjectTemplate: boolean = false;
   public livePreview: boolean = false;
   public localProfiles: boolean = false;
   public intro: boolean = false;
+  public uniqueProjectNames: boolean = false;
 
   public menuHeightChanged: Subject<void> = new Subject<void>();
 

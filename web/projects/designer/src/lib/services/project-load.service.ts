@@ -98,7 +98,7 @@ export class ProjectLoadService {
   new() {
     // create an empty new project
     let project = new Project();
-    project.name = 'New Project';
+    project.uuid = this.uuidService.getUuid();
     this.projectService.project = project;
     this.projectService.project.shareToken = this.uuidService.getUuid();
 

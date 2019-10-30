@@ -1,6 +1,6 @@
 <div class="mr-3" style="float: left">
   <div class="mb-2">
-    <select [ngModel]="curve.curveType" (ngModelChange)="curve.curveType = $event" style="width: 200px; height: 20px;">
+    <select [ngModel]="curve.curveType" (ngModelChange)="curve.curveType = $event; presetService.previewLive();" style="width: 200px; height: 20px;">
       <option [value]="'sine'">
         {{ 'designer.effect.curve-sine' | translate }}</option>
       <option [value]="'square'">

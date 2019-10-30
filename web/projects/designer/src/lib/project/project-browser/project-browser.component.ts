@@ -1,16 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
-import { ProjectService } from '../services/project.service';
-import { Project } from '../models/project';
-import { PreviewService } from '../services/preview.service';
-import { FixtureService } from '../services/fixture.service';
-import { PresetService } from '../services/preset.service';
-import { SceneService } from '../services/scene.service';
-import { ProjectLoadService } from '../services/project-load.service';
-import { UserService } from '../services/user.service';
-import { WarningDialogService } from '../services/warning-dialog.service';
+import { ProjectService } from '../../services/project.service';
+import { Project } from '../../models/project';
+import { ProjectLoadService } from '../../services/project-load.service';
+import { UserService } from '../../services/user.service';
+import { WarningDialogService } from '../../services/warning-dialog.service';
 import { map } from 'rxjs/operators';
-import { ConfigService } from '../services/config.service';
+import { ConfigService } from '../../services/config.service';
 
 @Component({
   selector: 'lib-project-browser',
@@ -44,15 +40,13 @@ export class ProjectBrowserComponent implements OnInit {
   }
 
   cancel() {
-    this.bsModalRef.hide()
+    this.bsModalRef.hide();
   }
 
   openProject(project: Project) {
     this.bsModalRef.hide();
     this.projectLoadService.load(project.id, project.name).subscribe(() => {
-      if (this.configService.autoLoadProject) {
-        this.userService.setAutoLoadProjectId(project.id);
-      }
+      this.userService.setAutoLoadProject(project);
     });
   }
 

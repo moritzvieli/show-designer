@@ -2,8 +2,7 @@ import { Component, ViewEncapsulation, OnInit, Input, ViewChild, HostListener, A
 import { TimelineService } from './services/timeline.service';
 import { ConfigService } from './services/config.service';
 import { PreviewComponent } from './preview/preview.component';
-import { ProjectShareComponent } from './project-share/project-share.component';
-import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { ProjectShareComponent } from './project/project-share/project-share.component';
 import { TranslateService } from '@ngx-translate/core';
 import { FixturePoolService } from './services/fixture-pool.service';
 import { HotkeyTargetExcludeService } from './services/hotkey-target-exclude.service';
@@ -14,15 +13,16 @@ import { ToastrService } from 'ngx-toastr';
 import { ErrorDialogService } from './services/error-dialog.service';
 import { FixtureService } from './services/fixture.service';
 import Split from 'split.js';
-import { ProjectBrowserComponent } from './project-browser/project-browser.component';
+import { ProjectBrowserComponent } from './project/project-browser/project-browser.component';
 import { UserRegisterComponent } from './user/user-register/user-register.component';
 import { map } from 'rxjs/operators';
 import { TimelineComponent } from './timeline/timeline.component';
 import { ProjectLoadService } from './services/project-load.service';
 import { WarningDialogService } from './services/warning-dialog.service';
-import { ProjectImportComponent } from './project-import/project-import.component';
+import { ProjectImportComponent } from './project/project-import/project-import.component';
 import { ProjectService } from './services/project.service';
 import { IntroService } from './services/intro.service';
+import { ProjectSaveComponent } from './project/project-save/project-save.component';
 
 @Component({
   selector: 'lib-designer',
@@ -69,8 +69,8 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   }
 
   @Input()
-  set autoLoadProject(value: boolean) {
-    this.configService.autoLoadProject = value;
+  set newProjectTemplate(value: boolean) {
+    this.configService.newProjectTemplate = value;
   }
 
   @Input()
@@ -87,6 +87,11 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   set intro(value: boolean) {
     this.configService.intro = value;
     this.introService.refresh();
+  }
+
+  @Input()
+  set uniqueProjectNames(value: boolean) {
+    this.configService.uniqueProjectNames = value;
   }
 
   // the size of the menu used in the designer
@@ -140,45 +145,45 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     let projectName = urlParams.get('name');
     let shareToken = urlParams.get('token');
 
-    if (this.configService.autoLoadProject) {
-      if (projectId) {
-        // load a project by query param ID
-        if (!shareToken) {
-          shareToken = '';
+    if (projectId) {
+      // load a project by query param ID
+      if (!shareToken) {
+        shareToken = '';
+      }
+
+      this.projectLoadService.load(Number.parseInt(projectId), projectName, shareToken).subscribe(() => { }, (response) => {
+        let error = response && response.error ? response.error.error : 'unknown';
+
+        let msg = '';
+
+        if (error == 'no-permission') {
+          msg = 'designer.project.open-no-permission-error';
+          error = undefined;
+        } else {
+          msg = 'designer.project.open-error';
         }
 
-        this.projectLoadService.load(Number.parseInt(projectId), projectName, shareToken).subscribe(() => { }, (response) => {
-          let error = response && response.error ? response.error.error : 'unknown';
-
-          let msg = '';
-
-          if (error == 'no-permission') {
-            msg = 'designer.project.open-no-permission-error';
-            error = undefined;
-          } else {
-            msg = 'designer.project.open-error';
-          }
-
-          this.errorDialogService.show(msg, error).subscribe(() => {
-            this.projectLoadService.new();
-          });
+        this.errorDialogService.show(msg, error).subscribe(() => {
+          this.projectLoadService.new();
         });
-      } else if (this.userService.isLoggedIn() && this.userService.getAutoLoadProjectId()) {
-        // restore the last saved project
-        this.projectLoadService.load(this.userService.getAutoLoadProjectId(), null).subscribe(() => { }, (response) => {
-          let msg = 'designer.project.open-error';
-          let error = response && response.error ? response.error.error : 'unknown';
+      });
+    } else if (this.userService.isLoggedIn() && (this.userService.getAutoLoadProjectId() || this.userService.getAutoLoadProjectName())) {
+      // restore the last saved project
+      this.projectLoadService.load(this.userService.getAutoLoadProjectId(), this.userService.getAutoLoadProjectName()).subscribe(() => { }, (response) => {
+        let msg = 'designer.project.open-error';
+        let error = response && response.error ? response.error.error : 'unknown';
 
-          this.errorDialogService.show(msg, error).subscribe(() => {
-            this.projectLoadService.new();
-          });
+        this.errorDialogService.show(msg, error).subscribe(() => {
+          this.projectLoadService.new();
         });
-      } else {
+      });
+    } else {
+      if (this.configService.newProjectTemplate) {
         // load the new project template
         this.projectLoadService.template();
+      } else {
+        this.projectLoadService.new();
       }
-    } else {
-      this.projectLoadService.new();
     }
   }
 
@@ -260,27 +265,20 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   }
 
   projectSave() {
-    this.userEnsureLoginService.login().subscribe(() => {
-      this.projectService.save(this.projectService.project).subscribe(() => {
-        let msg = 'designer.project.save-success';
-        let title = 'designer.project.save-success-title';
-
-        this.translateService.get([msg, title]).subscribe(result => {
-          this.toastrService.success(result[msg], result[title]);
-        });
-
-        if (this.projectService.project.id) {
-          this.userService.setAutoLoadProjectId(this.projectService.project.id);
-        }
-      }, (response) => {
-        let msg = 'designer.project.save-error';
-        let title = 'designer.project.save-error-title';
-        let error = response && response.error ? response.error.error : 'unknown';
-
-        this.translateService.get([msg, title]).subscribe(result => {
-          this.toastrService.error(result[msg] + ' (' + error + ')', result[title]);
-        });
+    if (this.projectService.project.name) {
+      // this project has been saved before -> just save it again
+      this.projectService.save(this.projectService.project);
+    } else {
+      // this project has not yet been saved -> show the save as-dialog
+      this.userEnsureLoginService.login().subscribe(() => {
+        this.modalService.show(ProjectSaveComponent, { keyboard: true, ignoreBackdropClick: false });
       });
+    }
+  }
+
+  projectSaveAs() {
+    this.userEnsureLoginService.login().subscribe(() => {
+      this.modalService.show(ProjectSaveComponent, { keyboard: true, ignoreBackdropClick: false });
     });
   }
 
@@ -354,10 +352,6 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   switchLanguage(language: string) {
     this.translateService.use(language);
     localStorage.setItem('language', language);
-  }
-
-  projectSettings() {
-    let bsModalRef = this.modalService.show(ProjectSettingsComponent, { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { project: this.projectService.project } });
   }
 
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
-import { ProjectService } from '../services/project.service';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'lib-project-share',

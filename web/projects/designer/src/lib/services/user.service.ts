@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Project } from 'projects/designer/dist/lib/models/project';
 
 @Injectable({
   providedIn: 'root'
@@ -83,12 +84,24 @@ export class UserService {
     return headers;
   }
 
-  setAutoLoadProjectId(id: number) {
-    localStorage.setItem('projectId', id.toString());
+  setAutoLoadProject(project: Project) {
+    localStorage.setItem('projectName', project.name);
+    if (project.id) {
+      localStorage.setItem('projectId', project.id.toString());
+    } else {
+      localStorage.removeItem('projectId');
+    }
   }
 
   getAutoLoadProjectId(): number {
+    if(!localStorage.getItem('projectId')) {
+      return null;
+    }
     return Number.parseInt(localStorage.getItem('projectId'));
+  }
+
+  getAutoLoadProjectName(): string {
+    return localStorage.getItem('projectName');
   }
 
 }

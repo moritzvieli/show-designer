@@ -440,7 +440,7 @@ export class PresetService {
     }
 
     // collect all changes and delay them to not flood the backend
-    // (except play events. they need to be delivered all)
+    // (except play events. they need to be delivered always)
     if (this.livePreviewTimer && !compositionName) {
       this.liveChangePending = true;
       return;
@@ -453,7 +453,8 @@ export class PresetService {
     }
 
     this.http.post('preview?positionMillis=' + position + '&compositionName=' + compositionName, JSON.stringify(this.projectService.project)).subscribe();
-
+    this.liveChangePending = false;
+    
     if (!compositionName) {
       this.livePreviewTimer = setTimeout(() => {
         this.livePreviewTimer = undefined;

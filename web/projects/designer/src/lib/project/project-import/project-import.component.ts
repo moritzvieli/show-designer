@@ -1,10 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
-import { ProjectLoadService } from '../services/project-load.service';
+import { ProjectLoadService } from '../../services/project-load.service';
 
 @Component({
   selector: 'lib-project-import',

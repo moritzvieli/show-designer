@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { UserService } from './user.service';
 import { map } from 'rxjs/operators';
 import { Params, Router, ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -20,14 +22,16 @@ export class ProjectService {
     private http: HttpClient,
     private userService: UserService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private translateService: TranslateService,
+    private toastrService: ToastrService
   ) {
     this.project = new Project();
     this.project.uuid = this.uuidService.getUuid();
     this.project.name = 'New Project';
   }
 
-  save(project: Project): Observable<Object> {
+  private saveApi(project: Project): Observable<Object> {
     return this.http.post('project', JSON.stringify(project), { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
       if (response) {
         project.id = response.id;
@@ -50,6 +54,28 @@ export class ProjectService {
     }));
   }
 
+  save(project: Project) {
+    // tries to save the project and returns, whether it has been saved or not
+    this.saveApi(project).subscribe(() => {
+      let msg = 'designer.project.save-success';
+      let title = 'designer.project.save-success-title';
+
+      this.translateService.get([msg, title]).subscribe(result => {
+        this.toastrService.success(result[msg], result[title]);
+      });
+
+      this.userService.setAutoLoadProject(project);
+    }, (response) => {
+      let msg = 'designer.project.save-error';
+      let title = 'designer.project.save-error-title';
+      let error = response && response.error ? response.error.error : 'unknown';
+
+      this.translateService.get([msg, title]).subscribe(result => {
+        this.toastrService.error(result[msg] + ' (' + error + ')', result[title]);
+      });
+    });
+  }
+
   getAllProjects(): Observable<Project[]> {
     return this.http.get('projects', { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
       let projects: Project[] = []
@@ -62,7 +88,7 @@ export class ProjectService {
   }
 
   deleteProject(project: Project): Observable<any> {
-    return this.http.delete('project?id=' + project.id, { headers: this.userService.getHeaders() });
+    return this.http.delete('project?id=' + project.id + '&name=' + project.name, { headers: this.userService.getHeaders() });
   }
 
   getProject(id: number, name: string, shareToken?: string): Observable<Project> {
