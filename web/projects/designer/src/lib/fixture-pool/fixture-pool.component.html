@@ -16,7 +16,7 @@
       <!-- Search for profiles -->
       <input type="text" class="form-control input-block mb-3" id="searchSet"
         placeholder="{{ 'designer.fixture-pool.search-profiles' | translate }}"
-        (input)="filterProfiles($event.target.value)">
+        (input)="searchExpression = $event.target.value; filterProfiles()">
 
       <!-- Profiles -->
       <div class="card border-secondary w-100" style="height: 200px;">

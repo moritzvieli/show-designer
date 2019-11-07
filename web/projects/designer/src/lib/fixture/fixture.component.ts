@@ -44,10 +44,12 @@ export class FixtureComponent implements OnInit {
 
   selectAll() {
     this.presetService.selectAllFixtures();
+    this.presetService.fixtureSelectionChanged.next();
   }
 
   selectNone() {
     this.presetService.selectNoFixtures();
+    this.presetService.fixtureSelectionChanged.next();
   }
 
   openFixturePool() {

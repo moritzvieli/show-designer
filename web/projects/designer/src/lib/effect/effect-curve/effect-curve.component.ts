@@ -23,7 +23,7 @@ export class EffectCurveComponent implements OnInit {
   private maxWidth: number;
   private maxHeight: number;
 
-  public lengthMillisMin: number = 50;
+  public lengthMillisMin: number = 20;
   public lengthMillisMax: number = 8000;
   public amplitudeMin: number = 0;
   public amplitudeMax: number = 4;

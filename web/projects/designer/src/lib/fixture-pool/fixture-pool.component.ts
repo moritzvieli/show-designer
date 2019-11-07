@@ -37,6 +37,8 @@ export class FixturePoolComponent implements OnInit {
 
   private lastAddedFixture: Fixture;
 
+  public searchExpression: string;
+
   public updatingProfiles: boolean;
 
   constructor(
@@ -83,8 +85,8 @@ export class FixturePoolComponent implements OnInit {
     this.selectedFixture = fixture;
   }
 
-  filterProfiles(searchValue?: string) {
-    if (!searchValue) {
+  filterProfiles() {
+    if (!this.searchExpression || !this.profiles) {
       this.filteredProfiles = this.profiles;
       return;
     }
@@ -92,9 +94,9 @@ export class FixturePoolComponent implements OnInit {
     this.filteredProfiles = [];
 
     for (let profile of this.profiles) {
-      if (profile.uuid.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
-        || profile.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
-        || profile.manufacturerName.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+      if (profile.uuid.toLowerCase().indexOf(this.searchExpression.toLowerCase()) !== -1
+        || profile.name.toLowerCase().indexOf(this.searchExpression.toLowerCase()) !== -1
+        || profile.manufacturerName.toLowerCase().indexOf(this.searchExpression.toLowerCase()) !== -1) {
 
         this.filteredProfiles.push(profile);
       }
