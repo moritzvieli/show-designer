@@ -17,6 +17,8 @@ export class Composition {
 
     public snapToGrid: boolean = true;
 
+    public tempoGuessed: boolean = false;
+
     // time based or musical
     public gridType: string = 'musical';
     public gridOffsetMillis: number = 0;
@@ -44,6 +46,10 @@ export class Composition {
         this.timeSignatureUpper = data.timeSignatureUpper;
         this.timeSignatureLower = data.timeSignatureLower;
         this.snapToGrid = data.snapToGrid;
+
+        // never guess again (and overwrite), when a composition is loaded
+        this.tempoGuessed = true;
+
         this.gridType = data.gridType;
         this.gridOffsetMillis = data.gridOffsetMillis;
         this.gridResolution = data.gridResolution;

@@ -14,8 +14,6 @@ import { ConfigService } from '../services/config.service';
 import { PresetService } from '../services/preset.service';
 import { IntroService } from '../services/intro.service';
 
-import { analyze } from 'web-audio-beat-detector';
-
 @Component({
   selector: 'app-timeline',
   templateUrl: './timeline.component.html',
@@ -135,21 +133,6 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   private openCompositionSettings(compositionIndex?: number, newComposition?: Composition) {
-    // TODO move to addComposition
-    console.log(this.timelineService.waveSurfer.backend.buffer);
-    console.log('AAA');
-    setTimeout(() => {
-      analyze(this.timelineService.waveSurfer.backend.buffer)
-      .then((tempo) => {
-        // the tempo could be analyzed
-        console.log(tempo);
-      })
-      .catch((err) => {
-        // something went wrong
-      });
-    });
-
-
     let editComposition: Composition = newComposition || JSON.parse(JSON.stringify(this.projectService.project.compositions[compositionIndex]));
 
     let bsModalRef = this.modalService.show(CompositionSettingsComponent, { keyboard: false, ignoreBackdropClick: true, class: '', initialState: { composition: editComposition } });

@@ -15,6 +15,7 @@ import { PresetRegionScene } from '../models/preset-region-scene';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ConfigService } from './config.service';
+import { guess } from 'web-audio-beat-detector';
 
 @Injectable({
   providedIn: 'root'
@@ -423,7 +424,26 @@ export class TimelineService {
 
       this.waveSurfer.on('ready', () => {
         setTimeout(() => {
-          this.loadingAudioFile = false;
+          // try guessing the bpm and offset from the file, if necessary
+          if (this.selectedComposition.tempoGuessed) {
+            // we already guessed the BPM of this file --> don't do it again
+            this.loadingAudioFile = false;
+          } else {
+            // we have not yet guessed the BPM --> do it now
+            this.selectedComposition.tempoGuessed = true;
+            guess(this.waveSurfer.backend.buffer)
+              .then(({ bpm, offset }) => {
+                // the bpm and offset could be guessed
+                this.selectedComposition.beatsPerMinute = bpm;
+                this.selectedComposition.gridOffsetMillis = offset * 1000;
+                this.loadingAudioFile = false;
+              })
+              .catch((err) => {
+                // something went wrong
+                console.error('Could not detect the BPM from the audio file', err);
+                this.loadingAudioFile = false;
+              });
+          }
 
           this.duration = this.msToTime(this.waveSurfer.getDuration() * 1000);
           this.drawAllRegions();
