@@ -22,7 +22,9 @@ export class FixtureService {
 
   cachedFixtures: CachedFixture[] = [];
 
+  // is the side-tab settings currently selected?
   settingsSelection: boolean = false;
+
   selectedSettingsFixtures: Fixture[] = [];
 
   constructor(

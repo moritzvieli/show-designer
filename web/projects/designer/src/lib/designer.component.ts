@@ -6,7 +6,7 @@ import { ProjectShareComponent } from './project/project-share/project-share.com
 import { TranslateService } from '@ngx-translate/core';
 import { FixturePoolService } from './services/fixture-pool.service';
 import { HotkeyTargetExcludeService } from './services/hotkey-target-exclude.service';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { UserService } from './services/user.service';
 import { UserEnsureLoginService } from './services/user-ensure-login.service';
 import { ToastrService } from 'ngx-toastr';
@@ -233,6 +233,8 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   }
 
   openTab(tab: string) {
+    // open a side tab (e.g. effects, channels, settings, etc.)
+
     if (tab == 'settings') {
       this.fixtureService.settingsSelection = true;
     } else {

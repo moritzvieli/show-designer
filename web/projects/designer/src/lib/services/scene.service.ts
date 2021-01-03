@@ -25,6 +25,7 @@ export class SceneService {
   multipleSelection: boolean = false;
 
   sceneDeleted: Subject<void> = new Subject<void>();
+  sceneSelected: Subject<void> = new Subject<void>();
 
   constructor(
     private uuidService: UuidService,
@@ -70,6 +71,8 @@ export class SceneService {
     } else {
       this.selectedScenes.push(scene);
     }
+
+    this.sceneSelected.next();
   }
 
   selectScene(index: number) {
@@ -93,6 +96,8 @@ export class SceneService {
     }
     this.presetService.previewSelectionChanged.next();
     this.presetService.previewLive();
+
+    this.sceneSelected.next();
   }
 
   addScene(name?: string): void {

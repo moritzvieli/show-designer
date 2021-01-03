@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';

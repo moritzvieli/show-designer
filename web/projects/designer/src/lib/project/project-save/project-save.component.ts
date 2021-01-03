@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ProjectService } from '../../services/project.service';
 import { Project } from '../../models/project';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { map } from 'rxjs/operators';
 import { WarningDialogService } from '../../services/warning-dialog.service';
 import { ConfigService } from '../../services/config.service';

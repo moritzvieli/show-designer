@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 import { UserService } from './user.service';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { UserRegisterComponent } from '../user/user-register/user-register.component';
 import { ConfigService } from './config.service';
 

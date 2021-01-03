@@ -6,7 +6,7 @@ import { PresetService } from './preset.service';
 import { SceneService } from './scene.service';
 import { map, finalize } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { WaitDialogComponent } from '../wait-dialog/wait-dialog.component';
 import { Project } from '../models/project';
 import { Preset } from '../models/preset';

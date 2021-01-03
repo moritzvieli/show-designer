@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { FixturePoolComponent } from '../fixture-pool/fixture-pool.component';
 
 @Injectable({

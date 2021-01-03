@@ -37,12 +37,12 @@
           Y
         </div>
         <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px;" [tooltip]="'hide'"
-            [value]="positionY ? positionY : (positionYMax + positionYMin) / 2" [min]="positionYMin"
-            [max]="positionYMax" [step]="1" (change)="changePositionManual('y', $event.newValue)"></mv-slider>
+          <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'"
+            [value]="positionZ ? positionZ : (positionZMax + positionZMin) / 2" [min]="positionZMin"
+            [max]="positionZMax" [step]="1" (change)="changePositionManual('z', $event.newValue)"></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="positionY" (ngModelChange)="changePositionManual('y', $event)" type="text"
+          <input [ngModel]="positionZ" (ngModelChange)="changePositionManual('z', $event)" type="text"
             class="slider-input">
         </div>
       </div>
@@ -51,12 +51,12 @@
           Z
         </div>
         <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'"
-            [value]="positionZ ? positionZ : (positionZMax + positionZMin) / 2" [min]="positionZMin"
-            [max]="positionZMax" [step]="1" (change)="changePositionManual('z', $event.newValue)"></mv-slider>
+          <mv-slider style="width: 80px;" [tooltip]="'hide'"
+            [value]="positionY ? positionY : (positionYMax + positionYMin) / 2" [min]="positionYMin"
+            [max]="positionYMax" [step]="1" (change)="changePositionManual('y', $event.newValue)"></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="positionZ" (ngModelChange)="changePositionManual('z', $event)" type="text"
+          <input [ngModel]="positionY" (ngModelChange)="changePositionManual('y', $event)" type="text"
             class="slider-input">
         </div>
       </div>
@@ -81,12 +81,12 @@
           Y
         </div>
         <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px;" [tooltip]="'hide'"
-            [value]="rotationY ? rotationY : (rotationMin + rotationMax) / 2" [min]="rotationMin" [max]="rotationMax"
-            [step]="1" (change)="changeRotationManual('y', $event.newValue)"></mv-slider>
+          <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'"
+            [value]="rotationZ ? rotationZ : (rotationMin + rotationMax) / 2" [min]="rotationMin" [max]="rotationMax"
+            [step]="1" (change)="changeRotationManual('z', $event.newValue)"></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="rotationY" (ngModelChange)="changeRotationManual('y', $event)" type="text"
+          <input [ngModel]="rotationZ" (ngModelChange)="changeRotationManual('z', $event)" type="text"
             class="slider-input">
         </div>
       </div>
@@ -95,12 +95,12 @@
           Z
         </div>
         <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'"
-            [value]="rotationZ ? rotationZ : (rotationMin + rotationMax) / 2" [min]="rotationMin" [max]="rotationMax"
-            [step]="1" (change)="changeRotationManual('z', $event.newValue)"></mv-slider>
+          <mv-slider style="width: 80px;" [tooltip]="'hide'"
+            [value]="rotationY ? rotationY : (rotationMin + rotationMax) / 2" [min]="rotationMin" [max]="rotationMax"
+            [step]="1" (change)="changeRotationManual('y', $event.newValue)"></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="rotationZ" (ngModelChange)="changeRotationManual('z', $event)" type="text"
+          <input [ngModel]="rotationY" (ngModelChange)="changeRotationManual('y', $event)" type="text"
             class="slider-input">
         </div>
       </div>

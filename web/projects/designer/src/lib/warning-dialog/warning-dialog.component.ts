@@ -1,4 +1,4 @@
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Subject } from 'rxjs';
 import { Component, OnInit, HostListener } from '@angular/core';
 

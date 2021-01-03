@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FixtureProfile } from '../models/fixture-profile';
 import { FixtureService } from '../services/fixture.service';
 import { Fixture } from '../models/fixture';

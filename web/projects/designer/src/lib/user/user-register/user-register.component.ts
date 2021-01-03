@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { UserLoginComponent } from '../user-login/user-login.component';
 import { UserService } from '../../services/user.service';
 import { Subject } from 'rxjs';

@@ -15,6 +15,7 @@ import { PresetRegionScene } from '../models/preset-region-scene';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ConfigService } from './config.service';
+import { guess } from 'web-audio-beat-detector';
 
 @Injectable({
   providedIn: 'root'
@@ -58,17 +59,24 @@ export class TimelineService {
       this.updateRegionSelection();
     });
     this.sceneService.sceneDeleted.subscribe(() => {
-      // remove all regions from wavesurver
-      if (this.waveSurfer) {
-        for (let key of Object.keys(this.waveSurfer.regions.list)) {
-          let region: any = this.waveSurfer.regions.list[key];
-          region.remove();
-        }
-      }
-
-      // draw all regions
-      this.drawAllRegions();
+      this.redrawAllRegions();
     });
+    this.sceneService.sceneSelected.subscribe(() => {
+      this.redrawAllRegions();
+    });
+  }
+
+  private redrawAllRegions() {
+    // remove all regions from wavesurver
+    if (this.waveSurfer) {
+      for (let key of Object.keys(this.waveSurfer.regions.list)) {
+        let region: any = this.waveSurfer.regions.list[key];
+        region.remove();
+      }
+    }
+
+    // draw all regions
+    this.drawAllRegions();
   }
 
   private pad(num: number, size: number): string {
@@ -423,7 +431,26 @@ export class TimelineService {
 
       this.waveSurfer.on('ready', () => {
         setTimeout(() => {
-          this.loadingAudioFile = false;
+          // try guessing the bpm and offset from the file, if necessary
+          if (this.selectedComposition.tempoGuessed) {
+            // we already guessed the BPM of this file --> don't do it again
+            this.loadingAudioFile = false;
+          } else {
+            // we have not yet guessed the BPM --> do it now
+            this.selectedComposition.tempoGuessed = true;
+            guess(this.waveSurfer.backend.buffer)
+              .then(({ bpm, offset }) => {
+                // the bpm and offset could be guessed
+                this.selectedComposition.beatsPerMinute = bpm;
+                this.selectedComposition.gridOffsetMillis = offset * 1000;
+                this.loadingAudioFile = false;
+              })
+              .catch((err) => {
+                // something went wrong
+                console.error('Could not detect the BPM from the audio file', err);
+                this.loadingAudioFile = false;
+              });
+          }
 
           this.duration = this.msToTime(this.waveSurfer.getDuration() * 1000);
           this.drawAllRegions();
@@ -602,7 +629,7 @@ export class TimelineService {
     waveSurferRegion.scene = scene;
     waveSurferRegion.preset = preset;
 
-    waveSurferRegion.on('click', () => {
+    waveSurferRegion.on('click', (event) => {
       if (this.sceneService.sceneIsSelected(scene)) {
         this.setSelectedRegion(scenePlaybackRegion);
       }
@@ -732,8 +759,31 @@ export class TimelineService {
       return;
     }
 
-    for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegions) {
-      this.drawRegion(scenePlaybackRegion, this.sceneService.getSceneByUuid(scenePlaybackRegion.sceneUuid));
+    // draw the regions in the same order as their corresponding scenes, but draw
+    // the selected ones last, to make sure they're always clickable.
+    for (let sceneIndex = this.projectService.project.scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
+      let scene = this.projectService.project.scenes[sceneIndex];
+
+      if (!this.sceneService.sceneIsSelected(scene)) {
+        for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegions) {
+          if (scenePlaybackRegion.sceneUuid == scene.uuid) {
+            this.drawRegion(scenePlaybackRegion, scene);
+          }
+        }
+      }
+    }
+
+    // draw all selected scenes now
+    for (let sceneIndex = this.projectService.project.scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
+      let scene = this.projectService.project.scenes[sceneIndex];
+
+      if (this.sceneService.sceneIsSelected(scene)) {
+        for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegions) {
+          if (scenePlaybackRegion.sceneUuid == scene.uuid) {
+            this.drawRegion(scenePlaybackRegion, scene);
+          }
+        }
+      }
     }
   }
 

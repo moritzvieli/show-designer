@@ -3,7 +3,7 @@ import { SceneService } from '../services/scene.service';
 import { PresetService } from '../services/preset.service';
 import { ProjectService } from '../services/project.service';
 import { Scene } from '../models/scene';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { SceneSettingsComponent } from './scene-settings/scene-settings.component';
 import { IntroService } from '../services/intro.service';
 

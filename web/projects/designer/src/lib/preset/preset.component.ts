@@ -3,7 +3,7 @@ import { PresetService } from '../services/preset.service';
 import { SceneService } from '../services/scene.service';
 import { ProjectService } from '../services/project.service';
 import { IntroService } from '../services/intro.service';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { PresetSettingsComponent } from './preset-settings/preset-settings.component';
 import { Preset } from '../models/preset';
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Composition } from '../../models/composition';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { TimelineService } from '../../services/timeline.service';
 import { Subject } from 'rxjs';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
@@ -136,10 +136,13 @@ export class CompositionSettingsComponent implements OnInit {
   public onUploadSuccess(args: any) {
     this.loadFiles();
 
-    // Hide the preview element
+    // allow to guess the bpm of the newly uploaded file
+    this.composition.tempoGuessed = false;
+
+    // hide the preview element
     args[0].previewElement.hidden = true;
 
-    // Select this file
+    // select this file
     this.composition.audioFileName = args[0].name;
 
     if (this.configService.enableMediaLibrary) {
