@@ -23,10 +23,10 @@ import { analyze } from 'web-audio-beat-detector';
 })
 export class TimelineComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('waveWrapper', {static: false})
+  @ViewChild('waveWrapper')
   waveWrapper: ElementRef;
 
-  @ViewChild('waveElement', {static: false})
+  @ViewChild('waveElement')
   waveElement: ElementRef;
 
   private lastHeight: number;

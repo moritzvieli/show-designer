@@ -61,7 +61,7 @@ export class EffectCurveComponent implements OnInit {
     }
   }
 
-  @ViewChild('curveGrid', {static: false}) curveGrid: ElementRef;
+  @ViewChild('curveGrid') curveGrid: ElementRef;
 
   constructor(
     public presetService: PresetService,

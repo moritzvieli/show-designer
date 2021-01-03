@@ -107,22 +107,6 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
       newestOnTop: true
     }),
   ],
-  entryComponents: [
-    FixturePoolComponent,
-    TimelineGridComponent,
-    CompositionSettingsComponent,
-    WarningDialogComponent,
-    ErrorDialogComponent,
-    UserLoginComponent,
-    UserRegisterComponent,
-    ProjectBrowserComponent,
-    WaitDialogComponent,
-    ProjectImportComponent,
-    ProjectShareComponent,
-    PresetSettingsComponent,
-    SceneSettingsComponent,
-    ProjectSaveComponent
-  ],
   exports: [DesignerComponent]
 })
 
