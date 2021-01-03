@@ -22,8 +22,10 @@ import { FixtureCapabilityDimmerComponent } from './fixture/fixture-capability/f
 import { TimelineGridComponent } from './timeline/timeline-grid/timeline-grid.component';
 import { CompositionSettingsComponent } from './timeline/composition-settings/composition-settings.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { SortablejsModule } from 'angular-sortablejs';
-import { PopoverModule, AccordionModule, TypeaheadModule } from 'ngx-bootstrap';
+import { SortablejsModule } from 'ngx-sortablejs';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { ArraySortPipe } from './array-sort-pipe';
@@ -47,9 +49,6 @@ import { PresetSettingsComponent } from './preset/preset-settings/preset-setting
 import { SceneSettingsComponent } from './scene/scene-settings/scene-settings.component';
 import { RouterModule } from '@angular/router';
 import { ProjectSaveComponent } from './project/project-save/project-save.component';
-
-const DROPZONE_CONFIG: DropzoneConfigInterface = {
-};
 
 @NgModule({
   declarations: [
@@ -102,7 +101,7 @@ const DROPZONE_CONFIG: DropzoneConfigInterface = {
     PopoverModule,
     TypeaheadModule,
     SortablejsModule,
-    DropzoneModule.forRoot(DROPZONE_CONFIG),
+    DropzoneModule,
     ToastrModule.forRoot({
       newestOnTop: true
     }),

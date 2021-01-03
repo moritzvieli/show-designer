@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ProjectService } from '../../services/project.service';
 import { Project } from '../../models/project';
 import { ProjectLoadService } from '../../services/project-load.service';

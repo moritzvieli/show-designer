@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { TimelineService } from '../services/timeline.service';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { TimelineGridComponent } from './timeline-grid/timeline-grid.component';
 import { CompositionSettingsComponent } from './composition-settings/composition-settings.component';
 import { Composition } from '../models/composition';

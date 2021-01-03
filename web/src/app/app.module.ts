@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { DesignerModule } from 'projects/designer/src/public_api';
-import { ModalModule, AccordionModule, PopoverModule, TypeaheadModule } from 'ngx-bootstrap';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { SortablejsModule } from 'angular-sortablejs';
+import { SortablejsModule } from 'ngx-sortablejs';
 import { AppHttpInterceptor } from 'src/app/app-http-interceptor/app-http-interceptor';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 

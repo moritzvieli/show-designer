@@ -12,7 +12,7 @@ import { FixtureProfile } from '../../../models/fixture-profile';
 })
 export class FixtureCapabilityChannelComponent implements OnInit {
 
-  @ViewChild, {static: false}) sliderValue: ElementRef;
+  @ViewChild('sliderValue', {static: false}) sliderValue: ElementRef;
 
   selectedCapability: CachedFixtureCapability;
   _channel: CachedFixtureChannel;

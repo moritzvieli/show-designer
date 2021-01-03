@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Composition } from '../../models/composition';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { TimelineService } from '../../services/timeline.service';
 import { Subject } from 'rxjs';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
