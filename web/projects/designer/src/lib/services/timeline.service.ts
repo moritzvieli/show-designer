@@ -59,17 +59,24 @@ export class TimelineService {
       this.updateRegionSelection();
     });
     this.sceneService.sceneDeleted.subscribe(() => {
-      // remove all regions from wavesurver
-      if (this.waveSurfer) {
-        for (let key of Object.keys(this.waveSurfer.regions.list)) {
-          let region: any = this.waveSurfer.regions.list[key];
-          region.remove();
-        }
-      }
-
-      // draw all regions
-      this.drawAllRegions();
+      this.redrawAllRegions();
     });
+    this.sceneService.sceneSelected.subscribe(() => {
+      this.redrawAllRegions();
+    });
+  }
+
+  private redrawAllRegions() {
+    // remove all regions from wavesurver
+    if (this.waveSurfer) {
+      for (let key of Object.keys(this.waveSurfer.regions.list)) {
+        let region: any = this.waveSurfer.regions.list[key];
+        region.remove();
+      }
+    }
+
+    // draw all regions
+    this.drawAllRegions();
   }
 
   private pad(num: number, size: number): string {
@@ -622,7 +629,7 @@ export class TimelineService {
     waveSurferRegion.scene = scene;
     waveSurferRegion.preset = preset;
 
-    waveSurferRegion.on('click', () => {
+    waveSurferRegion.on('click', (event) => {
       if (this.sceneService.sceneIsSelected(scene)) {
         this.setSelectedRegion(scenePlaybackRegion);
       }
@@ -752,8 +759,31 @@ export class TimelineService {
       return;
     }
 
-    for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegions) {
-      this.drawRegion(scenePlaybackRegion, this.sceneService.getSceneByUuid(scenePlaybackRegion.sceneUuid));
+    // draw the regions in the same order as their corresponding scenes, but draw
+    // the selected ones last, to make sure they're always clickable.
+    for (let sceneIndex = this.projectService.project.scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
+      let scene = this.projectService.project.scenes[sceneIndex];
+
+      if (!this.sceneService.sceneIsSelected(scene)) {
+        for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegions) {
+          if (scenePlaybackRegion.sceneUuid == scene.uuid) {
+            this.drawRegion(scenePlaybackRegion, scene);
+          }
+        }
+      }
+    }
+
+    // draw all selected scenes now
+    for (let sceneIndex = this.projectService.project.scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
+      let scene = this.projectService.project.scenes[sceneIndex];
+
+      if (this.sceneService.sceneIsSelected(scene)) {
+        for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegions) {
+          if (scenePlaybackRegion.sceneUuid == scene.uuid) {
+            this.drawRegion(scenePlaybackRegion, scene);
+          }
+        }
+      }
     }
   }
 

@@ -33,9 +33,11 @@ export class FixtureComponent implements OnInit {
 
   selectFixture(event: any, fixture: Fixture) {
     if (this.fixtureService.settingsSelection) {
+      // select fixtures for the settings
       this.fixtureService.switchSettingsFixtureSelection(fixture);
       this.presetService.fixtureSelectionSettingsChanged.next();
     } else {
+      // select fixtures for the current preset
       this.presetService.switchFixtureSelection(fixture);
       this.presetService.fixtureSelectionChanged.next();
       this.presetService.previewLive();

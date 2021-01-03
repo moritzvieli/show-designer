@@ -59,6 +59,7 @@ export class PresetService {
   }
 
   fixtureIsSelected(fixture: Fixture, preset?: Preset): boolean {
+    // is the passed fixture selected in the passed/currently selected preset?
     if (!preset) {
       if (this.selectedPreset) {
         preset = this.selectedPreset;

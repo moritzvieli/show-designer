@@ -233,6 +233,8 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   }
 
   openTab(tab: string) {
+    // open a side tab (e.g. effects, channels, settings, etc.)
+
     if (tab == 'settings') {
       this.fixtureService.settingsSelection = true;
     } else {
