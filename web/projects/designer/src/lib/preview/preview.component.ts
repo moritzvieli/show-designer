@@ -31,7 +31,7 @@ export class PreviewComponent implements AfterViewInit {
 
   private fixtures3d: Fixture3d[] = [];
 
-  @ViewChild('canvas')
+  @ViewChild('canvas', {static: false})
   private canvasRef: ElementRef;
 
   constructor(

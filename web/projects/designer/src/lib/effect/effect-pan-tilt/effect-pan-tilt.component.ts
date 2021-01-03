@@ -9,7 +9,7 @@ import * as d3 from "d3";
 })
 export class EffectPanTiltComponent implements OnInit {
 
-  @ViewChild('panTiltGrid') panTiltGrid: ElementRef;
+  @ViewChild('panTiltGrid', {static: false}) panTiltGrid: ElementRef;
 
   private line = d3.line();
   private svg;

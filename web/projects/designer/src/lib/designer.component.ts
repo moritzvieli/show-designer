@@ -103,10 +103,10 @@ export class DesignerComponent implements OnInit, AfterViewInit {
 
   currentTab: string = 'properties';
 
-  @ViewChild(PreviewComponent)
+  @ViewChild(PreviewComponent, {static: false})
   previewComponent: PreviewComponent;
 
-  @ViewChild(TimelineComponent)
+  @ViewChild(TimelineComponent, {static: false})
   timelineComponent: TimelineComponent;
 
   constructor(
