@@ -4,6 +4,11 @@ This project allows editing lighting shows for Rocket Show as a web application 
 ## Fixture profile library
 The Rocket Show Designer relies on the Open Fixture Library (OFL). There is currently no plugin, which maps the OFL profiles to the Rocket Show format. Currently, we rely on the OFL JSON-format.
 
+## Development
+- Start the designer with `ng serve` in the web directory. 
+- Access the app in your browser with `localhost:4200`
+- Some functionality requires a server (e.g. loading/saving projects, handling audio files). You can start a rocket show server (see https://github.com/moritzvieli/rocketshow) and point environment.ts's localBackend to `http://localhost:8080`
+
 ## Build & publish as NPM package
 ```
 cd projects/designer
