@@ -2,7 +2,7 @@
 This project allows editing lighting shows for Rocket Show as a web application in the browser.
 
 ## Fixture profile library
-The Rocket Show Designer relies on the Open Fixture Library (OFL). There is a plugin, which maps the OFL profiles to the Rocket Show format. The format relies as close as possible on the OFL-format.
+The Rocket Show Designer relies on the Open Fixture Library (OFL). There is currently no plugin, which maps the OFL profiles to the Rocket Show format. Currently, we rely on the OFL JSON-format.
 
 ## Build & publish as NPM package
 ```
