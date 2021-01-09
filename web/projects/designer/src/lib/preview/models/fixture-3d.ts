@@ -20,7 +20,7 @@ export abstract class Fixture3d {
     colorGreen: number;
     colorBlue: number;
 
-    dimmer: number = 1;
+    dimmer: number = 0;
 
     isSelected: boolean = false;
     isLoaded: boolean = false;
@@ -85,13 +85,12 @@ export abstract class Fixture3d {
             this.colorBlue = 0;
         }
 
-        if (this.fixtureSupportsDimmer) {
-            this.dimmer = masterDimmerValue;
-        }
+        this.dimmer = 0;
 
         for (let channelValue of channelValues) {
             let channel = this.fixtureService.getChannelByName(this.fixture, channelValue.channelName);
             let capability = this.getCapabilityInValue(channel, channelValue.value);
+
             if (capability) {
                 switch (capability.capability.type) {
                     case FixtureCapabilityType.Intensity: {

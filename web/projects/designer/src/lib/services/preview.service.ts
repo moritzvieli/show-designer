@@ -224,14 +224,10 @@ export class PreviewService {
               if (presetCapabilityValue.valuePercentage >= 0 &&
                 (presetCapabilityValue.type == FixtureCapabilityType.Intensity ||
                   presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity)) {
+
                 // intensity and colorIntensity (dimmer and color)
                 let valuePercentage = presetCapabilityValue.valuePercentage;
                 let defaultValue = 0;
-
-                if (presetCapabilityValue.type == FixtureCapabilityType.Intensity) {
-                  // the dimmer starts at full brightness
-                  defaultValue = 255;
-                }
 
                 // brightness property
                 if (cachedChannel.capabilities.length == 1) {
