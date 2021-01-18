@@ -10,7 +10,7 @@ import { Positioning } from '../../models/fixture';
 export abstract class Fixture3d {
 
     fixture: CachedFixture;
-    fixtureSupportsDimmer: boolean = false;
+    fixtureHasDimmer: boolean = false;
     fixtureHasColorWheel: boolean = false;
     fixtureHasColor: boolean = false;
 
@@ -47,7 +47,7 @@ export abstract class Fixture3d {
                 for (let capability of cachedChannel.capabilities) {
                     switch (capability.capability.type) {
                         case FixtureCapabilityType.Intensity:
-                            this.fixtureSupportsDimmer = true;
+                            this.fixtureHasDimmer = true;
                             break;
                         case FixtureCapabilityType.ColorIntensity:
                             this.fixtureHasColor = true;
@@ -75,6 +75,12 @@ export abstract class Fixture3d {
     // Apply the properties of the base fixture to the preview
     updatePreview(channelValues: FixtureChannelValue[], masterDimmerValue: number) {
         // Apply default settings
+        if (this.fixtureHasDimmer) {
+            this.dimmer = 0;
+        } else {
+            this.dimmer = 1;
+        }
+
         this.colorRed = 255;
         this.colorGreen = 255;
         this.colorBlue = 255;
@@ -84,8 +90,6 @@ export abstract class Fixture3d {
             this.colorGreen = 0;
             this.colorBlue = 0;
         }
-
-        this.dimmer = 0;
 
         for (let channelValue of channelValues) {
             let channel = this.fixtureService.getChannelByName(this.fixture, channelValue.channelName);
@@ -128,7 +132,6 @@ export abstract class Fixture3d {
                             this.colorGreen = Math.round(mixedColor.green);
                             this.colorBlue = Math.round(mixedColor.blue);
                         }
-
                         break;
                     }
                 }

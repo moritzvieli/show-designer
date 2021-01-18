@@ -525,13 +525,15 @@ export class TimelineService {
       });
 
       this.waveSurfer.on('region-created', (region) => {
-        // Region created by selection
+        // region created by selection or programmatically
         if (this.sceneService.selectedScenes && this.sceneService.selectedScenes.length == 1) {
           if (!region.data.handled) {
             this.addRegion(region);
           }
         } else {
-          region.remove();
+          if (!region.data.handled) {
+            region.remove();
+          }
         }
       });
 
@@ -558,28 +560,33 @@ export class TimelineService {
 
     for (let key of Object.keys(this.waveSurfer.regions.list)) {
       let region: any = this.waveSurfer.regions.list[key];
-      let intensity = this.intensity;
+      
+      // if no scene is set, the region is not valid (e.g. has been created, while
+      // no scene has been selected and remove did not work properly)
+      if (region.scene) {
+        let intensity = this.intensity;
 
-      region.drag = false;
-      region.resize = false;
-      region.attributes.selectable = false;
+        region.drag = false;
+        region.resize = false;
+        region.attributes.selectable = false;
 
-      if (this.sceneService.sceneIsSelected(region.scene)) {
-        intensity = this.intensitySelectedScene;
-        region.drag = true;
-        region.resize = true;
-        region.attributes.selectable = true;
+        if (this.sceneService.sceneIsSelected(region.scene)) {
+          intensity = this.intensitySelectedScene;
+          region.drag = true;
+          region.resize = true;
+          region.attributes.selectable = true;
+        }
+
+        region.attributes.selected = false;
+
+        if (this.selectedPlaybackRegion && this.selectedPlaybackRegion == region.scenePlaybackRegion) {
+          intensity = this.intensityHighlighted;
+          region.attributes.selected = true;
+        }
+
+        region.color = 'rgba(' + this.hexToRgb(region.scene.color).r + ', ' + this.hexToRgb(region.scene.color).g + ', ' + this.hexToRgb(region.scene.color).b + ', ' + intensity + ')';
+        region.updateRender();
       }
-
-      region.attributes.selected = false;
-
-      if (this.selectedPlaybackRegion && this.selectedPlaybackRegion == region.scenePlaybackRegion) {
-        intensity = this.intensityHighlighted;
-        region.attributes.selected = true;
-      }
-
-      region.color = 'rgba(' + this.hexToRgb(region.scene.color).r + ', ' + this.hexToRgb(region.scene.color).g + ', ' + this.hexToRgb(region.scene.color).b + ', ' + intensity + ')';
-      region.updateRender();
     }
   }
 
@@ -651,10 +658,6 @@ export class TimelineService {
   private drawRegion(scenePlaybackRegion: ScenePlaybackRegion, scene: Scene) {
     // draw the regions of the currently selected scene
     if (!this.isWaveSurferReady()) {
-      return;
-    }
-
-    if (!this.sceneService.selectedScenes || this.sceneService.selectedScenes.length > 1) {
       return;
     }
 
@@ -763,7 +766,6 @@ export class TimelineService {
     // the selected ones last, to make sure they're always clickable.
     for (let sceneIndex = this.projectService.project.scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
       let scene = this.projectService.project.scenes[sceneIndex];
-
       if (!this.sceneService.sceneIsSelected(scene)) {
         for (let scenePlaybackRegion of this.selectedComposition.scenePlaybackRegions) {
           if (scenePlaybackRegion.sceneUuid == scene.uuid) {
@@ -773,7 +775,7 @@ export class TimelineService {
       }
     }
 
-    // draw all selected scenes now
+    // draw all selected scenes afterwards
     for (let sceneIndex = this.projectService.project.scenes.length - 1; sceneIndex >= 0; sceneIndex--) {
       let scene = this.projectService.project.scenes[sceneIndex];
 

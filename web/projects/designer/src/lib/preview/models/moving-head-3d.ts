@@ -215,11 +215,11 @@ export class MovingHead3d extends Fixture3d {
         }
 
         // Apply default settings
-        let panStart: number;
-        let panEnd: number;
+        let panStart: number = 0;
+        let panEnd: number = 255;
 
-        let tiltStart: number;
-        let tiltEnd: number;
+        let tiltStart: number = 0;
+        let tiltEnd: number = 255;
 
         this.pan = 0;
         this.tilt = 0;
