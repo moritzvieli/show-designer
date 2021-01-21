@@ -35,8 +35,6 @@ export class FixturePoolComponent implements OnInit {
 
   public onClose: Subject<number> = new Subject();
 
-  private lastAddedFixture: Fixture;
-
   public searchExpression: string;
 
   public updatingProfiles: boolean;
@@ -93,11 +91,21 @@ export class FixturePoolComponent implements OnInit {
 
     this.filteredProfiles = [];
 
-    for (let profile of this.profiles) {
-      if (profile.uuid.toLowerCase().indexOf(this.searchExpression.toLowerCase()) !== -1
-        || profile.name.toLowerCase().indexOf(this.searchExpression.toLowerCase()) !== -1
-        || profile.manufacturerName.toLowerCase().indexOf(this.searchExpression.toLowerCase()) !== -1) {
+    let keywords = this.searchExpression.split(' ');
 
+    for (let profile of this.profiles) {
+      let foundKeywords = 0;
+
+      for (let keyword of keywords) {
+        if (profile.uuid.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
+          || profile.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
+          || profile.manufacturerName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
+
+          foundKeywords++;
+        }
+      }
+
+      if(foundKeywords === keywords.length) {
         this.filteredProfiles.push(profile);
       }
     }
@@ -175,7 +183,6 @@ export class FixturePoolComponent implements OnInit {
         fixture.dmxFirstChannel = firstChannel;
         this.fixturePool.push(fixture);
         this.selectFixture(fixture);
-        this.lastAddedFixture = fixture;
       } else {
         // no free space anymore
         let msg = 'designer.fixture-pool.no-free-space';
