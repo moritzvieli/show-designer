@@ -221,9 +221,9 @@ export class PreviewService {
             )) {
 
               // the capabilities match -> apply the value, if possible
-              if (presetCapabilityValue.valuePercentage >= 0 &&
-                (presetCapabilityValue.type == FixtureCapabilityType.Intensity ||
-                  presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity)) {
+              if ((presetCapabilityValue.type == FixtureCapabilityType.Intensity ||
+                presetCapabilityValue.type == FixtureCapabilityType.ColorIntensity)
+                && presetCapabilityValue.valuePercentage >= 0) {
 
                 // intensity and colorIntensity (dimmer and color)
                 let valuePercentage = presetCapabilityValue.valuePercentage;
@@ -266,6 +266,15 @@ export class PreviewService {
                     }
                   }
                 }
+              } else if ((presetCapabilityValue.type == FixtureCapabilityType.Pan
+                || presetCapabilityValue.type == FixtureCapabilityType.Tilt)
+                && presetCapabilityValue.valuePercentage >= 0) {
+
+                let fixtureChannelValue = new FixtureChannelValue();
+                fixtureChannelValue.channelName = cachedChannel.name;
+                fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
+                fixtureChannelValue.value = cachedChannel.maxValue * presetCapabilityValue.valuePercentage;
+                this.mixChannelValue(values, fixtureChannelValue, 1);
               } else if (presetCapabilityValue.type == FixtureCapabilityType.WheelSlot
                 && channelCapability.capability.slotNumber == presetCapabilityValue.slotNumber) {
 

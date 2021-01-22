@@ -75,6 +75,38 @@ export class SceneService {
     this.sceneSelected.next();
   }
 
+  selectPresetFromSelectedScene() {
+    // select the first preset of the scene, if no preset of the current scene is already
+    // selected to make sure, the user does not edit a preset which is not even
+    // active in the current scene (and sees no change).
+
+    let firstPresetUuid = undefined;
+
+    // check, whether a preset of the current scene is already selected and do nothing
+    // in this case
+    for (let scene of this.selectedScenes) {
+      for (let presetUuid of scene.presetUuids) {
+        firstPresetUuid = presetUuid;
+
+        if (presetUuid == this.presetService.selectedPreset.uuid) {
+          // a preset of a currently selected scene is already selected -> do nothing
+          return;
+        }
+      }
+    }
+
+    if (!firstPresetUuid) {
+      return;
+    }
+
+    for (let i = 0; i < this.projectService.project.presets.length; i++) {
+      if (this.projectService.project.presets[i].uuid == firstPresetUuid) {
+        this.presetService.selectPreset(i);
+        break;
+      }
+    }
+  }
+
   selectScene(index: number) {
     this.effectService.selectedEffect = undefined;
 
@@ -88,6 +120,10 @@ export class SceneService {
         this.selectedScenes.push(this.projectService.project.scenes[index]);
       }
     }
+
+    this.selectPresetFromSelectedScene();
+
+    // preview the complete scene
     this.projectService.project.previewPreset = false;
 
     this.projectService.project.selectedSceneUuids = [];

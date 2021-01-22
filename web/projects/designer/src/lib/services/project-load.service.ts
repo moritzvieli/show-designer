@@ -40,6 +40,7 @@ export class ProjectLoadService {
     this.presetService.autoOpenFirstEffect();
     this.previewService.updateStage();
     this.presetService.previewLive();
+    this.sceneService.selectPresetFromSelectedScene();
   }
 
   private selectScenesPresetComposition() {

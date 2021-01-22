@@ -362,7 +362,6 @@ export class EffectCurveComponent implements OnInit {
     if (!isNaN(value) && value >= this.amplitudeMin && value <= this.amplitudeMax) {
       this.curve.amplitude = +value;
       this.presetService.previewLive();
-      console.log('aaa');
     }
   }
 
