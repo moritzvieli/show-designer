@@ -11,14 +11,14 @@
       </div>
       <div class="my-auto" style="float: left;">
         <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageWidthCm" [min]="100"
-          [max]="2000" [step]="1" (change)="projectService.project.stageWidthCm = $event.newValue; update();">
+          [max]="2000" [step]="5" (change)="projectService.project.stageWidthCm = $event.newValue; update();">
         </mv-slider>
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageWidthCm"
-          (ngModelChange)="projectService.project.stageWidthCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageWidthCm = $event; update();" class="slider-input-readonly" readonly>
       </div>
-      <div class="my-auto ml-1">
+      <div class="my-auto ml-1" style="color:darkgray">
         cm
       </div>
     </div>
@@ -29,14 +29,14 @@
       </div>
       <div class="my-auto" style="float: left;">
         <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageHeightCm" [min]="100"
-          [max]="2000" [step]="1" (change)="projectService.project.stageHeightCm = $event.newValue; update();">
+          [max]="2000" [step]="5" (change)="projectService.project.stageHeightCm = $event.newValue; update();">
         </mv-slider>
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageHeightCm"
-          (ngModelChange)="projectService.project.stageHeightCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageHeightCm = $event; update();" class="slider-input-readonly" readonly>
       </div>
-      <div class="my-auto ml-1">
+      <div class="my-auto ml-1" style="color:darkgray">
         cm
       </div>
     </div>
@@ -47,14 +47,14 @@
       </div>
       <div class="my-auto" style="float: left;">
         <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageDepthCm" [min]="100"
-          [max]="2000" [step]="1" (change)="projectService.project.stageDepthCm = $event.newValue; update();">
+          [max]="2000" [step]="5" (change)="projectService.project.stageDepthCm = $event.newValue; update();">
         </mv-slider>
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageDepthCm"
-          (ngModelChange)="projectService.project.stageDepthCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageDepthCm = $event; update();" class="slider-input-readonly" readonly>
       </div>
-      <div class="my-auto ml-1">
+      <div class="my-auto ml-1" style="color:darkgray">
         cm
       </div>
     </div>
@@ -65,15 +65,15 @@
       </div>
       <div class="my-auto" style="float: left;">
         <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageFloorHeightCm"
-          [min]="1" [max]="1000" [step]="1"
+          [min]="1" [max]="1000" [step]="5"
           (change)="projectService.project.stageFloorHeightCm = $event.newValue; update();">
         </mv-slider>
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageFloorHeightCm"
-          (ngModelChange)="projectService.project.stageFloorHeightCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageFloorHeightCm = $event; update();" class="slider-input-readonly" readonly>
       </div>
-      <div class="my-auto ml-1">
+      <div class="my-auto ml-1" style="color:darkgray">
         cm
       </div>
     </div>
@@ -84,15 +84,15 @@
       </div>
       <div class="my-auto" style="float: left;">
         <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stageCeilingHeightCm"
-          [min]="1" [max]="1000" [step]="1"
+          [min]="1" [max]="1000" [step]="5"
           (change)="projectService.project.stageCeilingHeightCm = $event.newValue; update();">
         </mv-slider>
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stageCeilingHeightCm"
-          (ngModelChange)="projectService.project.stageCeilingHeightCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stageCeilingHeightCm = $event; update();" class="slider-input-readonly" readonly>
       </div>
-      <div class="my-auto ml-1">
+      <div class="my-auto ml-1" style="color:darkgray">
         cm
       </div>
     </div>
@@ -103,15 +103,15 @@
       </div>
       <div class="my-auto" style="float: left;">
         <mv-slider style="width: 140px;" [tooltip]="'hide'" [value]="projectService.project.stagePillarWidthCm"
-          [min]="1" [max]="200" [step]="1"
+          [min]="1" [max]="200" [step]="5"
           (change)="projectService.project.stagePillarWidthCm = $event.newValue; update();">
         </mv-slider>
       </div>
       <div class="my-auto">
         <input type="text" [ngModel]="projectService.project.stagePillarWidthCm"
-          (ngModelChange)="projectService.project.stagePillarWidthCm = $event; update();" class="slider-input">
+          (ngModelChange)="projectService.project.stagePillarWidthCm = $event; update();" class="slider-input-readonly" readonly>
       </div>
-      <div class="my-auto ml-1">
+      <div class="my-auto ml-1" style="color:darkgray">
         cm
       </div>
     </div>
