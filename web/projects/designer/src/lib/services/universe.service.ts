@@ -9,9 +9,9 @@ export class UniverseService {
   universes: Universe[] = [];
 
   constructor() { }
-  
+
   getUniverseByUuid(uuid: string): Universe {
-    for (let universe of this.universes) {
+    for (const universe of this.universes) {
       if (universe.uuid = uuid) {
         return universe;
       }

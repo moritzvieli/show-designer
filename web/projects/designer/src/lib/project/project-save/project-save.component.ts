@@ -14,7 +14,7 @@ import { ConfigService } from '../../services/config.service';
 export class ProjectSaveComponent implements OnInit {
 
   projects: Project[] = [];
-  loading: boolean = true;
+  loading = true;
   projectName: string;
 
   constructor(
@@ -27,7 +27,7 @@ export class ProjectSaveComponent implements OnInit {
     if (this.projectService.project.name) {
       this.projectName = this.projectService.project.name;
     } else {
-      this.projectName = "New Project";
+      this.projectName = 'New Project';
     }
   }
 
@@ -50,8 +50,8 @@ export class ProjectSaveComponent implements OnInit {
   }
 
   private existingProject(uuid: string, name: string) {
-    for (let project of this.projects) {
-      if (project.name === name && project.uuid != uuid) {
+    for (const project of this.projects) {
+      if (project.name === name && project.uuid !== uuid) {
         return true;
       }
     }

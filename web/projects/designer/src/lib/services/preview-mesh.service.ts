@@ -18,13 +18,13 @@ export class PreviewMeshService {
   constructor() { }
 
   private loadScene(name: string): Observable<THREE.Scene> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
       this.loader.load(
         './assets/designer/models/' + name + '.gltf',
 
         // Called when the resource is loaded
         function (gltf: any) {
-          let model = gltf.scene.children[0];
+          const model = gltf.scene.children[0];
 
           model.position.set(0, 0, 0);
 
@@ -44,8 +44,8 @@ export class PreviewMeshService {
   }
 
   private loadMesh(name: string): Observable<THREE.Mesh> {
-    let observable = this.loadScene(name).pipe(map((scene: any) => {
-      let model = scene.children[0];
+    const observable = this.loadScene(name).pipe(map((scene: any) => {
+      const model = scene.children[0];
 
       model.position.set(0, 0, 0);
 
@@ -61,7 +61,7 @@ export class PreviewMeshService {
   }
 
   getMesh(name: string): Observable<THREE.Mesh> {
-    if(this.cachedMeshes.get(name)) {
+    if (this.cachedMeshes.get(name)) {
       return of(this.cachedMeshes.get(name).clone());
     }
 

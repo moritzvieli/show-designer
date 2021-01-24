@@ -5,7 +5,7 @@ import { CachedFixtureCapability } from '../../../models/cached-fixture-capabili
 import { FixtureProfile } from '../../../models/fixture-profile';
 
 @Component({
-  selector: 'app-fixture-capability-channel',
+  selector: 'lib-app-fixture-capability-channel',
   templateUrl: './fixture-capability-channel.component.html',
   styleUrls: ['./fixture-capability-channel.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,11 +17,11 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   selectedCapability: CachedFixtureCapability;
   _channel: CachedFixtureChannel;
 
-  rangeMin: number = 0;
-  rangeMax: number = 0;
-  defaultValue: number = 0;
-  value: number = 0;
-  templateValue: number = 0;
+  rangeMin = 0;
+  rangeMax = 0;
+  defaultValue = 0;
+  value = 0;
+  templateValue = 0;
 
   valueSetTimer: any;
 
@@ -49,8 +49,8 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     this.calculateTemplateValue();
 
     if (this.value >= 0) {
-      for (let capability of this._channel.capabilities) {
-        if (capability.capability.dmxRange.length > 0 && capability.centerValue == this.value) {
+      for (const capability of this._channel.capabilities) {
+        if (capability.capability.dmxRange.length > 0 && capability.centerValue === this.value) {
           this.selectedCapability = capability;
           break;
         }
@@ -63,7 +63,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   }
 
   capabilityHasRange(): boolean {
-    if (this._channel.capabilities && this._channel.capabilities.length == 1) {
+    if (this._channel.capabilities && this._channel.capabilities.length === 1) {
       return true;
     }
 

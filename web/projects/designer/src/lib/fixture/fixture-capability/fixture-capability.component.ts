@@ -9,7 +9,7 @@ import { IntroService } from '../../services/intro.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-fixture-capability',
+  selector: 'lib-app-fixture-capability',
   templateUrl: './fixture-capability.component.html',
   styleUrls: ['./fixture-capability.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,8 +51,8 @@ export class FixtureCapabilityComponent implements OnInit, OnDestroy {
   }
 
   private wheelInList(wheels: Map<FixtureProfile, CachedFixtureChannel>, profile: FixtureProfile, channel: CachedFixtureChannel) {
-    wheels.forEach((existingChannel: CachedFixtureChannel, profile: FixtureProfile) => {
-      if (profile == profile && existingChannel.name == channel.name) {
+    wheels.forEach((existingChannel: CachedFixtureChannel, existingProfile: FixtureProfile) => {
+      if (existingProfile.uuid === profile.uuid && existingChannel.name === channel.name) {
         return true;
       }
     });
@@ -67,10 +67,10 @@ export class FixtureCapabilityComponent implements OnInit, OnDestroy {
       return;
     }
 
-    for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-      let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
-      for (let channel of fixture.channels) {
-        for (let capability of channel.capabilities) {
+    for (const fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
+      const fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+      for (const channel of fixture.channels) {
+        for (const capability of channel.capabilities) {
           if (capability.wheel && capability.wheelSlots && capability.wheelSlots.length > 0) {
             if (this.fixtureService.wheelHasSlotType(capability.wheel, FixtureWheelSlotType.Color)) {
               // color wheel
@@ -93,7 +93,7 @@ export class FixtureCapabilityComponent implements OnInit, OnDestroy {
   }
 
   isChrome(): boolean {
-    if (navigator.appVersion.indexOf("Chrome/") != -1) {
+    if (navigator.appVersion.indexOf('Chrome/') !== -1) {
       return true;
     }
     return false;

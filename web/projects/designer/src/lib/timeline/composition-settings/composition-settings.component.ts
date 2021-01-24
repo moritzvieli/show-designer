@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ProjectService } from '../../services/project.service';
 
 @Component({
-  selector: 'app-composition-settings',
+  selector: 'lib-app-composition-settings',
   templateUrl: './composition-settings.component.html',
   styleUrls: ['./composition-settings.component.css']
 })
@@ -30,7 +30,7 @@ export class CompositionSettingsComponent implements OnInit {
   public existingFiles: string[] = [];
   public filteredExistingFiles: string[] = [];
 
-  public uploading: boolean = false;
+  public uploading = false;
 
   constructor(
     public bsModalRef: BsModalRef,
@@ -45,7 +45,7 @@ export class CompositionSettingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    let projectId = this.projectService.project.id ? this.projectService.project.id : '';
+    const projectId = this.projectService.project.id ? this.projectService.project.id : '';
     this.dropzoneConfig = {
       url: this.configService.restUrl + 'file/upload?compositionUuid=' + this.composition.uuid + '&projectId=' + projectId,
       addRemoveLinks: false,
@@ -57,15 +57,18 @@ export class CompositionSettingsComponent implements OnInit {
       <div class="dz-preview dz-file-preview">
         <!-- The attachment details -->
         <div class="dz-details" style="text-align: left">
-          <i class="fa fa-file-o"></i> <span data-dz-name></span> <small><span class="label label-default file-size" data-dz-size></span></small>
+          <i class="fa fa-file-o"></i> <span data-dz-name></span> <small>
+          <span class="label label-default file-size" data-dz-size></span></small>
         </div>
-        
+
         <!--div class="mt-5">
           <span data-dz-errormessage></span>
         </div-->
-        
+
         <div class="progress mt-4 mb-1" style="height: 10px">
-          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:0%;" data-dz-uploadprogress></div>
+          <div class="progress-bar progress-bar-striped progress-bar-animated"
+            role="progressbar" style="width:0%;" data-dz-uploadprogress>
+          </div>
         </div>
       </div>
       `
@@ -86,12 +89,12 @@ export class CompositionSettingsComponent implements OnInit {
 
   ok() {
     this.onClose.next(1);
-    this.bsModalRef.hide()
+    this.bsModalRef.hide();
   }
 
   cancel() {
     this.onClose.next(2);
-    this.bsModalRef.hide()
+    this.bsModalRef.hide();
   }
 
   @HostListener('document:keydown.enter', ['$event'])
@@ -112,7 +115,7 @@ export class CompositionSettingsComponent implements OnInit {
       .pipe(map((response: Array<Object>) => {
         this.existingFiles = [];
 
-        for (let file of response) {
+        for (const file of response) {
           // only load audio files
           if ((<any>file).audioFile) {
             this.existingFiles.push(this.getNameFromFile((<any>file).audioFile));
@@ -124,8 +127,8 @@ export class CompositionSettingsComponent implements OnInit {
   }
 
   public onUploadError(args: any) {
-    let msg = 'designer.timeline.toast-composition-upload-error';
-    let title = 'designer.timeline.toast-composition-upload-error-title';
+    const msg = 'designer.timeline.toast-composition-upload-error';
+    const title = 'designer.timeline.toast-composition-upload-error-title';
     this.translateService.get([msg, title]).subscribe(result => {
       this.toastrService.error(result[msg] + args[1], result[title], { timeOut: 0, extendedTimeOut: 0, enableHtml: true });
       // Hide the preview element
@@ -168,7 +171,7 @@ export class CompositionSettingsComponent implements OnInit {
 
     this.filteredExistingFiles = [];
 
-    for (let file of this.existingFiles) {
+    for (const file of this.existingFiles) {
       if (file.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
         this.filteredExistingFiles.push(file);
       }

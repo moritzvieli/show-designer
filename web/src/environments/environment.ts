@@ -4,11 +4,11 @@
 
 export const environment = {
   production: false,
-  name: "dev",
+  name: 'dev',
 
   // Local backend
   // localBackend: "https://rocketshow.net/designer",
-  localBackend: "http://localhost:8080",
+  localBackend: 'http://localhost:8080',
   // localBackend: "http://rocketshow.local:8080",
 
   debug: true

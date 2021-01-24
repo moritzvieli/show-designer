@@ -7,19 +7,19 @@ import { FixturePoolComponent } from '../fixture-pool/fixture-pool.component';
 })
 export class FixturePoolService {
 
-  private fixturePoolOpened: boolean = false;
+  private fixturePoolOpened = false;
 
   constructor(
     private modalService: BsModalService,
   ) { }
 
   open() {
-    if(this.fixturePoolOpened) {
+    if (this.fixturePoolOpened) {
       return;
     }
 
     this.fixturePoolOpened = true;
-    let bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
+    const bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
     (<FixturePoolComponent>bsModalRef.content).onClose.subscribe(result => {
       this.fixturePoolOpened = false;
     });

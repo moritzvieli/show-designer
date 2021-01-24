@@ -8,7 +8,7 @@ import { SceneSettingsComponent } from './scene-settings/scene-settings.componen
 import { IntroService } from '../services/intro.service';
 
 @Component({
-  selector: 'app-scene',
+  selector: 'lib-app-scene',
   templateUrl: './scene.component.html',
   styleUrls: ['./scene.component.css']
 })
@@ -31,7 +31,7 @@ export class SceneComponent implements OnInit {
   }
 
   removeScene() {
-    if (this.sceneService.selectedScenes.length == 0) {
+    if (this.sceneService.selectedScenes.length === 0) {
       return;
     }
 
@@ -39,7 +39,10 @@ export class SceneComponent implements OnInit {
   }
 
   openSettings(scene: Scene) {
-    let bsModalRef = this.modalService.show(SceneSettingsComponent, { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { scene: scene } });
+    const bsModalRef = this.modalService.show(
+      SceneSettingsComponent,
+      { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { scene: scene } }
+    );
   }
 
 }

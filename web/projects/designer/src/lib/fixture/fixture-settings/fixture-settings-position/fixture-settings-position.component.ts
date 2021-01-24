@@ -4,7 +4,7 @@ import { FixtureService } from '../../../services/fixture.service';
 import { PresetService } from '../../../services/preset.service';
 
 @Component({
-  selector: 'app-fixture-settings-position',
+  selector: 'lib-app-fixture-settings-position',
   templateUrl: './fixture-settings-position.component.html',
   styleUrls: ['./fixture-settings-position.component.css']
 })
@@ -14,23 +14,23 @@ export class FixtureSettingsPositionComponent implements OnInit {
 
   selectedPositioning: string = undefined;
 
-  positionX: number = 0;
-  positionY: number = 0;
-  positionZ: number = 0;
+  positionX = 0;
+  positionY = 0;
+  positionZ = 0;
 
-  positionXMin: number = -400;
-  positionXMax: number = 400;
-  positionYMin: number = 0;
-  positionYMax: number = 400;
-  positionZMin: number = -400;
-  positionZMax: number = 400;
+  positionXMin = -400;
+  positionXMax = 400;
+  positionYMin = 0;
+  positionYMax = 400;
+  positionZMin = -400;
+  positionZMax = 400;
 
-  rotationX: number = 0;
-  rotationY: number = 0;
-  rotationZ: number = 0;
+  rotationX = 0;
+  rotationY = 0;
+  rotationZ = 0;
 
-  rotationMin: number = 0;
-  rotationMax: number = 360;
+  rotationMin = 0;
+  rotationMax = 360;
 
   constructor(
     public fixtureService: FixtureService,
@@ -56,9 +56,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
     this.rotationY = undefined;
     this.rotationZ = undefined;
 
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
       if (this.selectedPositioning) {
-        if (this.selectedPositioning != fixture.positioning) {
+        if (this.selectedPositioning !== fixture.positioning) {
           this.selectedPositioning = undefined;
           break;
         }
@@ -66,9 +66,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
         this.selectedPositioning = fixture.positioning;
       }
     }
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
       if (this.positionX) {
-        if (this.positionX != fixture.positionX) {
+        if (this.positionX !== fixture.positionX) {
           this.positionX = undefined;
           break;
         }
@@ -76,9 +76,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
         this.positionX = fixture.positionX;
       }
     }
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
       if (this.positionY) {
-        if (this.positionY != fixture.positionY) {
+        if (this.positionY !== fixture.positionY) {
           this.positionY = undefined;
           break;
         }
@@ -86,9 +86,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
         this.positionY = fixture.positionY;
       }
     }
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
       if (this.positionZ) {
-        if (this.positionZ != fixture.positionZ) {
+        if (this.positionZ !== fixture.positionZ) {
           this.positionZ = undefined;
           break;
         }
@@ -96,9 +96,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
         this.positionZ = fixture.positionZ;
       }
     }
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
       if (this.rotationX) {
-        if (this.rotationX != fixture.rotationX) {
+        if (this.rotationX !== fixture.rotationX) {
           this.rotationX = undefined;
           break;
         }
@@ -106,9 +106,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
         this.rotationX = fixture.rotationX;
       }
     }
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
       if (this.rotationY) {
-        if (this.rotationY != fixture.rotationY) {
+        if (this.rotationY !== fixture.rotationY) {
           this.rotationY = undefined;
           break;
         }
@@ -116,9 +116,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
         this.rotationY = fixture.rotationY;
       }
     }
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
       if (this.rotationZ) {
-        if (this.rotationZ != fixture.rotationZ) {
+        if (this.rotationZ !== fixture.rotationZ) {
           this.rotationZ = undefined;
           break;
         }
@@ -129,9 +129,9 @@ export class FixtureSettingsPositionComponent implements OnInit {
   }
 
   changePosition(positioningStr: string) {
-    let positioning: Positioning = Positioning[positioningStr];
+    const positioning: Positioning = Positioning[positioningStr];
 
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
       fixture.positioning = positioning;
     }
   }
@@ -141,30 +141,30 @@ export class FixtureSettingsPositionComponent implements OnInit {
       return;
     }
 
-    if (position == 'x') {
+    if (position === 'x') {
       if (value >= this.positionXMin && value <= this.positionXMax) {
         this.positionX = +value;
       }
-    } else if (position == 'y') {
+    } else if (position === 'y') {
       if (value >= this.positionYMin && value <= this.positionYMax) {
         this.positionY = +value;
       }
-    } else if (position == 'z') {
+    } else if (position === 'z') {
       if (value >= this.positionZMin && value <= this.positionZMax) {
         this.positionZ = +value;
       }
     }
 
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
-      if (position == 'x') {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
+      if (position === 'x') {
         if (value >= this.positionXMin && value <= this.positionXMax) {
           fixture.positionX = +value;
         }
-      } else if (position == 'y') {
+      } else if (position === 'y') {
         if (value >= this.positionYMin && value <= this.positionYMax) {
           fixture.positionY = +value;
         }
-      } else if (position == 'z') {
+      } else if (position === 'z') {
         if (value >= this.positionZMin && value <= this.positionZMax) {
           fixture.positionZ = +value;
         }
@@ -177,20 +177,20 @@ export class FixtureSettingsPositionComponent implements OnInit {
       return;
     }
 
-    if (rotation == 'x') {
+    if (rotation === 'x') {
       this.rotationX = +value;
-    } else if (rotation == 'y') {
+    } else if (rotation === 'y') {
       this.rotationY = +value;
-    } else if (rotation == 'z') {
+    } else if (rotation === 'z') {
       this.rotationZ = +value;
     }
 
-    for (let fixture of this.fixtureService.selectedSettingsFixtures) {
-      if (rotation == 'x') {
+    for (const fixture of this.fixtureService.selectedSettingsFixtures) {
+      if (rotation === 'x') {
         fixture.rotationX = +value;
-      } else if (rotation == 'y') {
+      } else if (rotation === 'y') {
         fixture.rotationY = +value;
-      } else if (rotation == 'z') {
+      } else if (rotation === 'z') {
         fixture.rotationZ = +value;
       }
     }

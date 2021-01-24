@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class AnimationService {
 
-  timeMillis: number = 0;
+  timeMillis = 0;
 
   constructor() { }
 

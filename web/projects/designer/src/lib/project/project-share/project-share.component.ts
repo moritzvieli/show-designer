@@ -17,7 +17,11 @@ export class ProjectShareComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.shareLink = window.location.host + '/designer?id=' + this.projectService.project.id + '&token=' + this.projectService.project.shareToken;
+    this.shareLink = window.location.host
+      + '/designer?id='
+      + this.projectService.project.id
+      + '&token='
+      + this.projectService.project.shareToken;
   }
 
   ok() {

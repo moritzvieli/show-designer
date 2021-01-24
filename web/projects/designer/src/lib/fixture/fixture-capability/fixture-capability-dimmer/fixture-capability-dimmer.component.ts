@@ -3,7 +3,7 @@ import { PresetService } from '../../../services/preset.service';
 import { FixtureCapabilityType } from '../../../models/fixture-capability';
 
 @Component({
-  selector: 'app-fixture-capability-dimmer',
+  selector: 'lib-app-fixture-capability-dimmer',
   templateUrl: './fixture-capability-dimmer.component.html',
   styleUrls: ['./fixture-capability-dimmer.component.css']
 })
@@ -18,7 +18,7 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
   }
 
   getValue(): number {
-    let capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity);
+    const capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity);
     if (capabilityValue) {
       return capabilityValue.valuePercentage;
     }
@@ -26,7 +26,7 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
   }
 
   getValueText(): number {
-    let value = this.getValue();
+    const value = this.getValue();
     if (value >= 0) {
       return Math.round(value * 100 * 100) / 100;
     }

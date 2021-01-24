@@ -1,6 +1,6 @@
-import { FixtureCapability } from "./fixture-capability";
-import { FixtureWheel } from "./fixture-wheel";
-import { FixtureWheelSlot } from "./fixture-wheel-slot";
+import { FixtureCapability } from './fixture-capability';
+import { FixtureWheel } from './fixture-wheel';
+import { FixtureWheelSlot } from './fixture-wheel-slot';
 
 export class CachedFixtureCapability {
 
@@ -16,7 +16,7 @@ export class CachedFixtureCapability {
     wheelSlots: FixtureWheelSlot[] = [];
 
     // is this a color wheel?
-    wheelIsColor: boolean = false;
+    wheelIsColor = false;
 
     centerValue: number;
 

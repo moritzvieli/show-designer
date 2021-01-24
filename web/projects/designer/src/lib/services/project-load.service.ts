@@ -47,7 +47,7 @@ export class ProjectLoadService {
     this.presetService.selectedPreset = this.presetService.getPresetByUuid(this.projectService.project.selectedPresetUuid);
     this.sceneService.selectedScenes = [];
     if (this.projectService.project.selectedSceneUuids) {
-      for (let uuid of this.projectService.project.selectedSceneUuids) {
+      for (const uuid of this.projectService.project.selectedSceneUuids) {
         this.sceneService.selectedScenes.push(this.sceneService.getSceneByUuid(uuid));
       }
     }
@@ -55,7 +55,7 @@ export class ProjectLoadService {
     this.timelineService.selectedCompositionIndex = undefined;
     this.timelineService.destroyWaveSurfer();
     for (let i = 0; i < this.projectService.project.compositions.length; i++) {
-      if (this.projectService.project.compositions[i].uuid == this.projectService.project.selectedCompositionUuid) {
+      if (this.projectService.project.compositions[i].uuid === this.projectService.project.selectedCompositionUuid) {
         this.timelineService.selectCompositionIndex(i);
         break;
       }
@@ -63,7 +63,7 @@ export class ProjectLoadService {
   }
 
   load(id: number, name: string, shareToken?: string): Observable<void> {
-    let ref = this.modalService.show(WaitDialogComponent, { keyboard: false, ignoreBackdropClick: true });
+    const ref = this.modalService.show(WaitDialogComponent, { keyboard: false, ignoreBackdropClick: true });
 
     return this.projectService.getProject(id, name, shareToken).pipe(map(project => {
       this.projectService.project = project;
@@ -98,13 +98,13 @@ export class ProjectLoadService {
 
   new() {
     // create an empty new project
-    let project = new Project();
+    const project = new Project();
     project.uuid = this.uuidService.getUuid();
     this.projectService.project = project;
     this.projectService.project.shareToken = this.uuidService.getUuid();
 
     // Add a default scene and preset
-    let preset = new Preset();
+    const preset = new Preset();
     preset.uuid = this.uuidService.getUuid();
     preset.name = 'New Preset';
     this.projectService.project.presets.push(preset);
@@ -146,7 +146,7 @@ export class ProjectLoadService {
 
   import(data: string) {
     // import a project from a string
-    let project = new Project(JSON.parse(data));
+    const project = new Project(JSON.parse(data));
     project.id = undefined;
     this.projectService.project = project;
 

@@ -3,7 +3,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { TimelineService } from '../../services/timeline.service';
 
 @Component({
-  selector: 'app-timeline-grid',
+  selector: 'lib-app-timeline-grid',
   templateUrl: './timeline-grid.component.html',
   styleUrls: ['./timeline-grid.component.css']
 })

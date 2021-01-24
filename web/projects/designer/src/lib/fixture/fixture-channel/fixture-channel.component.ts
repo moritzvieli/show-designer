@@ -6,7 +6,7 @@ import { ProjectService } from '../../services/project.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-fixture-channel',
+  selector: 'lib-app-fixture-channel',
   templateUrl: './fixture-channel.component.html',
   styleUrls: ['./fixture-channel.component.css']
 })
@@ -68,7 +68,7 @@ export class FixtureChannelComponent implements OnInit, OnDestroy {
   }
 
   isChrome(): boolean {
-    if (navigator.appVersion.indexOf("Chrome/") != -1) {
+    if (navigator.appVersion.indexOf('Chrome/') !== -1) {
       return true;
     }
     return false;

@@ -7,11 +7,11 @@ import { Subject } from 'rxjs';
 })
 export class IntroService {
 
-  showIntro: boolean = false;
-  activeStep: string = 'start';
-  positionTopPercentage: number = 50;
-  positionLeftPercentage: number = 50;
-  stylePosition: string = 'top: calc(50% - 150px); left: calc(50% - 200px);';
+  showIntro = false;
+  activeStep = 'start';
+  positionTopPercentage = 50;
+  positionLeftPercentage = 50;
+  stylePosition = 'top: calc(50% - 150px); left: calc(50% - 200px);';
   stepChanged: Subject<void> = new Subject<void>();
 
   constructor(
@@ -23,7 +23,7 @@ export class IntroService {
     // called, as soon as the config has been updated
     if (this.configService.intro) {
       if (localStorage.getItem('showIntro')) {
-        this.showIntro = localStorage.getItem('showIntro') == 'true';
+        this.showIntro = localStorage.getItem('showIntro') === 'true';
       } else {
         this.showIntro = true;
       }
@@ -51,7 +51,7 @@ export class IntroService {
       return false;
     }
 
-    if (this.activeStep != step) {
+    if (this.activeStep !== step) {
       return false;
     }
 

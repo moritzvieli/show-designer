@@ -29,7 +29,7 @@ export class ColorChanger3d extends Fixture3d {
     private atmosphereMaterial: THREE.ShaderMaterial;
 
     private atmosphereMat() {
-        var vertexShader = [
+        const vertexShader = [
             'varying vec3	vVertexWorldPosition;',
             'varying vec3	vVertexNormal;',
 
@@ -42,8 +42,8 @@ export class ColorChanger3d extends Fixture3d {
             '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
             '}',
 
-        ].join('\n')
-        var fragmentShader = [
+        ].join('\n');
+        const fragmentShader = [
             'uniform vec3	glowColor;',
             'uniform float	coeficient;',
             'uniform float	power;',
@@ -59,11 +59,11 @@ export class ColorChanger3d extends Fixture3d {
             '	float intensity		= pow(coeficient + dot(vVertexNormal, viewCameraToVertex), power);',
             '	gl_FragColor		= vec4(glowColor, intensity * opacity);',
             '}',
-        ].join('\n')
+        ].join('\n');
 
         // create custom material from the shader code above
         // that is within specially labeled script tags
-        var material = new THREE.ShaderMaterial({
+        const material = new THREE.ShaderMaterial({
             uniforms: {
                 coeficient: {
                     type: 'f',
@@ -84,7 +84,7 @@ export class ColorChanger3d extends Fixture3d {
             },
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
-            //blending: THREE.AdditiveBlending,
+            // blending: THREE.AdditiveBlending,
             transparent: true,
             depthWrite: false
         });
@@ -98,8 +98,8 @@ export class ColorChanger3d extends Fixture3d {
         }
 
         // TODO update the correct angle from the profile
-        let beamAngleDegrees = 14;
-        let geometry = new THREE.CylinderGeometry(0.8, beamAngleDegrees * 1.2, 100, 64, 20, false);
+        const beamAngleDegrees = 14;
+        const geometry = new THREE.CylinderGeometry(0.8, beamAngleDegrees * 1.2, 100, 64, 20, false);
         geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
         geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 
@@ -129,9 +129,9 @@ export class ColorChanger3d extends Fixture3d {
         this.spotLight.intensity = 10;
 
         this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
-        //scene.add(this.spotLightHelper);
+        // scene.add(this.spotLightHelper);
 
-        let spotLightTarget = new THREE.Object3D();
+        const spotLightTarget = new THREE.Object3D();
         this.spotLight.target = spotLightTarget;
 
         this.spotlightGroup.add(this.spotLight);
@@ -161,9 +161,9 @@ export class ColorChanger3d extends Fixture3d {
     constructor(fixtureService: FixtureService, previewMeshService: PreviewMeshService, fixture: CachedFixture, scene: any) {
         super(fixtureService, fixture, scene);
 
-        forkJoin(
+        forkJoin([
             previewMeshService.getMesh('color-changer')
-        ).pipe(map(([colorChanger]) => {
+        ]).pipe(map(([colorChanger]) => {
             this.mesh = colorChanger;
 
             this.createObjects();
@@ -184,13 +184,13 @@ export class ColorChanger3d extends Fixture3d {
         this.updatePosition(this.objectGroup);
 
         // Update the material
-        if (this.lastSelected != this.isSelected) {
+        if (this.lastSelected !== this.isSelected) {
             if (this.isSelected) {
-                for (let child of this.mesh.children) {
+                for (const child of this.mesh.children) {
                     (<Mesh>child).material = this.selectedMaterial;
                 }
             } else {
-                for (let child of this.mesh.children) {
+                for (const child of this.mesh.children) {
                     (<Mesh>child).material = this.material;
                 }
             }
@@ -202,7 +202,7 @@ export class ColorChanger3d extends Fixture3d {
         this.spotLightHelper.update();
 
         // Apply the colors
-        var color = new THREE.Color("rgb(" + this.colorRed + ", " + this.colorGreen + ", " + this.colorBlue + ")");
+        const color = new THREE.Color('rgb(' + this.colorRed + ', ' + this.colorGreen + ', ' + this.colorBlue + ')');
 
         this.pointLight.color = color;
 
@@ -211,7 +211,7 @@ export class ColorChanger3d extends Fixture3d {
 
         // Apply the dimmer value
         // Take the color into account for the beam (don't show a black beam)
-        let intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue);
+        const intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue);
         (<any>this.spotLightBeam.material).uniforms.opacity.value = Math.min(intensityColor, this.dimmer) * 0.5;
 
         this.spotLight.intensity = this.spotLightMaxIntensity * this.dimmer;

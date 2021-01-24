@@ -38,7 +38,7 @@ export class PresetService {
   fixtureColorChanged: Subject<void> = new Subject<void>();
 
   livePreviewTimer: any;
-  liveChangePending: boolean = false;
+  liveChangePending = false;
 
   constructor(
     private effectService: EffectService,
@@ -51,8 +51,8 @@ export class PresetService {
   ) { }
 
   getPresetByUuid(uuid: string): Preset {
-    for (let preset of this.projectService.project.presets) {
-      if (preset.uuid == uuid) {
+    for (const preset of this.projectService.project.presets) {
+      if (preset.uuid === uuid) {
         return preset;
       }
     }
@@ -68,8 +68,8 @@ export class PresetService {
       }
     }
 
-    for (let selectedFixtureUuid of preset.fixtureUuids) {
-      if (selectedFixtureUuid == fixture.uuid) {
+    for (const selectedFixtureUuid of preset.fixtureUuids) {
+      if (selectedFixtureUuid === fixture.uuid) {
         return true;
       }
     }
@@ -86,14 +86,14 @@ export class PresetService {
     // if already selected
     if (this.fixtureIsSelected(fixture)) {
       for (let i = this.selectedPreset.fixtureUuids.length - 1; i >= 0; i--) {
-        let projectFixture = this.fixtureService.getFixtureByUuid(this.selectedPreset.fixtureUuids[i]);
-        if (projectFixture.dmxFirstChannel == fixture.dmxFirstChannel) {
+        const projectFixture = this.fixtureService.getFixtureByUuid(this.selectedPreset.fixtureUuids[i]);
+        if (projectFixture.dmxFirstChannel === fixture.dmxFirstChannel) {
           this.selectedPreset.fixtureUuids.splice(i, 1);
         }
       }
     } else {
-      for (let projectFixture of this.projectService.project.fixtures) {
-        if (projectFixture.dmxFirstChannel == fixture.dmxFirstChannel) {
+      for (const projectFixture of this.projectService.project.fixtures) {
+        if (projectFixture.dmxFirstChannel === fixture.dmxFirstChannel) {
           this.selectedPreset.fixtureUuids.push(projectFixture.uuid);
         }
       }
@@ -105,7 +105,7 @@ export class PresetService {
       return;
     }
 
-    for (let fixture of this.projectService.project.fixtures) {
+    for (const fixture of this.projectService.project.fixtures) {
       if (!this.fixtureIsSelected(fixture)) {
         this.selectedPreset.fixtureUuids.push(fixture.uuid);
       }
@@ -123,9 +123,9 @@ export class PresetService {
   public removeDeletedFixtures() {
     // after changing the configuration in the fixture pool, we might need to
     // delete some fixtures
-    for (let preset of this.projectService.project.presets) {
+    for (const preset of this.projectService.project.presets) {
       for (let i = preset.fixtureUuids.length - 1; i >= 0; i--) {
-        let presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
+        const presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
         if (!presetFixture) {
           preset.fixtureUuids.splice(i, 1);
         }
@@ -136,11 +136,11 @@ export class PresetService {
   public updateFixtureSelection() {
     // after changing the configuration in the fixture pool, we might need to
     // select some more fixtures on the same channel as already selected ones
-    for (let preset of this.projectService.project.presets) {
+    for (const preset of this.projectService.project.presets) {
       for (let i = preset.fixtureUuids.length - 1; i >= 0; i--) {
-        let presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
-        for (let projectFixture of this.projectService.project.fixtures) {
-          if (projectFixture.dmxFirstChannel == presetFixture.dmxFirstChannel && !this.fixtureIsSelected(projectFixture, preset)) {
+        const presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
+        for (const projectFixture of this.projectService.project.fixtures) {
+          if (projectFixture.dmxFirstChannel === presetFixture.dmxFirstChannel && !this.fixtureIsSelected(projectFixture, preset)) {
             preset.fixtureUuids.push(projectFixture.uuid);
           }
         }
@@ -148,7 +148,14 @@ export class PresetService {
     }
   }
 
-  deleteCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, profileUuid?: string) {
+  deleteCapabilityValue(
+    preset: Preset,
+    capabilityType: FixtureCapabilityType,
+    color?: FixtureCapabilityColor,
+    wheel?: string,
+    profileUuid?: string
+  ) {
+
     for (let i = 0; i < preset.fixtureCapabilityValues.length; i++) {
       if (this.fixtureService.capabilitiesMatch(
         preset.fixtureCapabilityValues[i].type,
@@ -166,11 +173,20 @@ export class PresetService {
     }
   }
 
-  setCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, valuePercentage: number, slotNumber?: number, color?: FixtureCapabilityColor, wheel?: string, profileUuid?: string) {
+  setCapabilityValue(
+    preset: Preset,
+    capabilityType: FixtureCapabilityType,
+    valuePercentage: number,
+    slotNumber?: number,
+    color?: FixtureCapabilityColor,
+    wheel?: string,
+    profileUuid?: string
+  ) {
+
     // Delete existant properties with this type and set the new value
     this.deleteCapabilityValue(preset, capabilityType, color, wheel, profileUuid);
 
-    let fixtureCapabilityValue = new FixtureCapabilityValue();
+    const fixtureCapabilityValue = new FixtureCapabilityValue();
     fixtureCapabilityValue.type = capabilityType;
     fixtureCapabilityValue.color = color;
     fixtureCapabilityValue.wheel = wheel;
@@ -181,8 +197,15 @@ export class PresetService {
     preset.fixtureCapabilityValues.push(fixtureCapabilityValue);
   }
 
-  getCapabilityValue(preset: Preset, capabilityType: FixtureCapabilityType, color?: FixtureCapabilityColor, wheel?: string, profileUuid?: string): FixtureCapabilityValue {
-    for (let capabilityValue of preset.fixtureCapabilityValues) {
+  getCapabilityValue(
+    preset: Preset,
+    capabilityType: FixtureCapabilityType,
+    color?: FixtureCapabilityColor,
+    wheel?: string,
+    profileUuid?: string
+  ): FixtureCapabilityValue {
+
+    for (const capabilityValue of preset.fixtureCapabilityValues) {
       if (this.fixtureService.capabilitiesMatch(
         capabilityValue.type,
         capabilityType,
@@ -201,7 +224,9 @@ export class PresetService {
 
   deleteChannelValue(channelName: string, profileUuid: string) {
     for (let i = 0; i < this.selectedPreset.fixtureChannelValues.length; i++) {
-      if (this.selectedPreset.fixtureChannelValues[i].channelName == channelName && this.selectedPreset.fixtureChannelValues[i].profileUuid == profileUuid) {
+      if (this.selectedPreset.fixtureChannelValues[i].channelName === channelName
+        && this.selectedPreset.fixtureChannelValues[i].profileUuid === profileUuid) {
+
         this.selectedPreset.fixtureChannelValues.splice(i, 1);
         return;
       }
@@ -212,7 +237,7 @@ export class PresetService {
     // Delete existant properties with this type and set the new value
     this.deleteChannelValue(channelName, profileUuid);
 
-    let fixtureChannelValue = new FixtureChannelValue();
+    const fixtureChannelValue = new FixtureChannelValue();
     fixtureChannelValue.channelName = channelName;
     fixtureChannelValue.profileUuid = profileUuid;
     fixtureChannelValue.value = value;
@@ -221,8 +246,8 @@ export class PresetService {
   }
 
   getChannelValue(channelName: string, profileUuid: string): number {
-    for (let channelValue of this.selectedPreset.fixtureChannelValues) {
-      if (channelValue.channelName == channelName && channelValue.profileUuid == profileUuid) {
+    for (const channelValue of this.selectedPreset.fixtureChannelValues) {
+      if (channelValue.channelName === channelName && channelValue.profileUuid === profileUuid) {
         return channelValue.value;
       }
     }
@@ -256,12 +281,16 @@ export class PresetService {
       // TODO
     }
 
-    if (colorRed != undefined && colorGreen != undefined && colorBlue != undefined) {
-      for (let capability of cachedChannel.capabilities) {
+    if (colorRed !== undefined && colorGreen !== undefined && colorBlue !== undefined) {
+      for (const capability of cachedChannel.capabilities) {
         if (capability.capability.slotNumber) {
-          let mixedColor = this.fixtureService.getMixedWheelSlotColor(capability.wheel, capability.capability.slotNumber);
+          const mixedColor = this.fixtureService.getMixedWheelSlotColor(capability.wheel, capability.capability.slotNumber);
           if (mixedColor) {
-            let diff = Math.abs(mixedColor.red - colorRed) + Math.abs(mixedColor.green - colorGreen) + Math.abs(mixedColor.blue - colorBlue);
+            const diff =
+              Math.abs(mixedColor.red - colorRed)
+              + Math.abs(mixedColor.green - colorGreen)
+              + Math.abs(mixedColor.blue - colorBlue);
+
             if (diff < lowestDiff) {
               lowestDiff = diff;
               lowestDiffCapability = capability;
@@ -276,12 +305,12 @@ export class PresetService {
 
   private hasCapabilityType(type: FixtureCapabilityType): boolean {
     // there is at least one channel with at least one intensity capability
-    for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
-      let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
-      for (let channel of fixture.channels) {
+    for (const fixtureUuid of this.selectedPreset.fixtureUuids) {
+      const fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+      for (const channel of fixture.channels) {
         if (channel.channel) {
-          for (let capability of channel.capabilities) {
-            if (capability.capability.type == type) {
+          for (const capability of channel.capabilities) {
+            if (capability.capability.type === type) {
               return true;
             }
           }
@@ -315,9 +344,9 @@ export class PresetService {
     }
 
     // a color wheel is involved
-    for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
-      let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
-      for (let channel of fixture.channels) {
+    for (const fixtureUuid of this.selectedPreset.fixtureUuids) {
+      const fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+      for (const channel of fixture.channels) {
         if (channel.colorWheel) {
           return true;
         }
@@ -328,8 +357,8 @@ export class PresetService {
   }
 
   hasCapabilityPanTilt(): boolean {
-    let hasPan: boolean = false;
-    let hasTilt: boolean = false;
+    let hasPan = false;
+    let hasTilt = false;
 
     // there is at least one pan and one tilt channel
     if (this.hasCapabilityType(FixtureCapabilityType.Pan)) {
@@ -358,13 +387,13 @@ export class PresetService {
 
   autoOpenFirstEffect() {
     // open the first effect, if the preset only has one
-    if (this.selectedPreset && this.selectedPreset.effects.length == 1) {
+    if (this.selectedPreset && this.selectedPreset.effects.length === 1) {
       this.effectService.selectedEffect = this.selectedPreset.effects[0];
     }
   }
 
   addPreset(name?: string): void {
-    let preset: Preset = new Preset();
+    const preset: Preset = new Preset();
     preset.uuid = this.uuidService.getUuid();
     preset.name = name || 'New Preset';
 
@@ -372,7 +401,7 @@ export class PresetService {
     let highestSelectedPresetIndex = 0;
 
     for (let i = 0; i < this.projectService.project.presets.length; i++) {
-      if (this.selectedPreset == this.projectService.project.presets[i]) {
+      if (this.selectedPreset === this.projectService.project.presets[i]) {
         highestSelectedPresetIndex = i;
         break;
       }
@@ -383,15 +412,15 @@ export class PresetService {
   }
 
   getSelectedProfiles() {
-    let profiles: FixtureProfile[] = [];
+    const profiles: FixtureProfile[] = [];
 
     if (!this.selectedPreset) {
       return profiles;
     }
 
-    for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
-      let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-      let profile = this.fixtureService.getProfileByUuid(fixture.profileUuid);
+    for (const fixtureUuid of this.selectedPreset.fixtureUuids) {
+      const fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
+      const profile = this.fixtureService.getProfileByUuid(fixture.profileUuid);
 
       if (profiles.indexOf(profile) < 0) {
         profiles.push(profile);
@@ -402,13 +431,13 @@ export class PresetService {
   }
 
   getSelectedProfileChannels(selectedProfiles: FixtureProfile[]) {
-    let availableChannels: Map<FixtureProfile, CachedFixtureChannel[]> = new Map<FixtureProfile, CachedFixtureChannel[]>();
+    const availableChannels: Map<FixtureProfile, CachedFixtureChannel[]> = new Map<FixtureProfile, CachedFixtureChannel[]>();
 
-    let calculatedProfileModes = new Map<FixtureProfile, FixtureMode[]>();
-    for (let profile of selectedProfiles) {
-      let modes: FixtureMode[] = [];
-      for (let fixtureUuid of this.selectedPreset.fixtureUuids) {
-        let fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+    const calculatedProfileModes = new Map<FixtureProfile, FixtureMode[]>();
+    for (const profile of selectedProfiles) {
+      const modes: FixtureMode[] = [];
+      for (const fixtureUuid of this.selectedPreset.fixtureUuids) {
+        const fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
         if (modes.indexOf(fixture.mode) < 0) {
           modes.push(fixture.mode);
         }
@@ -418,13 +447,13 @@ export class PresetService {
 
     // calculate all required channels from the modes
     calculatedProfileModes.forEach((modes: FixtureMode[], profile: FixtureProfile) => {
-      let profileChannels: CachedFixtureChannel[] = [];
-      for (let mode of modes) {
-        let channels = this.fixtureService.getCachedChannels(profile, mode);
-        for (let channel of channels) {
+      const profileChannels: CachedFixtureChannel[] = [];
+      for (const mode of modes) {
+        const channels = this.fixtureService.getCachedChannels(profile, mode);
+        for (const channel of channels) {
           // only add the channel, if no channel with the same name has already been added
           // (e.g. a fine channel)
-          if (channel.channel && !profileChannels.find(c => c.name == channel.name)) {
+          if (channel.channel && !profileChannels.find(c => c.name === channel.name)) {
             profileChannels.push(channel);
           }
         }
@@ -435,7 +464,7 @@ export class PresetService {
     return availableChannels;
   }
 
-  previewLive(compositionName: string = "", positionMillis: number = undefined) {
+  previewLive(compositionName: string = '', positionMillis?: number) {
     if (!this.configService.livePreview) {
       return;
     }
@@ -449,18 +478,25 @@ export class PresetService {
 
     let position = positionMillis;
 
-    if (position == undefined) {
-      position = Math.round(this.animationService.timeMillis)
+    if (position === undefined) {
+      position = Math.round(this.animationService.timeMillis);
     }
 
-    this.http.post('preview?positionMillis=' + position + '&compositionName=' + compositionName, JSON.stringify(this.projectService.project)).subscribe();
+    this.http.post('preview?positionMillis='
+      + position
+      + '&compositionName='
+      + compositionName, JSON.stringify(this.projectService.project)).subscribe();
+
     this.liveChangePending = false;
-    
+
     if (!compositionName) {
       this.livePreviewTimer = setTimeout(() => {
         this.livePreviewTimer = undefined;
         if (this.liveChangePending) {
-          this.http.post('preview?positionMillis=' + position + '&compositionName=' + compositionName, JSON.stringify(this.projectService.project)).subscribe();
+          this.http.post('preview?positionMillis='
+            + position
+            + '&compositionName='
+            + compositionName, JSON.stringify(this.projectService.project)).subscribe();
         }
       }, 50);
     }

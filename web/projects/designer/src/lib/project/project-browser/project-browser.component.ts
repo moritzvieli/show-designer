@@ -16,7 +16,7 @@ import { ConfigService } from '../../services/config.service';
 export class ProjectBrowserComponent implements OnInit {
 
   projects: Project[] = [];
-  loading: boolean = true;
+  loading = true;
 
   constructor(
     private bsModalRef: BsModalRef,

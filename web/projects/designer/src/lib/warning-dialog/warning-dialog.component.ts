@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { Component, OnInit, HostListener } from '@angular/core';
 
 @Component({
-  selector: 'app-warning-dialog',
+  selector: 'lib-app-warning-dialog',
   templateUrl: './warning-dialog.component.html',
   styleUrls: ['./warning-dialog.component.scss']
 })

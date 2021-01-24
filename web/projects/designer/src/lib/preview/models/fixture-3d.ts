@@ -1,18 +1,18 @@
-import { FixtureCapabilityType, FixtureCapabilityColor } from "../../models/fixture-capability";
+import { FixtureCapabilityType, FixtureCapabilityColor } from '../../models/fixture-capability';
 import * as THREE from 'three';
-import { FixtureService } from "../../services/fixture.service";
-import { FixtureChannelValue } from "../../models/fixture-channel-value";
-import { CachedFixture } from "../../models/cached-fixture";
-import { CachedFixtureCapability } from "../../models/cached-fixture-capability";
-import { CachedFixtureChannel } from "../../models/cached-fixture-channel";
+import { FixtureService } from '../../services/fixture.service';
+import { FixtureChannelValue } from '../../models/fixture-channel-value';
+import { CachedFixture } from '../../models/cached-fixture';
+import { CachedFixtureCapability } from '../../models/cached-fixture-capability';
+import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 import { Positioning } from '../../models/fixture';
 
 export abstract class Fixture3d {
 
     fixture: CachedFixture;
-    fixtureHasDimmer: boolean = false;
-    fixtureHasColorWheel: boolean = false;
-    fixtureHasColor: boolean = false;
+    fixtureHasDimmer = false;
+    fixtureHasColorWheel = false;
+    fixtureHasColor = false;
 
     scene: any;
 
@@ -20,10 +20,10 @@ export abstract class Fixture3d {
     colorGreen: number;
     colorBlue: number;
 
-    dimmer: number = 0;
+    dimmer = 0;
 
-    isSelected: boolean = false;
-    isLoaded: boolean = false;
+    isSelected = false;
+    isLoaded = false;
 
     protected selectedMaterial: THREE.MeshLambertMaterial;
 
@@ -42,9 +42,9 @@ export abstract class Fixture3d {
         });
 
         // evaluate, various capabilities of this fixture
-        for (let cachedChannel of this.fixture.channels) {
+        for (const cachedChannel of this.fixture.channels) {
             if (cachedChannel.channel) {
-                for (let capability of cachedChannel.capabilities) {
+                for (const capability of cachedChannel.capabilities) {
                     switch (capability.capability.type) {
                         case FixtureCapabilityType.Intensity:
                             this.fixtureHasDimmer = true;
@@ -63,8 +63,10 @@ export abstract class Fixture3d {
     }
 
     protected getCapabilityInValue(channel: CachedFixtureChannel, value: number): CachedFixtureCapability {
-        for (let capability of channel.capabilities) {
-            if (capability.capability.dmxRange.length == 0 || (value >= capability.capability.dmxRange[0] && value <= capability.capability.dmxRange[1])) {
+        for (const capability of channel.capabilities) {
+            if (capability.capability.dmxRange.length === 0
+                || (value >= capability.capability.dmxRange[0] && value <= capability.capability.dmxRange[1])) {
+
                 return capability;
             }
         }
@@ -91,16 +93,17 @@ export abstract class Fixture3d {
             this.colorBlue = 0;
         }
 
-        for (let channelValue of channelValues) {
-            let channel = this.fixtureService.getChannelByName(this.fixture, channelValue.channelName);
-            let capability = this.getCapabilityInValue(channel, channelValue.value);
+        for (const channelValue of channelValues) {
+            const channel = this.fixtureService.getChannelByName(this.fixture, channelValue.channelName);
+            const capability = this.getCapabilityInValue(channel, channelValue.value);
 
             if (capability) {
                 switch (capability.capability.type) {
                     case FixtureCapabilityType.Intensity: {
                         let valuePercentage: number;
                         if (capability.capability.dmxRange.length > 0) {
-                            valuePercentage = (channelValue.value - capability.capability.dmxRange[0]) / ((capability.capability.dmxRange[1] - capability.capability.dmxRange[0]));
+                            valuePercentage = (channelValue.value - capability.capability.dmxRange[0])
+                                / ((capability.capability.dmxRange[1] - capability.capability.dmxRange[0]));
                         } else {
                             valuePercentage = channelValue.value / channel.maxValue;
                         }
@@ -108,7 +111,7 @@ export abstract class Fixture3d {
                         break;
                     }
                     case FixtureCapabilityType.ColorIntensity: {
-                        let valuePercentage = 255 * channelValue.value / channel.maxValue;
+                        const valuePercentage = 255 * channelValue.value / channel.maxValue;
                         switch (capability.capability.color) {
                             case FixtureCapabilityColor.Red:
                                 // Round needed for threejs
@@ -126,7 +129,7 @@ export abstract class Fixture3d {
                         break;
                     }
                     case FixtureCapabilityType.WheelSlot: {
-                        let mixedColor = this.fixtureService.getMixedWheelSlotColor(capability.wheel, capability.capability.slotNumber);
+                        const mixedColor = this.fixtureService.getMixedWheelSlotColor(capability.wheel, capability.capability.slotNumber);
                         if (mixedColor) {
                             this.colorRed = Math.round(mixedColor.red);
                             this.colorGreen = Math.round(mixedColor.green);

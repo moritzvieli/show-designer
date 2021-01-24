@@ -1,6 +1,5 @@
 import { Fixture3d } from './fixture-3d';
 import * as THREE from 'three';
-import { Positioning } from '../../models/fixture';
 import { FixtureCapabilityType } from '../../models/fixture-capability';
 import { forkJoin } from 'rxjs';
 import { PreviewMeshService } from '../../services/preview-mesh.service';
@@ -38,7 +37,7 @@ export class MovingHead3d extends Fixture3d {
     private atmosphereMaterial: THREE.ShaderMaterial;
 
     private atmosphereMat() {
-        var vertexShader = [
+        const vertexShader = [
             'varying vec3	vVertexWorldPosition;',
             'varying vec3	vVertexNormal;',
 
@@ -51,8 +50,8 @@ export class MovingHead3d extends Fixture3d {
             '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
             '}',
 
-        ].join('\n')
-        var fragmentShader = [
+        ].join('\n');
+        const fragmentShader = [
             'uniform vec3	glowColor;',
             'uniform float	coeficient;',
             'uniform float	power;',
@@ -68,11 +67,11 @@ export class MovingHead3d extends Fixture3d {
             '	float intensity		= pow(coeficient + dot(vVertexNormal, viewCameraToVertex), power);',
             '	gl_FragColor		= vec4(glowColor, intensity * opacity);',
             '}',
-        ].join('\n')
+        ].join('\n');
 
         // create custom material from the shader code above
         // that is within specially labeled script tags
-        let material = new THREE.ShaderMaterial({
+        const material = new THREE.ShaderMaterial({
             uniforms: {
                 coeficient: {
                     type: 'f',
@@ -93,7 +92,7 @@ export class MovingHead3d extends Fixture3d {
             },
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
-            //blending: THREE.AdditiveBlending,
+            // blending: THREE.AdditiveBlending,
             transparent: true,
             depthWrite: false
         });
@@ -107,12 +106,12 @@ export class MovingHead3d extends Fixture3d {
         }
 
         // TODO update the correct angle from the profile
-        let beamAngleDegrees = 14;
-        let geometry = new THREE.CylinderGeometry(0.1, beamAngleDegrees * 1.2, 100, 64, 20, false);
+        const beamAngleDegrees = 14;
+        const geometry = new THREE.CylinderGeometry(0.1, beamAngleDegrees * 1.2, 100, 64, 20, false);
         geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
         geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 
-        //var zrak_mat = new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, opacity: 0.1 });
+        // var zrak_mat = new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, opacity: 0.1 });
 
         this.atmosphereMaterial = this.atmosphereMat();
         this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMaterial);
@@ -135,7 +134,7 @@ export class MovingHead3d extends Fixture3d {
         // Add the head
         this.head.scale.multiplyScalar(0.9);
         this.head.position.set(-0.1, 0, 0);
-        let headPivotGroup = new THREE.Object3D();
+        const headPivotGroup = new THREE.Object3D();
         headPivotGroup.add(this.head);
         this.headGroup.add(headPivotGroup);
 
@@ -149,9 +148,9 @@ export class MovingHead3d extends Fixture3d {
         this.spotLight.intensity = 10;
 
         this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
-        //scene.add(this.spotLightHelper);
+        // scene.add(this.spotLightHelper);
 
-        let spotLightTarget = new THREE.Object3D();
+        const spotLightTarget = new THREE.Object3D();
         this.spotLight.target = spotLightTarget;
 
         this.spotlightGroup.add(this.spotLight);
@@ -190,11 +189,11 @@ export class MovingHead3d extends Fixture3d {
     constructor(fixtureService: FixtureService, previewMeshService: PreviewMeshService, fixture: CachedFixture, scene: any) {
         super(fixtureService, fixture, scene);
 
-        forkJoin(
+        forkJoin([
             previewMeshService.getMesh('moving_head_socket'),
             previewMeshService.getMesh('moving_head_arm'),
             previewMeshService.getMesh('moving_head_head')
-        ).pipe(map(([socket, arm, head]) => {
+        ]).pipe(map(([socket, arm, head]) => {
             this.socket = socket;
             this.arm = arm;
             this.head = head;
@@ -215,19 +214,19 @@ export class MovingHead3d extends Fixture3d {
         }
 
         // Apply default settings
-        let panStart: number = 0;
-        let panEnd: number = 255;
+        let panStart = 0;
+        let panEnd = 255;
 
-        let tiltStart: number = 0;
-        let tiltEnd: number = 255;
+        let tiltStart = 0;
+        let tiltEnd = 255;
 
         this.pan = 0;
         this.tilt = 0;
 
         // Apply the known property values
-        for (let channelValue of channelValues) {
-            let channel = this.fixtureService.getChannelByName(this.fixture, channelValue.channelName);
-            let capability = this.getCapabilityInValue(channel, channelValue.value);
+        for (const channelValue of channelValues) {
+            const channel = this.fixtureService.getChannelByName(this.fixture, channelValue.channelName);
+            const capability = this.getCapabilityInValue(channel, channelValue.value);
             if (capability) {
                 switch (capability.capability.type) {
                     case FixtureCapabilityType.Pan: {
@@ -254,15 +253,15 @@ export class MovingHead3d extends Fixture3d {
 
         // Update the angle (only on change, because it's expensive)
         // TODO update the correct angle from the profile
-        let beamAngleDregrees = 14;
-        if (this.lastBeamAngleDegrees != beamAngleDregrees) {
+        const beamAngleDregrees = 14;
+        if (this.lastBeamAngleDegrees !== beamAngleDregrees) {
             this.spotLight.angle = THREE.Math.degToRad(beamAngleDregrees);
             this.createSpotLightBeam();
             this.lastBeamAngleDegrees = beamAngleDregrees;
         }
 
         // Update the material
-        if (this.lastSelected != this.isSelected) {
+        if (this.lastSelected !== this.isSelected) {
             if (this.isSelected) {
                 this.socket.material = this.selectedMaterial;
                 this.arm.material = this.selectedMaterial;
@@ -280,7 +279,7 @@ export class MovingHead3d extends Fixture3d {
         this.spotLightHelper.update();
 
         // Apply the colors
-        var color = new THREE.Color("rgb(" + this.colorRed + ", " + this.colorGreen + ", " + this.colorBlue + ")");
+        const color = new THREE.Color('rgb(' + this.colorRed + ', ' + this.colorGreen + ', ' + this.colorBlue + ')');
 
         this.pointLight.color = color;
 
@@ -289,7 +288,7 @@ export class MovingHead3d extends Fixture3d {
 
         // Apply the dimmer value
         // Take the color into account for the beam (don't show a black beam)
-        let intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue);
+        const intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue);
         (<any>this.spotLightBeam.material).uniforms.opacity.value = Math.min(intensityColor, this.dimmer);
 
         this.spotLight.intensity = this.spotLightLightMaxIntensity * this.dimmer;

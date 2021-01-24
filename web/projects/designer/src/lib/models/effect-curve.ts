@@ -4,16 +4,16 @@ import { EffectCurveProfileChannels } from './effect-curve-profile-channel';
 
 export class EffectCurve extends Effect {
 
-    curveType: string = 'sine';
+    curveType = 'sine';
 
     capabilities: FixtureCapability[] = [];
     channels: EffectCurveProfileChannels[] = [];
 
-    lengthMillis: number = 2500;
-    phaseMillis: number = 0;
-    amplitude: number = 1;
-    position: number = 0.5;
-    phasingMillis: number = 0;
+    lengthMillis = 2500;
+    phaseMillis = 0;
+    amplitude = 1;
+    position = 0.5;
+    phasingMillis = 0;
 
     constructor(data?: any) {
         super('curve', data);
@@ -23,13 +23,13 @@ export class EffectCurve extends Effect {
         }
 
         if (data.capabilities) {
-            for (let capability of data.capabilities) {
+            for (const capability of data.capabilities) {
                 this.capabilities.push(new FixtureCapability(capability));
             }
         }
 
         if (data.channels) {
-            for (let channel of data.channels) {
+            for (const channel of data.channels) {
                 this.channels.push(new EffectCurveProfileChannels(channel));
             }
         }
@@ -50,17 +50,17 @@ export class EffectCurve extends Effect {
             phasingIndex = fixtureIndex;
         }
 
-        let phase = this.phaseMillis + phasingIndex * this.phasingMillis;
+        const phase = this.phaseMillis + phasingIndex * this.phasingMillis;
 
         // Calculate the value between 0 and 1 according to the curve
-        let value: number = 0;
+        let value = 0;
 
         switch (this.curveType) {
             case 'sine':
                 value = this.position + this.amplitude / 2 * Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) / 2;
                 break;
             case 'square':
-                if (Math.sign(Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) / 2) == -1) {
+                if (Math.sign(Math.sin((2 * Math.PI * (timeMillis - phase) / this.lengthMillis)) / 2) === -1) {
                     value = this.position + this.amplitude / 2;
                 } else {
                     value = this.position - this.amplitude / 2;

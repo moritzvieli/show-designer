@@ -9,7 +9,7 @@ import { WarningDialogService } from '../services/warning-dialog.service';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-effect',
+  selector: 'lib-app-effect',
   templateUrl: './effect.component.html',
   styleUrls: ['./effect.component.css']
 })
@@ -34,7 +34,7 @@ export class EffectComponent implements OnInit {
   }
 
   addCurveEffect() {
-    let effect = new EffectCurve();
+    const effect = new EffectCurve();
     effect.uuid = this.uuidService.getUuid();
     this.addEffect(effect);
     this.presetService.previewLive();
@@ -48,7 +48,7 @@ export class EffectComponent implements OnInit {
     if (event) {
       this.effectService.selectedEffect = effect;
     } else {
-      if (this.effectService.selectedEffect == effect) {
+      if (this.effectService.selectedEffect === effect) {
         this.effectService.selectedEffect = undefined;
       }
     }

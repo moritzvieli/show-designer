@@ -1,4 +1,4 @@
-import { FixtureCapability } from "./fixture-capability";
+import { FixtureCapability } from './fixture-capability';
 
 export class FixtureChannel {
 
@@ -23,7 +23,7 @@ export class FixtureChannel {
         if (data.capability) {
             this.capability = new FixtureCapability(data.capability);
         } else if (data.capabilities) {
-            for (let capability of data.capabilities) {
+            for (const capability of data.capabilities) {
                 this.capabilities.push(new FixtureCapability(capability));
             }
         }

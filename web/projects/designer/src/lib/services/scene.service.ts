@@ -22,7 +22,7 @@ export class SceneService {
     '#246db7'
   ];
 
-  multipleSelection: boolean = false;
+  multipleSelection = false;
 
   sceneDeleted: Subject<void> = new Subject<void>();
   sceneSelected: Subject<void> = new Subject<void>();
@@ -36,8 +36,8 @@ export class SceneService {
   }
 
   sceneIsSelected(scene: Scene): boolean {
-    for (let selectedScene of this.selectedScenes) {
-      if (selectedScene.uuid == scene.uuid) {
+    for (const selectedScene of this.selectedScenes) {
+      if (selectedScene.uuid === scene.uuid) {
         return true;
       }
     }
@@ -46,12 +46,12 @@ export class SceneService {
   }
 
   presetIsSelected(preset: Preset): boolean {
-    if (!this.selectedScenes || this.selectedScenes.length != 1) {
+    if (!this.selectedScenes || this.selectedScenes.length !== 1) {
       return false;
     }
 
-    for (let uuid of this.selectedScenes[0].presetUuids) {
-      if (preset.uuid == uuid) {
+    for (const uuid of this.selectedScenes[0].presetUuids) {
+      if (preset.uuid === uuid) {
         return true;
       }
     }
@@ -63,7 +63,7 @@ export class SceneService {
     // Select a scene if not yet selected or unselect it otherwise
     if (this.sceneIsSelected(scene)) {
       for (let i = 0; i < this.selectedScenes.length; i++) {
-        if (this.selectedScenes[i].uuid == scene.uuid) {
+        if (this.selectedScenes[i].uuid === scene.uuid) {
           this.selectedScenes.splice(i, 1);
           return;
         }
@@ -80,15 +80,15 @@ export class SceneService {
     // selected to make sure, the user does not edit a preset which is not even
     // active in the current scene (and sees no change).
 
-    let firstPresetUuid = undefined;
+    let firstPresetUuid;
 
     // check, whether a preset of the current scene is already selected and do nothing
     // in this case
-    for (let scene of this.selectedScenes) {
-      for (let presetUuid of scene.presetUuids) {
+    for (const scene of this.selectedScenes) {
+      for (const presetUuid of scene.presetUuids) {
         firstPresetUuid = presetUuid;
 
-        if (presetUuid == this.presetService.selectedPreset.uuid) {
+        if (presetUuid === this.presetService.selectedPreset.uuid) {
           // a preset of a currently selected scene is already selected -> do nothing
           return;
         }
@@ -100,7 +100,7 @@ export class SceneService {
     }
 
     for (let i = 0; i < this.projectService.project.presets.length; i++) {
-      if (this.projectService.project.presets[i].uuid == firstPresetUuid) {
+      if (this.projectService.project.presets[i].uuid === firstPresetUuid) {
         this.presetService.selectPreset(i);
         break;
       }
@@ -127,7 +127,7 @@ export class SceneService {
     this.projectService.project.previewPreset = false;
 
     this.projectService.project.selectedSceneUuids = [];
-    for (let scene of this.selectedScenes) {
+    for (const scene of this.selectedScenes) {
       this.projectService.project.selectedSceneUuids.push(scene.uuid);
     }
     this.presetService.previewSelectionChanged.next();
@@ -137,7 +137,7 @@ export class SceneService {
   }
 
   addScene(name?: string): void {
-    let scene: Scene = new Scene();
+    const scene: Scene = new Scene();
     scene.uuid = this.uuidService.getUuid();
     scene.name = name || 'New Scene';
 
@@ -163,10 +163,10 @@ export class SceneService {
 
   removeScene(scene: Scene): void {
     // remove all playback regions
-    for (let composition of this.projectService.project.compositions) {
+    for (const composition of this.projectService.project.compositions) {
       for (let i = composition.scenePlaybackRegions.length - 1; i >= 0; i--) {
-        let compositionPlaybackRegion = composition.scenePlaybackRegions[i];
-        if (compositionPlaybackRegion.sceneUuid == scene.uuid) {
+        const compositionPlaybackRegion = composition.scenePlaybackRegions[i];
+        if (compositionPlaybackRegion.sceneUuid === scene.uuid) {
           composition.scenePlaybackRegions.splice(i, 1);
         }
       }
@@ -182,8 +182,8 @@ export class SceneService {
   }
 
   getSceneByUuid(uuid: string): Scene {
-    for (let scene of this.projectService.project.scenes) {
-      if (scene.uuid == uuid) {
+    for (const scene of this.projectService.project.scenes) {
+      if (scene.uuid === uuid) {
         return scene;
       }
     }

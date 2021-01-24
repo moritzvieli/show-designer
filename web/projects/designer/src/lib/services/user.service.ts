@@ -94,7 +94,7 @@ export class UserService {
   }
 
   getAutoLoadProjectId(): number {
-    if(!localStorage.getItem('projectId')) {
+    if (!localStorage.getItem('projectId')) {
       return null;
     }
     return Number.parseInt(localStorage.getItem('projectId'));

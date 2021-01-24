@@ -11,26 +11,26 @@
       in Chrome during sliding -->
       <div *ngIf="presetService.hasCapabilityDimmer()" class="col col-auto p-0 my-3 mr-3"
         style="height: calc(100% - 2rem)">
-        <app-fixture-capability-dimmer></app-fixture-capability-dimmer>
+        <lib-app-fixture-capability-dimmer></lib-app-fixture-capability-dimmer>
       </div>
 
       <!-- Color -->
       <!-- Also show for color wheel fixtures to approx. the color -->
       <div *ngIf="presetService.hasCapabilityColorOrColorWheel()" class="col col-auto p-0 my-3 mr-3"
         style="height: calc(100% - 2rem)">
-        <app-fixture-capability-color></app-fixture-capability-color>
+        <lib-app-fixture-capability-color></lib-app-fixture-capability-color>
       </div>
 
       <!-- Color wheels -->
       <div *ngFor="let entry of colorWheelChannels | keyvalue; let i = index" class="col col-auto p-0 my-3 mr-3"
         style="height: calc(100% - 2rem)">
-        <app-fixture-capability-color-wheel [profile]="entry.key" [channel]="entry.value" [wheelIndex]="i"
-          [showContainer]="colorWheelChannels.size > 1"></app-fixture-capability-color-wheel>
+        <lib-app-fixture-capability-color-wheel [profile]="entry.key" [channel]="entry.value" [wheelIndex]="i"
+          [showContainer]="colorWheelChannels.size > 1"></lib-app-fixture-capability-color-wheel>
       </div>
 
       <!-- Pan/Tilt -->
       <div *ngIf="presetService.hasCapabilityPanTilt()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
-        <app-fixture-capability-pan-tilt></app-fixture-capability-pan-tilt>
+        <lib-app-fixture-capability-pan-tilt></lib-app-fixture-capability-pan-tilt>
       </div>
 
       <!-- Fix spacing at the end -->

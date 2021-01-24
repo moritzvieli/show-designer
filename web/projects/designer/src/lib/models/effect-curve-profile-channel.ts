@@ -11,7 +11,7 @@ export class EffectCurveProfileChannels {
         this.profileUuid = data.profileUuid;
 
         if (data.channels) {
-            for (let channel in data.channels) {
+            for (const channel of Object.keys(data.channels)) {
                 this.channels.push(channel);
             }
         }

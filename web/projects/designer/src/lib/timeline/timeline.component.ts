@@ -15,7 +15,7 @@ import { PresetService } from '../services/preset.service';
 import { IntroService } from '../services/intro.service';
 
 @Component({
-  selector: 'app-timeline',
+  selector: 'lib-app-timeline',
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.css'],
 })
@@ -66,12 +66,12 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     // Hide wavesurfer to calculate the height, because it will grow infinitely
     // otherwise
     this.waveElement.nativeElement.style.display = 'none';
-    let height = this.waveWrapper.nativeElement.clientHeight;
+    const height = this.waveWrapper.nativeElement.clientHeight;
     this.waveElement.nativeElement.style.display = 'block';
 
-    let width = this.waveWrapper.nativeElement.clientWidth;
+    const width = this.waveWrapper.nativeElement.clientWidth;
 
-    if (!this.lastHeight || this.lastHeight != height || !this.lastWidth || this.lastWidth != width) {
+    if (!this.lastHeight || this.lastHeight !== height || !this.lastWidth || this.lastWidth !== width) {
       // Set height and redraw
       if (this.timelineService.waveSurfer) {
         this.timelineService.waveSurfer.setHeight(height);
@@ -84,7 +84,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   play() {
     this.timelineService.playState = 'playing';
-    this.presetService.previewLive(this.timelineService.selectedComposition.name, Math.round(this.timelineService.waveSurfer.getCurrentTime() * 1000));
+    this.presetService.previewLive(
+      this.timelineService.selectedComposition.name,
+      Math.round(this.timelineService.waveSurfer.getCurrentTime() * 1000)
+    );
     this.timelineService.waveSurfer.play();
   }
 
@@ -109,7 +112,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   openGridSettings() {
-    let bsModalRef = this.modalService.show(TimelineGridComponent, { keyboard: true, ignoreBackdropClick: false, class: '' });
+    const bsModalRef = this.modalService.show(TimelineGridComponent, { keyboard: true, ignoreBackdropClick: false, class: '' });
   }
 
   private afterDeleteFile() {
@@ -124,7 +127,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
           this.afterDeleteFile();
         } else {
           // the composition uuid and extension is used as the file name
-          this.http.post('file/delete?compositionUuid=' + this.timelineService.selectedComposition.uuid, undefined).pipe(map((response: Response) => {
+          this.http.post(
+            'file/delete?compositionUuid=' + this.timelineService.selectedComposition.uuid,
+            undefined
+          ).pipe(map((response: Response) => {
             this.afterDeleteFile();
           })).subscribe();
         }
@@ -133,9 +139,19 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   private openCompositionSettings(compositionIndex?: number, newComposition?: Composition) {
-    let editComposition: Composition = newComposition || JSON.parse(JSON.stringify(this.projectService.project.compositions[compositionIndex]));
+    const editComposition: Composition =
+      newComposition
+      || JSON.parse(JSON.stringify(this.projectService.project.compositions[compositionIndex]));
 
-    let bsModalRef = this.modalService.show(CompositionSettingsComponent, { keyboard: false, ignoreBackdropClick: true, class: '', initialState: { composition: editComposition } });
+    const bsModalRef = this.modalService.show(
+      CompositionSettingsComponent,
+      {
+        keyboard: false,
+        ignoreBackdropClick: true,
+        class: '',
+        initialState: { composition: editComposition }
+      }
+    );
 
     (<CompositionSettingsComponent>bsModalRef.content).onClose.subscribe(result => {
       if (result === 1) {
@@ -164,7 +180,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   addComposition() {
     // create a new composition
-    let composition = new Composition();
+    const composition = new Composition();
     composition.uuid = this.uuidService.getUuid();
     composition.name = 'New Composition';
 
@@ -185,8 +201,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    if (event.key == ' ') {
-      if (this.timelineService.playState == 'paused') {
+    if (event.key === ' ') {
+      if (this.timelineService.playState === 'paused') {
         this.play();
       } else {
         this.pause();

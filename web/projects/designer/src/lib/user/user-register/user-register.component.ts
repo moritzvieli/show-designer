@@ -11,13 +11,13 @@ import { Subject } from 'rxjs';
 })
 export class UserRegisterComponent implements OnInit {
 
-  error: string = '';
-  registering: boolean = false;
+  error = '';
+  registering = false;
 
-  username: string = '';
-  email: string = '';
-  password: string = '';
-  passwordRepeat: string = '';
+  username = '';
+  email = '';
+  password = '';
+  passwordRepeat = '';
 
   // emits, when logged in
   subject: Subject<void>;
@@ -32,7 +32,7 @@ export class UserRegisterComponent implements OnInit {
   }
 
   cancel() {
-    this.bsModalRef.hide()
+    this.bsModalRef.hide();
   }
 
   login() {
@@ -41,7 +41,8 @@ export class UserRegisterComponent implements OnInit {
   }
 
   private emailIsValid(email: string): boolean {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    // tslint:disable-next-line:max-line-length
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
   }
 
@@ -61,7 +62,7 @@ export class UserRegisterComponent implements OnInit {
       return;
     }
 
-    if (this.password != this.passwordRepeat) {
+    if (this.password !== this.passwordRepeat) {
       this.error = 'password-mismatch';
       this.registering = false;
       return;

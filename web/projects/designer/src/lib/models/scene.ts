@@ -1,22 +1,22 @@
-import { ScenePlaybackRegion } from "./scene-playback-region";
+import { ScenePlaybackRegion } from './scene-playback-region';
 
 export class Scene {
 
     uuid: string;
     name: string;
 
-    color: string = '#fff';
+    color = '#fff';
 
     // All contained presets
     presetUuids: string[] = [];
 
     // Fading times
-    fadeInMillis: number = 0;
-    fadeOutMillis: number = 0;
+    fadeInMillis = 0;
+    fadeOutMillis = 0;
 
     // fade in/out outside the start/end times?
-    fadeInPre: boolean = false;
-    fadeOutPost: boolean = false;
+    fadeInPre = false;
+    fadeOutPost = false;
 
     constructor(data?: any) {
         if (!data) {

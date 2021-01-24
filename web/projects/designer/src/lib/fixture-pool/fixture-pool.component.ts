@@ -14,7 +14,7 @@ import { catchError, finalize } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 
 @Component({
-  selector: 'app-fixture-pool',
+  selector: 'lib-app-fixture-pool',
   templateUrl: './fixture-pool.component.html',
   styleUrls: ['./fixture-pool.component.css']
 })
@@ -22,14 +22,14 @@ export class FixturePoolComponent implements OnInit {
 
   private profiles: FixtureProfile[];
   public filteredProfiles: FixtureProfile[];
-  public loadingProfiles: boolean = false;
+  public loadingProfiles = false;
 
   public fixturePool: Fixture[];
 
   public dmxChannels: number[] = [];
   public selectedFixture: Fixture;
   public selectedFixtureProfile: FixtureProfile;
-  public showChannelNumbers: boolean = false;
+  public showChannelNumbers = false;
   public channelDragFixture: Fixture;
   public channelDragOffset: number;
 
@@ -91,12 +91,12 @@ export class FixturePoolComponent implements OnInit {
 
     this.filteredProfiles = [];
 
-    let keywords = this.searchExpression.split(' ');
+    const keywords = this.searchExpression.split(' ');
 
-    for (let profile of this.profiles) {
+    for (const profile of this.profiles) {
       let foundKeywords = 0;
 
-      for (let keyword of keywords) {
+      for (const keyword of keywords) {
         if (profile.uuid.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
           || profile.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
           || profile.manufacturerName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
@@ -105,7 +105,7 @@ export class FixturePoolComponent implements OnInit {
         }
       }
 
-      if(foundKeywords === keywords.length) {
+      if (foundKeywords === keywords.length) {
         this.filteredProfiles.push(profile);
       }
     }
@@ -118,8 +118,8 @@ export class FixturePoolComponent implements OnInit {
     for (let i = 0; i < 512; i++) {
       let occupiedChannels = 0;
 
-      for (let fixture of this.fixturePool) {
-        let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
+      for (const fixture of this.fixturePool) {
+        const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
         if (i >= fixture.dmxFirstChannel && i < fixture.dmxFirstChannel + mode.channels.length) {
           // this channel is already occupied by a fixture -> move forward to the end of the fixture
@@ -136,7 +136,7 @@ export class FixturePoolComponent implements OnInit {
         freeChannels++;
       }
 
-      if (freeChannels == neededChannels) {
+      if (freeChannels === neededChannels) {
         return i - freeChannels + 1;
       }
     }
@@ -149,8 +149,8 @@ export class FixturePoolComponent implements OnInit {
     // Load the profile details, if not already done. There is only a
     // minimal profile passed from the search.
     this.fixtureService.loadProfileByUuid(searchProfile.uuid).subscribe(() => {
-      let profile = this.fixtureService.getProfileByUuid(searchProfile.uuid);
-      let fixture = new Fixture();
+      const profile = this.fixtureService.getProfileByUuid(searchProfile.uuid);
+      const fixture = new Fixture();
       fixture.uuid = this.uuidService.getUuid();
       fixture.profileUuid = profile.uuid;
       fixture.name = profile.name;
@@ -160,11 +160,11 @@ export class FixturePoolComponent implements OnInit {
       }
 
       // add the same mode as an existing fixture, if available
-      let existingModeShortName: string
-      for (let existingFixture of this.fixturePool) {
-        let existingProfile = this.fixtureService.getProfileByUuid(existingFixture.profileUuid);
+      let existingModeShortName: string;
+      for (const existingFixture of this.fixturePool) {
+        const existingProfile = this.fixtureService.getProfileByUuid(existingFixture.profileUuid);
 
-        if (existingProfile == profile) {
+        if (existingProfile === profile) {
           existingModeShortName = existingFixture.modeShortName;
           break;
         }
@@ -185,8 +185,8 @@ export class FixturePoolComponent implements OnInit {
         this.selectFixture(fixture);
       } else {
         // no free space anymore
-        let msg = 'designer.fixture-pool.no-free-space';
-        let title = 'designer.fixture-pool.no-free-space-title';
+        const msg = 'designer.fixture-pool.no-free-space';
+        const title = 'designer.fixture-pool.no-free-space-title';
 
         this.translateService.get([msg, title]).subscribe(result => {
           this.toastrService.error(result[msg], result[title]);
@@ -196,7 +196,7 @@ export class FixturePoolComponent implements OnInit {
   }
 
   addCopy(originalFixture: Fixture) {
-    let fixture = new Fixture();
+    const fixture = new Fixture();
     fixture.uuid = this.uuidService.getUuid();
     fixture.profileUuid = originalFixture.profileUuid;
     fixture.name = originalFixture.name;
@@ -210,8 +210,8 @@ export class FixturePoolComponent implements OnInit {
 
   removeFixture(fixture: Fixture) {
     for (let i = 0; i < this.fixturePool.length; i++) {
-      if (this.fixturePool[i].uuid == fixture.uuid) {
-        if (this.selectedFixture == this.fixturePool[i]) {
+      if (this.fixturePool[i].uuid === fixture.uuid) {
+        if (this.selectedFixture === this.fixturePool[i]) {
           this.selectFixture(undefined);
         }
         this.fixturePool.splice(i, 1);
@@ -227,8 +227,8 @@ export class FixturePoolComponent implements OnInit {
     for (let i = 0; i < this.projectService.project.fixtureProfiles.length; i++) {
       let profileUsed = false;
 
-      for (let fixture of this.fixturePool) {
-        if (fixture.profileUuid == this.projectService.project.fixtureProfiles[i].uuid) {
+      for (const fixtureInPool of this.fixturePool) {
+        if (fixtureInPool.profileUuid === this.projectService.project.fixtureProfiles[i].uuid) {
           profileUsed = true;
           break;
         }
@@ -241,8 +241,8 @@ export class FixturePoolComponent implements OnInit {
   }
 
   channelOccupied(index: number): boolean {
-    for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
+    for (const fixture of this.fixturePool) {
+      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
       if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
         return true;
@@ -253,8 +253,8 @@ export class FixturePoolComponent implements OnInit {
   }
 
   channelOccupiedStart(index: number): boolean {
-    for (let fixture of this.fixturePool) {
-      if (index == fixture.dmxFirstChannel) {
+    for (const fixture of this.fixturePool) {
+      if (index === fixture.dmxFirstChannel) {
         return true;
       }
     }
@@ -263,10 +263,10 @@ export class FixturePoolComponent implements OnInit {
   }
 
   channelOccupiedEnd(index: number): boolean {
-    for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
+    for (const fixture of this.fixturePool) {
+      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
-      if (index == fixture.dmxFirstChannel + mode.channels.length - 1) {
+      if (index === fixture.dmxFirstChannel + mode.channels.length - 1) {
         return true;
       }
     }
@@ -277,12 +277,12 @@ export class FixturePoolComponent implements OnInit {
   channelOverlapped(index: number): boolean {
     let occupiedFixture: Fixture;
 
-    for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
+    for (const fixture of this.fixturePool) {
+      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
       if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
         if (occupiedFixture) {
-          if (occupiedFixture.dmxFirstChannel != fixture.dmxFirstChannel || occupiedFixture.modeShortName != fixture.modeShortName) {
+          if (occupiedFixture.dmxFirstChannel !== fixture.dmxFirstChannel || occupiedFixture.modeShortName !== fixture.modeShortName) {
             // fixtures are allowed to overlap, if they start at the same channel and
             // use the same mode. otherwise it's not allowed.
             return true;
@@ -303,11 +303,11 @@ export class FixturePoolComponent implements OnInit {
 
     // find a dragging fixture and select it, but don't change the selection, if the
     // currently selected fixture might also be selected (on overlapped fixtures)
-    for (let fixture of this.fixturePool) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
+    for (const fixture of this.fixturePool) {
+      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
 
       if (selectedIndex >= fixture.dmxFirstChannel && selectedIndex <= fixture.dmxFirstChannel + mode.channels.length - 1) {
-        if (this.selectedFixture == fixture) {
+        if (this.selectedFixture === fixture) {
           newSelectedFixture = fixture;
           break;
         }
@@ -319,7 +319,7 @@ export class FixturePoolComponent implements OnInit {
     }
 
     if (newSelectedFixture) {
-      if (newSelectedFixture != this.selectedFixture) {
+      if (newSelectedFixture !== this.selectedFixture) {
         this.selectFixture(newSelectedFixture);
       }
 
@@ -334,7 +334,11 @@ export class FixturePoolComponent implements OnInit {
     }
 
     if (index >= this.selectedFixture.dmxFirstChannel) {
-      let mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(this.selectedFixture.profileUuid), this.selectedFixture);
+      const mode =
+        this.fixtureService.getModeByFixture(
+          this.fixtureService.getProfileByUuid(this.selectedFixture.profileUuid),
+          this.selectedFixture
+        );
 
       if (index < this.selectedFixture.dmxFirstChannel + mode.channels.length) {
         return true;
@@ -356,7 +360,14 @@ export class FixturePoolComponent implements OnInit {
     // perform dragging
     const selectedIndex = event.target.dataset.index;
 
-    if (this.channelDragFixture && selectedIndex - this.channelDragOffset >= 0 && selectedIndex - this.channelDragOffset + this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(this.channelDragFixture.profileUuid), this.channelDragFixture).channels.length - 1 <= 511) {
+    if (this.channelDragFixture
+      && selectedIndex - this.channelDragOffset >= 0
+      && selectedIndex - this.channelDragOffset + this.fixtureService.getModeByFixture(
+        this.fixtureService.getProfileByUuid(this.channelDragFixture.profileUuid),
+        this.channelDragFixture).channels.length
+      - 1 <= 511
+    ) {
+
       this.channelDragFixture.dmxFirstChannel = selectedIndex - this.channelDragOffset;
     }
   }
@@ -365,8 +376,8 @@ export class FixturePoolComponent implements OnInit {
     // don't allow OK if overlapping fixtures exist
     for (let i = 0; i < this.dmxChannels.length; i++) {
       if (this.channelOverlapped(i)) {
-        let msg = 'designer.fixture-pool.channel-occupied';
-        let title = 'designer.fixture-pool.channel-occupied-title';
+        const msg = 'designer.fixture-pool.channel-occupied';
+        const title = 'designer.fixture-pool.channel-occupied-title';
 
         this.translateService.get([msg, title]).subscribe(result => {
           this.toastrService.error(result[msg], result[title]);
@@ -391,7 +402,7 @@ export class FixturePoolComponent implements OnInit {
 
   cancel() {
     this.onClose.next(2);
-    this.bsModalRef.hide()
+    this.bsModalRef.hide();
   }
 
   updateProfiles() {
@@ -401,8 +412,8 @@ export class FixturePoolComponent implements OnInit {
     this.fixtureService.updateProfiles().pipe(finalize(() => {
       this.updatingProfiles = false;
     }), catchError(() => {
-      let msg = 'designer.fixture-pool.profiles-update-error';
-      let title = 'designer.fixture-pool.profiles-update-error-title';
+      const msg = 'designer.fixture-pool.profiles-update-error';
+      const title = 'designer.fixture-pool.profiles-update-error-title';
 
       this.translateService.get([msg, title]).subscribe(result => {
         this.toastrService.error(result[msg], result[title]);
@@ -413,8 +424,8 @@ export class FixturePoolComponent implements OnInit {
       .subscribe(() => {
         this.loadProfiles();
 
-        let msg = 'designer.fixture-pool.profiles-updated';
-        let title = 'designer.fixture-pool.profiles-updated-title';
+        const msg = 'designer.fixture-pool.profiles-updated';
+        const title = 'designer.fixture-pool.profiles-updated-title';
 
         this.translateService.get([msg, title]).subscribe(result => {
           this.toastrService.success(result[msg], result[title]);

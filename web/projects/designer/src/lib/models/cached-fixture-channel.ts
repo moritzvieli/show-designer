@@ -1,6 +1,6 @@
-import { FixtureChannel } from "./fixture-channel";
-import { CachedFixtureCapability } from "./cached-fixture-capability";
-import { FixtureWheel } from "./fixture-wheel";
+import { FixtureChannel } from './fixture-channel';
+import { CachedFixtureCapability } from './cached-fixture-capability';
+import { FixtureWheel } from './fixture-wheel';
 
 export class CachedFixtureChannel {
 

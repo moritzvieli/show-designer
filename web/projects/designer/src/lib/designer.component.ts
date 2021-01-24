@@ -99,9 +99,9 @@ export class DesignerComponent implements OnInit, AfterViewInit {
 
   private splitGutterSizePx = 13;
 
-  public totalMenuHeightPx: number = 0;
+  public totalMenuHeightPx = 0;
 
-  currentTab: string = 'properties';
+  currentTab = 'properties';
 
   @ViewChild(PreviewComponent)
   previewComponent: PreviewComponent;
@@ -140,9 +140,9 @@ export class DesignerComponent implements OnInit, AfterViewInit {
 
     this.calcTotalMenuHeight();
 
-    let urlParams = new URLSearchParams(window.location.search);
-    let projectId = urlParams.get('id');
-    let projectName = urlParams.get('name');
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('id');
+    const projectName = urlParams.get('name');
     let shareToken = urlParams.get('token');
 
     if (projectId) {
@@ -156,7 +156,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
 
         let msg = '';
 
-        if (error == 'no-permission') {
+        if (error === 'no-permission') {
           msg = 'designer.project.open-no-permission-error';
           error = undefined;
         } else {
@@ -169,9 +169,11 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       });
     } else if (this.userService.isLoggedIn() && (this.userService.getAutoLoadProjectId() || this.userService.getAutoLoadProjectName())) {
       // restore the last saved project
-      this.projectLoadService.load(this.userService.getAutoLoadProjectId(), this.userService.getAutoLoadProjectName()).subscribe(() => { }, (response) => {
-        let msg = 'designer.project.open-error';
-        let error = response && response.error ? response.error.error : 'unknown';
+      this.projectLoadService.load(this.userService.getAutoLoadProjectId(),
+        this.userService.getAutoLoadProjectName()).subscribe(() => { }, (response) => {
+
+        const msg = 'designer.project.open-error';
+        const error = response && response.error ? response.error.error : 'unknown';
 
         this.errorDialogService.show(msg, error).subscribe(() => {
           this.projectLoadService.new();
@@ -235,7 +237,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   openTab(tab: string) {
     // open a side tab (e.g. effects, channels, settings, etc.)
 
-    if (tab == 'settings') {
+    if (tab === 'settings') {
       this.fixtureService.settingsSelection = true;
     } else {
       this.fixtureService.settingsSelection = false;
@@ -297,9 +299,9 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   }
 
   projectExport() {
-    let json = JSON.stringify(this.projectService.project, null, 2);
-    let element = document.createElement('a');
-    element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(json));
+    const json = JSON.stringify(this.projectService.project, null, 2);
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(json));
     element.setAttribute('download', this.projectService.project.name + '.rsd');
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -324,7 +326,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    if (event.key == 'p') {
+    if (event.key === 'p') {
       this.openFixturePool();
 
       // prevent checkboxes being toggled, if in focus e.g.
@@ -332,19 +334,19 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       event.preventDefault();
     }
 
-    if ((event.ctrlKey || event.metaKey) && event.key == 'n') {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'n') {
       this.projectNew();
       event.stopPropagation();
       event.preventDefault();
     }
 
-    if ((event.ctrlKey || event.metaKey) && event.key == 's') {
+    if ((event.ctrlKey || event.metaKey) && event.key === 's') {
       this.projectSave();
       event.stopPropagation();
       event.preventDefault();
     }
 
-    if ((event.ctrlKey || event.metaKey) && event.key == 'o') {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'o') {
       this.projectOpen();
       event.stopPropagation();
       event.preventDefault();

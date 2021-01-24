@@ -57,8 +57,8 @@ export class ProjectService {
   save(project: Project) {
     // tries to save the project and returns, whether it has been saved or not
     this.saveApi(project).subscribe(() => {
-      let msg = 'designer.project.save-success';
-      let title = 'designer.project.save-success-title';
+      const msg = 'designer.project.save-success';
+      const title = 'designer.project.save-success-title';
 
       this.translateService.get([msg, title]).subscribe(result => {
         this.toastrService.success(result[msg], result[title]);
@@ -66,9 +66,9 @@ export class ProjectService {
 
       this.userService.setAutoLoadProject(project);
     }, (response) => {
-      let msg = 'designer.project.save-error';
-      let title = 'designer.project.save-error-title';
-      let error = response && response.error ? response.error.error : 'unknown';
+      const msg = 'designer.project.save-error';
+      const title = 'designer.project.save-error-title';
+      const error = response && response.error ? response.error.error : 'unknown';
 
       this.translateService.get([msg, title]).subscribe(result => {
         this.toastrService.error(result[msg] + ' (' + error + ')', result[title]);
@@ -78,9 +78,9 @@ export class ProjectService {
 
   getAllProjects(): Observable<Project[]> {
     return this.http.get('projects', { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
-      let projects: Project[] = []
-      for (let project of response) {
-        let projectObject = new Project(project);
+      const projects: Project[] = [];
+      for (const project of response) {
+        const projectObject = new Project(project);
         projects.push(projectObject);
       }
       return projects;
@@ -92,12 +92,18 @@ export class ProjectService {
   }
 
   getProject(id: number, name: string, shareToken?: string): Observable<Project> {
-    return this.http.get('project?id=' + id + '&name=' + name + '&token=' + shareToken, { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
-      let project = new Project(response);
-      project.id = id;
+    return this.http.get('project?id='
+      + id
+      + '&name='
+      + name
+      + '&token='
+      + shareToken, { headers: this.userService.getHeaders() }).pipe(map((response: any) => {
 
-      return project;
-    }));
+        const project = new Project(response);
+        project.id = id;
+
+        return project;
+      }));
   }
 
 }

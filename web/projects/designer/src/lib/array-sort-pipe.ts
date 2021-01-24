@@ -1,7 +1,7 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: "sort"
+  name: 'sort'
 })
 export class ArraySortPipe  implements PipeTransform {
   transform(array: any, field: string): any[] {

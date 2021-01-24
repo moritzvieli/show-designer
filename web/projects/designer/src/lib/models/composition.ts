@@ -1,4 +1,4 @@
-import { ScenePlaybackRegion } from "./scene-playback-region";
+import { ScenePlaybackRegion } from './scene-playback-region';
 
 export class Composition {
 
@@ -6,28 +6,28 @@ export class Composition {
     public name: string;
 
     // none or audio
-    public syncType: string = 'audio';
+    public syncType = 'audio';
 
     public audioFileName: string;
-    public audioFileInLibrary: boolean = false;
+    public audioFileInLibrary = false;
 
-    public beatsPerMinute: number = 120;
-    public timeSignatureUpper: number = 4;
-    public timeSignatureLower: number = 4;
+    public beatsPerMinute = 120;
+    public timeSignatureUpper = 4;
+    public timeSignatureLower = 4;
 
-    public snapToGrid: boolean = true;
+    public snapToGrid = true;
 
-    public tempoGuessed: boolean = false;
+    public tempoGuessed = false;
 
     // time based or musical
-    public gridType: string = 'musical';
-    public gridOffsetMillis: number = 0;
+    public gridType = 'musical';
+    public gridOffsetMillis = 0;
 
     // 1/1, 1/2, 1/4, 1/8, etc.
-    public gridResolution: number = 1;
+    public gridResolution = 1;
 
     // if no sync
-    public durationMillis: number = 0;
+    public durationMillis = 0;
 
     // Regions, where the scene will be played
     public scenePlaybackRegions: ScenePlaybackRegion[] = [];
@@ -56,7 +56,7 @@ export class Composition {
         this.durationMillis = data.durationMillis;
 
         if (data.scenePlaybackRegions) {
-            for (let scenePlaybackRegion of data.scenePlaybackRegions) {
+            for (const scenePlaybackRegion of data.scenePlaybackRegions) {
                 this.scenePlaybackRegions.push(new ScenePlaybackRegion(scenePlaybackRegion));
             }
         }

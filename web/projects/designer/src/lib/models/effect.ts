@@ -2,7 +2,7 @@ export abstract class Effect {
 
     type: string;
     uuid: string;
-    visible: boolean = true;
+    visible = true;
 
     constructor(type: string, data?: any) {
         this.type = type;

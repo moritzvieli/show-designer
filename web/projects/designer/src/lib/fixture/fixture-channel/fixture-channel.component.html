@@ -24,9 +24,9 @@
         <div *ngFor="let capability of entry.value; let j = index" class="col col-auto p-0 my-3 mr-3"
           style="height: calc(100% - 2rem)">
 
-          <app-fixture-capability-channel [profile]="entry.key" [channel]="capability"
+          <lib-app-fixture-capability-channel [profile]="entry.key" [channel]="capability"
             [capabilityIndex]="i * 10000 + j">
-          </app-fixture-capability-channel>
+          </lib-app-fixture-capability-channel>
         </div>
       </ng-container>
 

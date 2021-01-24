@@ -7,7 +7,7 @@ import { FixtureService } from '../services/fixture.service';
 import { IntroService } from '../services/intro.service';
 
 @Component({
-  selector: 'app-fixture',
+  selector: 'lib-app-fixture',
   templateUrl: './fixture.component.html',
   styleUrls: ['./fixture.component.css']
 })

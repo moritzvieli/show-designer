@@ -4,7 +4,7 @@ import { MovingHead3d } from './models/moving-head-3d';
 import { FixtureService } from '../services/fixture.service';
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import STATS from 'three/examples/js/libs/stats.min';
 import { FixtureCategory } from '../models/fixture-profile';
 import { Fixture3d } from './models/fixture-3d';
@@ -15,7 +15,7 @@ import { PreviewMeshService } from '../services/preview-mesh.service';
 import { ColorChanger3d } from './models/color-changer-3d';
 
 @Component({
-  selector: 'app-preview',
+  selector: 'lib-app-preview',
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.css']
 })
@@ -50,13 +50,13 @@ export class PreviewComponent implements AfterViewInit {
 
   private syncFixtures() {
     // remove all fixtures
-    for (let fixture3d of this.fixtures3d) {
+    for (const fixture3d of this.fixtures3d) {
       fixture3d.destroy();
     }
     this.fixtures3d = [];
 
     // add all fixtures from the project
-    for (let fixture of this.fixtureService.cachedFixtures) {
+    for (const fixture of this.fixtureService.cachedFixtures) {
       switch (fixture.profile.categories[0]) {
         case FixtureCategory['Moving Head']:
           this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
@@ -79,18 +79,27 @@ export class PreviewComponent implements AfterViewInit {
     this.renderer.render(this.scene, this.camera);
   }
 
-  private updateStagePosition(positioning: Positioning, xMin: number, xMax: number, yMin: number, yMax: number, zMin: number, zMax: number) {
-    let positionCount: number = 0; // Number of fixtures in the same position
-    let positionIndex: number = 1;
+  private updateStagePosition(
+    positioning: Positioning,
+    xMin: number,
+    xMax: number,
+    yMin: number,
+    yMax: number,
+    zMin: number,
+    zMax: number
+  ) {
+
+    let positionCount = 0; // Number of fixtures in the same position
+    let positionIndex = 1;
 
     this.projectService.project.fixtures.forEach((element, index) => {
-      if (element.positioning == positioning) {
+      if (element.positioning === positioning) {
         positionCount++;
       }
     });
 
     this.projectService.project.fixtures.forEach((element, index) => {
-      if (element.positioning == positioning) {
+      if (element.positioning === positioning) {
         element.positionX = xMin + (xMax - xMin) / (positionCount + 1) * positionIndex;
         element.positionY = yMin + (yMax - yMin) / (positionCount + 1) * positionIndex;
         element.positionZ = zMin + (zMax - zMin) / (positionCount + 1) * positionIndex;
@@ -103,7 +112,7 @@ export class PreviewComponent implements AfterViewInit {
   private animate(timeMillis: number) {
     this.stats.begin();
 
-    if (this.timelineService.playState == 'playing') {
+    if (this.timelineService.playState === 'playing') {
       // Overwrite the current time with the playing time, if we're in playback mode
       timeMillis = this.timelineService.waveSurfer.getCurrentTime() * 1000;
     }
@@ -116,18 +125,50 @@ export class PreviewComponent implements AfterViewInit {
     }
 
     // Update the positions
-    this.updateStagePosition(Positioning.topFront, -this.projectService.project.stageWidthCm / 2, this.projectService.project.stageWidthCm / 2, this.projectService.project.stageHeightCm + this.projectService.project.stageFloorHeightCm, this.projectService.project.stageHeightCm + this.projectService.project.stageFloorHeightCm, this.projectService.project.stageDepthCm / 2 - 70, this.projectService.project.stageDepthCm / 2 - 70);
-    this.updateStagePosition(Positioning.bottomFront, -this.projectService.project.stageWidthCm / 2, this.projectService.project.stageWidthCm / 2, this.projectService.project.stageFloorHeightCm, this.projectService.project.stageFloorHeightCm, this.projectService.project.stageDepthCm / 2 - 70, this.projectService.project.stageDepthCm / 2 - 70);
-    this.updateStagePosition(Positioning.topBack, -this.projectService.project.stageWidthCm / 2, this.projectService.project.stageWidthCm / 2, this.projectService.project.stageHeightCm + this.projectService.project.stageFloorHeightCm, this.projectService.project.stageHeightCm + this.projectService.project.stageFloorHeightCm, -this.projectService.project.stageDepthCm / 2 + 70, -this.projectService.project.stageDepthCm / 2 + 70);
-    this.updateStagePosition(Positioning.bottomBack, -this.projectService.project.stageWidthCm / 2, this.projectService.project.stageWidthCm / 2, this.projectService.project.stageFloorHeightCm, this.projectService.project.stageFloorHeightCm, -this.projectService.project.stageDepthCm / 2 + 70, -this.projectService.project.stageDepthCm / 2 + 70);
+    this.updateStagePosition(
+      Positioning.topFront,
+      -this.projectService.project.stageWidthCm / 2,
+      this.projectService.project.stageWidthCm / 2,
+      this.projectService.project.stageHeightCm + this.projectService.project.stageFloorHeightCm,
+      this.projectService.project.stageHeightCm + this.projectService.project.stageFloorHeightCm,
+      this.projectService.project.stageDepthCm / 2 - 70,
+      this.projectService.project.stageDepthCm / 2 - 70
+    );
+    this.updateStagePosition(
+      Positioning.bottomFront,
+      -this.projectService.project.stageWidthCm / 2,
+      this.projectService.project.stageWidthCm / 2,
+      this.projectService.project.stageFloorHeightCm,
+      this.projectService.project.stageFloorHeightCm,
+      this.projectService.project.stageDepthCm / 2 - 70,
+      this.projectService.project.stageDepthCm / 2 - 70
+    );
+    this.updateStagePosition(
+      Positioning.topBack,
+      -this.projectService.project.stageWidthCm / 2,
+      this.projectService.project.stageWidthCm / 2,
+      this.projectService.project.stageHeightCm + this.projectService.project.stageFloorHeightCm,
+      this.projectService.project.stageHeightCm + this.projectService.project.stageFloorHeightCm,
+      -this.projectService.project.stageDepthCm / 2 + 70,
+      -this.projectService.project.stageDepthCm / 2 + 70
+    );
+    this.updateStagePosition(
+      Positioning.bottomBack,
+      -this.projectService.project.stageWidthCm / 2,
+      this.projectService.project.stageWidthCm / 2,
+      this.projectService.project.stageFloorHeightCm,
+      this.projectService.project.stageFloorHeightCm,
+      -this.projectService.project.stageDepthCm / 2 + 70,
+      -this.projectService.project.stageDepthCm / 2 + 70
+    );
 
     // Update all fixtures and apply the preview properties, if available
     // TODO Update the fixtures only e.g. 40 times per second according to the "real" refresh rate of the DMX interface?
-    let presets = this.previewService.getPresets(timeMillis);
+    const presets = this.previewService.getPresets(timeMillis);
 
-    let calculatedFixtures = this.previewService.getChannelValues(timeMillis, presets);
+    const calculatedFixtures = this.previewService.getChannelValues(timeMillis, presets);
 
-    for (let fixture3d of this.fixtures3d) {
+    for (const fixture3d of this.fixtures3d) {
       // Update the fixture properties
       fixture3d.updatePreview(calculatedFixtures.get(fixture3d.fixture) || [], this.projectService.project.masterDimmerValue);
 
@@ -154,7 +195,7 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private getAspectRatio(): number {
-    let height = this.canvas.clientHeight;
+    const height = this.canvas.clientHeight;
 
     if (height === 0) {
       return 0;
@@ -194,21 +235,21 @@ export class PreviewComponent implements AfterViewInit {
     this.controls.dampingFactor = 0.25;
     this.controls.screenSpacePanning = false;
     this.controls.minDistance = 700;
-    //this.controls.zoom = 1000;
-    this.controls.maxDistance = 2000
+    // this.controls.zoom = 1000;
+    this.controls.maxDistance = 2000;
     this.controls.maxPolarAngle = Math.PI / 2;
     this.controls.target = new THREE.Vector3(0, 200, 0);
-    //this.controls.rotation = 100;
+    // this.controls.rotation = 100;
   }
 
   private setupFloor() {
-    let width = 4000;
-    let height = 1;
+    const width = 4000;
+    const height = 1;
 
-    let geometry = new THREE.BoxGeometry(width, height, width);
-    let material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
+    const geometry = new THREE.BoxGeometry(width, height, width);
+    const material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
 
-    let floor = new THREE.Mesh(geometry.clone(), material);
+    const floor = new THREE.Mesh(geometry.clone(), material);
     floor.receiveShadow = false;
     floor.castShadow = false;
     floor.position.set(0, -height / 2, 0);
@@ -233,7 +274,7 @@ export class PreviewComponent implements AfterViewInit {
     this.previewService.scene = this.scene;
 
     // Add a little bit of ambient light
-    let ambient = new THREE.AmbientLight(0xffffff, 0.8);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
     this.scene.add(ambient);
 
     // Add a floor
@@ -243,7 +284,7 @@ export class PreviewComponent implements AfterViewInit {
     this.previewService.updateStage();
 
     // TODO refine. background light in a color of the fixtures?
-    var lights = [];
+    const lights = [];
     lights[0] = new THREE.PointLight(0xffffff, 0.5, 0);
     lights[1] = new THREE.PointLight(0xffffff, 0.5, 0);
     lights[2] = new THREE.PointLight(0xffffff, 0.5, 0);

@@ -5,14 +5,14 @@ export class FixtureMode {
     channels: any[] = [];
 
     constructor(data?: any) {
-        if(!data) {
+        if (!data) {
             return;
         }
 
         this.name = data.name;
         this.shortName = data.shortName;
 
-        if(data.channels) {
+        if (data.channels) {
             this.channels = data.channels;
         }
     }

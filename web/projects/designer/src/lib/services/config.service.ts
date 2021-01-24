@@ -7,16 +7,16 @@ import { Subject } from 'rxjs';
 export class ConfigService {
 
   public restUrl: string;
-  public enableMediaLibrary: boolean = false;
-  public loginAvailable: boolean = false;
-  public shareAvailable: boolean = false;
-  public menuHeightPx: number = 0;
-  public languageSwitch: boolean = false;
-  public newProjectTemplate: boolean = false;
-  public livePreview: boolean = false;
-  public localProfiles: boolean = false;
-  public intro: boolean = false;
-  public uniqueProjectNames: boolean = false;
+  public enableMediaLibrary = false;
+  public loginAvailable = false;
+  public shareAvailable = false;
+  public menuHeightPx = 0;
+  public languageSwitch = false;
+  public newProjectTemplate = false;
+  public livePreview = false;
+  public localProfiles = false;
+  public intro = false;
+  public uniqueProjectNames = false;
 
   public menuHeightChanged: Subject<void> = new Subject<void>();
 

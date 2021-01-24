@@ -10,11 +10,11 @@ import { Subject } from 'rxjs';
 })
 export class UserLoginComponent implements OnInit {
 
-  error: string = '';
-  loggingIn: boolean = false;
+  error = '';
+  loggingIn = false;
 
-  email: string = '';
-  password: string = '';
+  email = '';
+  password = '';
 
   // emits, when logged in
   subject: Subject<void>;
@@ -28,7 +28,7 @@ export class UserLoginComponent implements OnInit {
   }
 
   cancel() {
-    this.bsModalRef.hide()
+    this.bsModalRef.hide();
   }
 
   login() {

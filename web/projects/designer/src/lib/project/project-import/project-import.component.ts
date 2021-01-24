@@ -31,8 +31,8 @@ export class ProjectImportComponent implements OnInit {
       acceptedFiles: '.rsd',
       timeout: 0,
       accept: (file: any, done: any) => {
-        var reader = new FileReader();
-        reader.addEventListener("loadend", (event: any) => {
+        const reader = new FileReader();
+        reader.addEventListener('loadend', (event: any) => {
           this.projectLoadService.import(event.target.result);
           done('noerr');
           this.bsModalRef.hide();
@@ -52,13 +52,13 @@ export class ProjectImportComponent implements OnInit {
   }
 
   public onUploadError(args: any) {
-    if (args[1] == 'noerr') {
+    if (args[1] === 'noerr') {
       // this error is set in the accept event listener -> everything OK
       return;
     }
 
-    let msg = 'designer.timeline.toast-composition-upload-error';
-    let title = 'designer.timeline.toast-composition-upload-error-title';
+    const msg = 'designer.timeline.toast-composition-upload-error';
+    const title = 'designer.timeline.toast-composition-upload-error-title';
     this.translateService.get([msg, title]).subscribe(result => {
       this.toastrService.error(result[msg] + args[1], result[title], { timeOut: 0, extendedTimeOut: 0, enableHtml: true });
     });

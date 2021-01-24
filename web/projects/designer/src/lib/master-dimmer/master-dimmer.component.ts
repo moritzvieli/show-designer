@@ -3,7 +3,7 @@ import { ProjectService } from '../services/project.service';
 import { PresetService } from '../services/preset.service';
 
 @Component({
-  selector: 'app-master-dimmer',
+  selector: 'lib-app-master-dimmer',
   templateUrl: './master-dimmer.component.html',
   styleUrls: ['./master-dimmer.component.css']
 })
@@ -19,11 +19,11 @@ export class MasterDimmerComponent implements OnInit {
   }
 
   setValue(value: any) {
-    if(isNaN(value)){
+    if (isNaN(value)) {
       return;
     }
 
-    if(value < 0 || value > 1) {
+    if (value < 0 || value > 1) {
       return;
     }
 

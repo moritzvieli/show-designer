@@ -3,7 +3,7 @@ import { FixtureCapabilityType } from '../../../models/fixture-capability';
 import { PresetService } from '../../../services/preset.service';
 
 @Component({
-  selector: 'app-fixture-capability-pan-tilt',
+  selector: 'lib-app-fixture-capability-pan-tilt',
   templateUrl: './fixture-capability-pan-tilt.component.html',
   styleUrls: ['./fixture-capability-pan-tilt.component.css']
 })
@@ -18,7 +18,7 @@ export class FixtureCapabilityPanTiltComponent implements OnInit {
   }
 
   getValuePan(): number {
-    let capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Pan);
+    const capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Pan);
     if (capabilityValue) {
       return capabilityValue.valuePercentage;
     }
@@ -26,7 +26,7 @@ export class FixtureCapabilityPanTiltComponent implements OnInit {
   }
 
   getValueTextPan(): number {
-    let value = this.getValuePan();
+    const value = this.getValuePan();
     if (value >= 0) {
       return Math.round(value * 100 * 100) / 100;
     }
@@ -48,7 +48,7 @@ export class FixtureCapabilityPanTiltComponent implements OnInit {
   }
 
   getValueTilt(): number {
-    let capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Tilt);
+    const capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Tilt);
     if (capabilityValue) {
       return capabilityValue.valuePercentage;
     }
@@ -56,7 +56,7 @@ export class FixtureCapabilityPanTiltComponent implements OnInit {
   }
 
   getValueTextTilt(): number {
-    let value = this.getValueTilt();
+    const value = this.getValueTilt();
     if (value >= 0) {
       return Math.round(value * 100 * 100) / 100;
     }

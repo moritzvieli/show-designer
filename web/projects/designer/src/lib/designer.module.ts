@@ -27,7 +27,6 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
-import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { ArraySortPipe } from './array-sort-pipe';
 import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
 import { ToastrModule } from 'ngx-toastr';

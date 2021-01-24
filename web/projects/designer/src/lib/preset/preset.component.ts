@@ -8,7 +8,7 @@ import { PresetSettingsComponent } from './preset-settings/preset-settings.compo
 import { Preset } from '../models/preset';
 
 @Component({
-  selector: 'app-preset',
+  selector: 'lib-app-preset',
   templateUrl: './preset.component.html',
   styleUrls: ['./preset.component.css']
 })
@@ -31,12 +31,12 @@ export class PresetComponent implements OnInit {
   }
 
   enableCheckbox(): boolean {
-    return this.sceneService.selectedScenes && this.sceneService.selectedScenes.length == 1;
+    return this.sceneService.selectedScenes && this.sceneService.selectedScenes.length === 1;
   }
 
   activatePreset(active: boolean, index: number) {
-    if (this.sceneService.selectedScenes && this.sceneService.selectedScenes.length == 1) {
-      let uuid = this.projectService.project.presets[index].uuid;
+    if (this.sceneService.selectedScenes && this.sceneService.selectedScenes.length === 1) {
+      const uuid = this.projectService.project.presets[index].uuid;
 
       if (active) {
         // Activate a new uuid
@@ -44,7 +44,7 @@ export class PresetComponent implements OnInit {
       } else {
         // Remove the uuid
         for (let i = 0; i < this.sceneService.selectedScenes[0].presetUuids.length; i++) {
-          if (this.sceneService.selectedScenes[0].presetUuids[i] == uuid) {
+          if (this.sceneService.selectedScenes[0].presetUuids[i] === uuid) {
             this.sceneService.selectedScenes[0].presetUuids.splice(i, 1);
             return;
           }
@@ -56,7 +56,7 @@ export class PresetComponent implements OnInit {
   addPreset() {
     this.presetService.addPreset();
 
-    if (this.sceneService.selectedScenes && this.sceneService.selectedScenes.length == 1) {
+    if (this.sceneService.selectedScenes && this.sceneService.selectedScenes.length === 1) {
       this.sceneService.selectedScenes[0].presetUuids.push(this.presetService.selectedPreset.uuid);
     }
   }
@@ -71,7 +71,15 @@ export class PresetComponent implements OnInit {
   }
 
   openSettings(preset: Preset) {
-    let bsModalRef = this.modalService.show(PresetSettingsComponent, { keyboard: true, ignoreBackdropClick: false, class: '', initialState: { preset: preset } });
+    const bsModalRef = this.modalService.show(
+      PresetSettingsComponent,
+      {
+        keyboard: true,
+        ignoreBackdropClick: false,
+        class: '',
+        initialState: { preset: preset }
+      }
+    );
   }
 
 }

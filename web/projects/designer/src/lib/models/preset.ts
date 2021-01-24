@@ -1,8 +1,8 @@
-import { Effect } from "./effect";
-import { FixtureChannelValue } from "./fixture-channel-value";
-import { FixtureCapabilityValue } from "./fixture-capability-value";
-import { EffectCurve } from "./effect-curve";
-import { EffectPanTilt } from "./effect-pan-tilt";
+import { Effect } from './effect';
+import { FixtureChannelValue } from './fixture-channel-value';
+import { FixtureCapabilityValue } from './fixture-capability-value';
+import { EffectCurve } from './effect-curve';
+import { EffectPanTilt } from './effect-pan-tilt';
 
 export class Preset {
 
@@ -25,12 +25,12 @@ export class Preset {
     endMillis: number;
 
     // fading times
-    fadeInMillis: number = 0;
-    fadeOutMillis: number = 0;
+    fadeInMillis = 0;
+    fadeOutMillis = 0;
 
     // fade in/out outside the start/end times?
-    fadeInPre: boolean = false;
-    fadeOutPost: boolean = false;
+    fadeInPre = false;
+    fadeOutPost = false;
 
     constructor(data?: any) {
         if (!data) {
@@ -41,17 +41,17 @@ export class Preset {
         this.name = data.name;
         this.fixtureUuids = data.fixtureUuids;
         if (data.fixtureChannelValues) {
-            for (let fixtureChannelValue of data.fixtureChannelValues) {
+            for (const fixtureChannelValue of data.fixtureChannelValues) {
                 this.fixtureChannelValues.push(new FixtureChannelValue(fixtureChannelValue));
             }
         }
         if (data.fixtureCapabilityValues) {
-            for (let fixtureCapabilityValue of data.fixtureCapabilityValues) {
+            for (const fixtureCapabilityValue of data.fixtureCapabilityValues) {
                 this.fixtureCapabilityValues.push(new FixtureCapabilityValue(fixtureCapabilityValue));
             }
         }
         if (data.effects) {
-            for (let effect of data.effects) {
+            for (const effect of data.effects) {
                 switch (effect.type) {
                     case 'curve':
                         this.effects.push(new EffectCurve(effect));

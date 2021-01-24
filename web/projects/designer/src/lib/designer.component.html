@@ -102,19 +102,19 @@
 
             <!-- Scenes -->
             <div id="scenes" class="split split-horizontal h-100">
-                <app-scene></app-scene>
+                <lib-app-scene></lib-app-scene>
             </div>
 
             <!-- Presets -->
             <div id="presets" class="split split-horizontal h-100">
-                <app-preset></app-preset>
+                <lib-app-preset></lib-app-preset>
             </div>
 
             <!-- 3D preview -->
             <div id="preview" class="split split-horizontal h-100 pr-3">
                 <div class="card border-secondary h-100" [class.card-intro-active]="introService.showStep('preview')">
                     <div class="card-body p-0 h-100">
-                        <app-preview class="h-100"></app-preview>
+                        <lib-app-preview class="h-100"></lib-app-preview>
                     </div>
                 </div>
             </div>
@@ -158,18 +158,18 @@
                     <div class="col pl-0 h-100">
                         <div class="tab-content h-100" id="v-pills-tabContent">
                             <div class="tab-pane h-100 show active" id="v-pills-capabilities" role="tabpanel">
-                                <app-fixture-capability></app-fixture-capability>
+                                <lib-app-fixture-capability></lib-app-fixture-capability>
                             </div>
                             <div class="tab-pane h-100 show" id="v-pills-channels" role="tabpanel">
-                                <app-fixture-channel></app-fixture-channel>
+                                <lib-app-fixture-channel></lib-app-fixture-channel>
                             </div>
                             <div class="tab-pane h-100" id="v-pills-effects" role="tabpanel"
                                 aria-labelledby="v-pills-profile-tab">
-                                <app-effect></app-effect>
+                                <lib-app-effect></lib-app-effect>
                             </div>
                             <div class="tab-pane h-100" id="v-pills-settings" role="tabpanel"
                                 aria-labelledby="v-pills-home-tab">
-                                <app-fixture-settings></app-fixture-settings>
+                                <lib-app-fixture-settings></lib-app-fixture-settings>
                             </div>
                         </div>
                     </div>
@@ -178,19 +178,19 @@
 
             <!-- Fixtures -->
             <div id="fixtures" class="split split-horizontal h-100">
-                <app-fixture></app-fixture>
+                <lib-app-fixture></lib-app-fixture>
             </div>
 
             <!-- Master dimmer -->
             <div id="masterDimmer" class="split split-horizontal h-100">
-                <app-master-dimmer></app-master-dimmer>
+                <lib-app-master-dimmer></lib-app-master-dimmer>
             </div>
 
         </div>
 
         <!-- Timeline -->
         <div id="row3" class="split split-vertical clearfix px-3 pb-3" style="padding-bottom: 20px;">
-            <app-timeline></app-timeline>
+            <lib-app-timeline></lib-app-timeline>
         </div>
 
     </div>
@@ -198,14 +198,14 @@
     <!-- The components for small screens -->
     <div class="d-md-none p-3">
         <div>
-            <app-master-dimmer></app-master-dimmer>
+            <lib-app-master-dimmer></lib-app-master-dimmer>
         </div>
 
         <div class="mt-3">
-            <app-scene></app-scene>
+            <lib-app-scene></lib-app-scene>
         </div>
     </div>
 
 </div>
 
-<app-intro class="d-none d-md-flex"></app-intro>
+<lib-app-intro class="d-none d-md-flex"></lib-app-intro>

@@ -12,7 +12,7 @@ import { FixtureProfile } from '../../models/fixture-profile';
 import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 
 @Component({
-  selector: 'app-effect-curve',
+  selector: 'lib-app-effect-curve',
   templateUrl: './effect-curve.component.html',
   styleUrls: ['./effect-curve.component.css']
 })
@@ -23,16 +23,16 @@ export class EffectCurveComponent implements OnInit {
   private maxWidth: number;
   private maxHeight: number;
 
-  public lengthMillisMin: number = 20;
-  public lengthMillisMax: number = 8000;
-  public amplitudeMin: number = 0;
-  public amplitudeMax: number = 4;
-  public percentageMin: number = 0;
-  public percentageMax: number = 1;
-  public phaseMillisMin: number = -1000;
-  public phaseMillisMax: number = 1000;
-  public phasingMillisMin: number = 0;
-  public phasingMillisMax: number = 1000;
+  public lengthMillisMin = 20;
+  public lengthMillisMax = 8000;
+  public amplitudeMin = 0;
+  public amplitudeMax = 4;
+  public percentageMin = 0;
+  public percentageMax = 1;
+  public phaseMillisMin = -1000;
+  public phaseMillisMax = 1000;
+  public phasingMillisMin = 0;
+  public phasingMillisMax = 1000;
 
   // the selected capabilities
   public availableCapabilities: FixtureCapability[] = [];
@@ -77,7 +77,7 @@ export class EffectCurveComponent implements OnInit {
   }
 
   ngOnInit() {
-    let canvas = this.curveGrid.nativeElement;
+    const canvas = this.curveGrid.nativeElement;
     this.ctx = canvas.getContext('2d');
     this.maxWidth = canvas.width;
     this.maxHeight = canvas.height;
@@ -86,10 +86,10 @@ export class EffectCurveComponent implements OnInit {
   }
 
   private drawCurrentValue(currMillis: number, radius: number, lineWidth: number, durationMillis: number, maxHeight: number) {
-    let currVal = 1 - this.curve.getValueAtMillis(currMillis);
+    const currVal = 1 - this.curve.getValueAtMillis(currMillis);
 
-    let x = this.maxWidth * (currMillis % durationMillis) / durationMillis;
-    let y = maxHeight * currVal + lineWidth;
+    const x = this.maxWidth * (currMillis % durationMillis) / durationMillis;
+    const y = maxHeight * currVal + lineWidth;
 
     this.ctx.beginPath();
     this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
@@ -101,11 +101,11 @@ export class EffectCurveComponent implements OnInit {
   }
 
   private getPhasingCount(): number {
-    let count: number = 0;
-    let countedDmxChannels: number[] = [];
+    let count = 0;
+    const countedDmxChannels: number[] = [];
 
-    for (let fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-      let fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
+    for (const fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
+      const fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
 
       if (!countedDmxChannels.includes(fixture.dmxFirstChannel)) {
         count++;
@@ -118,11 +118,11 @@ export class EffectCurveComponent implements OnInit {
 
   redraw() {
     this.ctx.clearRect(0, 0, this.maxWidth, this.maxHeight);
-    this.ctx.fillStyle = "#fff";
-    this.ctx.strokeStyle = "#fff";
+    this.ctx.fillStyle = '#fff';
+    this.ctx.strokeStyle = '#fff';
 
     // the width of the lines
-    let width: number = 3;
+    const width = 3;
 
     this.ctx.lineWidth = width;
 
@@ -135,16 +135,16 @@ export class EffectCurveComponent implements OnInit {
       step = 5;
     }
 
-    let durationMillis = this.curve.lengthMillis * Math.max(Math.round(4 - this.curve.lengthMillis / 1000), 1);
-    let maxHeight = this.maxHeight - width * 2;
+    const durationMillis = this.curve.lengthMillis * Math.max(Math.round(4 - this.curve.lengthMillis / 1000), 1);
+    const maxHeight = this.maxHeight - width * 2;
 
     // draw the curve
-    for (var i = -step * 2; i < durationMillis + step * 2; i += step) {
-      let val = 1 - this.curve.getValueAtMillis(i);
+    for (let i = -step * 2; i < durationMillis + step * 2; i += step) {
+      const val = 1 - this.curve.getValueAtMillis(i);
 
       // Scale the values to the grid dimensions
-      let x = this.maxWidth * i / durationMillis;
-      let y = maxHeight * val + width;
+      const x = this.maxWidth * i / durationMillis;
+      const y = maxHeight * val + width;
 
       if (oldY) {
         this.ctx.beginPath();
@@ -168,7 +168,11 @@ export class EffectCurveComponent implements OnInit {
     }
 
     for (let i = 1; i < phasingCount; i++) {
-      this.drawCurrentValue((this.animationService.timeMillis - i * this.curve.phasingMillis) % durationMillis, 3, width, durationMillis, maxHeight);
+      this.drawCurrentValue((this.animationService.timeMillis - i * this.curve.phasingMillis) % durationMillis,
+        3,
+        width,
+        durationMillis,
+        maxHeight);
     }
   }
 
@@ -191,7 +195,7 @@ export class EffectCurveComponent implements OnInit {
     this.availableCapabilities = [];
 
     if (this.presetService.hasCapabilityDimmer()) {
-      let capability = new FixtureCapability();
+      const capability = new FixtureCapability();
       capability.type = FixtureCapabilityType.Intensity;
       this.availableCapabilities.push(capability);
     }
@@ -238,7 +242,7 @@ export class EffectCurveComponent implements OnInit {
       'designer.fixtureCapabilityType.' + capability.type,
       'designer.fixtureCapabilityColor.' + capability.color
     ]).pipe(map((result: string) => {
-      let name: string = '';
+      let name = '';
       name += result['designer.fixtureCapabilityType.' + capability.type];
 
       if (capability.color) {
@@ -252,7 +256,7 @@ export class EffectCurveComponent implements OnInit {
   }
 
   capabilityChecked(capability: FixtureCapability): boolean {
-    for (let existingCapability of this.curve.capabilities) {
+    for (const existingCapability of this.curve.capabilities) {
       if (this.fixtureService.capabilitiesMatch(
         existingCapability.type,
         capability.type,
@@ -276,7 +280,7 @@ export class EffectCurveComponent implements OnInit {
     } else {
       // Remove the channel
       for (let i = 0; i < this.curve.capabilities.length; i++) {
-        let existingCapability = this.curve.capabilities[i];
+        const existingCapability = this.curve.capabilities[i];
         if (this.fixtureService.capabilitiesMatch(
           existingCapability.type,
           capability.type,
@@ -304,8 +308,8 @@ export class EffectCurveComponent implements OnInit {
   }
 
   channelChecked(profile: FixtureProfile, channel: CachedFixtureChannel): boolean {
-    for (let profileChannels of this.curve.channels) {
-      if (profileChannels.profileUuid == profile.uuid) {
+    for (const profileChannels of this.curve.channels) {
+      if (profileChannels.profileUuid === profile.uuid) {
         if (profileChannels.channels.includes(channel.name)) {
           return true;
         }
@@ -319,24 +323,24 @@ export class EffectCurveComponent implements OnInit {
 
   toggleChannel(event: any, profile: FixtureProfile, channel: CachedFixtureChannel) {
     // add the profile, if necessary
-    let profileContained: boolean = false;
-    for (let profileChannels of this.curve.channels) {
-      if (profileChannels.profileUuid == profile.uuid) {
+    let profileContained = false;
+    for (const profileChannels of this.curve.channels) {
+      if (profileChannels.profileUuid === profile.uuid) {
         profileContained = true;
         break;
       }
     }
 
     if (!profileContained) {
-      let profileChannels = new EffectCurveProfileChannels();
+      const profileChannels = new EffectCurveProfileChannels();
       profileChannels.profileUuid = profile.uuid;
       this.curve.channels.push(profileChannels);
     }
 
     // add or delete the channel
-    for (let profileChannels of this.curve.channels) {
-      if (profileChannels.profileUuid == profile.uuid) {
-        let index = profileChannels.channels.indexOf(channel.name);
+    for (const profileChannels of this.curve.channels) {
+      if (profileChannels.profileUuid === profile.uuid) {
+        const index = profileChannels.channels.indexOf(channel.name);
 
         if (index >= 0) {
           profileChannels.channels.splice(index, 1);

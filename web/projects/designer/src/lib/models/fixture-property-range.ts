@@ -1,4 +1,4 @@
-import { UuidService } from "../services/uuid.service";
+import { UuidService } from '../services/uuid.service';
 
 export class FixturePropertyRange {
 
@@ -9,9 +9,9 @@ export class FixturePropertyRange {
 
     // Use a slider to specify this range. If false, the range can only
     // be selected all at once.
-    useSlider: boolean = false;
+    useSlider = false;
 
-    isDefault: boolean = false;
+    isDefault = false;
 
     constructor(private uuidService: UuidService) {
         if (this.uuidService) {

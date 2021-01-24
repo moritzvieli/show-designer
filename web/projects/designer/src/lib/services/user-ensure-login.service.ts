@@ -26,7 +26,7 @@ export class UserEnsureLoginService {
       return of(null);
     }
 
-    let subject = new Subject<void>();
+    const subject = new Subject<void>();
     this.modalService.show(UserRegisterComponent, { keyboard: true, ignoreBackdropClick: false, initialState: { subject: subject } });
     return subject;
   }

@@ -12,23 +12,23 @@ export class Fixture {
     profileUuid: string;
     name: string;
     dmxUniverseUuid: string;
-    dmxFirstChannel: number = 5;
+    dmxFirstChannel = 5;
     modeShortName: string;
     positioning: Positioning = Positioning.topFront;
 
     // Only relevant when positioning = manual
     // in CM
-    positionX: number = 0;
-    positionY: number = 0;
-    positionZ: number = 0;
+    positionX = 0;
+    positionY = 0;
+    positionZ = 0;
 
     // in DEG
-    rotationX: number = 0;
-    rotationY: number = 0;
-    rotationZ: number = 0;
+    rotationX = 0;
+    rotationY = 0;
+    rotationZ = 0;
 
     constructor(data?: any) {
-        if(!data) {
+        if (!data) {
             return;
         }
 

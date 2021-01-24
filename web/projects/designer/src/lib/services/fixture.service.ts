@@ -23,7 +23,7 @@ export class FixtureService {
   cachedFixtures: CachedFixture[] = [];
 
   // is the side-tab settings currently selected?
-  settingsSelection: boolean = false;
+  settingsSelection = false;
 
   selectedSettingsFixtures: Fixture[] = [];
 
@@ -33,16 +33,16 @@ export class FixtureService {
   ) { }
 
   getFixtureByUuid(uuid: string): Fixture {
-    for (let fixture of this.projectService.project.fixtures) {
-      if (fixture.uuid == uuid) {
+    for (const fixture of this.projectService.project.fixtures) {
+      if (fixture.uuid === uuid) {
         return fixture;
       }
     }
   }
 
   getCachedFixtureByUuid(uuid: string): CachedFixture {
-    for (let fixture of this.cachedFixtures) {
-      if (fixture.fixture.uuid == uuid) {
+    for (const fixture of this.cachedFixtures) {
+      if (fixture.fixture.uuid === uuid) {
         return fixture;
       }
     }
@@ -51,9 +51,9 @@ export class FixtureService {
   // Get all profiles to search for (only metadata)
   getSearchProfiles(): Observable<FixtureProfile[]> {
     return this.http.get('fixtures').pipe(map((response: Array<Object>) => {
-      let searchProfiles: FixtureProfile[] = [];
+      const searchProfiles: FixtureProfile[] = [];
 
-      for (let profile of response) {
+      for (const profile of response) {
         searchProfiles.push(new FixtureProfile(profile));
       }
 
@@ -62,15 +62,15 @@ export class FixtureService {
   }
 
   getProfileByUuid(uuid: string): FixtureProfile {
-    for (let FixtureProfile of this.projectService.project.fixtureProfiles) {
-      if (FixtureProfile.uuid == uuid) {
-        return FixtureProfile;
+    for (const fixtureProfile of this.projectService.project.fixtureProfiles) {
+      if (fixtureProfile.uuid === uuid) {
+        return fixtureProfile;
       }
     }
   }
 
   loadProfileByUuid(uuid: string): Observable<void> {
-    let loadedProfile = this.getProfileByUuid(uuid);
+    const loadedProfile = this.getProfileByUuid(uuid);
 
     if (loadedProfile) {
       // This profile is already loaded
@@ -78,12 +78,12 @@ export class FixtureService {
     }
 
     // Load the metadata and the profile
-    return forkJoin(
+    return forkJoin([
       this.http.get('fixtures?uuid=' + encodeURI(uuid)),
       this.http.get('fixture?uuid=' + encodeURI(uuid))
-    ).pipe(map(result => {
-      let mergedData = { ...result[0][0], ...result[1] }
-      let fixtureProfile = new FixtureProfile(mergedData);
+    ]).pipe(map(result => {
+      const mergedData = { ...result[0][0], ...result[1] };
+      const fixtureProfile = new FixtureProfile(mergedData);
       this.projectService.project.fixtureProfiles.push(fixtureProfile);
     }));
   }
@@ -93,7 +93,7 @@ export class FixtureService {
     if (value.endsWith('deg')) {
       return Number.parseInt(value.replace('deg', ''));
     } else if (value.endsWith('%')) {
-      let perc = Number.parseInt(value.replace('%', ''));
+      const perc = Number.parseInt(value.replace('%', ''));
       return perc / 100 * 360;
     }
 
@@ -102,9 +102,9 @@ export class FixtureService {
 
   getWheelSlotColors(wheel: FixtureWheel, slotNumber: number): string[] {
     let colors: string[] = [];
-    let wheelSlots = this.getWheelSlots(wheel, slotNumber);
+    const wheelSlots = this.getWheelSlots(wheel, slotNumber);
 
-    for (let slot of wheelSlots) {
+    for (const slot of wheelSlots) {
       if (slot.colors && slot.colors.length > 0) {
         colors = colors.concat(slot.colors);
       }
@@ -114,14 +114,14 @@ export class FixtureService {
   }
 
   getMixedWheelSlotColor(wheel: FixtureWheel, slotNumber: number): Color {
-    let colors = this.getWheelSlotColors(wheel, slotNumber);
-    let colorsRgb: Color[] = [];
+    const colors = this.getWheelSlotColors(wheel, slotNumber);
+    const colorsRgb: Color[] = [];
 
-    if (colors.length == 0) {
+    if (colors.length === 0) {
       return undefined;
     }
 
-    for (let color of colors) {
+    for (const color of colors) {
       colorsRgb.push(this.hexToRgb(color));
     }
 
@@ -129,22 +129,22 @@ export class FixtureService {
   }
 
   private componentToHex(c: number): any {
-    var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
+    const hex = c.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
   }
 
   rgbToHex(r: number, g: number, b: number): string {
-    return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+    return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
   }
 
   hexToRgb(hex: string): Color {
     // expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, function (m, r, g, b) {
       return r + r + g + g + b + b;
     });
 
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? new Color(
       parseInt(result[1], 16),
       parseInt(result[2], 16),
@@ -154,11 +154,11 @@ export class FixtureService {
 
   mixColors(colors: Color[]): Color {
     // mix an array of rgb-colors containing r, g, b values to a new color
-    let r: number = 0;
-    let g: number = 0;
-    let b: number = 0;
+    let r = 0;
+    let g = 0;
+    let b = 0;
 
-    for (let color of colors) {
+    for (const color of colors) {
       r += color.red;
       g += color.green;
       b += color.blue;
@@ -172,8 +172,8 @@ export class FixtureService {
   }
 
   wheelHasSlotType(wheel: FixtureWheel, slotType: FixtureWheelSlotType): boolean {
-    for (let slot of wheel.slots) {
-      if (slot.type == slotType) {
+    for (const slot of wheel.slots) {
+      if (slot.type === slotType) {
         return true;
       }
     }
@@ -182,8 +182,8 @@ export class FixtureService {
   }
 
   getWheelByName(profile: FixtureProfile, wheelName: string): FixtureWheel {
-    for (let property in profile.wheels) {
-      if (property == wheelName) {
+    for (const property in profile.wheels) {
+      if (property === wheelName) {
         return profile.wheels[property];
       }
     }
@@ -194,7 +194,7 @@ export class FixtureService {
 
   private getWheelSlots(wheel: FixtureWheel, slotNumber: number): FixtureWheelSlot[] {
     // return one slot or two slots, if they are mixed (e.g. slor number 2.5 returns the slots 2 and 3)
-    let slots: FixtureWheelSlot[] = [];
+    const slots: FixtureWheelSlot[] = [];
 
     if (!wheel) {
       return slots;
@@ -202,7 +202,7 @@ export class FixtureService {
 
     if (slotNumber - Math.floor(slotNumber) > 0) {
       // two slots are set
-      let number = Math.floor(slotNumber);
+      const number = Math.floor(slotNumber);
       slots.push(wheel.slots[number - 1]);
       if (number >= 0 && number < wheel.slots.length) {
         slots.push(wheel.slots[number]);
@@ -216,13 +216,13 @@ export class FixtureService {
   }
 
   getModeByFixture(profile: FixtureProfile, fixture: Fixture): FixtureMode {
-    for (let mode of profile.modes) {
+    for (const mode of profile.modes) {
       if (mode.shortName) {
         if (mode.shortName === fixture.modeShortName) {
           return mode;
         }
       } else {
-        if (mode.name == fixture.modeShortName) {
+        if (mode.name === fixture.modeShortName) {
           return mode;
         }
       }
@@ -230,11 +230,11 @@ export class FixtureService {
   }
 
   private getFixtureCapability(capability: FixtureCapability, channelName: string, profile: FixtureProfile): CachedFixtureCapability {
-    let cachedFixtureCapability = new CachedFixtureCapability();
+    const cachedFixtureCapability = new CachedFixtureCapability();
     cachedFixtureCapability.capability = capability;
     if (capability.slotNumber) {
       // there is a wheel connected to this capability
-      if (typeof capability.wheel == "string") {
+      if (typeof capability.wheel === 'string') {
         cachedFixtureCapability.wheelName = <string>capability.wheel;
       } else if (Array.isArray(capability.wheel)) {
         cachedFixtureCapability.wheelName = capability.wheel[0];
@@ -245,19 +245,29 @@ export class FixtureService {
       cachedFixtureCapability.wheelSlots = this.getWheelSlots(cachedFixtureCapability.wheel, capability.slotNumber);
       cachedFixtureCapability.wheelIsColor = this.wheelHasSlotType(cachedFixtureCapability.wheel, FixtureWheelSlotType.Color);
     }
-    if (cachedFixtureCapability.capability.dmxRange && cachedFixtureCapability.capability.dmxRange.length == 2) {
-      cachedFixtureCapability.centerValue = Math.floor((cachedFixtureCapability.capability.dmxRange[0] + cachedFixtureCapability.capability.dmxRange[1]) / 2);
+    if (cachedFixtureCapability.capability.dmxRange && cachedFixtureCapability.capability.dmxRange.length === 2) {
+      cachedFixtureCapability.centerValue =
+        Math.floor(
+          (cachedFixtureCapability.capability.dmxRange[0]
+            + cachedFixtureCapability.capability.dmxRange[1]
+          ) / 2
+        );
     }
     return cachedFixtureCapability;
   }
 
-  private getCapabilitiesByChannel(fixtureChannel: FixtureChannel, channelName: string, profile: FixtureProfile): CachedFixtureCapability[] {
-    let capabilites: CachedFixtureCapability[] = [];
+  private getCapabilitiesByChannel(
+    fixtureChannel: FixtureChannel,
+    channelName: string,
+    profile: FixtureProfile
+  ): CachedFixtureCapability[] {
+
+    const capabilites: CachedFixtureCapability[] = [];
 
     if (fixtureChannel.capability) {
       capabilites.push(this.getFixtureCapability(fixtureChannel.capability, channelName, profile));
     } else if (fixtureChannel.capabilities) {
-      for (let capability of fixtureChannel.capabilities) {
+      for (const capability of fixtureChannel.capabilities) {
         capabilites.push(this.getFixtureCapability(capability, channelName, profile));
       }
     }
@@ -276,8 +286,8 @@ export class FixtureService {
 
     if (isNaN(<any>fixtureChannel.defaultValue) && (<string>fixtureChannel.defaultValue).endsWith('%')) {
       // percentage value
-      let percentage = Number.parseInt((<string>fixtureChannel.defaultValue).replace('%', ''));
-      let maxValue = this.getMaxValueByChannel(fixtureChannel);
+      const percentage = Number.parseInt((<string>fixtureChannel.defaultValue).replace('%', ''));
+      const maxValue = this.getMaxValueByChannel(fixtureChannel);
       return maxValue / 100 * percentage;
     } else {
       // DMX value
@@ -286,7 +296,7 @@ export class FixtureService {
   }
 
   private getColorWheelByChannel(channel: CachedFixtureChannel, profile: FixtureProfile): FixtureWheel {
-    for (let channelCapability of channel.capabilities) {
+    for (const channelCapability of channel.capabilities) {
       if (channelCapability.wheelIsColor) {
         return channelCapability.wheel;
       }
@@ -297,7 +307,7 @@ export class FixtureService {
 
   // private channelInList(channels: CachedFixtureChannel[], name: string): boolean {
   //   for (let channel of channels) {
-  //     if (channel.channelName == name) {
+  //     if (channel.channelName === name) {
   //       return true;
   //     }
   //   }
@@ -306,8 +316,10 @@ export class FixtureService {
   // }
 
   getChannelByName(fixture: CachedFixture, channelName: string): CachedFixtureChannel {
-    for (let channel of fixture.channels) {
-      if ((channel.name && channel.name == channelName) || (channel.channel && channel.channel.fineChannelAliases.indexOf(channelName) > -1)) {
+    for (const channel of fixture.channels) {
+      if ((channel.name && channel.name === channelName)
+        || (channel.channel && channel.channel.fineChannelAliases.indexOf(channelName) > -1)) {
+
         return channel;
       }
     }
@@ -316,27 +328,27 @@ export class FixtureService {
   }
 
   getCachedChannels(profile: FixtureProfile, mode: FixtureMode): CachedFixtureChannel[] {
-    let channels: CachedFixtureChannel[] = [];
+    const channels: CachedFixtureChannel[] = [];
 
     if (!mode) {
       return channels;
     }
 
-    for (let availableChannelName in profile.availableChannels) {
-      let availableChannel: FixtureChannel = profile.availableChannels[availableChannelName];
+    for (const availableChannelName of Object.keys(profile.availableChannels)) {
+      const availableChannel: FixtureChannel = profile.availableChannels[availableChannelName];
 
-      for (let channel of mode.channels) {
+      for (const channel of mode.channels) {
         // check for string channel. It can get creepy for matrix modes
-        if (typeof channel == "string") {
-          let modeChannel: string = <string>channel;
+        if (typeof channel === 'string') {
+          const modeChannel: string = <string>channel;
 
           // don't check the fine channels. only add the coarse channel.
-          if (modeChannel == availableChannelName) {
-            let cachedFixtureChannel = new CachedFixtureChannel();
+          if (modeChannel === availableChannelName) {
+            const cachedFixtureChannel = new CachedFixtureChannel();
             cachedFixtureChannel.channel = availableChannel;
             cachedFixtureChannel.name = availableChannelName;
             cachedFixtureChannel.capabilities = this.getCapabilitiesByChannel(cachedFixtureChannel.channel, availableChannelName, profile);
-            let defaultValue = this.getDefaultValueByChannel(cachedFixtureChannel.channel);
+            const defaultValue = this.getDefaultValueByChannel(cachedFixtureChannel.channel);
             if (defaultValue) {
               cachedFixtureChannel.defaultValue = defaultValue;
             }
@@ -360,8 +372,8 @@ export class FixtureService {
     this.cachedFixtures = [];
 
     for (let i = 0; i < this.projectService.project.fixtures.length; i++) {
-      let fixture = this.projectService.project.fixtures[i];
-      let cachedFixture = new CachedFixture();
+      const fixture = this.projectService.project.fixtures[i];
+      const cachedFixture = new CachedFixture();
 
       cachedFixture.fixture = fixture;
       cachedFixture.profile = this.getProfileByUuid(fixture.profileUuid);
@@ -383,15 +395,15 @@ export class FixtureService {
     profileUuid2: string
   ): boolean {
     // checks, whether two provided capapabilities match
-    return type1 == type2
-      && (!color1 || color1 == color2)
-      && (!wheel1 || wheel1 == wheel2)
-      && (!profileUuid1 || profileUuid1 == profileUuid2);
+    return type1 === type2
+      && (!color1 || color1 === color2)
+      && (!wheel1 || wheel1 === wheel2)
+      && (!profileUuid1 || profileUuid1 === profileUuid2);
   }
 
   settingsFixtureIsSelected(fixture: Fixture): boolean {
-    for (let selectedFixture of this.selectedSettingsFixtures) {
-      if (selectedFixture == fixture) {
+    for (const selectedFixture of this.selectedSettingsFixtures) {
+      if (selectedFixture === fixture) {
         return true;
       }
     }
@@ -411,7 +423,7 @@ export class FixtureService {
     if (!profile) {
       return '';
     }
-    if (profile.categories.length == 0) {
+    if (profile.categories.length === 0) {
       return '';
     }
     if (!profile.categories[0]) {

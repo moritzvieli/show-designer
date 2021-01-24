@@ -1,6 +1,6 @@
-import { Preset } from "./preset";
-import { ScenePlaybackRegion } from "./scene-playback-region";
-import { Scene } from "./scene";
+import { Preset } from './preset';
+import { ScenePlaybackRegion } from './scene-playback-region';
+import { Scene } from './scene';
 
 export class PresetRegionScene {
 

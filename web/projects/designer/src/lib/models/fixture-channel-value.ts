@@ -5,7 +5,7 @@ export class FixtureChannelValue {
     value: number;
 
     constructor(data?: any) {
-        if(!data) {
+        if (!data) {
             return;
         }
         this.channelName = data.channelName;

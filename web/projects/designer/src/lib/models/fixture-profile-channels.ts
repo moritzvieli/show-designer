@@ -4,13 +4,13 @@ export class FixtureProfileChannels {
     channels: any[] = [];
 
     constructor(data?: any) {
-        if(!data) {
+        if (!data) {
             return;
         }
 
         this.profileUuid = data.profileUuid;
 
-        if(data.channels) {
+        if (data.channels) {
             this.channels = data.channels;
         }
     }

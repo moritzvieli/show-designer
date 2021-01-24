@@ -37,12 +37,12 @@ export class PresetSettingsComponent implements OnInit {
   ok() {
     this.preset.name = this.name;
 
-    if (this.startMillis == undefined || this.startMillis == null || <any>this.startMillis == '') {
+    if (this.startMillis === undefined || this.startMillis === null || <any>this.startMillis === '') {
       this.preset.startMillis = undefined;
     } else if (!isNaN(this.startMillis) && this.startMillis >= 0) {
       this.preset.startMillis = +this.startMillis;
     }
-    if (this.endMillis == undefined || this.endMillis == null || <any>this.endMillis == '') {
+    if (this.endMillis === undefined || this.endMillis === null || <any>this.endMillis === '') {
       this.preset.endMillis = undefined;
     } else if (!isNaN(this.endMillis) && this.endMillis >= 0) {
       this.preset.endMillis = +this.endMillis;

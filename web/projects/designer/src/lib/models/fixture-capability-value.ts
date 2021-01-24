@@ -1,4 +1,4 @@
-import { FixtureCapabilityType, FixtureCapabilityColor } from "./fixture-capability";
+import { FixtureCapabilityType, FixtureCapabilityColor } from './fixture-capability';
 
 export class FixtureCapabilityValue {
 
@@ -7,13 +7,13 @@ export class FixtureCapabilityValue {
 
     // value between 0 and 1
     valuePercentage: number;
-    
+
     color: FixtureCapabilityColor;
     wheel: string;
     slotNumber: number;
 
     constructor(data?: any) {
-        if(!data) {
+        if (!data) {
             return;
         }
         this.type = FixtureCapabilityType[<string>data.type];
