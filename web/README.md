@@ -9,7 +9,7 @@ The Rocket Show Designer relies on the Open Fixture Library (OFL). There is curr
 - Start the designer with `npm install` and `ng serve`
 - Access the app in your browser with `localhost:4200`
 - Some functionality requires a server (e.g. loading/saving projects, handling audio files). You can start a rocket show server (see https://github.com/moritzvieli/rocketshow) and point environment.ts's localBackend to `http://localhost:8080`
-- TEST
+- TEST 2
 
 ## Build & publish as NPM package
 ```
