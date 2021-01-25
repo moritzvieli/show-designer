@@ -1,21 +1,23 @@
 <div class="card border-secondary h-100" [class.capability-deactivated]="!active">
   <div class="card-header">
-    <div class="my-auto" style="float: left;">
+    <div class="my-auto" style="float: left">
       <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="capabilityColorActive" [ngModel]="active"
-          (ngModelChange)="changeActive($event)">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          id="capabilityColorActive"
+          [ngModel]="active"
+          (ngModelChange)="changeActive($event)"
+        />
         <label class="form-check-label" for="capabilityColorActive">{{ 'designer.fixture.capability-color' | translate }}</label>
       </div>
     </div>
     <div class="pull-right">
-      <input type="text" [(ngModel)]="color"
-        style="width: 58px; text-align: center; font-size: 12px; font-family: monospace;">
+      <input type="text" [(ngModel)]="color" style="width: 58px; text-align: center; font-size: 12px; font-family: monospace" />
     </div>
   </div>
 
   <div class="card-body h-100">
-
     <div id="color-picker-container"></div>
-
   </div>
 </div>

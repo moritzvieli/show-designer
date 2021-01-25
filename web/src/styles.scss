@@ -1,16 +1,16 @@
 /* Add the theme */
-@import "theme.scss";
+@import 'theme.scss';
 
 /* Some overrides */
 $enable-rounded: false;
 
 $theme-colors: (
   warning: $orange,
-  danger: $orange
+  danger: $orange,
 ) !default;
 
 /* Add bootstrap */
-@import "../node_modules/bootstrap/scss/bootstrap";
+@import '../node_modules/bootstrap/scss/bootstrap';
 
 /* General styles */
 body,

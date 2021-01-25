@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title pull-left">{{ 'designer.fixture-pool.title' | translate }}</h4>
-  <button type="button" class="close pull-right" aria-label="Close" (click)="cancel(); false;">
+  <button type="button" class="close pull-right" aria-label="Close" (click)="cancel(); (false)">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -14,30 +14,34 @@
       </a> -->
 
       <!-- Search for profiles -->
-      <input type="text" class="form-control input-block mb-3" id="searchSet"
+      <input
+        type="text"
+        class="form-control input-block mb-3"
+        id="searchSet"
         placeholder="{{ 'designer.fixture-pool.search-profiles' | translate }}"
-        (input)="searchExpression = $event.target.value; filterProfiles()">
+        (input)="searchExpression = $event.target.value; filterProfiles()"
+      />
 
       <!-- Profiles -->
-      <div class="card border-secondary w-100" style="height: 200px;">
+      <div class="card border-secondary w-100" style="height: 200px">
         <div class="card-body p-0 w-100">
           <div class="list-group list-group-flush w-100">
-            <a *ngIf="loadingProfiles"
-              class="list-group-item list-group-item-action flex-column align-items-start d-flex">
+            <a *ngIf="loadingProfiles" class="list-group-item list-group-item-action flex-column align-items-start d-flex">
               <p class="mb-0 mx-auto">
                 <i class="fa fa-spinner fa-pulse fa-fw"></i>
               </p>
             </a>
 
-            <div class="list-group-item" *ngFor="let profile of filteredProfiles | sort:'uuid'">
+            <div class="list-group-item" *ngFor="let profile of filteredProfiles | sort: 'uuid'">
               <div class="row">
                 <div class="col-10 col-auto my-auto pl-2">
-                  <p class="mb-0"><span class="icon-{{ fixtureService.getFixtureIconClass(profile) }} mr-1"></span>
-                    {{ profile.manufacturerName }} - {{ profile.name }}</p>
+                  <p class="mb-0">
+                    <span class="icon-{{ fixtureService.getFixtureIconClass(profile) }} mr-1"></span> {{ profile.manufacturerName }} -
+                    {{ profile.name }}
+                  </p>
                 </div>
                 <div class="col-2 my-auto">
-                  <a class="btn btn-primary btn-sm float-right" href="#" role="button"
-                    (click)="addFixture(profile); false">
+                  <a class="btn btn-primary btn-sm float-right" href="#" role="button" (click)="addFixture(profile); (false)">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </a>
                 </div>
@@ -47,24 +51,32 @@
         </div>
       </div>
       <div>
-        <p class="d-inline-block mb-0 mt-2">Powered by the <a href="https://open-fixture-library.org/"
-            target="_blank">Open Fixture Library</a></p>
-        <a class="mt-2 btn btn-secondary btn-sm float-right" href="https://open-fixture-library.org/fixture-editor"
-          target="_blank" role="button">
+        <p class="d-inline-block mb-0 mt-2">
+          Powered by the <a href="https://open-fixture-library.org/" target="_blank">Open Fixture Library</a>
+        </p>
+        <a
+          class="mt-2 btn btn-secondary btn-sm float-right"
+          href="https://open-fixture-library.org/fixture-editor"
+          target="_blank"
+          role="button"
+        >
           <i class="fa fa-file-o" aria-hidden="true"></i> {{ 'designer.fixture-pool.add-profile' | translate }}
         </a>
-        <button *ngIf="configService.localProfiles" type="button" class="mr-2 mt-2 btn btn-secondary btn-sm float-right" (click)="updateProfiles(); false;"
-          [disabled]="updatingProfiles" role="button">
-
+        <button
+          *ngIf="configService.localProfiles"
+          type="button"
+          class="mr-2 mt-2 btn btn-secondary btn-sm float-right"
+          (click)="updateProfiles(); (false)"
+          [disabled]="updatingProfiles"
+          role="button"
+        >
           <i *ngIf="updatingProfiles" class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true"></i>
-          <i *ngIf="!updatingProfiles" class="fa fa-download fa-fw" aria-hidden="true"></i> {{ 'designer.fixture-pool.update-profiles' |
-          translate
-          }}
+          <i *ngIf="!updatingProfiles" class="fa fa-download fa-fw" aria-hidden="true"></i>
+          {{ 'designer.fixture-pool.update-profiles' | translate }}
         </button>
       </div>
     </div>
     <div class="col-6">
-
       <!-- Universe -->
       <div class="form-group row">
         <label class="col-lg-4 col-form-label">{{ 'designer.fixture-pool.universe' | translate }}</label>
@@ -76,23 +88,29 @@
       </div>
 
       <!-- Fixtures -->
-      <div class="card border-secondary" style="height: 235px;">
+      <div class="card border-secondary" style="height: 235px">
         <div class="card-body p-0">
           <div class="list-group list-group-flush" [sortablejs]="fixturePool">
-            <div class="list-group-item" *ngFor="let fixture of fixturePool" [class.active]="fixture == selectedFixture"
-              (click)="selectFixture(fixture)" style="cursor: pointer;">
+            <div
+              class="list-group-item"
+              *ngFor="let fixture of fixturePool"
+              [class.active]="fixture == selectedFixture"
+              (click)="selectFixture(fixture)"
+              style="cursor: pointer"
+            >
               <div class="row">
-                <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
+                <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing">
                   <i class="fa fa-bars" aria-hidden="true"></i>
                 </div>
                 <div class="col-auto flex-grow pl-0 my-auto">
-                  <p class="mb-0"><span
-                      class="icon-{{ fixtureService.getFixtureIconClass(fixtureService.getProfileByUuid(fixture.profileUuid)) }} mr-1">
-                    </span>{{ fixture.name }}</p>
+                  <p class="mb-0">
+                    <span class="icon-{{ fixtureService.getFixtureIconClass(fixtureService.getProfileByUuid(fixture.profileUuid)) }} mr-1">
+                    </span
+                    >{{ fixture.name }}
+                  </p>
                 </div>
                 <div class="col-auto my-auto">
-                  <a class="btn btn-primary btn-sm float-right" href="#" role="button"
-                    (click)="removeFixture(fixture); false">
+                  <a class="btn btn-primary btn-sm float-right" href="#" role="button" (click)="removeFixture(fixture); (false)">
                     <i class="fa fa-minus" aria-hidden="true"></i>
                   </a>
                 </div>
@@ -101,7 +119,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
   <div class="row mt-3">
@@ -124,7 +141,6 @@
       <div class="tab-content" id="myTabContent">
         <!-- DMX universe overview-->
         <div class="tab-pane show active" id="dmx" role="tabpanel">
-
           <!-- Show all channel numbers -->
           <!-- <div class="form-group row">
             <div class="col-auto flex-grow"></div>
@@ -139,18 +155,23 @@
 
           <!-- List of DMX channels -->
           <div>
-            <div *ngFor="let channel of dmxChannels; let i = index;" class="dmx-channel"
+            <div
+              *ngFor="let channel of dmxChannels; let i = index"
+              class="dmx-channel"
               [class.dmx-channel-occupied]="channelOccupied(i)"
               [class.dmx-channel-occupied-start]="channelOccupiedStart(i)"
-              [class.dmx-channel-occupied-end]="channelOccupiedEnd(i)" [class.dmx-channel-selected]="channelSelected(i)"
-              [class.dmx-channel-overlapped]="channelOverlapped(i)" (mousedown)="channelMouseDown($event)"
-              (mouseover)="channelMouseOver($event)" [attr.data-index]="i" popover="{{ i + 1 }}" placement="top"
-              triggers="mouseenter:mouseleave">
-              <div class="d-flex w-100 dmx-channel-text" [attr.data-index]="i"
-                [class.dmx-channel-text-visible]="showChannelNumbers">
-                <div class="m-auto" style="font-size: 11px" [attr.data-index]="i"><small
-                    [attr.data-index]="i">&nbsp;</small>
-                </div>
+              [class.dmx-channel-occupied-end]="channelOccupiedEnd(i)"
+              [class.dmx-channel-selected]="channelSelected(i)"
+              [class.dmx-channel-overlapped]="channelOverlapped(i)"
+              (mousedown)="channelMouseDown($event)"
+              (mouseover)="channelMouseOver($event)"
+              [attr.data-index]="i"
+              popover="{{ i + 1 }}"
+              placement="top"
+              triggers="mouseenter:mouseleave"
+            >
+              <div class="d-flex w-100 dmx-channel-text" [attr.data-index]="i" [class.dmx-channel-text-visible]="showChannelNumbers">
+                <div class="m-auto" style="font-size: 11px" [attr.data-index]="i"><small [attr.data-index]="i">&nbsp;</small></div>
               </div>
             </div>
           </div>
@@ -159,21 +180,21 @@
         <!-- Fixture settings -->
         <div class="tab-pane" id="settings" role="tabpanel">
           <div *ngIf="selectedFixture && selectedFixtureProfile">
-
             <div class="form-group row">
-              <label class="col-lg-3 col-form-label"
-                for="fixtureName">{{ 'designer.fixture-pool.fixture-name' | translate }}</label>
+              <label class="col-lg-3 col-form-label" for="fixtureName">{{ 'designer.fixture-pool.fixture-name' | translate }}</label>
               <div class="col-lg-9">
-                <input type="text" class="form-control" [(ngModel)]="selectedFixture.name" maxlength="200"
-                  id="fixtureName">
+                <input type="text" class="form-control" [(ngModel)]="selectedFixture.name" maxlength="200" id="fixtureName" />
               </div>
             </div>
 
             <div class="form-group row">
               <label class="col-lg-3 col-form-label">{{ 'designer.fixture-pool.mode' | translate }}</label>
               <div class="col-lg-9">
-                <select class="custom-select" [ngModel]="selectedFixture.modeShortName"
-                  (ngModelChange)="selectedFixture.modeShortName = $event">
+                <select
+                  class="custom-select"
+                  [ngModel]="selectedFixture.modeShortName"
+                  (ngModelChange)="selectedFixture.modeShortName = $event"
+                >
                   <option *ngFor="let mode of selectedFixtureProfile.modes" [ngValue]="mode.shortName || mode.name">
                     {{ mode.name }}
                     - {{ mode.channels.length }}
@@ -186,9 +207,12 @@
             <div class="form-group row">
               <label class="col-lg-3 col-form-label">{{ 'designer.fixture-pool.first-channel' | translate }}</label>
               <div class="col-lg-9">
-                <select class="custom-select" [ngModel]="selectedFixture.dmxFirstChannel"
-                  (ngModelChange)="selectedFixture.dmxFirstChannel = $event">
-                  <option *ngFor="let channel of dmxChannels; let i = index;" [ngValue]="i">
+                <select
+                  class="custom-select"
+                  [ngModel]="selectedFixture.dmxFirstChannel"
+                  (ngModelChange)="selectedFixture.dmxFirstChannel = $event"
+                >
+                  <option *ngFor="let channel of dmxChannels; let i = index" [ngValue]="i">
                     {{ i + 1 }}
                   </option>
                 </select>
@@ -198,20 +222,19 @@
             <div class="form-group row">
               <label class="col-lg-3 col-form-label"></label>
               <div class="col-lg-9">
-                <button type="button" class="btn btn-primary"
-                  (click)="addCopy(selectedFixture)">{{ 'designer.fixture.add-copy' | translate }}</button>
+                <button type="button" class="btn btn-primary" (click)="addCopy(selectedFixture)">
+                  {{ 'designer.fixture.add-copy' | translate }}
+                </button>
               </div>
             </div>
-
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 <div class="modal-footer">
-  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
+  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); (false)">
     {{ 'designer.misc.cancel' | translate }}
   </a>
   <button type="button" class="btn btn-primary" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>

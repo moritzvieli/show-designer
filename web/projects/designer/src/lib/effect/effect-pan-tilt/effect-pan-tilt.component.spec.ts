@@ -8,9 +8,8 @@ describe('EffectPanTiltComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EffectPanTiltComponent ]
-    })
-    .compileComponents();
+      declarations: [EffectPanTiltComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

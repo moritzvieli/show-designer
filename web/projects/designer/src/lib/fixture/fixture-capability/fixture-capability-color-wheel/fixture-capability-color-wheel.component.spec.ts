@@ -8,9 +8,8 @@ describe('FixtureCapabilityColorWheelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FixtureCapabilityColorWheelComponent ]
-    })
-    .compileComponents();
+      declarations: [FixtureCapabilityColorWheelComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,9 +8,8 @@ describe('PropertyComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FixtureCapabilityComponent ]
-    })
-    .compileComponents();
+      declarations: [FixtureCapabilityComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

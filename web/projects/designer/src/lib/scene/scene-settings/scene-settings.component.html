@@ -5,18 +5,17 @@
   </button>
 </div>
 <div class="modal-body">
-
   <div class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.preset.settings-name' | translate }}</label>
     <div class="col-lg-7">
-      <input type="text" class="form-control" [ngModel]="name" (ngModelChange)="name = $event;">
+      <input type="text" class="form-control" [ngModel]="name" (ngModelChange)="name = $event" />
     </div>
   </div>
 
   <div class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.scene.settings-fade-in' | translate }}</label>
     <div class="col-lg-7">
-      <input type="text" class="form-control" [ngModel]="fadeInMillis" (ngModelChange)="fadeInMillis = $event;">
+      <input type="text" class="form-control" [ngModel]="fadeInMillis" (ngModelChange)="fadeInMillis = $event" />
     </div>
     <div class="col-lg-1 d-flex p-0">
       <div class="my-auto">
@@ -29,8 +28,7 @@
     <label class="col-lg-4 col-form-label"></label>
     <div class="col-lg-8 d-flex">
       <div class="form-check my-auto">
-        <input type="checkbox" [ngModel]="fadeInPre" (ngModelChange)="fadeInPre = $event" class="form-check-input"
-          id="fadeInPre">
+        <input type="checkbox" [ngModel]="fadeInPre" (ngModelChange)="fadeInPre = $event" class="form-check-input" id="fadeInPre" />
 
         <label class="form-check-label" for="fadeInPre">
           {{ 'designer.scene.settings-fade-in-pre' | translate }}
@@ -42,7 +40,7 @@
   <div class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.scene.settings-fade-out' | translate }}</label>
     <div class="col-lg-7">
-      <input type="text" class="form-control" [ngModel]="fadeOutMillis" (ngModelChange)="fadeOutMillis = $event;">
+      <input type="text" class="form-control" [ngModel]="fadeOutMillis" (ngModelChange)="fadeOutMillis = $event" />
     </div>
     <div class="col-lg-1 d-flex p-0">
       <div class="my-auto">
@@ -55,8 +53,7 @@
     <label class="col-lg-4 col-form-label"></label>
     <div class="col-lg-8 d-flex">
       <div class="form-check my-auto">
-        <input type="checkbox" [ngModel]="fadeOutPost" (ngModelChange)="fadeOutPost = $event" class="form-check-input"
-          id="fadeOutPost">
+        <input type="checkbox" [ngModel]="fadeOutPost" (ngModelChange)="fadeOutPost = $event" class="form-check-input" id="fadeOutPost" />
 
         <label class="form-check-label" for="fadeOutPost">
           {{ 'designer.scene.settings-fade-out-post' | translate }}
@@ -64,10 +61,9 @@
       </div>
     </div>
   </div>
-
 </div>
 <div class="modal-footer">
-  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
+  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); (false)">
     {{ 'designer.misc.cancel' | translate }}
   </a>
   <button type="button" class="btn btn-primary" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>

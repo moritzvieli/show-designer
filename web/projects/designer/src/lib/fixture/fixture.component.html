@@ -1,34 +1,36 @@
 <div class="card border-secondary h-100 panel" [class.card-intro-active]="introService.showStep('fixtures')">
   <div class="card-header d-flex">
-    <div>
-      Fixtures
-    </div>
+    <div>Fixtures</div>
     <div class="ml-auto">
-      <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectNone(); false;"><i class="fa fa-square-o fa-fw"
-          aria-hidden="true"></i></a>
-      <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectAll(); false;"><i class="fa fa-check-square-o fa-fw"
-          aria-hidden="true"></i></a>
-      <a href="#" class="btn btn-secondary m-0, p-0" (click)="openFixturePool(); false;"><i class="fa fa-cog fa-fw"
-          aria-hidden="true"></i></a>
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectNone(); (false)"
+        ><i class="fa fa-square-o fa-fw" aria-hidden="true"></i
+      ></a>
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="selectAll(); (false)"
+        ><i class="fa fa-check-square-o fa-fw" aria-hidden="true"></i
+      ></a>
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="openFixturePool(); (false)"
+        ><i class="fa fa-cog fa-fw" aria-hidden="true"></i
+      ></a>
     </div>
   </div>
 
   <div class="card-body h-100 p-0">
-
     <!-- List of fixtures -->
     <div *ngIf="presetService.selectedPreset" class="list-group" [sortablejs]="projectService.project.fixtures">
-      <div class="list-group-item" *ngFor="let item of projectService.project.fixtures"
-        [class.inactive-list-item]="!fixtureIsSelected(item)">
-        <div class="row d-flex" (click)="selectFixture($event, item)" style="cursor: pointer;">
-          <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
+      <div
+        class="list-group-item"
+        *ngFor="let item of projectService.project.fixtures"
+        [class.inactive-list-item]="!fixtureIsSelected(item)"
+      >
+        <div class="row d-flex" (click)="selectFixture($event, item)" style="cursor: pointer">
+          <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="active" [ngModel]="fixtureIsSelected(item)">
+            <input type="checkbox" class="form-check-input" id="active" [ngModel]="fixtureIsSelected(item)" />
           </div>
           <div>
-            <span
-              class="icon-{{ fixtureService.getFixtureIconClass(fixtureService.getProfileByUuid(item.profileUuid)) }} mr-1"></span>
+            <span class="icon-{{ fixtureService.getFixtureIconClass(fixtureService.getProfileByUuid(item.profileUuid)) }} mr-1"></span>
             {{ item.name }}
           </div>
         </div>
@@ -36,9 +38,9 @@
     </div>
 
     <div *ngIf="projectService.project.fixtures.length == 0" class="w-100 h-100 d-flex p-3 text-center">
-      <a href="#" class="m-auto" (click)="openFixturePool(); false;"><i class="fa fa-plus-circle fa-fw"
-          aria-hidden="true"></i> {{ 'designer.fixture.no-fixtures' | translate }}</a>
+      <a href="#" class="m-auto" (click)="openFixturePool(); (false)"
+        ><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> {{ 'designer.fixture.no-fixtures' | translate }}</a
+      >
     </div>
-
   </div>
 </div>

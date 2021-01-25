@@ -5,8 +5,7 @@
 
   <div *ngIf="fixtureService.selectedSettingsFixtures.length > 0" class="card-body h-100">
     <div>
-      <select class="mb-2" style="width: 140px;" [(ngModel)]="selectedPositioning"
-        (change)="changePosition($event.target.value)">
+      <select class="mb-2" style="width: 140px" [(ngModel)]="selectedPositioning" (change)="changePosition($event.target.value)">
         <option [ngValue]="selectUndefinedOptionValue"></option>
         <option value="topFront">{{ 'designer.fixture.setting-position-front-top' | translate }}</option>
         <option value="bottomFront">{{ 'designer.fixture.setting-position-front-bottom' | translate }}</option>
@@ -19,96 +18,113 @@
     <div *ngIf="selectedPositioning == 'manual'">
       <div>{{ 'designer.fixture.setting-position' | translate }}</div>
       <div class="d-flex">
-        <div class="my-auto" style="width: 20px; float: left;">
-          X
-        </div>
-        <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px;" [tooltip]="'hide'"
-            [value]="positionX ? positionX : (positionXMax + positionXMin) / 2" [min]="positionXMin"
-            [max]="positionXMax" [step]="1" (change)="changePositionManual('x', $event.newValue)"></mv-slider>
+        <div class="my-auto" style="width: 20px; float: left">X</div>
+        <div class="my-auto" style="float: left">
+          <mv-slider
+            style="width: 80px"
+            [tooltip]="'hide'"
+            [value]="positionX ? positionX : (positionXMax + positionXMin) / 2"
+            [min]="positionXMin"
+            [max]="positionXMax"
+            [step]="1"
+            (change)="changePositionManual('x', $event.newValue)"
+          ></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="positionX" (ngModelChange)="changePositionManual('x', $event)" type="text"
-            class="slider-input">
+          <input [ngModel]="positionX" (ngModelChange)="changePositionManual('x', $event)" type="text" class="slider-input" />
         </div>
       </div>
       <div class="d-flex">
-        <div class="my-auto" style="width: 20px; float: left;">
-          Y
-        </div>
-        <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'"
-            [value]="positionZ ? positionZ : (positionZMax + positionZMin) / 2" [min]="positionZMin"
-            [max]="positionZMax" [step]="1" (change)="changePositionManual('z', $event.newValue)"></mv-slider>
+        <div class="my-auto" style="width: 20px; float: left">Y</div>
+        <div class="my-auto" style="float: left">
+          <mv-slider
+            style="width: 80px; height: 18px"
+            [tooltip]="'hide'"
+            [value]="positionZ ? positionZ : (positionZMax + positionZMin) / 2"
+            [min]="positionZMin"
+            [max]="positionZMax"
+            [step]="1"
+            (change)="changePositionManual('z', $event.newValue)"
+          ></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="positionZ" (ngModelChange)="changePositionManual('z', $event)" type="text"
-            class="slider-input">
+          <input [ngModel]="positionZ" (ngModelChange)="changePositionManual('z', $event)" type="text" class="slider-input" />
         </div>
       </div>
       <div class="d-flex">
-        <div class="my-auto" style="width: 20px; float: left;">
-          Z
-        </div>
-        <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px;" [tooltip]="'hide'"
-            [value]="positionY ? positionY : (positionYMax + positionYMin) / 2" [min]="positionYMin"
-            [max]="positionYMax" [step]="1" (change)="changePositionManual('y', $event.newValue)"></mv-slider>
+        <div class="my-auto" style="width: 20px; float: left">Z</div>
+        <div class="my-auto" style="float: left">
+          <mv-slider
+            style="width: 80px"
+            [tooltip]="'hide'"
+            [value]="positionY ? positionY : (positionYMax + positionYMin) / 2"
+            [min]="positionYMin"
+            [max]="positionYMax"
+            [step]="1"
+            (change)="changePositionManual('y', $event.newValue)"
+          ></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="positionY" (ngModelChange)="changePositionManual('y', $event)" type="text"
-            class="slider-input">
+          <input [ngModel]="positionY" (ngModelChange)="changePositionManual('y', $event)" type="text" class="slider-input" />
         </div>
       </div>
 
       <div class="mt-2">{{ 'designer.fixture.setting-rotation' | translate }}</div>
       <div class="d-flex">
-        <div class="my-auto" style="width: 20px; float: left;">
-          X
-        </div>
-        <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px;" [tooltip]="'hide'"
-            [value]="rotationX ? rotationX : (rotationMin + rotationMax) / 2" [min]="rotationMin" [max]="rotationMax"
-            [step]="1" (change)="changeRotationManual('x', $event.newValue)"></mv-slider>
+        <div class="my-auto" style="width: 20px; float: left">X</div>
+        <div class="my-auto" style="float: left">
+          <mv-slider
+            style="width: 80px"
+            [tooltip]="'hide'"
+            [value]="rotationX ? rotationX : (rotationMin + rotationMax) / 2"
+            [min]="rotationMin"
+            [max]="rotationMax"
+            [step]="1"
+            (change)="changeRotationManual('x', $event.newValue)"
+          ></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="rotationX" (ngModelChange)="changeRotationManual('x', $event)" type="text"
-            class="slider-input">
+          <input [ngModel]="rotationX" (ngModelChange)="changeRotationManual('x', $event)" type="text" class="slider-input" />
         </div>
       </div>
       <div class="d-flex">
-        <div class="my-auto" style="width: 20px; float: left;">
-          Y
-        </div>
-        <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px; height: 18px;" [tooltip]="'hide'"
-            [value]="rotationZ ? rotationZ : (rotationMin + rotationMax) / 2" [min]="rotationMin" [max]="rotationMax"
-            [step]="1" (change)="changeRotationManual('z', $event.newValue)"></mv-slider>
+        <div class="my-auto" style="width: 20px; float: left">Y</div>
+        <div class="my-auto" style="float: left">
+          <mv-slider
+            style="width: 80px; height: 18px"
+            [tooltip]="'hide'"
+            [value]="rotationZ ? rotationZ : (rotationMin + rotationMax) / 2"
+            [min]="rotationMin"
+            [max]="rotationMax"
+            [step]="1"
+            (change)="changeRotationManual('z', $event.newValue)"
+          ></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="rotationZ" (ngModelChange)="changeRotationManual('z', $event)" type="text"
-            class="slider-input">
+          <input [ngModel]="rotationZ" (ngModelChange)="changeRotationManual('z', $event)" type="text" class="slider-input" />
         </div>
       </div>
       <div class="d-flex">
-        <div class="my-auto" style="width: 20px; float: left;">
-          Z
-        </div>
-        <div class="my-auto" style="float: left;">
-          <mv-slider style="width: 80px;" [tooltip]="'hide'"
-            [value]="rotationY ? rotationY : (rotationMin + rotationMax) / 2" [min]="rotationMin" [max]="rotationMax"
-            [step]="1" (change)="changeRotationManual('y', $event.newValue)"></mv-slider>
+        <div class="my-auto" style="width: 20px; float: left">Z</div>
+        <div class="my-auto" style="float: left">
+          <mv-slider
+            style="width: 80px"
+            [tooltip]="'hide'"
+            [value]="rotationY ? rotationY : (rotationMin + rotationMax) / 2"
+            [min]="rotationMin"
+            [max]="rotationMax"
+            [step]="1"
+            (change)="changeRotationManual('y', $event.newValue)"
+          ></mv-slider>
         </div>
         <div class="my-auto">
-          <input [ngModel]="rotationY" (ngModelChange)="changeRotationManual('y', $event)" type="text"
-            class="slider-input">
+          <input [ngModel]="rotationY" (ngModelChange)="changeRotationManual('y', $event)" type="text" class="slider-input" />
         </div>
       </div>
     </div>
-
   </div>
 
   <div *ngIf="fixtureService.selectedSettingsFixtures.length == 0" class="card-body h-100 d-flex">
-    <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures-settings-selected' | translate }}</p>
+    <p class="m-auto" style="color: #717171">{{ 'designer.fixture.no-fixtures-settings-selected' | translate }}</p>
   </div>
 </div>

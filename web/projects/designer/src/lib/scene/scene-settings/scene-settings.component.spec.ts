@@ -8,9 +8,8 @@ describe('SceneSettingsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SceneSettingsComponent ]
-    })
-    .compileComponents();
+      declarations: [SceneSettingsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

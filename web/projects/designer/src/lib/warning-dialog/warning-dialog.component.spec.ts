@@ -8,9 +8,8 @@ describe('WarningDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WarningDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [WarningDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

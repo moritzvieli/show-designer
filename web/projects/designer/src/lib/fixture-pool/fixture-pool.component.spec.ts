@@ -8,9 +8,8 @@ describe('FixturePoolComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FixturePoolComponent ]
-    })
-    .compileComponents();
+      declarations: [FixturePoolComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -5,14 +5,12 @@
   </button>
 </div>
 <div class="modal-body">
-
   <div class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.project.share-link' | translate }}</label>
     <div class="col-lg-8 d-flex">
-      <input type="text" class="form-control" [ngModel]="shareLink" readonly>
+      <input type="text" class="form-control" [ngModel]="shareLink" readonly />
     </div>
   </div>
-
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-primary" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>

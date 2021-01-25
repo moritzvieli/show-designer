@@ -8,9 +8,8 @@ describe('FixturePropertyDimmerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FixtureCapabilityDimmerComponent ]
-    })
-    .compileComponents();
+      declarations: [FixtureCapabilityDimmerComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

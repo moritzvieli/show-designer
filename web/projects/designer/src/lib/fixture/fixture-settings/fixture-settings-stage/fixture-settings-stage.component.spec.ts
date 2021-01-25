@@ -8,9 +8,8 @@ describe('FixtureSettingsStageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FixtureSettingsStageComponent ]
-    })
-    .compileComponents();
+      declarations: [FixtureSettingsStageComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

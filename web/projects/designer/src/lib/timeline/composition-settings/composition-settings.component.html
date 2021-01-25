@@ -5,12 +5,16 @@
   </button>
 </div>
 <div class="modal-body">
-
   <div class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.composition-name' | translate }}</label>
     <div class="col-lg-8 d-flex">
-      <input type="text" class="form-control" [ngModel]="composition.name" (ngModelChange)="composition.name = $event;"
-        [typeahead]="existingCompositionNames">
+      <input
+        type="text"
+        class="form-control"
+        [ngModel]="composition.name"
+        (ngModelChange)="composition.name = $event"
+        [typeahead]="existingCompositionNames"
+      />
     </div>
   </div>
 
@@ -27,7 +31,6 @@
 
   <div *ngIf="composition.syncType == 'audio'" class="row">
     <div class="px-3 w-100">
-
       <!-- Selected file -->
       <div class="card border-secondary mb-3">
         <div class="card-body">
@@ -60,33 +63,46 @@
       </ul>
 
       <div class="tab-content" id="myTabContent">
-
         <!-- Upload -->
         <div class="tab-pane fade show active" id="upload" role="tabpanel">
-
           <!-- Dropzone -->
-          <dropzone [config]="dropzoneConfig" [useDropzoneClass]="'false'" [message]="uploadMessage"
-            (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (queuecomplete)="onQueueComplete($event)" (addedfile)="onAddedFile($event)"></dropzone>
+          <dropzone
+            [config]="dropzoneConfig"
+            [useDropzoneClass]="'false'"
+            [message]="uploadMessage"
+            (error)="onUploadError($event)"
+            (success)="onUploadSuccess($event)"
+            (queuecomplete)="onQueueComplete($event)"
+            (addedfile)="onAddedFile($event)"
+          ></dropzone>
         </div>
 
         <!-- Media library -->
         <div class="tab-pane fade" id="media-library" role="tabpanel">
-          <input type="text" class="form-control input-block mb-3" id="searchFileList"
-            placeholder="{{ 'designer.misc.search' | translate }}" (input)="filterExistingFiles($event.target.value)">
+          <input
+            type="text"
+            class="form-control input-block mb-3"
+            id="searchFileList"
+            placeholder="{{ 'designer.misc.search' | translate }}"
+            (input)="filterExistingFiles($event.target.value)"
+          />
 
-          <div class="card border-secondary" style="height: 200px; overflow-y: scroll;">
+          <div class="card border-secondary" style="height: 200px; overflow-y: scroll">
             <div class="card-body p-0">
               <div class="list-group list-group-flush">
-                <a *ngFor="let existingFile of filteredExistingFiles | sort:'name'" class="list-group-item"
-                  [class.active]="composition.audioFileName == existingFile" href="#"
-                  (click)="selectExistingFile(existingFile); false">
+                <a
+                  *ngFor="let existingFile of filteredExistingFiles | sort: 'name'"
+                  class="list-group-item"
+                  [class.active]="composition.audioFileName == existingFile"
+                  href="#"
+                  (click)="selectExistingFile(existingFile); (false)"
+                >
                   <div class="row">
                     <div class="col-auto my-auto flex-grow text-break-word">
                       {{ existingFile }}
                     </div>
 
-                    <div class="col-auto my-auto pl-0 text-danger float-right"
-                      (click)="deleteFile(existingFile); false">
+                    <div class="col-auto my-auto pl-0 text-danger float-right" (click)="deleteFile(existingFile); (false)">
                       <i class="fa fa-trash-o" aria-hidden="true"></i>
                     </div>
                   </div>
@@ -95,15 +111,12 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
-
 </div>
 <div class="modal-footer">
-  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
+  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); (false)">
     {{ 'designer.misc.cancel' | translate }}
   </a>
   <button [disabled]="uploading" type="button" class="btn btn-primary" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>

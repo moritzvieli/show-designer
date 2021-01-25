@@ -1,44 +1,55 @@
-<div class="card border-secondary h-100 panel card-intro-preset card-intro-active"
-  [class.card-intro-active]="introService.showStep('presets')">
+<div
+  class="card border-secondary h-100 panel card-intro-preset card-intro-active"
+  [class.card-intro-active]="introService.showStep('presets')"
+>
   <div class="card-header d-flex">
     <div>
       {{ 'designer.preset.title' | translate }}
     </div>
     <div class="ml-auto">
-      <a href="#" class="btn btn-secondary m-0, p-0" (click)="removePreset(); false;"><i
-          class="fa fa-minus-circle fa-fw" aria-hidden="true"></i></a>
-      <a href="#" class="btn btn-secondary m-0, p-0" (click)="addPreset(); false;"><i class="fa fa-plus-circle fa-fw"
-          aria-hidden="true"></i></a>
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="removePreset(); (false)"
+        ><i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i
+      ></a>
+      <a href="#" class="btn btn-secondary m-0, p-0" (click)="addPreset(); (false)"
+        ><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i
+      ></a>
     </div>
   </div>
 
   <div class="card-body h-100 p-0">
-
     <!-- List of presets -->
     <div class="list-group" [sortablejs]="projectService.project.presets">
-      <div class="list-group-item" *ngFor="let item of projectService.project.presets; let i = index"
+      <div
+        class="list-group-item"
+        *ngFor="let item of projectService.project.presets; let i = index"
         (click)="selectPreset(i)"
         [class.active-light]="!projectService.project.previewPreset && item == presetService.selectedPreset"
         [class.active]="projectService.project.previewPreset && item == presetService.selectedPreset"
-        [class.inactive-list-item]="!sceneService.presetIsSelected(item)">
-        <div class="row d-flex" style="cursor: pointer;">
-          <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing;">
+        [class.inactive-list-item]="!sceneService.presetIsSelected(item)"
+      >
+        <div class="row d-flex" style="cursor: pointer">
+          <div class="col-auto list-sort-handle my-auto" style="cursor: move; cursor: -webkit-grabbing">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div class="form-check">
-            <input type="checkbox" [disabled]="!enableCheckbox()" class="form-check-input" id="active"
-              [ngModel]="sceneService.presetIsSelected(item)" (ngModelChange)="activatePreset($event, i)"
-              (click)="$event.stopPropagation();">
+            <input
+              type="checkbox"
+              [disabled]="!enableCheckbox()"
+              class="form-check-input"
+              id="active"
+              [ngModel]="sceneService.presetIsSelected(item)"
+              (ngModelChange)="activatePreset($event, i)"
+              (click)="$event.stopPropagation()"
+            />
           </div>
           <div>
             {{ item.name }}
           </div>
           <div class="my-auto ml-auto mr-2 d-flex">
-            <button type="button" class="btn btn-secondary btn-sm py-0 px-1" (click)="openSettings(item); false">...</button>
+            <button type="button" class="btn btn-secondary btn-sm py-0 px-1" (click)="openSettings(item); (false)">...</button>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>

@@ -5,11 +5,10 @@
   </button>
 </div>
 <div class="modal-body">
-
   <div class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.grid-type' | translate }}</label>
     <div class="col-lg-8">
-      <select class="custom-select" [ngModel]="gridType" (ngModelChange)="gridType = $event;">
+      <select class="custom-select" [ngModel]="gridType" (ngModelChange)="gridType = $event">
         <option value="time">{{ 'designer.timeline.grid-type-time-based' | translate }}</option>
         <option value="musical">{{ 'designer.timeline.grid-type-musical' | translate }}</option>
       </select>
@@ -19,26 +18,37 @@
   <div *ngIf="gridType == 'musical'" class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.beats-per-minute' | translate }}</label>
     <div class="col-lg-8">
-      <input type="text" class="form-control" [ngModel]="beatsPerMinute" (ngModelChange)="beatsPerMinute = $event;">
+      <input type="text" class="form-control" [ngModel]="beatsPerMinute" (ngModelChange)="beatsPerMinute = $event" />
     </div>
   </div>
 
   <div *ngIf="gridType == 'musical'" class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.time-signature' | translate }}</label>
     <div class="col-lg-8">
-      <input type="text" class="form-control" [ngModel]="timeSignatureUpper"
-        (ngModelChange)="timeSignatureUpper = $event;" style="float: left; width: 40px;">
-      <div class="d-flex px-2 h-100" style="float: left;">
+      <input
+        type="text"
+        class="form-control"
+        [ngModel]="timeSignatureUpper"
+        (ngModelChange)="timeSignatureUpper = $event"
+        style="float: left; width: 40px"
+      />
+      <div class="d-flex px-2 h-100" style="float: left">
         <div class="m-auto">/</div>
-      </div><input type="text" class="form-control" [ngModel]="timeSignatureLower"
-        (ngModelChange)="timeSignatureLower = $event;" style="width: 40px;">
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        [ngModel]="timeSignatureLower"
+        (ngModelChange)="timeSignatureLower = $event"
+        style="width: 40px"
+      />
     </div>
   </div>
 
   <div *ngIf="gridType == 'musical'" class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.grid-resolution' | translate }}</label>
     <div class="col-lg-8">
-      <select class="custom-select" [ngModel]="gridResolution" (ngModelChange)="gridResolution = $event;">
+      <select class="custom-select" [ngModel]="gridResolution" (ngModelChange)="gridResolution = $event">
         <option value="1">1/1</option>
         <option value="2">1/2</option>
         <option value="4">1/4</option>
@@ -53,7 +63,7 @@
   <div *ngIf="gridType == 'musical'" class="form-group row">
     <label class="col-lg-4 col-form-label">{{ 'designer.timeline.grid-offset' | translate }}</label>
     <div class="col-lg-8">
-      <input type="text" class="form-control" [ngModel]="gridOffsetMillis" (ngModelChange)="gridOffsetMillis = $event;">
+      <input type="text" class="form-control" [ngModel]="gridOffsetMillis" (ngModelChange)="gridOffsetMillis = $event" />
     </div>
   </div>
 
@@ -61,8 +71,7 @@
     <label class="col-lg-4 col-form-label"></label>
     <div class="col-lg-8">
       <div class="form-check">
-        <input type="checkbox" [ngModel]="snapToGrid" (ngModelChange)="snapToGrid = $event" class="form-check-input"
-          id="snapToGrid">
+        <input type="checkbox" [ngModel]="snapToGrid" (ngModelChange)="snapToGrid = $event" class="form-check-input" id="snapToGrid" />
 
         <label class="form-check-label" for="snapToGrid">
           {{ 'designer.timeline.snap-to-grid' | translate }}
@@ -70,10 +79,9 @@
       </div>
     </div>
   </div>
-
 </div>
 <div class="modal-footer">
-  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); false">
+  <a class="mr-3 my-auto" href="#" role="button" (click)="cancel(); (false)">
     {{ 'designer.misc.cancel' | translate }}
   </a>
   <button type="button" class="btn btn-primary" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>

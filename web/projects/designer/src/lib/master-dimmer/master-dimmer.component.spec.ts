@@ -8,9 +8,8 @@ describe('MasterDimmerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MasterDimmerComponent ]
-    })
-    .compileComponents();
+      declarations: [MasterDimmerComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

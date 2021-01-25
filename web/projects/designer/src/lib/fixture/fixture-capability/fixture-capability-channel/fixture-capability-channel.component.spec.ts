@@ -8,9 +8,8 @@ describe('FixtureCapabilityChannelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FixtureCapabilityChannelComponent ]
-    })
-    .compileComponents();
+      declarations: [FixtureCapabilityChannelComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

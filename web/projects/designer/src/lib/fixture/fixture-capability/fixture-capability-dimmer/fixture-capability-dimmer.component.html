@@ -1,10 +1,14 @@
-<div class="card border-secondary h-100" [class.capability-deactivated]="getValue() == undefined"
-  style="min-height: 200px;">
+<div class="card border-secondary h-100" [class.capability-deactivated]="getValue() == undefined" style="min-height: 200px">
   <div class="card-header">
     <div class="my-auto">
       <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="capabilityDimmerActive" [ngModel]="getValue() != undefined"
-          (ngModelChange)="changeActive($event)">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          id="capabilityDimmerActive"
+          [ngModel]="getValue() != undefined"
+          (ngModelChange)="changeActive($event)"
+        />
         <label class="form-check-label" for="capabilityDimmerActive">
           <i class="icon-dimmer"></i>
         </label>
@@ -12,18 +16,30 @@
     </div>
   </div>
 
-  <div class="card-body h-100 d-flex" style="flex-direction: column;">
+  <div class="card-body h-100 d-flex" style="flex-direction: column">
     <div class="mb-4 w-100 d-flex">
-      <input class="mx-auto" type="text" [ngModel]="getValueText() >= 0 ? getValueText() : 0"
+      <input
+        class="mx-auto"
+        type="text"
+        [ngModel]="getValueText() >= 0 ? getValueText() : 0"
         (ngModelChange)="setValue($event / 100)"
-        style="width: 42px; height: 20px; text-align: center; font-size: 12px; font-family: monospace;">
+        style="width: 42px; height: 20px; text-align: center; font-size: 12px; font-family: monospace"
+      />
     </div>
 
     <div class="h-100 w-100 d-flex">
-      <mv-slider class="mx-auto" [value]="getValue() >= 0 ? getValue() : 0" (change)="setValue($event.newValue)"
-        [orientation]="'vertical'" [reversed]="true" style="height: 100%;" [tooltip]="'hide'" [min]="0" [max]="1"
-        [step]="0.001"></mv-slider>
+      <mv-slider
+        class="mx-auto"
+        [value]="getValue() >= 0 ? getValue() : 0"
+        (change)="setValue($event.newValue)"
+        [orientation]="'vertical'"
+        [reversed]="true"
+        style="height: 100%"
+        [tooltip]="'hide'"
+        [min]="0"
+        [max]="1"
+        [step]="0.001"
+      ></mv-slider>
     </div>
-
   </div>
 </div>

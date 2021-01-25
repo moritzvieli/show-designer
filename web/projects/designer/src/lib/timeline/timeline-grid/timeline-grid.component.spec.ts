@@ -8,9 +8,8 @@ describe('TimelineGridComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimelineGridComponent ]
-    })
-    .compileComponents();
+      declarations: [TimelineGridComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

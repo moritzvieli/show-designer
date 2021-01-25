@@ -8,9 +8,8 @@ describe('EffectCurveComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EffectCurveComponent ]
-    })
-    .compileComponents();
+      declarations: [EffectCurveComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

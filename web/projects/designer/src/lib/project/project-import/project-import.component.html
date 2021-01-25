@@ -6,8 +6,7 @@
 </div>
 <div class="modal-body">
   <!-- Dropzone -->
-  <dropzone [config]="dropzoneConfig" [useDropzoneClass]="'false'" [message]="uploadMessage"
-    (error)="onUploadError($event)"></dropzone>
+  <dropzone [config]="dropzoneConfig" [useDropzoneClass]="'false'" [message]="uploadMessage" (error)="onUploadError($event)"></dropzone>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-primary" (click)="ok()">{{ 'designer.misc.ok' | translate }}</button>

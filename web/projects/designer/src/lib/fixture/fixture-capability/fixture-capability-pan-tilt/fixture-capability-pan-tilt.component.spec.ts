@@ -8,9 +8,8 @@ describe('FixtureCapabilityPanTiltComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FixtureCapabilityPanTiltComponent ]
-    })
-    .compileComponents();
+      declarations: [FixtureCapabilityPanTiltComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
