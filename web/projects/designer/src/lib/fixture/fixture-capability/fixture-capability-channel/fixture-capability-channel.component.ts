@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { PresetService } from '../../../services/preset.service';
-import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { CachedFixtureCapability } from '../../../models/cached-fixture-capability';
+import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
 import { FixtureProfile } from '../../../models/fixture-profile';
+import { PresetService } from '../../../services/preset.service';
 
 @Component({
   selector: 'lib-app-fixture-capability-channel',
@@ -11,8 +11,7 @@ import { FixtureProfile } from '../../../models/fixture-profile';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FixtureCapabilityChannelComponent implements OnInit {
-
-  @ViewChild('sliderValue', {static: false}) sliderValue: ElementRef;
+  @ViewChild('sliderValue', { static: false }) sliderValue: ElementRef;
 
   selectedCapability: CachedFixtureCapability;
   _channel: CachedFixtureChannel;
@@ -37,10 +36,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   @Input()
   capabilityIndex: number;
 
-  constructor(
-    private presetService: PresetService
-  ) {
-  }
+  constructor(private presetService: PresetService) {}
 
   private updateChannel() {
     this.selectedCapability = this._channel.capabilities[0];
@@ -90,8 +86,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     return this._channel.maxValue;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   setValue(value: any, ignoreCapabilityRange: boolean = false) {
     if (isNaN(value)) {
@@ -152,5 +147,4 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       this.setValue(this.selectedCapability.centerValue, true);
     }
   }
-
 }

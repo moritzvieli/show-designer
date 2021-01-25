@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { HotkeyTargetExcludeService } from './hotkey-target-exclude.service';
 
 describe('HotkeyTargetExcludeService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [HotkeyTargetExcludeService]
+      providers: [HotkeyTargetExcludeService],
     });
   });
 

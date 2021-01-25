@@ -1,37 +1,36 @@
-import { Component, ViewEncapsulation, OnInit, Input, ViewChild, HostListener, AfterViewInit } from '@angular/core';
-import { TimelineService } from './services/timeline.service';
-import { ConfigService } from './services/config.service';
-import { PreviewComponent } from './preview/preview.component';
-import { ProjectShareComponent } from './project/project-share/project-share.component';
+import { AfterViewInit, Component, HostListener, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FixturePoolService } from './services/fixture-pool.service';
-import { HotkeyTargetExcludeService } from './services/hotkey-target-exclude.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { UserService } from './services/user.service';
-import { UserEnsureLoginService } from './services/user-ensure-login.service';
 import { ToastrService } from 'ngx-toastr';
-import { ErrorDialogService } from './services/error-dialog.service';
-import { FixtureService } from './services/fixture.service';
-import Split from 'split.js';
-import { ProjectBrowserComponent } from './project/project-browser/project-browser.component';
-import { UserRegisterComponent } from './user/user-register/user-register.component';
 import { map } from 'rxjs/operators';
-import { TimelineComponent } from './timeline/timeline.component';
-import { ProjectLoadService } from './services/project-load.service';
-import { WarningDialogService } from './services/warning-dialog.service';
+import Split from 'split.js';
+import { PreviewComponent } from './preview/preview.component';
+import { ProjectBrowserComponent } from './project/project-browser/project-browser.component';
 import { ProjectImportComponent } from './project/project-import/project-import.component';
-import { ProjectService } from './services/project.service';
-import { IntroService } from './services/intro.service';
 import { ProjectSaveComponent } from './project/project-save/project-save.component';
+import { ProjectShareComponent } from './project/project-share/project-share.component';
+import { ConfigService } from './services/config.service';
+import { ErrorDialogService } from './services/error-dialog.service';
+import { FixturePoolService } from './services/fixture-pool.service';
+import { FixtureService } from './services/fixture.service';
+import { HotkeyTargetExcludeService } from './services/hotkey-target-exclude.service';
+import { IntroService } from './services/intro.service';
+import { ProjectLoadService } from './services/project-load.service';
+import { ProjectService } from './services/project.service';
+import { TimelineService } from './services/timeline.service';
+import { UserEnsureLoginService } from './services/user-ensure-login.service';
+import { UserService } from './services/user.service';
+import { WarningDialogService } from './services/warning-dialog.service';
+import { TimelineComponent } from './timeline/timeline.component';
+import { UserRegisterComponent } from './user/user-register/user-register.component';
 
 @Component({
   selector: 'lib-designer',
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class DesignerComponent implements OnInit, AfterViewInit {
-
   @Input()
   set menuHeightPx(value: number) {
     this.configService.menuHeightPx = value;
@@ -151,34 +150,38 @@ export class DesignerComponent implements OnInit, AfterViewInit {
         shareToken = '';
       }
 
-      this.projectLoadService.load(Number.parseInt(projectId), projectName, shareToken).subscribe(() => { }, (response) => {
-        let error = response && response.error ? response.error.error : 'unknown';
+      this.projectLoadService.load(Number.parseInt(projectId), projectName, shareToken).subscribe(
+        () => {},
+        (response) => {
+          let error = response && response.error ? response.error.error : 'unknown';
 
-        let msg = '';
+          let msg = '';
 
-        if (error === 'no-permission') {
-          msg = 'designer.project.open-no-permission-error';
-          error = undefined;
-        } else {
-          msg = 'designer.project.open-error';
+          if (error === 'no-permission') {
+            msg = 'designer.project.open-no-permission-error';
+            error = undefined;
+          } else {
+            msg = 'designer.project.open-error';
+          }
+
+          this.errorDialogService.show(msg, error).subscribe(() => {
+            this.projectLoadService.new();
+          });
         }
-
-        this.errorDialogService.show(msg, error).subscribe(() => {
-          this.projectLoadService.new();
-        });
-      });
+      );
     } else if (this.userService.isLoggedIn() && (this.userService.getAutoLoadProjectId() || this.userService.getAutoLoadProjectName())) {
       // restore the last saved project
-      this.projectLoadService.load(this.userService.getAutoLoadProjectId(),
-        this.userService.getAutoLoadProjectName()).subscribe(() => { }, (response) => {
+      this.projectLoadService.load(this.userService.getAutoLoadProjectId(), this.userService.getAutoLoadProjectName()).subscribe(
+        () => {},
+        (response) => {
+          const msg = 'designer.project.open-error';
+          const error = response && response.error ? response.error.error : 'unknown';
 
-        const msg = 'designer.project.open-error';
-        const error = response && response.error ? response.error.error : 'unknown';
-
-        this.errorDialogService.show(msg, error).subscribe(() => {
-          this.projectLoadService.new();
-        });
-      });
+          this.errorDialogService.show(msg, error).subscribe(() => {
+            this.projectLoadService.new();
+          });
+        }
+      );
     } else {
       if (this.configService.newProjectTemplate) {
         // load the new project template
@@ -212,14 +215,14 @@ export class DesignerComponent implements OnInit, AfterViewInit {
         cursor: 'row-resize',
         snapOffset: 0,
         gutterSize: this.splitGutterSizePx,
-        onDrag: this.onResize.bind(this)
+        onDrag: this.onResize.bind(this),
       });
 
       Split(['#scenes', '#presets', '#preview'], {
         sizes: [15, 15, 70],
         snapOffset: 0,
         gutterSize: this.splitGutterSizePx,
-        onDrag: this.onResize.bind(this)
+        onDrag: this.onResize.bind(this),
       });
 
       Split(['#capabilities', '#fixtures', '#masterDimmer'], {
@@ -227,7 +230,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
         snapOffset: 0,
         gutterSize: this.splitGutterSizePx,
         onDrag: this.onResize.bind(this),
-        minSize: 50
+        minSize: 50,
       });
 
       this.onResize();
@@ -251,21 +254,31 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   }
 
   projectNew() {
-    this.warningDialogService.show('designer.misc.warning-proceed-unsaved').pipe(map(result => {
-      if (result) {
-        this.projectLoadService.new();
-      }
-    })).subscribe();
+    this.warningDialogService
+      .show('designer.misc.warning-proceed-unsaved')
+      .pipe(
+        map((result) => {
+          if (result) {
+            this.projectLoadService.new();
+          }
+        })
+      )
+      .subscribe();
   }
 
   projectOpen() {
-    this.warningDialogService.show('designer.misc.warning-proceed-unsaved').pipe(map(result => {
-      if (result) {
-        this.userEnsureLoginService.login().subscribe(() => {
-          this.modalService.show(ProjectBrowserComponent, { keyboard: true, ignoreBackdropClick: false });
-        });
-      }
-    })).subscribe();
+    this.warningDialogService
+      .show('designer.misc.warning-proceed-unsaved')
+      .pipe(
+        map((result) => {
+          if (result) {
+            this.userEnsureLoginService.login().subscribe(() => {
+              this.modalService.show(ProjectBrowserComponent, { keyboard: true, ignoreBackdropClick: false });
+            });
+          }
+        })
+      )
+      .subscribe();
   }
 
   projectSave() {
@@ -291,11 +304,16 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   }
 
   projectImport() {
-    this.warningDialogService.show('designer.misc.warning-proceed-unsaved').pipe(map(result => {
-      if (result) {
-        this.modalService.show(ProjectImportComponent, { keyboard: true, ignoreBackdropClick: false });
-      }
-    })).subscribe();
+    this.warningDialogService
+      .show('designer.misc.warning-proceed-unsaved')
+      .pipe(
+        map((result) => {
+          if (result) {
+            this.modalService.show(ProjectImportComponent, { keyboard: true, ignoreBackdropClick: false });
+          }
+        })
+      )
+      .subscribe();
   }
 
   projectExport() {
@@ -357,5 +375,4 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     this.translateService.use(language);
     localStorage.setItem('language', language);
   }
-
 }

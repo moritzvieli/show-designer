@@ -5,7 +5,7 @@ import { ErrorDialogService } from './error-dialog.service';
 describe('ErrorDialogService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ErrorDialogService]
+      providers: [ErrorDialogService],
     });
   });
 

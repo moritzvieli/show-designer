@@ -1,27 +1,26 @@
-import { Injectable } from '@angular/core';
-import { Preset } from '../models/preset';
-import { Fixture } from '../models/fixture';
-import { EffectService } from './effect.service';
-import { UuidService } from './uuid.service';
-import { Subject } from 'rxjs';
-import { ProjectService } from './project.service';
-import { FixtureService } from './fixture.service';
-import { FixtureChannelValue } from '../models/fixture-channel-value';
-import { FixtureCapabilityType, FixtureCapabilityColor } from '../models/fixture-capability';
-import { FixtureCapabilityValue } from '../models/fixture-capability-value';
-import { CachedFixtureChannel } from '../models/cached-fixture-channel';
-import { CachedFixtureCapability } from '../models/cached-fixture-capability';
-import { FixtureProfile } from '../models/fixture-profile';
-import { FixtureMode } from '../models/fixture-mode';
-import { ConfigService } from './config.service';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { CachedFixtureCapability } from '../models/cached-fixture-capability';
+import { CachedFixtureChannel } from '../models/cached-fixture-channel';
+import { Fixture } from '../models/fixture';
+import { FixtureCapabilityColor, FixtureCapabilityType } from '../models/fixture-capability';
+import { FixtureCapabilityValue } from '../models/fixture-capability-value';
+import { FixtureChannelValue } from '../models/fixture-channel-value';
+import { FixtureMode } from '../models/fixture-mode';
+import { FixtureProfile } from '../models/fixture-profile';
+import { Preset } from '../models/preset';
 import { AnimationService } from './animation.service';
+import { ConfigService } from './config.service';
+import { EffectService } from './effect.service';
+import { FixtureService } from './fixture.service';
+import { ProjectService } from './project.service';
+import { UuidService } from './uuid.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PresetService {
-
   selectedPreset: Preset;
 
   // fires, when the current preview element has changed (scene/preset)
@@ -48,7 +47,7 @@ export class PresetService {
     private configService: ConfigService,
     private http: HttpClient,
     private animationService: AnimationService
-  ) { }
+  ) {}
 
   getPresetByUuid(uuid: string): Preset {
     for (const preset of this.projectService.project.presets) {
@@ -155,18 +154,19 @@ export class PresetService {
     wheel?: string,
     profileUuid?: string
   ) {
-
     for (let i = 0; i < preset.fixtureCapabilityValues.length; i++) {
-      if (this.fixtureService.capabilitiesMatch(
-        preset.fixtureCapabilityValues[i].type,
-        capabilityType,
-        preset.fixtureCapabilityValues[i].color,
-        color,
-        preset.fixtureCapabilityValues[i].wheel,
-        wheel,
-        preset.fixtureCapabilityValues[i].profileUuid,
-        profileUuid
-      )) {
+      if (
+        this.fixtureService.capabilitiesMatch(
+          preset.fixtureCapabilityValues[i].type,
+          capabilityType,
+          preset.fixtureCapabilityValues[i].color,
+          color,
+          preset.fixtureCapabilityValues[i].wheel,
+          wheel,
+          preset.fixtureCapabilityValues[i].profileUuid,
+          profileUuid
+        )
+      ) {
         preset.fixtureCapabilityValues.splice(i, 1);
         return;
       }
@@ -182,7 +182,6 @@ export class PresetService {
     wheel?: string,
     profileUuid?: string
   ) {
-
     // Delete existant properties with this type and set the new value
     this.deleteCapabilityValue(preset, capabilityType, color, wheel, profileUuid);
 
@@ -204,18 +203,19 @@ export class PresetService {
     wheel?: string,
     profileUuid?: string
   ): FixtureCapabilityValue {
-
     for (const capabilityValue of preset.fixtureCapabilityValues) {
-      if (this.fixtureService.capabilitiesMatch(
-        capabilityValue.type,
-        capabilityType,
-        capabilityValue.color,
-        color,
-        capabilityValue.wheel,
-        wheel,
-        capabilityValue.profileUuid,
-        profileUuid
-      )) {
+      if (
+        this.fixtureService.capabilitiesMatch(
+          capabilityValue.type,
+          capabilityType,
+          capabilityValue.color,
+          color,
+          capabilityValue.wheel,
+          wheel,
+          capabilityValue.profileUuid,
+          profileUuid
+        )
+      ) {
         return capabilityValue;
       }
     }
@@ -224,9 +224,10 @@ export class PresetService {
 
   deleteChannelValue(channelName: string, profileUuid: string) {
     for (let i = 0; i < this.selectedPreset.fixtureChannelValues.length; i++) {
-      if (this.selectedPreset.fixtureChannelValues[i].channelName === channelName
-        && this.selectedPreset.fixtureChannelValues[i].profileUuid === profileUuid) {
-
+      if (
+        this.selectedPreset.fixtureChannelValues[i].channelName === channelName &&
+        this.selectedPreset.fixtureChannelValues[i].profileUuid === profileUuid
+      ) {
         this.selectedPreset.fixtureChannelValues.splice(i, 1);
         return;
       }
@@ -287,9 +288,7 @@ export class PresetService {
           const mixedColor = this.fixtureService.getMixedWheelSlotColor(capability.wheel, capability.capability.slotNumber);
           if (mixedColor) {
             const diff =
-              Math.abs(mixedColor.red - colorRed)
-              + Math.abs(mixedColor.green - colorGreen)
-              + Math.abs(mixedColor.blue - colorBlue);
+              Math.abs(mixedColor.red - colorRed) + Math.abs(mixedColor.green - colorGreen) + Math.abs(mixedColor.blue - colorBlue);
 
             if (diff < lowestDiff) {
               lowestDiff = diff;
@@ -453,7 +452,7 @@ export class PresetService {
         for (const channel of channels) {
           // only add the channel, if no channel with the same name has already been added
           // (e.g. a fine channel)
-          if (channel.channel && !profileChannels.find(c => c.name === channel.name)) {
+          if (channel.channel && !profileChannels.find((c) => c.name === channel.name)) {
             profileChannels.push(channel);
           }
         }
@@ -482,10 +481,9 @@ export class PresetService {
       position = Math.round(this.animationService.timeMillis);
     }
 
-    this.http.post('preview?positionMillis='
-      + position
-      + '&compositionName='
-      + compositionName, JSON.stringify(this.projectService.project)).subscribe();
+    this.http
+      .post('preview?positionMillis=' + position + '&compositionName=' + compositionName, JSON.stringify(this.projectService.project))
+      .subscribe();
 
     this.liveChangePending = false;
 
@@ -493,10 +491,9 @@ export class PresetService {
       this.livePreviewTimer = setTimeout(() => {
         this.livePreviewTimer = undefined;
         if (this.liveChangePending) {
-          this.http.post('preview?positionMillis='
-            + position
-            + '&compositionName='
-            + compositionName, JSON.stringify(this.projectService.project)).subscribe();
+          this.http
+            .post('preview?positionMillis=' + position + '&compositionName=' + compositionName, JSON.stringify(this.projectService.project))
+            .subscribe();
         }
       }, 50);
     }
@@ -509,5 +506,4 @@ export class PresetService {
 
     this.http.post('stop-preview-play', null).subscribe();
   }
-
 }

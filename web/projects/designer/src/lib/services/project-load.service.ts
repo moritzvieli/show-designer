@@ -1,24 +1,23 @@
 import { Injectable } from '@angular/core';
-import { ProjectService } from './project.service';
-import { PreviewService } from './preview.service';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { Observable } from 'rxjs';
+import { finalize, map } from 'rxjs/operators';
+import { Preset } from '../models/preset';
+import { Project } from '../models/project';
+import { WaitDialogComponent } from '../wait-dialog/wait-dialog.component';
 import { FixtureService } from './fixture.service';
 import { PresetService } from './preset.service';
+import { PreviewService } from './preview.service';
+import { ProjectService } from './project.service';
 import { SceneService } from './scene.service';
-import { map, finalize } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { WaitDialogComponent } from '../wait-dialog/wait-dialog.component';
-import { Project } from '../models/project';
-import { Preset } from '../models/preset';
-import { UuidService } from './uuid.service';
 import { TimelineService } from './timeline.service';
-import { Params, Router, ActivatedRoute } from '@angular/router';
+import { UuidService } from './uuid.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProjectLoadService {
-
   constructor(
     private projectService: ProjectService,
     private previewService: PreviewService,
@@ -30,7 +29,7 @@ export class ProjectLoadService {
     private timelineService: TimelineService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) { }
+  ) {}
 
   private afterLoad() {
     this.fixtureService.updateCachedFixtures();
@@ -65,35 +64,36 @@ export class ProjectLoadService {
   load(id: number, name: string, shareToken?: string): Observable<void> {
     const ref = this.modalService.show(WaitDialogComponent, { keyboard: false, ignoreBackdropClick: true });
 
-    return this.projectService.getProject(id, name, shareToken).pipe(map(project => {
-      this.projectService.project = project;
-      this.selectScenesPresetComposition();
-      this.afterLoad();
+    return this.projectService.getProject(id, name, shareToken).pipe(
+      map((project) => {
+        this.projectService.project = project;
+        this.selectScenesPresetComposition();
+        this.afterLoad();
 
-      const queryParams: Params = {
-        id: id,
-        token: project.shareToken
-      };
-      this.router.navigate(
-        [],
-        {
+        const queryParams: Params = {
+          id,
+          token: project.shareToken,
+        };
+        this.router.navigate([], {
           relativeTo: this.activatedRoute,
-          queryParams: queryParams,
+          queryParams,
           queryParamsHandling: 'merge', // remove to replace all query params by provided
         });
-    }), finalize(() => {
-      // hide the modal again because of:
-      // https://github.com/valor-software/ngx-bootstrap/issues/3711
-      setTimeout(() => {
-        ref.hide();
-      }, 250);
-      setTimeout(() => {
-        ref.hide();
-      }, 500);
-      setTimeout(() => {
-        ref.hide();
-      }, 1500);
-    }));
+      }),
+      finalize(() => {
+        // hide the modal again because of:
+        // https://github.com/valor-software/ngx-bootstrap/issues/3711
+        setTimeout(() => {
+          ref.hide();
+        }, 250);
+        setTimeout(() => {
+          ref.hide();
+        }, 500);
+        setTimeout(() => {
+          ref.hide();
+        }, 1500);
+      })
+    );
   }
 
   new() {
@@ -126,15 +126,13 @@ export class ProjectLoadService {
 
     const queryParams: Params = {
       id: '',
-      token: ''
+      token: '',
     };
-    this.router.navigate(
-      [],
-      {
-        relativeTo: this.activatedRoute,
-        queryParams: queryParams,
-        queryParamsHandling: 'merge', // remove to replace all query params by provided
-      });
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams,
+      queryParamsHandling: 'merge', // remove to replace all query params by provided
+    });
   }
 
   template() {
@@ -153,5 +151,4 @@ export class ProjectLoadService {
     this.selectScenesPresetComposition();
     this.afterLoad();
   }
-
 }

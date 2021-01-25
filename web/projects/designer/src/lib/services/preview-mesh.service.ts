@@ -1,29 +1,28 @@
 import { Injectable } from '@angular/core';
-import * as THREE from 'three';
 import { Observable, of } from 'rxjs';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { map } from 'rxjs/operators';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PreviewMeshService {
-
   private loader = new GLTFLoader();
   private cachedMeshes = new Map<string, THREE.Mesh>();
 
   // the observable, if the requested mesh is already being loaded currently
   private cachedObservables = new Map<string, Observable<THREE.Mesh>>();
 
-  constructor() { }
+  constructor() {}
 
   private loadScene(name: string): Observable<THREE.Scene> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       this.loader.load(
         './assets/designer/models/' + name + '.gltf',
 
         // Called when the resource is loaded
-        function (gltf: any) {
+        (gltf: any) => {
           const model = gltf.scene.children[0];
 
           model.position.set(0, 0, 0);
@@ -33,10 +32,10 @@ export class PreviewMeshService {
         },
 
         // Called while loading is progressing
-        function (xhr: any) { },
+        (xhr: any) => {},
 
         // Called when loading has errors
-        function (error: any) {
+        (error: any) => {
           observer.error(error);
         }
       );
@@ -44,16 +43,18 @@ export class PreviewMeshService {
   }
 
   private loadMesh(name: string): Observable<THREE.Mesh> {
-    const observable = this.loadScene(name).pipe(map((scene: any) => {
-      const model = scene.children[0];
+    const observable = this.loadScene(name).pipe(
+      map((scene: any) => {
+        const model = scene.children[0];
 
-      model.position.set(0, 0, 0);
+        model.position.set(0, 0, 0);
 
-      this.cachedMeshes.set(name, model);
-      this.cachedObservables.delete(name);
+        this.cachedMeshes.set(name, model);
+        this.cachedObservables.delete(name);
 
-      return model.clone();
-    }));
+        return model.clone();
+      })
+    );
 
     this.cachedObservables.set(name, observable);
 
@@ -67,5 +68,4 @@ export class PreviewMeshService {
 
     return this.cachedObservables.get(name) || this.loadMesh(name);
   }
-
 }

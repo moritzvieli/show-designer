@@ -1,7 +1,7 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
-import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
 import { ProjectLoadService } from '../../services/project-load.service';
@@ -9,10 +9,9 @@ import { ProjectLoadService } from '../../services/project-load.service';
 @Component({
   selector: 'lib-project-import',
   templateUrl: './project-import.component.html',
-  styleUrls: ['./project-import.component.css']
+  styleUrls: ['./project-import.component.css'],
 })
 export class ProjectImportComponent implements OnInit {
-
   public dropzoneConfig: DropzoneConfigInterface;
   public uploadMessage: string;
 
@@ -21,7 +20,7 @@ export class ProjectImportComponent implements OnInit {
     private translateService: TranslateService,
     private toastrService: ToastrService,
     private projectLoadService: ProjectLoadService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.dropzoneConfig = {
@@ -43,12 +42,17 @@ export class ProjectImportComponent implements OnInit {
       <div style="display: none;">
         <!-- No preview -->
       </div>
-      `
+      `,
     };
 
-    this.translateService.get('designer.timeline.composition-dropzone-message').pipe(map(result => {
-      this.uploadMessage = '<h3 class="mb-0"><i class="fa fa-cloud-upload"></i></h3>' + result;
-    })).subscribe();
+    this.translateService
+      .get('designer.timeline.composition-dropzone-message')
+      .pipe(
+        map((result) => {
+          this.uploadMessage = '<h3 class="mb-0"><i class="fa fa-cloud-upload"></i></h3>' + result;
+        })
+      )
+      .subscribe();
   }
 
   public onUploadError(args: any) {
@@ -59,7 +63,7 @@ export class ProjectImportComponent implements OnInit {
 
     const msg = 'designer.timeline.toast-composition-upload-error';
     const title = 'designer.timeline.toast-composition-upload-error-title';
-    this.translateService.get([msg, title]).subscribe(result => {
+    this.translateService.get([msg, title]).subscribe((result) => {
       this.toastrService.error(result[msg] + args[1], result[title], { timeOut: 0, extendedTimeOut: 0, enableHtml: true });
     });
   }
@@ -76,5 +80,4 @@ export class ProjectImportComponent implements OnInit {
   handleKeyboardEvent(event: any) {
     this.ok();
   }
-
 }

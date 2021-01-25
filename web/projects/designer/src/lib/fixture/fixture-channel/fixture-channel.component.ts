@@ -1,17 +1,16 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { PresetService } from '../../services/preset.service';
-import { FixtureProfile } from '../../models/fixture-profile';
-import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
-import { ProjectService } from '../../services/project.service';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
+import { FixtureProfile } from '../../models/fixture-profile';
+import { PresetService } from '../../services/preset.service';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'lib-app-fixture-channel',
   templateUrl: './fixture-channel.component.html',
-  styleUrls: ['./fixture-channel.component.css']
+  styleUrls: ['./fixture-channel.component.css'],
 })
 export class FixtureChannelComponent implements OnInit, OnDestroy {
-
   public channelCapabilities: Map<FixtureProfile, CachedFixtureChannel[]> = new Map<FixtureProfile, CachedFixtureChannel[]>();
   public profiles: FixtureProfile[] = [];
   public selectedProfiles: FixtureProfile[] = [];
@@ -19,11 +18,7 @@ export class FixtureChannelComponent implements OnInit, OnDestroy {
   private fixtureSelectionChangedSubscription: Subscription;
   private previewSelectionChangedSubscription: Subscription;
 
-  constructor(
-    public presetService: PresetService,
-    private changeDetectorRef: ChangeDetectorRef,
-    public projectService: ProjectService
-  ) {
+  constructor(public presetService: PresetService, private changeDetectorRef: ChangeDetectorRef, public projectService: ProjectService) {
     this.fixtureSelectionChangedSubscription = this.presetService.fixtureSelectionChanged.subscribe(() => {
       this.calculateProfiles();
     });
@@ -33,8 +28,7 @@ export class FixtureChannelComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.fixtureSelectionChangedSubscription.unsubscribe();
@@ -73,5 +67,4 @@ export class FixtureChannelComponent implements OnInit, OnDestroy {
     }
     return false;
   }
-
 }

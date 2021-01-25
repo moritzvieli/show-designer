@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { SceneService } from './scene.service';
 
 describe('SceneService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SceneService]
+      providers: [SceneService],
     });
   });
 

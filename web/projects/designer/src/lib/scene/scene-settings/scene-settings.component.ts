@@ -1,14 +1,13 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { Scene } from '../../models/scene';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { Scene } from '../../models/scene';
 
 @Component({
   selector: 'lib-scene-settings',
   templateUrl: './scene-settings.component.html',
-  styleUrls: ['./scene-settings.component.css']
+  styleUrls: ['./scene-settings.component.css'],
 })
 export class SceneSettingsComponent implements OnInit {
-
   scene: Scene;
 
   name: string;
@@ -17,10 +16,7 @@ export class SceneSettingsComponent implements OnInit {
   fadeInPre: boolean;
   fadeOutPost: boolean;
 
-  constructor(
-    public bsModalRef: BsModalRef
-  ) {
-  }
+  constructor(public bsModalRef: BsModalRef) {}
 
   ngOnInit() {
     this.name = this.scene.name;
@@ -54,5 +50,4 @@ export class SceneSettingsComponent implements OnInit {
   handleKeyboardEvent(event: any) {
     this.ok();
   }
-
 }

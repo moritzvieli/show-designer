@@ -1,29 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { EffectCurve } from '../models/effect-curve';
-import { UuidService } from '../services/uuid.service';
-import { EffectService } from '../services/effect.service';
-import { EffectPanTilt } from '../models/effect-pan-tilt';
-import { Effect } from '../models/effect';
-import { PresetService } from '../services/preset.service';
-import { WarningDialogService } from '../services/warning-dialog.service';
 import { map } from 'rxjs/operators';
+import { Effect } from '../models/effect';
+import { EffectCurve } from '../models/effect-curve';
+import { EffectPanTilt } from '../models/effect-pan-tilt';
+import { EffectService } from '../services/effect.service';
+import { PresetService } from '../services/preset.service';
+import { UuidService } from '../services/uuid.service';
+import { WarningDialogService } from '../services/warning-dialog.service';
 
 @Component({
   selector: 'lib-app-effect',
   templateUrl: './effect.component.html',
-  styleUrls: ['./effect.component.css']
+  styleUrls: ['./effect.component.css'],
 })
 export class EffectComponent implements OnInit {
-
   constructor(
     private uuidService: UuidService,
     public presetService: PresetService,
     public effectService: EffectService,
     private warningDialogService: WarningDialogService
-  ) { }
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   private addEffect(effect: Effect) {
     this.effectService.selectedEffect = effect;
@@ -55,12 +53,16 @@ export class EffectComponent implements OnInit {
   }
 
   deleteEffect(effect: Effect) {
-    this.warningDialogService.show('designer.effect.delete-warning').pipe(map(result => {
-      if (result) {
-        this.presetService.selectedPreset.effects.splice(this.presetService.selectedPreset.effects.indexOf(effect), 1);
-        this.presetService.previewLive();
-      }
-    })).subscribe();
+    this.warningDialogService
+      .show('designer.effect.delete-warning')
+      .pipe(
+        map((result) => {
+          if (result) {
+            this.presetService.selectedPreset.effects.splice(this.presetService.selectedPreset.effects.indexOf(effect), 1);
+            this.presetService.previewLive();
+          }
+        })
+      )
+      .subscribe();
   }
-
 }

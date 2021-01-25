@@ -1,27 +1,26 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subscription, timer, Subject, Observable } from 'rxjs';
+import { Observable, Subject, Subscription, timer } from 'rxjs';
+import { map } from 'rxjs/operators';
 import WaveSurfer from 'wavesurfer.js';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import TimeLinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
-import { SceneService } from './scene.service';
-import { ScenePlaybackRegion } from '../models/scene-playback-region';
-import { PresetService } from './preset.service';
-import { Scene } from '../models/scene';
-import { Preset } from '../models/preset';
-import { ProjectService } from './project.service';
-import { Composition } from '../models/composition';
-import { PresetRegionScene } from '../models/preset-region-scene';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { ConfigService } from './config.service';
 import { guess } from 'web-audio-beat-detector';
+import { Composition } from '../models/composition';
+import { Preset } from '../models/preset';
+import { PresetRegionScene } from '../models/preset-region-scene';
+import { Scene } from '../models/scene';
+import { ScenePlaybackRegion } from '../models/scene-playback-region';
+import { ConfigService } from './config.service';
+import { PresetService } from './preset.service';
+import { ProjectService } from './project.service';
+import { SceneService } from './scene.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TimelineService {
-
   public waveSurfer: WaveSurfer;
   public playState = 'paused';
 
@@ -127,7 +126,7 @@ export class TimelineService {
         ? this.waveSurfer.timeline.drawer.getWidth()
         : this.waveSurfer.timeline.drawer.wrapper.scrollWidth * this.waveSurfer.params.pixelRatio;
 
-    x = width / duration * this.waveSurfer.getCurrentTime() - 2;
+    x = (width / duration) * this.waveSurfer.getCurrentTime() - 2;
 
     // update the timeline canvas
     this.waveSurfer.timeline.render();
@@ -167,8 +166,8 @@ export class TimelineService {
       return Math.round(seconds / this.selectedComposition.timeSignatureUpper / (60 / this.selectedComposition.beatsPerMinute));
     } else {
       // calculate minutes and seconds from seconds count
-      const minutes = parseInt(<any>(seconds / 60), 10);
-      seconds = parseInt(<any>(seconds % 60), 10);
+      const minutes = parseInt((seconds / 60) as any, 10);
+      seconds = parseInt((seconds % 60) as any, 10);
 
       // fill up seconds with zeroes
       const secondsStr = seconds < 10 ? '0' + seconds : seconds;
@@ -235,9 +234,7 @@ export class TimelineService {
 
   private seeekWithTimeline(e: any) {
     // taken from wavesurfer -> drawer -> handleEvent
-    const clientX = e.targetTouches
-      ? e.targetTouches[0].clientX
-      : e.clientX;
+    const clientX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
     const bbox = this.waveSurfer.timeline.wrapper.getBoundingClientRect();
 
     const nominalWidth = this.waveSurfer.timeline.drawer.width;
@@ -248,18 +245,16 @@ export class TimelineService {
     if (!this.waveSurfer.timeline.drawer.params.fillParent && nominalWidth < parentWidth) {
       progress =
         (this.waveSurfer.timeline.drawer.params.rtl ? bbox.right - clientX : clientX - bbox.left) *
-        (this.waveSurfer.timeline.drawer.params.pixelRatio / nominalWidth) || 0;
+          (this.waveSurfer.timeline.drawer.params.pixelRatio / nominalWidth) || 0;
 
       if (progress > 1) {
         progress = 1;
       }
     } else {
       progress =
-        ((this.waveSurfer.timeline.drawer.params.rtl
-          ? bbox.right - clientX
-          : clientX - bbox.left) +
+        ((this.waveSurfer.timeline.drawer.params.rtl ? bbox.right - clientX : clientX - bbox.left) +
           this.waveSurfer.timeline.wrapper.scrollLeft) /
-        this.waveSurfer.timeline.wrapper.scrollWidth || 0;
+          this.waveSurfer.timeline.wrapper.scrollWidth || 0;
     }
 
     progress = Math.max(progress, 0);
@@ -317,8 +312,8 @@ export class TimelineService {
       scenePlaybackRegion.startMillis = waveSurferRegion.start * 1000;
       scenePlaybackRegion.endMillis = waveSurferRegion.end * 1000;
     } else {
-      scenePlaybackRegion.startMillis = this.waveSurfer.getDuration() * 1000 / 3;
-      scenePlaybackRegion.endMillis = this.waveSurfer.getDuration() * 1000 / 3 * 2;
+      scenePlaybackRegion.startMillis = (this.waveSurfer.getDuration() * 1000) / 3;
+      scenePlaybackRegion.endMillis = ((this.waveSurfer.getDuration() * 1000) / 3) * 2;
     }
 
     this.selectedComposition.scenePlaybackRegions.push(scenePlaybackRegion);
@@ -326,15 +321,16 @@ export class TimelineService {
     this.selectedPlaybackRegion = scenePlaybackRegion;
 
     if (waveSurferRegion) {
-      waveSurferRegion.color = 'rgba('
-        + this.hexToRgb(this.sceneService.selectedScenes[0].color).r
-        + ', '
-        + this.hexToRgb(this.sceneService.selectedScenes[0].color).g
-        + ', '
-        + this.hexToRgb(this.sceneService.selectedScenes[0].color).b
-        + ', '
-        + this.intensityHighlighted
-        + ')';
+      waveSurferRegion.color =
+        'rgba(' +
+        this.hexToRgb(this.sceneService.selectedScenes[0].color).r +
+        ', ' +
+        this.hexToRgb(this.sceneService.selectedScenes[0].color).g +
+        ', ' +
+        this.hexToRgb(this.sceneService.selectedScenes[0].color).b +
+        ', ' +
+        this.intensityHighlighted +
+        ')';
       waveSurferRegion.attributes.selectable = true;
       this.connectRegion(waveSurferRegion, this.sceneService.selectedScenes[0], scenePlaybackRegion);
       this.updateRegionSelection();
@@ -402,15 +398,15 @@ export class TimelineService {
             // showTime: true,
             opacity: 1,
             color: '#fd7e14',
-            hideOnBlur: false /* don't show/hide the cursor on the wave (only on the timeline) */
+            hideOnBlur: false /* don't show/hide the cursor on the wave (only on the timeline) */,
           }),
           RegionsPlugin.create({
             dragSelection: {
-              slop: 5
+              slop: 5,
             },
             color: '#fff',
             snapToGridInterval: this.getSnapToGridInterval(),
-            snapToGridOffset: this.getSnapToGridOffset()
+            snapToGridOffset: this.getSnapToGridOffset(),
           }),
           TimeLinePlugin.create({
             container: '#waveform-timeline',
@@ -421,8 +417,8 @@ export class TimelineService {
             timeInterval: this.timeInterval.bind(this),
             primaryLabelInterval: this.primaryLabelInterval.bind(this),
             secondaryLabelInterval: this.secondaryLabelInterval.bind(this),
-          })
-        ]
+          }),
+        ],
       });
 
       let audioFileName: string;
@@ -432,10 +428,11 @@ export class TimelineService {
         audioFileName = 'file/get?name=' + this.selectedComposition.audioFileName + '&type=AUDIO';
       } else {
         // the composition uuid and extension is used as the file name
-        audioFileName = 'composition-files/?file='
-          + this.selectedComposition.uuid
-          + '.'
-          + this.selectedComposition.audioFileName.substr(this.selectedComposition.audioFileName.lastIndexOf('.') + 1);
+        audioFileName =
+          'composition-files/?file=' +
+          this.selectedComposition.uuid +
+          '.' +
+          this.selectedComposition.audioFileName.substr(this.selectedComposition.audioFileName.lastIndexOf('.') + 1);
       }
 
       this.waveSurfer.load(this.configService.restUrl + audioFileName);
@@ -557,11 +554,13 @@ export class TimelineService {
 
   private hexToRgb(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
   }
 
   private updateRegionSelection() {
@@ -595,14 +594,16 @@ export class TimelineService {
           region.attributes.selected = true;
         }
 
-        region.color = 'rgba('
-          + this.hexToRgb(region.scene.color).r
-          + ', '
-          + this.hexToRgb(region.scene.color).g
-          + ', '
-          + this.hexToRgb(region.scene.color).b
-          + ', '
-          + intensity + ')';
+        region.color =
+          'rgba(' +
+          this.hexToRgb(region.scene.color).r +
+          ', ' +
+          this.hexToRgb(region.scene.color).g +
+          ', ' +
+          this.hexToRgb(region.scene.color).b +
+          ', ' +
+          intensity +
+          ')';
         region.updateRender();
       }
     }
@@ -646,7 +647,7 @@ export class TimelineService {
     // the regions should snap to a grid
     const offset = this.getSnapToGridOffset() || 0;
     const interval = this.getSnapToGridInterval() || 0;
-    return (Math.round((value - offset) / interval) * interval + offset);
+    return Math.round((value - offset) / interval) * interval + offset;
   }
 
   private connectRegion(waveSurferRegion: any, scene: Scene, scenePlaybackRegion: ScenePlaybackRegion, preset?: Preset) {
@@ -684,7 +685,7 @@ export class TimelineService {
       start: scenePlaybackRegion.startMillis / 1000,
       end: scenePlaybackRegion.endMillis / 1000,
       color: '#fff',
-      data: { handled: true }
+      data: { handled: true },
     });
     this.connectRegion(waveSurferRegion, scene, scenePlaybackRegion);
 
@@ -820,15 +821,17 @@ export class TimelineService {
 
   getExternalCompositionNames(): Observable<string[]> {
     // get available compositions from an external pool (e.g. Rocket Show)
-    return this.http.get('composition/list').pipe(map((response: Array<Object>) => {
-      const compositionNames: string[] = [];
+    return this.http.get('composition/list').pipe(
+      map((response: object[]) => {
+        const compositionNames: string[] = [];
 
-      for (const responseComposition of response) {
-        compositionNames.push((<any>responseComposition).name);
-      }
+        for (const responseComposition of response) {
+          compositionNames.push((responseComposition as any).name);
+        }
 
-      return compositionNames;
-    }));
+        return compositionNames;
+      })
+    );
   }
 
   selectCompositionIndex(index: number) {
@@ -842,5 +845,4 @@ export class TimelineService {
 
     this.applyZoom(0);
   }
-
 }

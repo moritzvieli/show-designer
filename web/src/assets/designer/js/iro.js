@@ -10,51 +10,52 @@
 */
 
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-      (global.iro = factory());
-}(this, (function () {
+  typeof exports === 'object' && typeof module !== 'undefined'
+    ? (module.exports = factory())
+    : typeof define === 'function' && define.amd
+    ? define(factory)
+    : (global.iro = factory());
+})(this, function () {
   'use strict';
 
   // css class prefix for this element
-  var CLASS_PREFIX = "iro__marker";
+  var CLASS_PREFIX = 'iro__marker';
   var marker = function marker(svg, opts, isLine) {
     var baseGroup = svg.g({
-      class: CLASS_PREFIX
+      class: CLASS_PREFIX,
     });
 
     if (isLine) {
       baseGroup.rectangle(-10, 0, 20, 5, {
-        style: "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"
+        style: 'fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)',
       });
     } else {
       baseGroup.circle(0, 0, opts.r, {
-        class: CLASS_PREFIX + "__outer",
-        fill: "none",
+        class: CLASS_PREFIX + '__outer',
+        fill: 'none',
         strokeWidth: 3,
-        stroke: "#000"
+        stroke: '#000',
       });
       baseGroup.circle(0, 0, opts.r, {
-        class: CLASS_PREFIX + "__inner",
-        fill: "none",
+        class: CLASS_PREFIX + '__inner',
+        fill: 'none',
         strokeWidth: 2,
-        stroke: "#fff"
+        stroke: '#fff',
       });
     }
     this.g = baseGroup;
   };
   /**
-    * @desc move marker to centerpoint (x, y) and redraw
-    * @param {Number} x - point x coordinate
-    * @param {Number} y - point y coordinate
-  */
-
+   * @desc move marker to centerpoint (x, y) and redraw
+   * @param {Number} x - point x coordinate
+   * @param {Number} y - point y coordinate
+   */
 
   marker.prototype.move = function move(x, y) {
-    this.g.setTransform("translate", [x, y]);
+    this.g.setTransform('translate', [x, y]);
   };
 
-  var CLASS_PREFIX$1 = "iro__wheel"; // Quick references to reused math functions
+  var CLASS_PREFIX$1 = 'iro__wheel'; // Quick references to reused math functions
 
   var PI = Math.PI,
     sqrt = Math.sqrt,
@@ -62,56 +63,58 @@
     round = Math.round;
   var wheel = function wheel(svg, opts) {
     this._opts = opts;
-    this.type = "wheel";
+    this.type = 'wheel';
     var cY = opts.cY,
       cX = opts.cX,
       r = opts.r,
       border = opts.border;
     var baseGroup = svg.g({
-      class: CLASS_PREFIX$1
+      class: CLASS_PREFIX$1,
     });
     baseGroup.circle(cX, cY, r + border.w / 2, {
-      class: CLASS_PREFIX$1 + "__border",
-      fill: "#fff",
+      class: CLASS_PREFIX$1 + '__border',
+      fill: '#fff',
       stroke: border.color,
-      strokeWidth: border.w
+      strokeWidth: border.w,
     });
     var ringGroup = baseGroup.g({
-      class: CLASS_PREFIX$1 + "__hue",
+      class: CLASS_PREFIX$1 + '__hue',
       strokeWidth: r,
-      fill: "none"
+      fill: 'none',
     });
 
     for (var hue = 0; hue < 360; hue++) {
       ringGroup.arc(cX, cY, r / 2, hue, hue + 1.5, {
-        stroke: "hsl(" + (opts.anticlockwise ? 360 - hue : hue) + ",100%,50%)"
+        stroke: 'hsl(' + (opts.anticlockwise ? 360 - hue : hue) + ',100%,50%)',
       });
     }
 
     var saturation = baseGroup.circle(cX, cY, r, {
-      class: CLASS_PREFIX$1 + "__saturation"
+      class: CLASS_PREFIX$1 + '__saturation',
     });
-    saturation.setGradient("fill", svg.gradient("radial", {
-      0: {
-        color: "#fff"
-      },
-      100: {
-        color: "#fff",
-        opacity: 0
-      }
-    }));
+    saturation.setGradient(
+      'fill',
+      svg.gradient('radial', {
+        0: {
+          color: '#fff',
+        },
+        100: {
+          color: '#fff',
+          opacity: 0,
+        },
+      })
+    );
     this._lightness = baseGroup.circle(cX, cY, r, {
-      class: CLASS_PREFIX$1 + "__lightness",
-      opacity: 0
+      class: CLASS_PREFIX$1 + '__lightness',
+      opacity: 0,
     });
     this.marker = new marker(baseGroup, opts.marker);
   };
   /**
-    * @desc updates this element to represent a new color value
-    * @param {Object} color - an iroColor object with the new color value
-    * @param {Object} changes - an object that gives a boolean for each HSV channel, indicating whether ot not that channel has changed
-  */
-
+   * @desc updates this element to represent a new color value
+   * @param {Object} color - an iroColor object with the new color value
+   * @param {Object} changes - an object that gives a boolean for each HSV channel, indicating whether ot not that channel has changed
+   */
 
   wheel.prototype.update = function update(color, changes) {
     var opts = this._opts;
@@ -119,27 +122,25 @@
 
     if (changes.v && opts.lightness) {
       this._lightness.setAttrs({
-        opacity: (1 - hsv.v / 100).toFixed(2)
+        opacity: (1 - hsv.v / 100).toFixed(2),
       });
     } // If the H or S channel has changed, move the marker to the right position
-
 
     if (changes.h || changes.s) {
       // convert the hue value to radians, since we'll use it as an angle
       var hueAngle = (opts.anticlockwise ? 360 - hsv.h : hsv.h) * (PI / 180); // convert the saturation value to a distance between the center of the ring and the edge
 
-      var dist = hsv.s / 100 * opts.rMax; // Move the marker based on the angle and distance
+      var dist = (hsv.s / 100) * opts.rMax; // Move the marker based on the angle and distance
 
       this.marker.move(opts.cX + dist * Math.cos(hueAngle), opts.cY + dist * Math.sin(hueAngle));
     }
   };
   /**
-    * @desc Takes a point at (x, y) and returns HSV values based on this input -- use this to update a color from mouse input
-    * @param {Number} x - point x coordinate
-    * @param {Number} y - point y coordinate
-    * @return {Object} - new HSV color values (some channels may be missing)
-  */
-
+   * @desc Takes a point at (x, y) and returns HSV values based on this input -- use this to update a color from mouse input
+   * @param {Number} x - point x coordinate
+   * @param {Number} y - point y coordinate
+   * @return {Object} - new HSV color values (some channels may be missing)
+   */
 
   wheel.prototype.input = function input(x, y) {
     var opts = this._opts,
@@ -157,16 +158,15 @@
 
     return {
       h: hue,
-      s: round(100 / rangeMax * dist)
+      s: round((100 / rangeMax) * dist),
     };
   };
   /**
-    * @desc Check if a point at (x, y) is inside this element
-    * @param {Number} x - point x coordinate
-    * @param {Number} y - point y coordinate
-    * @return {Boolean} - true if the point is a "hit", else false
-  */
-
+   * @desc Check if a point at (x, y) is inside this element
+   * @param {Number} x - point x coordinate
+   * @param {Number} y - point y coordinate
+   * @return {Boolean} - true if the point is a "hit", else false
+   */
 
   wheel.prototype.checkHit = function checkHit(x, y) {
     var opts = this._opts; // Check if the point is within the hue ring by comparing the point's distance from the centre to the ring's radius
@@ -180,50 +180,58 @@
   var round$1 = Math.round;
   var floor = Math.floor;
   /**
-    * @desc generic parser for hsl / rgb / etc string
-    * @param {String} str - color string
-    * @param {Array} maxValues - max values for each channel (used for calculating percent-based values)
-    * @return {Array} type (rgb | rgba | hsl | hsla) values for each channel
-  */
+   * @desc generic parser for hsl / rgb / etc string
+   * @param {String} str - color string
+   * @param {Array} maxValues - max values for each channel (used for calculating percent-based values)
+   * @return {Array} type (rgb | rgba | hsl | hsla) values for each channel
+   */
 
   function parseColorStr(str, maxValues) {
     var parsed = str.match(/(\S+)\((\d+)(%?)(?:\D+?)(\d+)(%?)(?:\D+?)(\d+)(%?)(?:\D+?)?([0-9\.]+?)?\)/i),
       val1 = parseInt(parsed[2]),
       val2 = parseInt(parsed[4]),
       val3 = parseInt(parsed[6]);
-    return [parsed[1], parsed[3] == "%" ? val1 / 100 * maxValues[0] : val1, parsed[5] == "%" ? val2 / 100 * maxValues[1] : val2, parsed[7] == "%" ? val3 / 100 * maxValues[2] : val3, parseFloat(parsed[8]) || undefined];
+    return [
+      parsed[1],
+      parsed[3] == '%' ? (val1 / 100) * maxValues[0] : val1,
+      parsed[5] == '%' ? (val2 / 100) * maxValues[1] : val2,
+      parsed[7] == '%' ? (val3 / 100) * maxValues[2] : val3,
+      parseFloat(parsed[8]) || undefined,
+    ];
   }
   /**
-    * @desc convert object / string input to color if necessary
-    * @param {Object | String | color} value - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
-    * @return {color} color instance
-  */
+   * @desc convert object / string input to color if necessary
+   * @param {Object | String | color} value - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
+   * @return {color} color instance
+   */
 
   function getColor(value) {
     return value instanceof color ? value : new color(value);
   }
   /**
-    * @desc clamp value between min and max
-    * @param {Number} value
-    * @param {Number} min
-    * @param {Number} max
-    * @return {Number}
-  */
+   * @desc clamp value between min and max
+   * @param {Number} value
+   * @param {Number} min
+   * @param {Number} max
+   * @return {Number}
+   */
 
   function clamp(value, min, max) {
     return value <= min ? min : value >= max ? max : value;
   }
   /**
-    * @desc compare values between two objects, returns a object representing changes with true/false values
-    * @param {Object} a
-    * @param {Object} b
-    * @return {Object}
-  */
+   * @desc compare values between two objects, returns a object representing changes with true/false values
+   * @param {Object} a
+   * @param {Object} b
+   * @return {Object}
+   */
 
   function compareObjs(a, b) {
     var changes = {};
 
-    for (var key in a) { changes[key] = b[key] != a[key]; }
+    for (var key in a) {
+      changes[key] = b[key] != a[key];
+    }
 
     return changes;
   }
@@ -234,20 +242,28 @@
     this._value = {
       h: undefined,
       s: undefined,
-      v: undefined
+      v: undefined,
     };
-    if (value) { this.set(value); }
+    if (value) {
+      this.set(value);
+    }
   };
 
-  var prototypeAccessors = { hsv: { configurable: true }, rgb: { configurable: true }, hsl: { configurable: true }, rgbString: { configurable: true }, hexString: { configurable: true }, hslString: { configurable: true } };
+  var prototypeAccessors = {
+    hsv: { configurable: true },
+    rgb: { configurable: true },
+    hsl: { configurable: true },
+    rgbString: { configurable: true },
+    hexString: { configurable: true },
+    hslString: { configurable: true },
+  };
   /**
-    * @desc mix two colors
-    * @param {Object | String | color} color1 - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
-    * @param {Object | String | color} color2 - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
-    * @param {Number} weight - closer to 0 = more color1, closer to 100 = more color2
-    * @return {color} color instance
-  */
-
+   * @desc mix two colors
+   * @param {Object | String | color} color1 - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
+   * @param {Object | String | color} color2 - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
+   * @param {Number} weight - closer to 0 = more color1, closer to 100 = more color2
+   * @return {color} color instance
+   */
 
   color.mix = function mix(color1, color2, weight) {
     var rgb1 = getColor(color1).rgb,
@@ -256,16 +272,15 @@
     return new color({
       r: floor(rgb1.r + (rgb2.r - rgb1.r) * weight),
       g: floor(rgb1.g + (rgb2.g - rgb1.g) * weight),
-      b: floor(rgb1.b + (rgb2.b - rgb1.b) * weight)
+      b: floor(rgb1.b + (rgb2.b - rgb1.b) * weight),
     });
   };
   /**
-    * @desc lighten color by amount
-    * @param {Object | String | color} color - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
-    * @param {Number} amount
-    * @return {color} color instance
-  */
-
+   * @desc lighten color by amount
+   * @param {Object | String | color} color - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
+   * @param {Number} amount
+   * @return {color} color instance
+   */
 
   color.lighten = function lighten(color, amount) {
     var col = getColor(color),
@@ -275,12 +290,11 @@
     return col;
   };
   /**
-    * @desc darken color by amount
-    * @param {Object | String | color} color - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
-    * @param {Number} amount
-    * @return {color} color instance
-  */
-
+   * @desc darken color by amount
+   * @param {Object | String | color} color - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
+   * @param {Number} amount
+   * @return {color} color instance
+   */
 
   color.darken = function darken(color, amount) {
     var col = getColor(color),
@@ -290,11 +304,10 @@
     return col;
   };
   /**
-    * @desc convert hsv object to rgb
-    * @param {Object} hsv - hsv object
-    * @return {Object} rgb object
-  */
-
+   * @desc convert hsv object to rgb
+   * @param {Object} hsv - hsv object
+   * @return {Object} rgb object
+   */
 
   color.hsv2Rgb = function hsv2Rgb(hsv) {
     var r, g, b, i, f, p, q, t;
@@ -309,42 +322,41 @@
 
     switch (i % 6) {
       case 0:
-        r = v, g = t, b = p;
+        (r = v), (g = t), (b = p);
         break;
 
       case 1:
-        r = q, g = v, b = p;
+        (r = q), (g = v), (b = p);
         break;
 
       case 2:
-        r = p, g = v, b = t;
+        (r = p), (g = v), (b = t);
         break;
 
       case 3:
-        r = p, g = q, b = v;
+        (r = p), (g = q), (b = v);
         break;
 
       case 4:
-        r = t, g = p, b = v;
+        (r = t), (g = p), (b = v);
         break;
 
       case 5:
-        r = v, g = p, b = q;
+        (r = v), (g = p), (b = q);
         break;
     }
 
     return {
       r: round$1(r * 255),
       g: round$1(g * 255),
-      b: round$1(b * 255)
+      b: round$1(b * 255),
     };
   };
   /**
-    * @desc convert rgb object to hsv
-    * @param {Object} rgb - rgb object
-    * @return {Object} hsv object
-  */
-
+   * @desc convert rgb object to hsv
+   * @param {Object} rgb - rgb object
+   * @return {Object} hsv object
+   */
 
   color.rgb2Hsv = function rgb2Hsv(rgb) {
     // Modified from https://github.com/bgrins/TinyColor/blob/master/tinycolor.js#L446
@@ -377,34 +389,32 @@
     hue /= 6;
     return {
       h: hue * 360,
-      s: max == 0 ? 0 : delta / max * 100,
-      v: max * 100
+      s: max == 0 ? 0 : (delta / max) * 100,
+      v: max * 100,
     };
   };
   /**
-    * @desc convert hsv object to hsl
-    * @param {Object} hsv - hsv object
-    * @return {Object} hsl object
-  */
-
+   * @desc convert hsv object to hsl
+   * @param {Object} hsv - hsv object
+   * @return {Object} hsl object
+   */
 
   color.hsv2Hsl = function hsv2Hsl(hsv) {
     var s = hsv.s / 100,
       v = hsv.v / 100;
     var l = 0.5 * v * (2 - s);
-    s = v * s / (1 - Math.abs(2 * l - 1));
+    s = (v * s) / (1 - Math.abs(2 * l - 1));
     return {
       h: hsv.h,
       s: s * 100 || 0,
-      l: l * 100
+      l: l * 100,
     };
   };
   /**
-    * @desc convert hsl object to hsv
-    * @param {Object} hsl - hsl object
-    * @return {Object} hsv object
-  */
-
+   * @desc convert hsl object to hsv
+   * @param {Object} hsl - hsl object
+   * @return {Object} hsv object
+   */
 
   color.hsl2Hsv = function hsl2Hsv(hsl) {
     var s = hsl.s / 100,
@@ -413,98 +423,92 @@
     s *= l <= 1 ? l : 2 - l;
     return {
       h: hsl.h,
-      s: 2 * s / (l + s) * 100,
-      v: (l + s) / 2 * 100
+      s: ((2 * s) / (l + s)) * 100,
+      v: ((l + s) / 2) * 100,
     };
   };
   /**
-    * @desc convert hsl object to string
-    * @param {Object} hsl - hsl object
-    * @return {Object} hsl string
-  */
-
+   * @desc convert hsl object to string
+   * @param {Object} hsl - hsl object
+   * @return {Object} hsl string
+   */
 
   color.hsl2Str = function hsl2Str(hsl) {
-    return "hsl" + (hsl.a ? "a" : "") + "(" + hsl.h + ", " + hsl.s + "%, " + hsl.l + "%" + (hsl.a ? ", " + hsl.a : "") + ")";
+    return 'hsl' + (hsl.a ? 'a' : '') + '(' + hsl.h + ', ' + hsl.s + '%, ' + hsl.l + '%' + (hsl.a ? ', ' + hsl.a : '') + ')';
   };
   /**
-    * @desc convert rgb object to string
-    * @param {Object} rgb - rgb object
-    * @return {Object} rgb string
-  */
-
+   * @desc convert rgb object to string
+   * @param {Object} rgb - rgb object
+   * @return {Object} rgb string
+   */
 
   color.rgb2Str = function rgb2Str(rgb) {
-    return "rgb" + (rgb.a ? "a" : "") + "(" + rgb.r + ", " + rgb.g + ", " + rgb.b + (rgb.a ? ", " + rgb.a : "") + ")";
+    return 'rgb' + (rgb.a ? 'a' : '') + '(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + (rgb.a ? ', ' + rgb.a : '') + ')';
   };
   /**
-    * @desc convert rgb object to hex string
-    * @param {Object} rgb - rgb object
-    * @return {Object} hex string
-  */
-
+   * @desc convert rgb object to hex string
+   * @param {Object} rgb - rgb object
+   * @return {Object} hex string
+   */
 
   color.rgb2Hex = function rgb2Hex(rgb) {
-    var str = "#";
-    str += rgb.r.toString(16).padStart(2, "0");
-    str += rgb.g.toString(16).padStart(2, "0");
-    str += rgb.b.toString(16).padStart(2, "0");
+    var str = '#';
+    str += rgb.r.toString(16).padStart(2, '0');
+    str += rgb.g.toString(16).padStart(2, '0');
+    str += rgb.b.toString(16).padStart(2, '0');
     return str;
   };
   /**
-    * @desc parse hex string
-    * @param {String} str - color string
-    * @return {Object} rgb object
-  */
-
+   * @desc parse hex string
+   * @param {String} str - color string
+   * @return {Object} rgb object
+   */
 
   color.parseHexStr = function parseHexStr(hex) {
     // Strip any "#" characters
-    hex = hex.replace("#", ""); // Prefix the hex string with "0x" which indicates a number in hex notation, then convert to an integer
+    hex = hex.replace('#', ''); // Prefix the hex string with "0x" which indicates a number in hex notation, then convert to an integer
 
-    var int = parseInt("0x" + hex),
+    var int = parseInt('0x' + hex),
       // If the length of the input is only 3, then it is a shorthand hex color
       isShorthand = hex.length == 3,
       // bitMask for isolating each channel
-      bitMask = isShorthand ? 0xF : 0xFF,
+      bitMask = isShorthand ? 0xf : 0xff,
       // bitLength of each channel (for example, F is 4 bits long while FF is 8 bits long)
       bitLength = isShorthand ? 4 : 8,
       // If we're using shorthand notation, multiply each channel by 17
       multiplier = isShorthand ? 17 : 1;
     return {
-      r: (int >> bitLength * 2 & bitMask) * multiplier,
-      g: (int >> bitLength & bitMask) * multiplier,
-      b: (int & bitMask) * multiplier
+      r: ((int >> (bitLength * 2)) & bitMask) * multiplier,
+      g: ((int >> bitLength) & bitMask) * multiplier,
+      b: (int & bitMask) * multiplier,
     };
   };
   /**
-    * @desc parse hsl string
-    * @param {String} str - color string
-    * @return {Object} hsl object
-  */
-
+   * @desc parse hsl string
+   * @param {String} str - color string
+   * @return {Object} hsl object
+   */
 
   color.parseHslStr = function parseHslStr(str) {
     var parsed = parseColorStr(str, [360, 100, 100]);
     return {
       h: parsed[2],
       s: parsed[3],
-      l: parsed[4]
+      l: parsed[4],
     };
   };
   /**
-    * @desc parse rgb string
-    * @param {String} str - color string
-    * @return {Object} rgb object
-  */
-
+   * @desc parse rgb string
+   * @param {String} str - color string
+   * @return {Object} rgb object
+   */
 
   color.parseRgbStr = function parseRgbStr(str) {
     var parsed = parseColorStr(str, [255, 255, 255]);
     return {
       r: parsed[1],
       g: parsed[2],
-      b: parsed[3]
+      b: parsed[3],
     };
   };
 
@@ -514,7 +518,7 @@
     return {
       h: v.h,
       s: v.s,
-      v: v.v
+      v: v.v,
     };
   };
 
@@ -525,14 +529,18 @@
       var oldValue = this._value;
 
       for (var channel in oldValue) {
-        if (!newValue.hasOwnProperty(channel)) { newValue[channel] = oldValue[channel]; }
+        if (!newValue.hasOwnProperty(channel)) {
+          newValue[channel] = oldValue[channel];
+        }
       }
 
       var changes = compareObjs(oldValue, newValue); // Update the old value
 
       this._value = newValue; // If the value has changed, call hook callback
 
-      if (changes.h || changes.s || changes.v) { this._onChange(this, changes); }
+      if (changes.h || changes.s || changes.v) {
+        this._onChange(this, changes);
+      }
     } else {
       this._value = newValue;
     }
@@ -543,7 +551,7 @@
     return {
       r: round$1(rgb.r),
       g: round$1(rgb.g),
-      b: round$1(rgb.b)
+      b: round$1(rgb.b),
     };
   };
 
@@ -556,7 +564,7 @@
     return {
       h: round$1(hsl.h),
       s: round$1(hsl.s),
-      l: round$1(hsl.l)
+      l: round$1(hsl.l),
     };
   };
 
@@ -588,23 +596,22 @@
     this.hsl = color.parseHslStr(value);
   };
   /**
-    * @desc set the color from any valid value
-    * @param {Object | String | color} value - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
-  */
-
+   * @desc set the color from any valid value
+   * @param {Object | String | color} value - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
+   */
 
   color.prototype.set = function set(value) {
-    if (typeof value == "object") {
+    if (typeof value == 'object') {
       if (value instanceof color) {
         this.hsv = color.hsv;
-      } else if ("r" in value) {
+      } else if ('r' in value) {
         this.rgb = value;
-      } else if ("v" in value) {
+      } else if ('v' in value) {
         this.hsv = value;
-      } else if ("l" in value) {
+      } else if ('l' in value) {
         this.hsl = value;
       }
-    } else if (typeof value == "string") {
+    } else if (typeof value == 'string') {
       if (/^rgb/.test(value)) {
         this.rgbString = value;
       } else if (/^hsl/.test(value)) {
@@ -615,12 +622,11 @@
     }
   };
   /**
-    * @desc shortcut to set a specific channel value
-    * @param {String} model - hsv | hsl | rgb
-    * @param {String} channel - individual channel to set, for example if model = hsl, chanel = h | s | l
-    * @param {Number} value - new value for the channel
-  */
-
+   * @desc shortcut to set a specific channel value
+   * @param {String} model - hsv | hsl | rgb
+   * @param {String} channel - individual channel to set, for example if model = hsl, chanel = h | s | l
+   * @param {Number} value - new value for the channel
+   */
 
   color.prototype.setChannel = function setChannel(model, channel, value) {
     var v = this[model];
@@ -628,50 +634,45 @@
     this[model] = v;
   };
   /**
-    * @desc make new color instance with the same value as this one
-    * @return {color}
-  */
-
+   * @desc make new color instance with the same value as this one
+   * @return {color}
+   */
 
   color.prototype.clone = function clone() {
     return new color(this);
   };
   /**
-    * @desc compare this color against another, returns a object representing changes with true/false values
-    * @param {Object | String | color} color - color to compare against
-    * @param {String} model - hsv | hsl | rgb
-    * @return {Object}
-  */
-
+   * @desc compare this color against another, returns a object representing changes with true/false values
+   * @param {Object | String | color} color - color to compare against
+   * @param {String} model - hsv | hsl | rgb
+   * @return {Object}
+   */
 
   color.prototype.compare = function compare(color, model) {
-    model = model || "hsv";
+    model = model || 'hsv';
     return compareObjs(this[model], getColor(color)[model]);
   };
   /**
-    * @desc mix a color into this one
-    * @param {Object | String | color} color - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
-    * @param {Number} weight - closer to 0 = more current color, closer to 100 = more new color
-  */
-
+   * @desc mix a color into this one
+   * @param {Object | String | color} color - color instance, object (hsv, hsl or rgb), string (hsl, rgb, hex)
+   * @param {Number} weight - closer to 0 = more current color, closer to 100 = more new color
+   */
 
   color.prototype.mix = function mix$1(color, weight) {
     this.hsv = mix(this, color, weight).hsv;
   };
   /**
-    * @desc lighten color by amount
-    * @param {Number} amount
-  */
-
+   * @desc lighten color by amount
+   * @param {Number} amount
+   */
 
   color.prototype.lighten = function lighten$1(amount) {
     lighten(this, amount);
   };
   /**
-    * @desc darken color by amount
-    * @param {Number} amount
-  */
-
+   * @desc darken color by amount
+   * @param {Number} amount
+   */
 
   color.prototype.darken = function darken$1(amount) {
     darken(this, amount);
@@ -679,7 +680,7 @@
 
   Object.defineProperties(color.prototype, prototypeAccessors);
 
-  var CLASS_PREFIX$2 = "iro__slider";
+  var CLASS_PREFIX$2 = 'iro__slider';
   var slider = function slider(svg, opts) {
     var r = opts.r,
       w = opts.w,
@@ -692,21 +693,21 @@
       min: y + 2,
       max: y + h - 7,
       w: w - r * 2,
-      h: h - r * 2 + 19
+      h: h - r * 2 + 19,
     };
 
-    opts.sliderType = opts.sliderType || "v";
-    this.type = "slider";
+    opts.sliderType = opts.sliderType || 'v';
+    this.type = 'slider';
     this._opts = opts;
     var radius = r + borderWidth / 2;
 
     radius = 0;
 
     var baseGroup = svg.g({
-      class: CLASS_PREFIX$2
+      class: CLASS_PREFIX$2,
     });
-    var rect = baseGroup.insert("rect", {
-      class: CLASS_PREFIX$2 + "__value",
+    var rect = baseGroup.insert('rect', {
+      class: CLASS_PREFIX$2 + '__value',
       rx: radius,
       ry: radius,
       x: x - borderWidth / 2,
@@ -714,25 +715,27 @@
       width: w + borderWidth,
       height: h + borderWidth,
       strokeWidth: borderWidth,
-      stroke: opts.border.color
+      stroke: opts.border.color,
     });
-    rect.setGradient("fill", svg.gradient("linear", {
-      0: {
-        color: "#000"
-      },
-      100: {
-        color: "#fff"
-      }
-    }));
+    rect.setGradient(
+      'fill',
+      svg.gradient('linear', {
+        0: {
+          color: '#000',
+        },
+        100: {
+          color: '#fff',
+        },
+      })
+    );
     this._gradient = rect.gradient;
     this.marker = new marker(baseGroup, opts.marker, true);
   };
   /**
-    * @desc updates this element to represent a new color value
-    * @param {Object} color - an iroColor object with the new color value
-    * @param {Object} changes - an object that gives a boolean for each HSV channel, indicating whether ot not that channel has changed
-  */
-
+   * @desc updates this element to represent a new color value
+   * @param {Object} color - an iroColor object with the new color value
+   * @param {Object} changes - an object that gives a boolean for each HSV channel, indicating whether ot not that channel has changed
+   */
 
   slider.prototype.update = function update(color$$1, changes) {
     var opts = this._opts;
@@ -741,29 +744,28 @@
     var hsl = color.hsv2Hsl({
       h: hsv.h,
       s: hsv.s,
-      v: 100
+      v: 100,
     });
 
-    if (opts.sliderType == "v") {
+    if (opts.sliderType == 'v') {
       if (changes.h || changes.s) {
         this._gradient.stops[1].setAttrs({
-          stopColor: "hsl(" + hsl.h + "," + hsl.s + "%," + hsl.l + "%)"
+          stopColor: 'hsl(' + hsl.h + ',' + hsl.s + '%,' + hsl.l + '%)',
         });
       }
 
       if (changes.v) {
-        var percent = 1 - (hsv.v / 100);
+        var percent = 1 - hsv.v / 100;
         this.marker.move(opts.x + opts.w / 2, range.min + percent * range.h);
       }
     }
   };
   /**
-    * @desc Takes a point at (x, y) and returns HSV values based on this input -- use this to update a color from mouse input
-    * @param {Number} x - point x coordinate
-    * @param {Number} y - point y coordinate
-    * @return {Object} - new HSV color values (some channels may be missing)
-  */
-
+   * @desc Takes a point at (x, y) and returns HSV values based on this input -- use this to update a color from mouse input
+   * @param {Number} x - point x coordinate
+   * @param {Number} y - point y coordinate
+   * @return {Object} - new HSV color values (some channels may be missing)
+   */
 
   slider.prototype.input = function input(x, y) {
     var opts = this._opts;
@@ -771,16 +773,15 @@
     var dist = Math.max(Math.min(y, range.max), range.min) - range.min;
     dist = range.h - dist;
     return {
-      v: Math.round(100 / range.h * dist)
+      v: Math.round((100 / range.h) * dist),
     };
   };
   /**
-    * @desc Check if a point at (x, y) is inside this element
-    * @param {Number} x - point x coordinate
-    * @param {Number} y - point y coordinate
-    * @return {Boolean} - true if the point is a "hit", else false
-  */
-
+   * @desc Check if a point at (x, y) is inside this element
+   * @param {Number} x - point x coordinate
+   * @param {Number} y - point y coordinate
+   * @return {Boolean} - true if the point is a "hit", else false
+   */
 
   slider.prototype.checkHit = function checkHit(x, y) {
     var opts = this._opts;
@@ -788,23 +789,23 @@
   };
 
   var GRADIENT_INDEX = 0;
-  var GRADIENT_SUFFIX = "Gradient";
-  var SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+  var GRADIENT_SUFFIX = 'Gradient';
+  var SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
   var SVG_ATTRIBUTE_SHORTHANDS = {
-    class: "class",
-    stroke: "stroke",
-    strokeWidth: "stroke-width",
-    fill: "fill",
-    opacity: "opacity",
-    offset: "offset",
-    stopColor: "stop-color",
-    stopOpacity: "stop-opacity"
+    class: 'class',
+    stroke: 'stroke',
+    strokeWidth: 'stroke-width',
+    fill: 'fill',
+    opacity: 'opacity',
+    offset: 'offset',
+    stopColor: 'stop-color',
+    stopOpacity: 'stop-opacity',
   }; // TODO: figure out why these aren't being compressed properly?
 
   var SVG_TRANSFORM_SHORTHANDS = {
-    translate: "setTranslate",
-    scale: "setScale",
-    rotate: "setRotate"
+    translate: 'setTranslate',
+    scale: 'setScale',
+    rotate: 'setRotate',
   }; // sniff useragent string to check if the user is running IE, Edge or Safari
 
   var ua = window.navigator.userAgent.toLowerCase();
@@ -821,34 +822,31 @@
     this._transformList = el.transform ? el.transform.baseVal : false;
   };
   /**
-    * @desc insert a new svgElement
-    * @param {String} type - element tag name
-    * @param {Object} attrs - element attributes
-  */
-
+   * @desc insert a new svgElement
+   * @param {String} type - element tag name
+   * @param {Object} attrs - element attributes
+   */
 
   svgElement.prototype.insert = function insert(type, attrs) {
     return new svgElement(this._root, this, type, attrs);
   };
   /**
-    * @desc shorthand to insert a new group svgElement
-    * @param {Object} attrs - element attributes
-  */
-
+   * @desc shorthand to insert a new group svgElement
+   * @param {Object} attrs - element attributes
+   */
 
   svgElement.prototype.g = function g(attrs) {
-    return this.insert("g", attrs);
+    return this.insert('g', attrs);
   };
   /**
-    * @desc shorthand to insert a new arc svgElement
-    * @param {Number} cx - arc center x
-    * @param {Number} cy - arc center y
-    * @param {Number} radius - arc radius
-    * @param {Number} startAngle - arc start angle (in degrees)
-    * @param {Number} endAngle - arc end angle (in degrees)
-    * @param {Object} attrs - element attributes
-  */
-
+   * @desc shorthand to insert a new arc svgElement
+   * @param {Number} cx - arc center x
+   * @param {Number} cy - arc center y
+   * @param {Number} radius - arc radius
+   * @param {Number} startAngle - arc start angle (in degrees)
+   * @param {Number} endAngle - arc end angle (in degrees)
+   * @param {Object} attrs - element attributes
+   */
 
   svgElement.prototype.arc = function arc(cx, cy, radius, startAngle, endAngle, attrs) {
     var largeArcFlag = endAngle - startAngle <= 180 ? 0 : 1;
@@ -859,24 +857,23 @@
       x2 = cx + radius * Math.cos(startAngle),
       y2 = cy + radius * Math.sin(startAngle);
     attrs = attrs || {};
-    attrs.d = ["M", x1, y1, "A", radius, radius, 0, largeArcFlag, 0, x2, y2].join(" ");
-    return this.insert("path", attrs);
+    attrs.d = ['M', x1, y1, 'A', radius, radius, 0, largeArcFlag, 0, x2, y2].join(' ');
+    return this.insert('path', attrs);
   };
   /**
-    * @desc shorthand to insert a new circle svgElement
-    * @param {Number} cx - circle center x
-    * @param {Number} cy - circle center y
-    * @param {Number} radius - circle radius
-    * @param {Object} attrs - element attributes
-  */
-
+   * @desc shorthand to insert a new circle svgElement
+   * @param {Number} cx - circle center x
+   * @param {Number} cy - circle center y
+   * @param {Number} radius - circle radius
+   * @param {Object} attrs - element attributes
+   */
 
   svgElement.prototype.circle = function circle(cx, cy, radius, attrs) {
     attrs = attrs || {};
     attrs.cx = cx;
     attrs.cy = cy;
     attrs.r = radius;
-    return this.insert("circle", attrs);
+    return this.insert('circle', attrs);
   };
   svgElement.prototype.rectangle = function rectangle(x, y, width, height, attrs) {
     attrs = attrs || {};
@@ -884,14 +881,13 @@
     attrs.y = y;
     attrs.width = width;
     attrs.height = height;
-    return this.insert("rect", attrs);
+    return this.insert('rect', attrs);
   };
   /**
-    * @desc set a rotate/translate/scale transform on this element
-    * @param {String} type - transform (rotate | translate | scale)
-    * @param {Array} args - transform values
-  */
-
+   * @desc set a rotate/translate/scale transform on this element
+   * @param {String} type - transform (rotate | translate | scale)
+   * @param {Array} args - transform values
+   */
 
   svgElement.prototype.setTransform = function setTransform(type, args) {
     if (!IS_IE) {
@@ -913,15 +909,14 @@
       // Microsoft still can't make a web browser that actually works, as such, Edge + IE dont implement SVG transforms properly.
       // We have to force them instead... geez
       this.setAttrs({
-        "transform": type + "(" + args.join(", ") + ")"
+        transform: type + '(' + args.join(', ') + ')',
       });
     }
   };
   /**
-    * @desc set attributes on this element
-    * @param {Object} attrs - element attributes
-  */
-
+   * @desc set attributes on this element
+   * @param {Object} attrs - element attributes
+   */
 
   svgElement.prototype.setAttrs = function setAttrs(attrs) {
     var this$1 = this;
@@ -945,25 +940,27 @@
 
     if (type == 'linear') {
       var gradient = root._defs.insert(type + GRADIENT_SUFFIX, {
-        id: "iro" + GRADIENT_SUFFIX + GRADIENT_INDEX++,
-        x1: "0",
-        y1: "100%",
-        x2: "0",
-        y2: "0"
+        id: 'iro' + GRADIENT_SUFFIX + GRADIENT_INDEX++,
+        x1: '0',
+        y1: '100%',
+        x2: '0',
+        y2: '0',
       });
     } else {
       var gradient = root._defs.insert(type + GRADIENT_SUFFIX, {
-        id: "iro" + GRADIENT_SUFFIX + GRADIENT_INDEX++
+        id: 'iro' + GRADIENT_SUFFIX + GRADIENT_INDEX++,
       });
     }
 
     for (var offset in stops) {
       var stop = stops[offset];
-      stopElements.push(gradient.insert("stop", {
-        offset: offset + "%",
-        stopColor: stop.color,
-        stopOpacity: stop.opacity === undefined ? 1 : stop.opacity
-      }));
+      stopElements.push(
+        gradient.insert('stop', {
+          offset: offset + '%',
+          stopColor: stop.color,
+          stopOpacity: stop.opacity === undefined ? 1 : stop.opacity,
+        })
+      );
     }
 
     this.el = gradient.el;
@@ -973,19 +970,19 @@
 
   svgGradient.prototype.getUrl = function getUrl(base) {
     var loc = location;
-    var root = IS_SAFARI ? base || loc.protocol + "//" + loc.host + loc.pathname + loc.search : "";
-    return "url(" + root + "#" + this.el.id + ")";
+    var root = IS_SAFARI ? base || loc.protocol + '//' + loc.host + loc.pathname + loc.search : '';
+    return 'url(' + root + '#' + this.el.id + ')';
   };
 
   var svgRoot = (function (svgElement) {
     function svgRoot(parent, width, height, display) {
-      svgElement.call(this, null, parent, "svg", {
+      svgElement.call(this, null, parent, 'svg', {
         width: width,
         height: height,
-        style: "display:" + (display || "block") + ";touch-action:none"
+        style: 'display:' + (display || 'block') + ';touch-action:none',
       });
       this._root = this;
-      this._defs = this.insert("defs");
+      this._defs = this.insert('defs');
       this._gradients = [];
     }
 
@@ -1017,15 +1014,15 @@
     };
 
     return svgRoot;
-  }(svgElement));
+  })(svgElement);
 
   var stylesheet = function stylesheet() {
     // Create a new style element
-    var style = document.createElement("style");
+    var style = document.createElement('style');
     document.head.appendChild(style); // Webkit apparently requires a text node to be inserted into the style element
     // (according to https://davidwalsh.name/add-rules-stylesheets)
 
-    style.appendChild(document.createTextNode(""));
+    style.appendChild(document.createTextNode(''));
     this.style = style; // Create a reference to the style element's CSSStyleSheet object
     // CSSStyleSheet API: https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet
 
@@ -1039,7 +1036,11 @@
     this.map = {};
   };
 
-  var prototypeAccessors$1 = { enabled: { configurable: true }, cssText: { configurable: true }, css: { configurable: true } };
+  var prototypeAccessors$1 = {
+    enabled: { configurable: true },
+    cssText: { configurable: true },
+    css: { configurable: true },
+  };
 
   prototypeAccessors$1.enabled.get = function () {
     return !this.sheet.disabled;
@@ -1049,16 +1050,15 @@
     this.sheet.disabled = !value;
   }; // TODO: consider removing cssText + css properties since i don't tink they're that useful
 
-
   prototypeAccessors$1.cssText.get = function () {
     var map = this.map;
     var ret = [];
 
     for (var selector in map) {
-      ret.push(selector.replace(/,\W/g, ",\n") + " {\n\t" + map[selector].cssText.replace(/;\W/g, ";\n\t") + "\n}");
+      ret.push(selector.replace(/,\W/g, ',\n') + ' {\n\t' + map[selector].cssText.replace(/;\W/g, ';\n\t') + '\n}');
     }
 
-    return ret.join("\n");
+    return ret.join('\n');
   };
 
   prototypeAccessors$1.css.get = function () {
@@ -1078,12 +1078,11 @@
     return ret;
   };
   /**
-    * @desc Set a specific rule for a given selector
-    * @param {String} selector - the CSS selector for this rule (e.g. "body", ".class", "#id")
-    * @param {String} property - the CSS property to set (e.g. "background-color", "font-family", "z-index")
-    * @param {String} value  - the new value for the rule (e.g. "rgb(255, 255, 255)", "Helvetica", "99")
-  */
-
+   * @desc Set a specific rule for a given selector
+   * @param {String} selector - the CSS selector for this rule (e.g. "body", ".class", "#id")
+   * @param {String} property - the CSS property to set (e.g. "background-color", "font-family", "z-index")
+   * @param {String} value  - the new value for the rule (e.g. "rgb(255, 255, 255)", "Helvetica", "99")
+   */
 
   stylesheet.prototype.setRule = function setRule(selector, property, value) {
     var sheet = this.sheet;
@@ -1091,18 +1090,18 @@
     var map = this.map; // Convert property from camelCase to snake-case
 
     property = property.replace(/([A-Z])/g, function ($1) {
-      return "-" + $1.toLowerCase();
+      return '-' + $1.toLowerCase();
     });
 
     if (!map.hasOwnProperty(selector)) {
       // If the selector hasn't been used yet we want to insert the rule at the end of the CSSRuleList, so we use its length as the index value
       var index = rules.length; // Prepare the rule declaration text, since both insertRule and addRule take this format
 
-      var declaration = property + ": " + value; // Insert the new rule into the stylesheet
+      var declaration = property + ': ' + value; // Insert the new rule into the stylesheet
 
       try {
         // Some browsers only support insertRule, others only support addRule, so we have to use both
-        sheet.insertRule(selector + " {" + declaration + ";}", index);
+        sheet.insertRule(selector + ' {' + declaration + ';}', index);
       } catch (e) {
         sheet.addRule(selector, declaration, index);
       } finally {
@@ -1118,21 +1117,21 @@
 
   Object.defineProperties(stylesheet.prototype, prototypeAccessors$1);
 
-  var EVENT_MOUSEDOWN = "mousedown",
-    EVENT_MOUSEMOVE = "mousemove",
-    EVENT_MOUSEUP = "mouseup",
-    EVENT_TOUCHSTART = "touchstart",
-    EVENT_TOUCHMOVE = "touchmove",
-    EVENT_TOUCHEND = "touchend",
-    EVENT_READYSTATE_CHANGE = "readystatechange",
-    READYSTATE_COMPLETE = "complete";
+  var EVENT_MOUSEDOWN = 'mousedown',
+    EVENT_MOUSEMOVE = 'mousemove',
+    EVENT_MOUSEUP = 'mouseup',
+    EVENT_TOUCHSTART = 'touchstart',
+    EVENT_TOUCHMOVE = 'touchmove',
+    EVENT_TOUCHEND = 'touchend',
+    EVENT_READYSTATE_CHANGE = 'readystatechange',
+    READYSTATE_COMPLETE = 'complete';
   /**
-    * @desc listen to one or more events on an element
-    * @param {Element} el target element
-    * @param {Array} eventList the events to listen to
-    * @param {Function} callback the event callback function
-    * @param {Object} params params to pass to addEventListener
-  */
+   * @desc listen to one or more events on an element
+   * @param {Element} el target element
+   * @param {Array} eventList the events to listen to
+   * @param {Function} callback the event callback function
+   * @param {Object} params params to pass to addEventListener
+   */
 
   function listen(el, eventList, callback, params) {
     if (params === void 0) params = {};
@@ -1142,11 +1141,11 @@
     }
   }
   /**
-    * @desc remove an event listener on an element
-    * @param {Element} el target element
-    * @param {Array} eventList the events to remove
-    * @param {Function} callback the event callback function
-  */
+   * @desc remove an event listener on an element
+   * @param {Element} el target element
+   * @param {Array} eventList the events to remove
+   * @param {Function} callback the event callback function
+   */
 
   function unlisten(el, eventList, callback) {
     for (var i = 0; i < eventList.length; i++) {
@@ -1154,9 +1153,9 @@
     }
   }
   /**
-    * @desc call fn callback when the page document is ready
-    * @param {Function} callback callback function to be called
-  */
+   * @desc call fn callback when the page document is ready
+   * @param {Function} callback callback function to be called
+   */
 
   function whenReady(callback) {
     if (document.readyState == READYSTATE_COMPLETE) {
@@ -1185,18 +1184,17 @@
     });
   };
   /**
-    * @desc mount the color picker UI into the DOM
-    * @param {Element | String} el - a DOM element or the CSS selector for a DOM element to use as a container for the UI
-    * @param {Object} opts - options for this instance
-    * @access protected
-  */
-
+   * @desc mount the color picker UI into the DOM
+   * @param {Element | String} el - a DOM element or the CSS selector for a DOM element to use as a container for the UI
+   * @param {Object} opts - options for this instance
+   * @access protected
+   */
 
   colorPicker.prototype._mount = function _mount(el, opts) {
     var this$1 = this;
 
     // If `el` is a string, use it to select an Element, else assume it's an element
-    el = "string" == typeof el ? document.querySelector(el) : el; // Find the width and height for the UI
+    el = 'string' == typeof el ? document.querySelector(el) : el; // Find the width and height for the UI
     // If not defined in the options, try the HTML width + height attributes of the wrapper, else default to 320
 
     var width = opts.width || parseInt(el.width) || 320;
@@ -1212,69 +1210,70 @@
       bodyHeight = width - sliderWidth - sliderMargin + topMargin * 2,
       wheelRadius = bodyHeight / 2 - borderWidth;
     var marker = {
-      r: markerRadius
+      r: markerRadius,
     };
     var borderStyles = {
       w: borderWidth,
-      color: opts.borderColor || "#fff"
+      color: opts.borderColor || '#fff',
     }; // Create UI elements
-
 
     this.el = el;
     this.svg = new svgRoot(el, width + leftMargin * 2 + sliderMargin, bodyHeight + topMargin * 2, opts.display);
-    this.ui = [new wheel(this.svg, {
-      cX: leftMargin + bodyHeight / 2,
-      cY: topMargin + bodyHeight / 2,
-      r: wheelRadius,
-      rMax: wheelRadius - (markerRadius + padding) + 14,
-      marker: marker,
-      border: borderStyles,
-      lightness: opts.wheelLightness == undefined ? true : opts.wheelLightness,
-      anticlockwise: opts.anticlockwise
-    }), new slider(this.svg, {
-      sliderType: "v",
-      x: bodyHeight + sliderMargin + leftMargin,
-      y: topMargin + borderWidth,
-      w: sliderWidth - borderWidth * 2,
-      h: bodyHeight - borderWidth * 2,
-      r: sliderHeight / 2 - borderWidth,
+    this.ui = [
+      new wheel(this.svg, {
+        cX: leftMargin + bodyHeight / 2,
+        cY: topMargin + bodyHeight / 2,
+        r: wheelRadius,
+        rMax: wheelRadius - (markerRadius + padding) + 14,
+        marker: marker,
+        border: borderStyles,
+        lightness: opts.wheelLightness == undefined ? true : opts.wheelLightness,
+        anticlockwise: opts.anticlockwise,
+      }),
+      new slider(this.svg, {
+        sliderType: 'v',
+        x: bodyHeight + sliderMargin + leftMargin,
+        y: topMargin + borderWidth,
+        w: sliderWidth - borderWidth * 2,
+        h: bodyHeight - borderWidth * 2,
+        r: sliderHeight / 2 - borderWidth,
 
-      /* Original code
+        /* Original code
       x: leftMargin + borderWidth,
       y: bodyWidth + sliderMargin,
       w: bodyWidth - borderWidth * 2,
       h: sliderHeight - borderWidth * 2,
       r: sliderHeight / 2 - borderWidth,
       */
-      marker: marker,
-      border: borderStyles
-    })]; // Create an iroStyleSheet for this colorWheel's CSS overrides
+        marker: marker,
+        border: borderStyles,
+      }),
+    ]; // Create an iroStyleSheet for this colorWheel's CSS overrides
 
     this.stylesheet = new stylesheet(); // Create an iroColor to store this colorWheel's selected color
 
     this.color = new color(); // Whenever the selected color changes, trigger a colorWheel update too
 
     this.color._onChange = this._update.bind(this);
-    this.color.set(opts.color || opts.defaultValue || "#fff"); // Hacky workaround for a couple of Safari SVG url bugs
+    this.color.set(opts.color || opts.defaultValue || '#fff'); // Hacky workaround for a couple of Safari SVG url bugs
     // See https://github.com/jaames/iro.js/issues/18
     // TODO: perhaps make this a seperate plugin, it's hacky and takes up more space than I'm happy with
 
-    this.on("history:stateChange", function (base) {
+    this.on('history:stateChange', function (base) {
       this$1.svg.updateUrls(base);
     }); // Listen to events
 
     listen(this.svg.el, [EVENT_MOUSEDOWN, EVENT_TOUCHSTART], this, {
-      passive: false
+      passive: false,
     });
-    this.emit("mount", this);
+    this.emit('mount', this);
   };
   /**
-    * @desc update the selected color
-    * @param {Object} color - an iroColor object with the new color value
-    * @param {Object} changes - booleans for each HSV channel: true if the new value is different to the old value, else false
-    * @access protected
-  */
-
+   * @desc update the selected color
+   * @param {Object} color - an iroColor object with the new color value
+   * @param {Object} changes - booleans for each HSV channel: true if the new value is different to the old value, else false
+   * @access protected
+   */
 
   colorPicker.prototype._update = function _update(color$$1, changes) {
     var this$1 = this;
@@ -1286,7 +1285,6 @@
       this$1.ui[i].update(color$$1, changes);
     } // Update the stylesheet too
 
-
     for (var selector in css) {
       var properties = css[selector];
 
@@ -1295,59 +1293,57 @@
       }
     } // Prevent infinite loops if the color is set inside a `color:change` callback
 
-
     if (!this._colorChangeActive) {
       // While _colorChangeActive = true, this event cannot be fired
       this._colorChangeActive = true;
-      this.emit("color:change", color$$1, changes);
+      this.emit('color:change', color$$1, changes);
       this._colorChangeActive = false;
     }
   };
   /**
-    * @desc Set a callback function for an event
-    * @param {String} eventType Name of the event to listen to, pass "*" to listen to all events
-    * @param {Function} callback Event callback
-  */
-
+   * @desc Set a callback function for an event
+   * @param {String} eventType Name of the event to listen to, pass "*" to listen to all events
+   * @param {Function} callback Event callback
+   */
 
   colorPicker.prototype.on = function on(eventType, callback) {
     var events = this._events;
     (events[eventType] || (events[eventType] = [])).push(callback);
   };
   /**
-    * @desc Remove a callback function for an event added with on()
-    * @param {String} eventType The name of the event
-    * @param {Function} callback The watch callback to remove from the event
-  */
-
+   * @desc Remove a callback function for an event added with on()
+   * @param {String} eventType The name of the event
+   * @param {Function} callback The watch callback to remove from the event
+   */
 
   colorPicker.prototype.off = function off(eventType, callback) {
     var eventList = this._events[eventType];
-    if (eventList) { eventList.splice(eventList.indexOf(callback), 1); }
+    if (eventList) {
+      eventList.splice(eventList.indexOf(callback), 1);
+    }
   };
   /**
-    * @desc Emit an event
-    * @param {String} eventType The name of the event to emit
-    * @param {Array} args array of args to pass to callbacks
-  */
-
+   * @desc Emit an event
+   * @param {String} eventType The name of the event to emit
+   * @param {Array} args array of args to pass to callbacks
+   */
 
   colorPicker.prototype.emit = function emit(eventType) {
-    var args = [], len = arguments.length - 1;
+    var args = [],
+      len = arguments.length - 1;
     while (len-- > 0) args[len] = arguments[len + 1];
 
     var events = this._events,
-      callbackList = (events[eventType] || []).concat(events["*"] || []);
+      callbackList = (events[eventType] || []).concat(events['*'] || []);
 
     for (var i = 0; i < callbackList.length; i++) {
       callbackList[i].apply(null, args);
     }
   };
   /**
-    * @desc DOM event handler
-    * @param {Event} e DOM event (currently either mouse or touch events)
-  */
-
+   * @desc DOM event handler
+   * @param {Event} e DOM event (currently either mouse or touch events)
+   */
 
   colorPicker.prototype.handleEvent = function handleEvent(e) {
     var this$1 = this;
@@ -1373,10 +1369,10 @@
             this$1._mouseTarget = uiElement; // Attach event listeners
 
             listen(document, [EVENT_MOUSEMOVE, EVENT_TOUCHMOVE, EVENT_MOUSEUP, EVENT_TOUCHEND], this$1, {
-              passive: false
+              passive: false,
             }); // Emit input start event
 
-            this$1.emit("input:start", this$1.color); // Finally, use the position to update the picked color
+            this$1.emit('input:start', this$1.color); // Finally, use the position to update the picked color
 
             this$1.color.hsv = this$1._mouseTarget.input(x, y);
           }
@@ -1393,7 +1389,7 @@
       case EVENT_MOUSEUP:
       case EVENT_TOUCHEND:
         this._mouseTarget = false;
-        this.emit("input:end", this.color);
+        this.emit('input:end', this.color);
         unlisten(document, [EVENT_MOUSEMOVE, EVENT_TOUCHMOVE, EVENT_MOUSEUP, EVENT_TOUCHEND], this);
         break;
     }
@@ -1407,9 +1403,8 @@
     Color: color,
     ColorPicker: colorPicker,
     Stylesheet: stylesheet,
-    version: "3.5.1"
+    version: '3.5.1',
   };
 
   return iro;
-
-})));
+});

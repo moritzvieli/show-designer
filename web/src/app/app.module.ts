@@ -1,21 +1,19 @@
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { DesignerModule } from 'projects/designer/src/public_api';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SortablejsModule } from 'ngx-sortablejs';
+import { DesignerModule } from 'projects/designer/src/public_api';
 import { AppHttpInterceptor } from 'src/app/app-http-interceptor/app-http-interceptor';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     DesignerModule,
@@ -24,15 +22,15 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     AccordionModule.forRoot(),
     PopoverModule.forRoot(),
     TypeaheadModule.forRoot(),
     SortablejsModule.forRoot({
       animation: 300,
-      handle: '.list-sort-handle'
+      handle: '.list-sort-handle',
     }),
   ],
   providers: [
@@ -40,12 +38,12 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AppHttpInterceptor,
-      multi: true
+      multi: true,
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/designer/i18n/', '.json');

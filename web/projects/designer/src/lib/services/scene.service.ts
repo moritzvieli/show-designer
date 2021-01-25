@@ -1,26 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Scene } from '../models/scene';
-import { UuidService } from './uuid.service';
-import { EffectService } from './effect.service';
+import { Subject } from 'rxjs';
 import { Preset } from '../models/preset';
+import { Scene } from '../models/scene';
+import { EffectService } from './effect.service';
 import { PresetService } from './preset.service';
 import { ProjectService } from './project.service';
-import { Subject } from 'rxjs';
+import { UuidService } from './uuid.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SceneService {
-
   selectedScenes: Scene[] = [];
-  sceneColors: string[] = [
-    '#945fda',
-    '#61da5f',
-    '#5fc3da',
-    '#dad65f',
-    '#da5f5f',
-    '#246db7'
-  ];
+  sceneColors: string[] = ['#945fda', '#61da5f', '#5fc3da', '#dad65f', '#da5f5f', '#246db7'];
 
   multipleSelection = false;
 
@@ -32,8 +24,7 @@ export class SceneService {
     private effectService: EffectService,
     private presetService: PresetService,
     private projectService: ProjectService
-  ) {
-  }
+  ) {}
 
   sceneIsSelected(scene: Scene): boolean {
     for (const selectedScene of this.selectedScenes) {
@@ -188,5 +179,4 @@ export class SceneService {
       }
     }
   }
-
 }

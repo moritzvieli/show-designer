@@ -1,13 +1,11 @@
 export class Color {
+  red: number;
+  green: number;
+  blue: number;
 
-    red: number;
-    green: number;
-    blue: number;
-
-    constructor(red?: number, green?: number, blue?: number) {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-    }
-
+  constructor(red?: number, green?: number, blue?: number) {
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
+  }
 }

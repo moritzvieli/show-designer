@@ -1,4 +1,4 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpHeaders } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -6,7 +6,6 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AppHttpInterceptor implements HttpInterceptor {
-
   // The rest endpoint base url
   private restUrl: string;
 
@@ -18,7 +17,7 @@ export class AppHttpInterceptor implements HttpInterceptor {
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let newUrl: string;
 
-    if (req.url.startsWith('\.')) {
+    if (req.url.startsWith('.')) {
       // Referencing local resources (e.g. ./assets for the translate module)
       // -> don't add the api-url
       newUrl = req.url;
@@ -31,7 +30,7 @@ export class AppHttpInterceptor implements HttpInterceptor {
     }
 
     const clonedRequest: HttpRequest<any> = req.clone({
-      url: newUrl
+      url: newUrl,
     });
 
     return next.handle(clonedRequest);
@@ -40,5 +39,4 @@ export class AppHttpInterceptor implements HttpInterceptor {
   getRestUrl(): string {
     return this.restUrl;
   }
-
 }

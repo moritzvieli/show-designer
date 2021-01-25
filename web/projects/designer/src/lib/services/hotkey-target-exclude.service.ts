@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HotkeyTargetExcludeService {
-
-  constructor() { }
+  constructor() {}
 
   exclude(event: any): boolean {
     // don't react on certain targets (e.g. the user is inside an input field)
@@ -19,5 +18,4 @@ export class HotkeyTargetExcludeService {
 
     return false;
   }
-
 }

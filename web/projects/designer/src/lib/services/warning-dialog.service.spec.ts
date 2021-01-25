@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { WarningDialogService } from './warning-dialog.service';
 
 describe('WarningDialogService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [WarningDialogService]
+      providers: [WarningDialogService],
     });
   });
 

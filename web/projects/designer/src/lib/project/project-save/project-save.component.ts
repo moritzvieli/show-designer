@@ -1,18 +1,17 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { ProjectService } from '../../services/project.service';
-import { Project } from '../../models/project';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { map } from 'rxjs/operators';
-import { WarningDialogService } from '../../services/warning-dialog.service';
+import { Project } from '../../models/project';
 import { ConfigService } from '../../services/config.service';
+import { ProjectService } from '../../services/project.service';
+import { WarningDialogService } from '../../services/warning-dialog.service';
 
 @Component({
   selector: 'lib-project-save',
   templateUrl: './project-save.component.html',
-  styleUrls: ['./project-save.component.css']
+  styleUrls: ['./project-save.component.css'],
 })
 export class ProjectSaveComponent implements OnInit {
-
   projects: Project[] = [];
   loading = true;
   projectName: string;
@@ -31,11 +30,10 @@ export class ProjectSaveComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   private loadProjects() {
-    this.projectService.getAllProjects().subscribe(projects => {
+    this.projectService.getAllProjects().subscribe((projects) => {
       this.projects = projects;
       this.loading = false;
     });
@@ -66,29 +64,38 @@ export class ProjectSaveComponent implements OnInit {
 
   saveProject() {
     if (this.existingProject(this.projectService.project.uuid, this.projectName) && this.configService.uniqueProjectNames) {
-      this.warningDialogService.show('designer.project.overwrite-warning').pipe(map(result => {
-        if (result) {
-          this.doSave();
-        }
-      })).subscribe();
+      this.warningDialogService
+        .show('designer.project.overwrite-warning')
+        .pipe(
+          map((result) => {
+            if (result) {
+              this.doSave();
+            }
+          })
+        )
+        .subscribe();
     } else {
       this.doSave();
     }
   }
 
   deleteProject(project: Project) {
-    this.warningDialogService.show('designer.project.delete-warning').pipe(map(result => {
-      if (result) {
-        this.projectService.deleteProject(project).subscribe(projects => {
-          this.loadProjects();
-        });
-      }
-    })).subscribe();
+    this.warningDialogService
+      .show('designer.project.delete-warning')
+      .pipe(
+        map((result) => {
+          if (result) {
+            this.projectService.deleteProject(project).subscribe((projects) => {
+              this.loadProjects();
+            });
+          }
+        })
+      )
+      .subscribe();
   }
 
   @HostListener('document:keydown.enter', ['$event'])
   handleKeyboardEvent(event: any) {
     this.saveProject();
   }
-
 }

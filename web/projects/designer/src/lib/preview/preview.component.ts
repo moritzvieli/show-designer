@@ -1,26 +1,25 @@
-import { AnimationService } from './../services/animation.service';
-import { Positioning } from './../models/fixture';
-import { MovingHead3d } from './models/moving-head-3d';
-import { FixtureService } from '../services/fixture.service';
-import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import STATS from 'three/examples/js/libs/stats.min';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { FixtureCategory } from '../models/fixture-profile';
-import { Fixture3d } from './models/fixture-3d';
-import { PreviewService } from '../services/preview.service';
-import { TimelineService } from '../services/timeline.service';
-import { ProjectService } from '../services/project.service';
+import { FixtureService } from '../services/fixture.service';
 import { PreviewMeshService } from '../services/preview-mesh.service';
+import { PreviewService } from '../services/preview.service';
+import { ProjectService } from '../services/project.service';
+import { TimelineService } from '../services/timeline.service';
+import { Positioning } from './../models/fixture';
+import { AnimationService } from './../services/animation.service';
 import { ColorChanger3d } from './models/color-changer-3d';
+import { Fixture3d } from './models/fixture-3d';
+import { MovingHead3d } from './models/moving-head-3d';
 
 @Component({
   selector: 'lib-app-preview',
   templateUrl: './preview.component.html',
-  styleUrls: ['./preview.component.css']
+  styleUrls: ['./preview.component.css'],
 })
 export class PreviewComponent implements AfterViewInit {
-
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
@@ -40,8 +39,8 @@ export class PreviewComponent implements AfterViewInit {
     private animationService: AnimationService,
     private previewService: PreviewService,
     private timelineService: TimelineService,
-    private projectService: ProjectService) {
-
+    private projectService: ProjectService
+  ) {
     this.previewService.doUpdateFixtureSetup.subscribe(() => {
       // synchronize the 3d-fixtures to the project fixtures
       this.syncFixtures();
@@ -88,7 +87,6 @@ export class PreviewComponent implements AfterViewInit {
     zMin: number,
     zMax: number
   ) {
-
     let positionCount = 0; // Number of fixtures in the same position
     let positionIndex = 1;
 
@@ -100,9 +98,9 @@ export class PreviewComponent implements AfterViewInit {
 
     this.projectService.project.fixtures.forEach((element, index) => {
       if (element.positioning === positioning) {
-        element.positionX = xMin + (xMax - xMin) / (positionCount + 1) * positionIndex;
-        element.positionY = yMin + (yMax - yMin) / (positionCount + 1) * positionIndex;
-        element.positionZ = zMin + (zMax - zMin) / (positionCount + 1) * positionIndex;
+        element.positionX = xMin + ((xMax - xMin) / (positionCount + 1)) * positionIndex;
+        element.positionY = yMin + ((yMax - yMin) / (positionCount + 1)) * positionIndex;
+        element.positionZ = zMin + ((zMax - zMin) / (positionCount + 1)) * positionIndex;
 
         positionIndex++;
       }
@@ -247,7 +245,7 @@ export class PreviewComponent implements AfterViewInit {
     const height = 1;
 
     const geometry = new THREE.BoxGeometry(width, height, width);
-    const material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
+    const material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d });
 
     const floor = new THREE.Mesh(geometry.clone(), material);
     floor.receiveShadow = false;
@@ -291,7 +289,7 @@ export class PreviewComponent implements AfterViewInit {
 
     lights[0].position.set(0, 2000, 0);
     lights[1].position.set(1000, 2000, 1000);
-    lights[2].position.set(- 1000, - 2000, - 1000);
+    lights[2].position.set(-1000, -2000, -1000);
 
     this.scene.add(lights[0]);
     this.scene.add(lights[1]);
@@ -310,5 +308,4 @@ export class PreviewComponent implements AfterViewInit {
     this.onResize();
     this.animate(null);
   }
-
 }

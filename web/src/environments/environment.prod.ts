@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
-  name: "prod",
+  name: 'prod',
 
   // Local backend
-  localBackend: "/designer",
+  localBackend: '/designer',
 
-  debug: false
+  debug: false,
 };

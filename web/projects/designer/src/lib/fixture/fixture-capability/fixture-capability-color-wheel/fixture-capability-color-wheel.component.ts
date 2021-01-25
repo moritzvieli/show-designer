@@ -1,20 +1,19 @@
-import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { PresetService } from '../../../services/preset.service';
-import { FixtureWheel } from '../../../models/fixture-wheel';
-import { FixtureProfile } from '../../../models/fixture-profile';
-import { FixtureService } from '../../../services/fixture.service';
-import { FixtureCapabilityType } from '../../../models/fixture-capability';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
 import { CachedFixtureCapability } from '../../../models/cached-fixture-capability';
+import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
+import { FixtureCapabilityType } from '../../../models/fixture-capability';
+import { FixtureProfile } from '../../../models/fixture-profile';
+import { FixtureWheel } from '../../../models/fixture-wheel';
+import { FixtureService } from '../../../services/fixture.service';
+import { PresetService } from '../../../services/preset.service';
 
 @Component({
   selector: 'lib-app-fixture-capability-color-wheel',
   templateUrl: './fixture-capability-color-wheel.component.html',
-  styleUrls: ['./fixture-capability-color-wheel.component.css']
+  styleUrls: ['./fixture-capability-color-wheel.component.css'],
 })
 export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
-
   _fixtureProfile: FixtureProfile;
   _channel: CachedFixtureChannel;
   wheelName: string;
@@ -41,11 +40,7 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
   @Input()
   showContainer = false;
 
-  constructor(
-    public presetService: PresetService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private fixtureService: FixtureService
-  ) { }
+  constructor(public presetService: PresetService, private changeDetectorRef: ChangeDetectorRef, private fixtureService: FixtureService) {}
 
   ngOnInit() {
     this.colorChangeSubscription = this.presetService.fixtureColorChanged.subscribe(() => {
@@ -125,14 +120,13 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
   }
 
   getCurrentSlotNumber(): number {
-    const capabilityValue =
-      this.presetService.getCapabilityValue(
-        this.presetService.selectedPreset,
-        FixtureCapabilityType.WheelSlot,
-        undefined,
-        this.wheelName,
-        this._fixtureProfile.uuid
-      );
+    const capabilityValue = this.presetService.getCapabilityValue(
+      this.presetService.selectedPreset,
+      FixtureCapabilityType.WheelSlot,
+      undefined,
+      this.wheelName,
+      this._fixtureProfile.uuid
+    );
 
     if (capabilityValue) {
       return capabilityValue.slotNumber;
@@ -149,8 +143,10 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
     } else {
       // no slot is selected and the capability is inactive
       // -> show the approx. color, if a color or a similar slot from a different wheel has been selected
-      const approximatedCapability =
-        this.presetService.getApproximatedColorWheelCapability(this.presetService.selectedPreset, this._channel);
+      const approximatedCapability = this.presetService.getApproximatedColorWheelCapability(
+        this.presetService.selectedPreset,
+        this._channel
+      );
 
       if (approximatedCapability) {
         return slotNumber === approximatedCapability.capability.slotNumber;
@@ -196,5 +192,4 @@ export class FixtureCapabilityColorWheelComponent implements OnInit, OnDestroy {
     );
     this.presetService.previewLive();
   }
-
 }

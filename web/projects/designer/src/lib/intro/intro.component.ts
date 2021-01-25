@@ -4,19 +4,14 @@ import { IntroService } from '../services/intro.service';
 @Component({
   selector: 'lib-app-intro',
   templateUrl: './intro.component.html',
-  styleUrls: ['./intro.component.css']
+  styleUrls: ['./intro.component.css'],
 })
 export class IntroComponent implements OnInit {
+  constructor(public introService: IntroService) {}
 
-  constructor(
-    public introService: IntroService
-  ) { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   close() {
     this.introService.setShowIntro(false);
   }
-
 }

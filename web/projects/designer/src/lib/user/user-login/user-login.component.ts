@@ -1,15 +1,14 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { UserService } from '../../services/user.service';
 import { Subject } from 'rxjs';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'lib-user-login',
   templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.css']
+  styleUrls: ['./user-login.component.css'],
 })
 export class UserLoginComponent implements OnInit {
-
   error = '';
   loggingIn = false;
 
@@ -19,13 +18,9 @@ export class UserLoginComponent implements OnInit {
   // emits, when logged in
   subject: Subject<void>;
 
-  constructor(
-    private bsModalRef: BsModalRef,
-    private userService: UserService
-  ) { }
+  constructor(private bsModalRef: BsModalRef, private userService: UserService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   cancel() {
     this.bsModalRef.hide();
@@ -41,24 +36,26 @@ export class UserLoginComponent implements OnInit {
       return;
     }
 
-    this.userService.login(this.email, this.password).subscribe(() => {
-      this.bsModalRef.hide();
-      if (this.subject) {
-        this.subject.next();
+    this.userService.login(this.email, this.password).subscribe(
+      () => {
+        this.bsModalRef.hide();
+        if (this.subject) {
+          this.subject.next();
+        }
+      },
+      (response) => {
+        if (response.error && response.error.error) {
+          this.error = response.error.error;
+        } else {
+          this.error = 'internal';
+        }
+        this.loggingIn = false;
       }
-    }, (response) => {
-      if (response.error && response.error.error) {
-        this.error = response.error.error;
-      } else {
-        this.error = 'internal';
-      }
-      this.loggingIn = false;
-    });
+    );
   }
 
   @HostListener('document:keydown.enter', ['$event'])
   handleKeyboardEvent(event: any) {
     this.login();
   }
-
 }

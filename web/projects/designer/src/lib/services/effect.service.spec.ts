@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { EffectService } from './effect.service';
 
 describe('EffectService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [EffectService]
+      providers: [EffectService],
     });
   });
 

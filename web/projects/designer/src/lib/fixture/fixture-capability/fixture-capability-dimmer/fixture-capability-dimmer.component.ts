@@ -1,21 +1,16 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { PresetService } from '../../../services/preset.service';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FixtureCapabilityType } from '../../../models/fixture-capability';
+import { PresetService } from '../../../services/preset.service';
 
 @Component({
   selector: 'lib-app-fixture-capability-dimmer',
   templateUrl: './fixture-capability-dimmer.component.html',
-  styleUrls: ['./fixture-capability-dimmer.component.css']
+  styleUrls: ['./fixture-capability-dimmer.component.css'],
 })
 export class FixtureCapabilityDimmerComponent implements OnInit {
+  constructor(private presetService: PresetService, private changeDetectorRef: ChangeDetectorRef) {}
 
-  constructor(
-    private presetService: PresetService,
-    private changeDetectorRef: ChangeDetectorRef
-  ) { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getValue(): number {
     const capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Intensity);
@@ -56,5 +51,4 @@ export class FixtureCapabilityDimmerComponent implements OnInit {
     }
     this.presetService.previewLive();
   }
-
 }

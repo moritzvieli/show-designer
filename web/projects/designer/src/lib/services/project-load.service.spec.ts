@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { ProjectLoadService } from './project-load.service';
 
 describe('ProjectLoadService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ProjectLoadService]
+      providers: [ProjectLoadService],
     });
   });
 

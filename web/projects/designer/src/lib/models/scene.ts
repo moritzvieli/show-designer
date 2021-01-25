@@ -1,38 +1,36 @@
 import { ScenePlaybackRegion } from './scene-playback-region';
 
 export class Scene {
+  uuid: string;
+  name: string;
 
-    uuid: string;
-    name: string;
+  color = '#fff';
 
-    color = '#fff';
+  // All contained presets
+  presetUuids: string[] = [];
 
-    // All contained presets
-    presetUuids: string[] = [];
+  // Fading times
+  fadeInMillis = 0;
+  fadeOutMillis = 0;
 
-    // Fading times
-    fadeInMillis = 0;
-    fadeOutMillis = 0;
+  // fade in/out outside the start/end times?
+  fadeInPre = false;
+  fadeOutPost = false;
 
-    // fade in/out outside the start/end times?
-    fadeInPre = false;
-    fadeOutPost = false;
-
-    constructor(data?: any) {
-        if (!data) {
-            return;
-        }
-
-        this.uuid = data.uuid;
-        this.name = data.name;
-        this.color = data.color;
-        if (data.presetUuids) {
-            this.presetUuids = data.presetUuids;
-        }
-        this.fadeInMillis = data.fadeInMillis;
-        this.fadeOutMillis = data.fadeOutMillis;
-        this.fadeInPre = data.fadeInPre;
-        this.fadeOutPost = data.fadeOutPost;
+  constructor(data?: any) {
+    if (!data) {
+      return;
     }
 
+    this.uuid = data.uuid;
+    this.name = data.name;
+    this.color = data.color;
+    if (data.presetUuids) {
+      this.presetUuids = data.presetUuids;
+    }
+    this.fadeInMillis = data.fadeInMillis;
+    this.fadeOutMillis = data.fadeOutMillis;
+    this.fadeInPre = data.fadeInPre;
+    this.fadeOutPost = data.fadeOutPost;
+  }
 }

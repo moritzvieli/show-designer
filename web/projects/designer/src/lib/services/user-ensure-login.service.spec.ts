@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { UserEnsureLoginService } from './user-ensure-login.service';
 
 describe('UserEnsureLoginService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UserEnsureLoginService]
+      providers: [UserEnsureLoginService],
     });
   });
 

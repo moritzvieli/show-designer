@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { PreviewMeshService } from './preview-mesh.service';
 
 describe('PreviewMeshService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [PreviewMeshService]
+      providers: [PreviewMeshService],
     });
   });
 

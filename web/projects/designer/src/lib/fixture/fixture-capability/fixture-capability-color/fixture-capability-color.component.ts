@@ -1,19 +1,18 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { PresetService } from '../../../services/preset.service';
-import { FixtureCapabilityType, FixtureCapabilityColor } from '../../../models/fixture-capability';
-import { FixtureService } from '../../../services/fixture.service';
-import { FixtureCapabilityValue } from '../../../models/fixture-capability-value';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { FixtureCapabilityColor, FixtureCapabilityType } from '../../../models/fixture-capability';
+import { FixtureCapabilityValue } from '../../../models/fixture-capability-value';
+import { FixtureService } from '../../../services/fixture.service';
+import { PresetService } from '../../../services/preset.service';
 
 declare var iro: any;
 
 @Component({
   selector: 'lib-app-fixture-capability-color',
   templateUrl: './fixture-capability-color.component.html',
-  styleUrls: ['./fixture-capability-color.component.css']
+  styleUrls: ['./fixture-capability-color.component.css'],
 })
 export class FixtureCapabilityColorComponent implements OnInit, OnDestroy {
-
   color = '#ffffff';
   colorPicker: any;
   active = false;
@@ -24,11 +23,7 @@ export class FixtureCapabilityColorComponent implements OnInit, OnDestroy {
 
   private updateSubscription: Subscription;
 
-  constructor(
-    private presetService: PresetService,
-    private fixtureService: FixtureService,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {
+  constructor(private presetService: PresetService, private fixtureService: FixtureService, private changeDetectorRef: ChangeDetectorRef) {
     this.updateSubscription = this.presetService.previewSelectionChanged.subscribe(() => {
       this.update();
       this.changeDetectorRef.detectChanges();
@@ -95,7 +90,7 @@ export class FixtureCapabilityColorComponent implements OnInit, OnDestroy {
       color: this.color,
       borderWidth: 1,
       borderColor: '#ffffff',
-      sliderMargin: 20
+      sliderMargin: 20,
     });
 
     this.colorPicker.on('color:change', this.changeColor.bind(this));
@@ -177,5 +172,4 @@ export class FixtureCapabilityColorComponent implements OnInit, OnDestroy {
     this.color = color.hexString;
     this.updateFixtureColor(color);
   }
-
 }

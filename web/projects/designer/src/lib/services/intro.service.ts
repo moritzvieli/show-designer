@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ConfigService } from './config.service';
 import { Subject } from 'rxjs';
+import { ConfigService } from './config.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IntroService {
-
   showIntro = false;
   activeStep = 'start';
   positionTopPercentage = 50;
@@ -14,10 +13,7 @@ export class IntroService {
   stylePosition = 'top: calc(50% - 150px); left: calc(50% - 200px);';
   stepChanged: Subject<void> = new Subject<void>();
 
-  constructor(
-    private configService: ConfigService
-  ) {
-  }
+  constructor(private configService: ConfigService) {}
 
   refresh() {
     // called, as soon as the config has been updated
@@ -141,5 +137,4 @@ export class IntroService {
 
     this.stepChanged.next();
   }
-
 }

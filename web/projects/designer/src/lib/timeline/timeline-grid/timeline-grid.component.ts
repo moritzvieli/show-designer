@@ -1,14 +1,13 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { TimelineService } from '../../services/timeline.service';
 
 @Component({
   selector: 'lib-app-timeline-grid',
   templateUrl: './timeline-grid.component.html',
-  styleUrls: ['./timeline-grid.component.css']
+  styleUrls: ['./timeline-grid.component.css'],
 })
 export class TimelineGridComponent implements OnInit {
-
   public gridType: string;
   public beatsPerMinute: number;
   public timeSignatureUpper: number;
@@ -17,10 +16,7 @@ export class TimelineGridComponent implements OnInit {
   public gridOffsetMillis: number;
   public gridResolution: number;
 
-  constructor(
-    public bsModalRef: BsModalRef,
-    public timelineService: TimelineService,
-  ) {
+  constructor(public bsModalRef: BsModalRef, public timelineService: TimelineService) {
     this.gridType = timelineService.selectedComposition.gridType;
     this.beatsPerMinute = timelineService.selectedComposition.beatsPerMinute;
     this.timeSignatureUpper = timelineService.selectedComposition.timeSignatureUpper;
@@ -30,8 +26,7 @@ export class TimelineGridComponent implements OnInit {
     this.gridResolution = timelineService.selectedComposition.gridResolution;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ok() {
     this.timelineService.selectedComposition.gridType = this.gridType;
@@ -54,5 +49,4 @@ export class TimelineGridComponent implements OnInit {
   handleKeyboardEvent(event: any) {
     this.ok();
   }
-
 }

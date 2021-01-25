@@ -1,31 +1,30 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import * as THREE from 'three';
+import { CachedFixture } from '../models/cached-fixture';
+import { EffectCurve } from '../models/effect-curve';
+import { FixtureCapabilityType } from '../models/fixture-capability';
+import { FixtureChannelValue } from '../models/fixture-channel-value';
+import { Preset } from '../models/preset';
+import { PresetRegionScene } from '../models/preset-region-scene';
 import { Universe } from '../models/universe';
-import { PresetService } from './preset.service';
 import { FixtureService } from './fixture.service';
+import { PresetService } from './preset.service';
+import { ProjectService } from './project.service';
 import { SceneService } from './scene.service';
 import { TimelineService } from './timeline.service';
 import { UniverseService } from './universe.service';
-import { FixtureCapabilityType } from '../models/fixture-capability';
-import { Preset } from '../models/preset';
-import { ProjectService } from './project.service';
-import { PresetRegionScene } from '../models/preset-region-scene';
-import { Subject } from 'rxjs';
-import { FixtureChannelValue } from '../models/fixture-channel-value';
-import { CachedFixture } from '../models/cached-fixture';
-import { EffectCurve } from '../models/effect-curve';
-import * as THREE from 'three';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PreviewService {
-
   public doUpdateFixtureSetup: Subject<void> = new Subject();
 
   public scene: THREE.Scene;
 
   private stageMeshes: THREE.Mesh[] = [];
-  private stageMaterial = new THREE.MeshStandardMaterial({ color: 0x0d0d0d, });
+  private stageMaterial = new THREE.MeshStandardMaterial({ color: 0x0d0d0d });
 
   constructor(
     private presetService: PresetService,
@@ -34,7 +33,7 @@ export class PreviewService {
     private timelineService: TimelineService,
     private universeService: UniverseService,
     private projectService: ProjectService
-  ) { }
+  ) {}
 
   private getAlreadyCalculatedFixture(fixtures: CachedFixture[], fixtureIndex: number): CachedFixture {
     // Has this fixture already been calculated (same universe and dmx start address as a fixture before)
@@ -42,9 +41,10 @@ export class PreviewService {
     for (let i = 0; i < fixtureIndex; i++) {
       const calculatedFixture = fixtures[i];
 
-      if (calculatedFixture.fixture.dmxUniverseUuid === fixtures[fixtureIndex].fixture.dmxUniverseUuid
-        && calculatedFixture.fixture.dmxFirstChannel === fixtures[fixtureIndex].fixture.dmxFirstChannel) {
-
+      if (
+        calculatedFixture.fixture.dmxUniverseUuid === fixtures[fixtureIndex].fixture.dmxUniverseUuid &&
+        calculatedFixture.fixture.dmxFirstChannel === fixtures[fixtureIndex].fixture.dmxFirstChannel
+      ) {
         return calculatedFixture;
       }
     }
@@ -94,7 +94,6 @@ export class PreviewService {
     intensityPercentage: number,
     defaultValue: number = 0
   ) {
-
     let newValue: number = channelValue.value;
     let existingValue: number = defaultValue;
 
@@ -103,9 +102,10 @@ export class PreviewService {
 
       // Get the existant value for this property
       for (const existingChannelValue of existingChannelValues) {
-        if (existingChannelValue.channelName === channelValue.channelName
-          && existingChannelValue.profileUuid === channelValue.profileUuid) {
-
+        if (
+          existingChannelValue.channelName === channelValue.channelName &&
+          existingChannelValue.profileUuid === channelValue.profileUuid
+        ) {
           existingValue = existingChannelValue.value;
           break;
         }
@@ -117,9 +117,10 @@ export class PreviewService {
 
     // Remove the existant value, if available
     for (let i = 0; i < existingChannelValues.length; i++) {
-      if (existingChannelValues[i].channelName === channelValue.channelName
-        && existingChannelValues[i].profileUuid === channelValue.profileUuid) {
-
+      if (
+        existingChannelValues[i].channelName === channelValue.channelName &&
+        existingChannelValues[i].profileUuid === channelValue.profileUuid
+      ) {
         existingChannelValues.splice(i, 1);
         break;
       }
@@ -175,12 +176,10 @@ export class PreviewService {
       const sceneStartMillis = preset.scene.fadeInPre ? preset.region.startMillis - preset.scene.fadeInMillis : preset.region.startMillis;
       const sceneEndMillis = preset.scene.fadeOutPost ? preset.region.endMillis + preset.scene.fadeOutMillis : preset.region.endMillis;
 
-      if (timeMillis > sceneEndMillis - preset.scene.fadeOutMillis
-        && timeMillis < sceneEndMillis) {
+      if (timeMillis > sceneEndMillis - preset.scene.fadeOutMillis && timeMillis < sceneEndMillis) {
         // Scene fades out
         intensityPercentageScene = (sceneEndMillis - timeMillis) / preset.scene.fadeOutMillis;
-      } else if (timeMillis < sceneStartMillis + preset.scene.fadeInMillis
-        && timeMillis > sceneStartMillis) {
+      } else if (timeMillis < sceneStartMillis + preset.scene.fadeInMillis && timeMillis > sceneStartMillis) {
         // Scene fades in
         intensityPercentageScene = (timeMillis - sceneStartMillis) / preset.scene.fadeInMillis;
       }
@@ -188,24 +187,20 @@ export class PreviewService {
 
     if (preset.region && preset.preset) {
       // Take away intensity for preset fading
-      let presetStartMillis = preset.preset.startMillis === undefined
-        ? preset.region.startMillis
-        : preset.region.startMillis + preset.preset.startMillis;
+      let presetStartMillis =
+        preset.preset.startMillis === undefined ? preset.region.startMillis : preset.region.startMillis + preset.preset.startMillis;
 
-      let presetEndMillis = preset.preset.endMillis === undefined
-        ? preset.region.endMillis
-        : preset.region.startMillis + preset.preset.endMillis;
+      let presetEndMillis =
+        preset.preset.endMillis === undefined ? preset.region.endMillis : preset.region.startMillis + preset.preset.endMillis;
 
       // extend the running time, if fading is done outside the boundaries
       presetStartMillis -= preset.preset.fadeInPre ? preset.preset.fadeInMillis : 0;
       presetEndMillis += preset.preset.fadeOutPost ? preset.preset.fadeOutMillis : 0;
 
-      if (timeMillis > presetEndMillis - preset.preset.fadeOutMillis
-        && timeMillis < presetEndMillis) {
+      if (timeMillis > presetEndMillis - preset.preset.fadeOutMillis && timeMillis < presetEndMillis) {
         // Preset fades out
         intensityPercentagePreset = (presetEndMillis - timeMillis) / preset.preset.fadeOutMillis;
-      } else if (timeMillis < presetStartMillis + preset.preset.fadeInMillis
-        && timeMillis > presetStartMillis) {
+      } else if (timeMillis < presetStartMillis + preset.preset.fadeInMillis && timeMillis > presetStartMillis) {
         // Preset fades in
         intensityPercentagePreset = (timeMillis - presetStartMillis) / preset.preset.fadeInMillis;
       }
@@ -222,7 +217,6 @@ export class PreviewService {
     values: FixtureChannelValue[],
     intensityPercentage: number
   ) {
-
     let hasColor = false;
 
     // mix the preset capability values
@@ -230,22 +224,24 @@ export class PreviewService {
       for (const cachedChannel of cachedFixture.channels) {
         if (cachedChannel.channel) {
           for (const channelCapability of cachedChannel.capabilities) {
-            if (this.fixtureService.capabilitiesMatch(
-              presetCapabilityValue.type,
-              channelCapability.capability.type,
-              presetCapabilityValue.color,
-              channelCapability.capability.color,
-              presetCapabilityValue.wheel,
-              channelCapability.wheelName,
-              presetCapabilityValue.profileUuid,
-              cachedFixture.profile.uuid
-            )) {
-
+            if (
+              this.fixtureService.capabilitiesMatch(
+                presetCapabilityValue.type,
+                channelCapability.capability.type,
+                presetCapabilityValue.color,
+                channelCapability.capability.color,
+                presetCapabilityValue.wheel,
+                channelCapability.wheelName,
+                presetCapabilityValue.profileUuid,
+                cachedFixture.profile.uuid
+              )
+            ) {
               // the capabilities match -> apply the value, if possible
-              if ((presetCapabilityValue.type === FixtureCapabilityType.Intensity ||
-                presetCapabilityValue.type === FixtureCapabilityType.ColorIntensity)
-                && presetCapabilityValue.valuePercentage >= 0) {
-
+              if (
+                (presetCapabilityValue.type === FixtureCapabilityType.Intensity ||
+                  presetCapabilityValue.type === FixtureCapabilityType.ColorIntensity) &&
+                presetCapabilityValue.valuePercentage >= 0
+              ) {
                 // intensity and colorIntensity (dimmer and color)
                 const valuePercentage = presetCapabilityValue.valuePercentage;
                 const defaultValue = 0;
@@ -274,14 +270,13 @@ export class PreviewService {
                     if (presetCapabilityValue.type === FixtureCapabilityType.ColorIntensity) {
                       hasColor = true;
                     }
-                  } else if ((channelCapability.capability.brightnessStart === 'dark'
-                    || channelCapability.capability.brightnessStart === 'off')
-
-                    && channelCapability.capability.brightnessEnd === 'bright') {
-
-                    const value = (channelCapability.capability.dmxRange[1]
-                      - channelCapability.capability.dmxRange[0]) * valuePercentage
-                      + channelCapability.capability.dmxRange[0];
+                  } else if (
+                    (channelCapability.capability.brightnessStart === 'dark' || channelCapability.capability.brightnessStart === 'off') &&
+                    channelCapability.capability.brightnessEnd === 'bright'
+                  ) {
+                    const value =
+                      (channelCapability.capability.dmxRange[1] - channelCapability.capability.dmxRange[0]) * valuePercentage +
+                      channelCapability.capability.dmxRange[0];
 
                     const fixtureChannelValue = new FixtureChannelValue();
                     fixtureChannelValue.channelName = cachedChannel.name;
@@ -294,18 +289,19 @@ export class PreviewService {
                     }
                   }
                 }
-              } else if ((presetCapabilityValue.type === FixtureCapabilityType.Pan
-                || presetCapabilityValue.type === FixtureCapabilityType.Tilt)
-                && presetCapabilityValue.valuePercentage >= 0) {
-
+              } else if (
+                (presetCapabilityValue.type === FixtureCapabilityType.Pan || presetCapabilityValue.type === FixtureCapabilityType.Tilt) &&
+                presetCapabilityValue.valuePercentage >= 0
+              ) {
                 const fixtureChannelValue = new FixtureChannelValue();
                 fixtureChannelValue.channelName = cachedChannel.name;
                 fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
                 fixtureChannelValue.value = cachedChannel.maxValue * presetCapabilityValue.valuePercentage;
                 this.mixChannelValue(values, fixtureChannelValue, 1);
-              } else if (presetCapabilityValue.type === FixtureCapabilityType.WheelSlot
-                && channelCapability.capability.slotNumber === presetCapabilityValue.slotNumber) {
-
+              } else if (
+                presetCapabilityValue.type === FixtureCapabilityType.WheelSlot &&
+                channelCapability.capability.slotNumber === presetCapabilityValue.slotNumber
+              ) {
                 // wheel slot (color, gobo, etc.)
                 const fixtureChannelValue = new FixtureChannelValue();
                 fixtureChannelValue.channelName = cachedChannel.name;
@@ -345,7 +341,6 @@ export class PreviewService {
     values: FixtureChannelValue[],
     intensityPercentage: number
   ) {
-
     // mix the preset channel values
     for (const cachedChannel of cachedFixture.channels) {
       if (cachedChannel.channel) {
@@ -366,27 +361,28 @@ export class PreviewService {
     values: FixtureChannelValue[],
     intensityPercentage: number
   ) {
-
     for (const effect of preset.preset.effects) {
       if (effect.visible) {
         // EffectCurve
         if (effect instanceof EffectCurve) {
-          const effectCurve = <EffectCurve>effect;
+          const effectCurve = effect as EffectCurve;
 
           // capabilities
           for (const capability of effectCurve.capabilities) {
             for (const cachedChannel of cachedFixture.channels) {
               for (const channelCapability of cachedChannel.capabilities) {
-                if (this.fixtureService.capabilitiesMatch(
-                  capability.type,
-                  channelCapability.capability.type,
-                  capability.color,
-                  channelCapability.capability.color,
-                  null,
-                  null,
-                  null,
-                  null
-                )) {
+                if (
+                  this.fixtureService.capabilitiesMatch(
+                    capability.type,
+                    channelCapability.capability.type,
+                    capability.color,
+                    channelCapability.capability.color,
+                    null,
+                    null,
+                    null,
+                    null
+                  )
+                ) {
                   const fixtureChannelValue = new FixtureChannelValue();
                   fixtureChannelValue.channelName = cachedChannel.name;
                   fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
@@ -639,13 +635,12 @@ export class PreviewService {
     mesh.castShadow = false;
     mesh.position.set(
       0,
-      this.projectService.project.stageHeightCm
-      + this.projectService.project.stageCeilingHeightCm / 2
-      + this.projectService.project.stageFloorHeightCm,
+      this.projectService.project.stageHeightCm +
+        this.projectService.project.stageCeilingHeightCm / 2 +
+        this.projectService.project.stageFloorHeightCm,
       0
     );
     this.scene.add(mesh);
     this.stageMeshes.push(mesh);
   }
-
 }

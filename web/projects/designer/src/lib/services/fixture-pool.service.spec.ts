@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { FixturePoolService } from './fixture-pool.service';
 
 describe('FixturePoolService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [FixturePoolService]
+      providers: [FixturePoolService],
     });
   });
 

@@ -1,25 +1,24 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
-import { FixtureProfile } from '../models/fixture-profile';
-import { FixtureService } from '../services/fixture.service';
-import { Fixture } from '../models/fixture';
-import { UuidService } from '../services/uuid.service';
-import { ProjectService } from '../services/project.service';
-import { Subject } from 'rxjs';
-import { PreviewService } from '../services/preview.service';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { PresetService } from '../services/preset.service';
+import { Subject } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
+import { Fixture } from '../models/fixture';
+import { FixtureProfile } from '../models/fixture-profile';
 import { ConfigService } from '../services/config.service';
+import { FixtureService } from '../services/fixture.service';
+import { PresetService } from '../services/preset.service';
+import { PreviewService } from '../services/preview.service';
+import { ProjectService } from '../services/project.service';
+import { UuidService } from '../services/uuid.service';
 
 @Component({
   selector: 'lib-app-fixture-pool',
   templateUrl: './fixture-pool.component.html',
-  styleUrls: ['./fixture-pool.component.css']
+  styleUrls: ['./fixture-pool.component.css'],
 })
 export class FixturePoolComponent implements OnInit {
-
   private profiles: FixtureProfile[];
   public filteredProfiles: FixtureProfile[];
   public loadingProfiles = false;
@@ -68,7 +67,7 @@ export class FixturePoolComponent implements OnInit {
   private loadProfiles() {
     this.loadingProfiles = true;
 
-    this.fixtureService.getSearchProfiles().subscribe(profiles => {
+    this.fixtureService.getSearchProfiles().subscribe((profiles) => {
       this.profiles = profiles;
       this.filterProfiles();
       this.loadingProfiles = false;
@@ -97,10 +96,11 @@ export class FixturePoolComponent implements OnInit {
       let foundKeywords = 0;
 
       for (const keyword of keywords) {
-        if (profile.uuid.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
-          || profile.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
-          || profile.manufacturerName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-
+        if (
+          profile.uuid.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+          profile.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+          profile.manufacturerName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
+        ) {
           foundKeywords++;
         }
       }
@@ -188,7 +188,7 @@ export class FixturePoolComponent implements OnInit {
         const msg = 'designer.fixture-pool.no-free-space';
         const title = 'designer.fixture-pool.no-free-space-title';
 
-        this.translateService.get([msg, title]).subscribe(result => {
+        this.translateService.get([msg, title]).subscribe((result) => {
           this.toastrService.error(result[msg], result[title]);
         });
       }
@@ -220,7 +220,7 @@ export class FixturePoolComponent implements OnInit {
     }
 
     if (!this.selectedFixture && this.fixturePool && this.fixturePool.length > 0) {
-      this.selectFixture(this.selectedFixture = this.fixturePool[0]);
+      this.selectFixture((this.selectedFixture = this.fixturePool[0]));
     }
 
     // remove unused profiles
@@ -334,11 +334,10 @@ export class FixturePoolComponent implements OnInit {
     }
 
     if (index >= this.selectedFixture.dmxFirstChannel) {
-      const mode =
-        this.fixtureService.getModeByFixture(
-          this.fixtureService.getProfileByUuid(this.selectedFixture.profileUuid),
-          this.selectedFixture
-        );
+      const mode = this.fixtureService.getModeByFixture(
+        this.fixtureService.getProfileByUuid(this.selectedFixture.profileUuid),
+        this.selectedFixture
+      );
 
       if (index < this.selectedFixture.dmxFirstChannel + mode.channels.length) {
         return true;
@@ -360,14 +359,18 @@ export class FixturePoolComponent implements OnInit {
     // perform dragging
     const selectedIndex = event.target.dataset.index;
 
-    if (this.channelDragFixture
-      && selectedIndex - this.channelDragOffset >= 0
-      && selectedIndex - this.channelDragOffset + this.fixtureService.getModeByFixture(
-        this.fixtureService.getProfileByUuid(this.channelDragFixture.profileUuid),
-        this.channelDragFixture).channels.length
-      - 1 <= 511
+    if (
+      this.channelDragFixture &&
+      selectedIndex - this.channelDragOffset >= 0 &&
+      selectedIndex -
+        this.channelDragOffset +
+        this.fixtureService.getModeByFixture(
+          this.fixtureService.getProfileByUuid(this.channelDragFixture.profileUuid),
+          this.channelDragFixture
+        ).channels.length -
+        1 <=
+        511
     ) {
-
       this.channelDragFixture.dmxFirstChannel = selectedIndex - this.channelDragOffset;
     }
   }
@@ -379,7 +382,7 @@ export class FixturePoolComponent implements OnInit {
         const msg = 'designer.fixture-pool.channel-occupied';
         const title = 'designer.fixture-pool.channel-occupied-title';
 
-        this.translateService.get([msg, title]).subscribe(result => {
+        this.translateService.get([msg, title]).subscribe((result) => {
           this.toastrService.error(result[msg], result[title]);
         });
 
@@ -409,25 +412,30 @@ export class FixturePoolComponent implements OnInit {
     this.updatingProfiles = true;
 
     // TODO
-    this.fixtureService.updateProfiles().pipe(finalize(() => {
-      this.updatingProfiles = false;
-    }), catchError(() => {
-      const msg = 'designer.fixture-pool.profiles-update-error';
-      const title = 'designer.fixture-pool.profiles-update-error-title';
+    this.fixtureService
+      .updateProfiles()
+      .pipe(
+        finalize(() => {
+          this.updatingProfiles = false;
+        }),
+        catchError(() => {
+          const msg = 'designer.fixture-pool.profiles-update-error';
+          const title = 'designer.fixture-pool.profiles-update-error-title';
 
-      this.translateService.get([msg, title]).subscribe(result => {
-        this.toastrService.error(result[msg], result[title]);
-      });
+          this.translateService.get([msg, title]).subscribe((result) => {
+            this.toastrService.error(result[msg], result[title]);
+          });
 
-      return undefined;
-    }))
+          return undefined;
+        })
+      )
       .subscribe(() => {
         this.loadProfiles();
 
         const msg = 'designer.fixture-pool.profiles-updated';
         const title = 'designer.fixture-pool.profiles-updated-title';
 
-        this.translateService.get([msg, title]).subscribe(result => {
+        this.translateService.get([msg, title]).subscribe((result) => {
           this.toastrService.success(result[msg], result[title]);
         });
       });
@@ -437,5 +445,4 @@ export class FixturePoolComponent implements OnInit {
   handleKeyboardEvent(event: any) {
     this.ok();
   }
-
 }

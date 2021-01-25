@@ -11,6 +11,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "pretty-quick": "pretty-quick",
+    "precommit": "npm run pretty-quick --staged && npm run lint",
     "copy_lib_assets": "ncp src/assets/designer projects/designer/dist/assets",
     "build_lib": "ng build --prod designer && npm run copy_lib_assets",
     "npm_pack": "cd projects/designer/dist && npm pack",
@@ -31,7 +33,6 @@
     "@ngx-translate/http-loader": "^3.0.1",
     "bootstrap": "^4.1.2",
     "core-js": "^2.5.4",
-    "d3": "^5.6.0",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "ncp": "^2.0.0",
@@ -61,6 +62,7 @@
     "@types/node": "^12.11.1",
     "awesome-typescript-loader": "2.2.1",
     "codelyzer": "^5.1.2",
+    "husky": "^4.3.8",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~1.7.1",
@@ -69,9 +71,12 @@
     "karma-jasmine": "~1.1.1",
     "karma-jasmine-html-reporter": "^0.2.2",
     "ng-packagr": "^9.0.0",
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.1.0",
     "protractor": "~5.3.0",
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "3.6.4"
   }
 }

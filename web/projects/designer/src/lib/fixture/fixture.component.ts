@@ -1,27 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { Fixture } from '../models/fixture';
-import { PresetService } from '../services/preset.service';
-import { ProjectService } from '../services/project.service';
 import { FixturePoolService } from '../services/fixture-pool.service';
 import { FixtureService } from '../services/fixture.service';
 import { IntroService } from '../services/intro.service';
+import { PresetService } from '../services/preset.service';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'lib-app-fixture',
   templateUrl: './fixture.component.html',
-  styleUrls: ['./fixture.component.css']
+  styleUrls: ['./fixture.component.css'],
 })
 export class FixtureComponent implements OnInit {
-
   constructor(
     public projectService: ProjectService,
     public presetService: PresetService,
     private fixturePoolService: FixturePoolService,
     public fixtureService: FixtureService,
     public introService: IntroService
-  ) { }
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   fixtureIsSelected(fixture: Fixture): boolean {
     if (this.fixtureService.settingsSelection) {
@@ -57,5 +56,4 @@ export class FixtureComponent implements OnInit {
   openFixturePool() {
     this.fixturePoolService.open();
   }
-
 }

@@ -3,15 +3,12 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { FixturePoolComponent } from '../fixture-pool/fixture-pool.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FixturePoolService {
-
   private fixturePoolOpened = false;
 
-  constructor(
-    private modalService: BsModalService,
-  ) { }
+  constructor(private modalService: BsModalService) {}
 
   open() {
     if (this.fixturePoolOpened) {
@@ -20,9 +17,8 @@ export class FixturePoolService {
 
     this.fixturePoolOpened = true;
     const bsModalRef = this.modalService.show(FixturePoolComponent, { keyboard: false, ignoreBackdropClick: true, class: 'modal-full' });
-    (<FixturePoolComponent>bsModalRef.content).onClose.subscribe(result => {
+    (bsModalRef.content as FixturePoolComponent).onClose.subscribe((result) => {
       this.fixturePoolOpened = false;
     });
   }
-
 }

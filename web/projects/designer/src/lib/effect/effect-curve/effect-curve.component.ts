@@ -1,23 +1,22 @@
-import { AnimationService } from './../../services/animation.service';
-import { Subscription, timer, Observable } from 'rxjs';
-import { EffectCurve } from './../../models/effect-curve';
-import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
-import { PresetService } from '../../services/preset.service';
-import { FixtureService } from '../../services/fixture.service';
-import { FixtureCapability, FixtureCapabilityType, FixtureCapabilityColor } from '../../models/fixture-capability';
-import { EffectCurveProfileChannels } from '../../models/effect-curve-profile-channel';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable, Subscription, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FixtureProfile } from '../../models/fixture-profile';
 import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
+import { EffectCurveProfileChannels } from '../../models/effect-curve-profile-channel';
+import { FixtureCapability, FixtureCapabilityColor, FixtureCapabilityType } from '../../models/fixture-capability';
+import { FixtureProfile } from '../../models/fixture-profile';
+import { FixtureService } from '../../services/fixture.service';
+import { PresetService } from '../../services/preset.service';
+import { EffectCurve } from './../../models/effect-curve';
+import { AnimationService } from './../../services/animation.service';
 
 @Component({
   selector: 'lib-app-effect-curve',
   templateUrl: './effect-curve.component.html',
-  styleUrls: ['./effect-curve.component.css']
+  styleUrls: ['./effect-curve.component.css'],
 })
 export class EffectCurveComponent implements OnInit {
-
   private gridUpdateSubscription: Subscription;
   private ctx: any;
   private maxWidth: number;
@@ -50,7 +49,9 @@ export class EffectCurveComponent implements OnInit {
     if (value) {
       // start the update timer
       if (!this.gridUpdateSubscription) {
-        this.gridUpdateSubscription = timer(0, 15).subscribe(() => { this.redraw(); });
+        this.gridUpdateSubscription = timer(0, 15).subscribe(() => {
+          this.redraw();
+        });
       }
     } else {
       // stop the update timer
@@ -67,8 +68,8 @@ export class EffectCurveComponent implements OnInit {
     public presetService: PresetService,
     private animationService: AnimationService,
     private fixtureService: FixtureService,
-    private translate: TranslateService) {
-
+    private translate: TranslateService
+  ) {
     this.presetService.fixtureSelectionChanged.subscribe(() => {
       this.updateCapabilitiesAndChannels();
     });
@@ -88,7 +89,7 @@ export class EffectCurveComponent implements OnInit {
   private drawCurrentValue(currMillis: number, radius: number, lineWidth: number, durationMillis: number, maxHeight: number) {
     const currVal = 1 - this.curve.getValueAtMillis(currMillis);
 
-    const x = this.maxWidth * (currMillis % durationMillis) / durationMillis;
+    const x = (this.maxWidth * (currMillis % durationMillis)) / durationMillis;
     const y = maxHeight * currVal + lineWidth;
 
     this.ctx.beginPath();
@@ -143,7 +144,7 @@ export class EffectCurveComponent implements OnInit {
       const val = 1 - this.curve.getValueAtMillis(i);
 
       // Scale the values to the grid dimensions
-      const x = this.maxWidth * i / durationMillis;
+      const x = (this.maxWidth * i) / durationMillis;
       const y = maxHeight * val + width;
 
       if (oldY) {
@@ -168,11 +169,13 @@ export class EffectCurveComponent implements OnInit {
     }
 
     for (let i = 1; i < phasingCount; i++) {
-      this.drawCurrentValue((this.animationService.timeMillis - i * this.curve.phasingMillis) % durationMillis,
+      this.drawCurrentValue(
+        (this.animationService.timeMillis - i * this.curve.phasingMillis) % durationMillis,
         3,
         width,
         durationMillis,
-        maxHeight);
+        maxHeight
+      );
     }
   }
 
@@ -238,35 +241,38 @@ export class EffectCurveComponent implements OnInit {
   }
 
   getCapabilityName(capability: FixtureCapability): Observable<string> {
-    return this.translate.get([
-      'designer.fixtureCapabilityType.' + capability.type,
-      'designer.fixtureCapabilityColor.' + capability.color
-    ]).pipe(map((result: string) => {
-      let name = '';
-      name += result['designer.fixtureCapabilityType.' + capability.type];
+    return this.translate
+      .get(['designer.fixtureCapabilityType.' + capability.type, 'designer.fixtureCapabilityColor.' + capability.color])
+      .pipe(
+        map((result: string) => {
+          let name = '';
+          name += result['designer.fixtureCapabilityType.' + capability.type];
 
-      if (capability.color) {
-        name += ', ' + result['designer.fixtureCapabilityColor.' + capability.color];
-      } else {
-        return name;
-      }
+          if (capability.color) {
+            name += ', ' + result['designer.fixtureCapabilityColor.' + capability.color];
+          } else {
+            return name;
+          }
 
-      return name;
-    }));
+          return name;
+        })
+      );
   }
 
   capabilityChecked(capability: FixtureCapability): boolean {
     for (const existingCapability of this.curve.capabilities) {
-      if (this.fixtureService.capabilitiesMatch(
-        existingCapability.type,
-        capability.type,
-        existingCapability.color,
-        capability.color,
-        null,
-        null,
-        null,
-        null,
-      )) {
+      if (
+        this.fixtureService.capabilitiesMatch(
+          existingCapability.type,
+          capability.type,
+          existingCapability.color,
+          capability.color,
+          null,
+          null,
+          null,
+          null
+        )
+      ) {
         return true;
       }
     }
@@ -281,16 +287,18 @@ export class EffectCurveComponent implements OnInit {
       // Remove the channel
       for (let i = 0; i < this.curve.capabilities.length; i++) {
         const existingCapability = this.curve.capabilities[i];
-        if (this.fixtureService.capabilitiesMatch(
-          existingCapability.type,
-          capability.type,
-          existingCapability.color,
-          capability.color,
-          null,
-          null,
-          null,
-          null,
-        )) {
+        if (
+          this.fixtureService.capabilitiesMatch(
+            existingCapability.type,
+            capability.type,
+            existingCapability.color,
+            capability.color,
+            null,
+            null,
+            null,
+            null
+          )
+        ) {
           this.curve.capabilities.splice(i, 1);
         }
       }
@@ -389,5 +397,4 @@ export class EffectCurveComponent implements OnInit {
       this.presetService.previewLive();
     }
   }
-
 }

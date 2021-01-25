@@ -1,31 +1,34 @@
 <div class="card border-secondary panel h-100" [class.card-intro-active]="introService.showStep('capabilities')">
-  <div class="card-body capability-container d-flex h-100" style="overflow-y: hidden;">
-
+  <div class="card-body capability-container d-flex h-100" style="overflow-y: hidden">
     <!-- h-100 needs to be applied in chrome to avoid performance issues with many layouts (reflows)
     during sliding. But the class must not be applied e.g. in Safari, because the bottom margin is not correct
     anymore afterwards. -->
     <div *ngIf="presetService.selectedPreset" class="row m-0 pl-3" [class.h-100]="isChrome()">
-
       <!-- Dimmer -->
       <!-- the height attribute is required to avoid performance issues with many layouts (reflows)
       in Chrome during sliding -->
-      <div *ngIf="presetService.hasCapabilityDimmer()" class="col col-auto p-0 my-3 mr-3"
-        style="height: calc(100% - 2rem)">
+      <div *ngIf="presetService.hasCapabilityDimmer()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <lib-app-fixture-capability-dimmer></lib-app-fixture-capability-dimmer>
       </div>
 
       <!-- Color -->
       <!-- Also show for color wheel fixtures to approx. the color -->
-      <div *ngIf="presetService.hasCapabilityColorOrColorWheel()" class="col col-auto p-0 my-3 mr-3"
-        style="height: calc(100% - 2rem)">
+      <div *ngIf="presetService.hasCapabilityColorOrColorWheel()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <lib-app-fixture-capability-color></lib-app-fixture-capability-color>
       </div>
 
       <!-- Color wheels -->
-      <div *ngFor="let entry of colorWheelChannels | keyvalue; let i = index" class="col col-auto p-0 my-3 mr-3"
-        style="height: calc(100% - 2rem)">
-        <lib-app-fixture-capability-color-wheel [profile]="entry.key" [channel]="entry.value" [wheelIndex]="i"
-          [showContainer]="colorWheelChannels.size > 1"></lib-app-fixture-capability-color-wheel>
+      <div
+        *ngFor="let entry of colorWheelChannels | keyvalue; let i = index"
+        class="col col-auto p-0 my-3 mr-3"
+        style="height: calc(100% - 2rem)"
+      >
+        <lib-app-fixture-capability-color-wheel
+          [profile]="entry.key"
+          [channel]="entry.value"
+          [wheelIndex]="i"
+          [showContainer]="colorWheelChannels.size > 1"
+        ></lib-app-fixture-capability-color-wheel>
       </div>
 
       <!-- Pan/Tilt -->
@@ -35,18 +38,19 @@
 
       <!-- Fix spacing at the end -->
       <div class="col col-auto p-0 my-3 mr-3">&nbsp;</div>
-
     </div>
 
     <div *ngIf="projectService.project.fixtures.length == 0" class="m-auto">
-      <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures' | translate }}</p>
+      <p class="m-auto" style="color: #717171">{{ 'designer.fixture.no-fixtures' | translate }}</p>
     </div>
 
     <div
-      *ngIf="projectService.project.fixtures.length > 0 && presetService.selectedPreset && presetService.selectedPreset.fixtureUuids.length == 0"
-      class="m-auto">
-      <p class="m-auto" style="color: #717171;">{{ 'designer.fixture.no-fixtures-selected' | translate }}</p>
+      *ngIf="
+        projectService.project.fixtures.length > 0 && presetService.selectedPreset && presetService.selectedPreset.fixtureUuids.length == 0
+      "
+      class="m-auto"
+    >
+      <p class="m-auto" style="color: #717171">{{ 'designer.fixture.no-fixtures-selected' | translate }}</p>
     </div>
-
   </div>
 </div>

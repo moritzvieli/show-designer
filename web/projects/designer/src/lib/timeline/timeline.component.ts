@@ -1,18 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener, ChangeDetectorRef } from '@angular/core';
-import { TimelineService } from '../services/timeline.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { TimelineGridComponent } from './timeline-grid/timeline-grid.component';
-import { CompositionSettingsComponent } from './composition-settings/composition-settings.component';
-import { Composition } from '../models/composition';
-import { UuidService } from '../services/uuid.service';
-import { ProjectService } from '../services/project.service';
-import { HotkeyTargetExcludeService } from '../services/hotkey-target-exclude.service';
-import { WarningDialogService } from '../services/warning-dialog.service';
 import { HttpClient } from '@angular/common/http';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { map } from 'rxjs/operators';
+import { Composition } from '../models/composition';
 import { ConfigService } from '../services/config.service';
-import { PresetService } from '../services/preset.service';
+import { HotkeyTargetExcludeService } from '../services/hotkey-target-exclude.service';
 import { IntroService } from '../services/intro.service';
+import { PresetService } from '../services/preset.service';
+import { ProjectService } from '../services/project.service';
+import { TimelineService } from '../services/timeline.service';
+import { UuidService } from '../services/uuid.service';
+import { WarningDialogService } from '../services/warning-dialog.service';
+import { CompositionSettingsComponent } from './composition-settings/composition-settings.component';
+import { TimelineGridComponent } from './timeline-grid/timeline-grid.component';
 
 @Component({
   selector: 'lib-app-timeline',
@@ -20,7 +20,6 @@ import { IntroService } from '../services/intro.service';
   styleUrls: ['./timeline.component.css'],
 })
 export class TimelineComponent implements OnInit, AfterViewInit {
-
   @ViewChild('waveWrapper')
   waveWrapper: ElementRef;
 
@@ -51,11 +50,9 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 
   @HostListener('window:resize')
   public onResize() {
@@ -120,40 +117,43 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   removeComposition() {
-    this.warningDialogService.show('designer.timeline.warning-delete-composition').pipe(map(result => {
-      if (result) {
-        if (this.configService.enableMediaLibrary) {
-          // don't delete the file from the library
-          this.afterDeleteFile();
-        } else {
-          // the composition uuid and extension is used as the file name
-          this.http.post(
-            'file/delete?compositionUuid=' + this.timelineService.selectedComposition.uuid,
-            undefined
-          ).pipe(map((response: Response) => {
-            this.afterDeleteFile();
-          })).subscribe();
-        }
-      }
-    })).subscribe();
+    this.warningDialogService
+      .show('designer.timeline.warning-delete-composition')
+      .pipe(
+        map((result) => {
+          if (result) {
+            if (this.configService.enableMediaLibrary) {
+              // don't delete the file from the library
+              this.afterDeleteFile();
+            } else {
+              // the composition uuid and extension is used as the file name
+              this.http
+                .post('file/delete?compositionUuid=' + this.timelineService.selectedComposition.uuid, undefined)
+                .pipe(
+                  map((response: Response) => {
+                    this.afterDeleteFile();
+                  })
+                )
+                .subscribe();
+            }
+          }
+        })
+      )
+      .subscribe();
   }
 
   private openCompositionSettings(compositionIndex?: number, newComposition?: Composition) {
     const editComposition: Composition =
-      newComposition
-      || JSON.parse(JSON.stringify(this.projectService.project.compositions[compositionIndex]));
+      newComposition || JSON.parse(JSON.stringify(this.projectService.project.compositions[compositionIndex]));
 
-    const bsModalRef = this.modalService.show(
-      CompositionSettingsComponent,
-      {
-        keyboard: false,
-        ignoreBackdropClick: true,
-        class: '',
-        initialState: { composition: editComposition }
-      }
-    );
+    const bsModalRef = this.modalService.show(CompositionSettingsComponent, {
+      keyboard: false,
+      ignoreBackdropClick: true,
+      class: '',
+      initialState: { composition: editComposition },
+    });
 
-    (<CompositionSettingsComponent>bsModalRef.content).onClose.subscribe(result => {
+    (bsModalRef.content as CompositionSettingsComponent).onClose.subscribe((result) => {
       if (result === 1) {
         // OK has been pressed -> save
         if (newComposition) {
@@ -239,5 +239,4 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     this.timelineService.selectedPlaybackRegion.endMillis = +value;
     this.timelineService.updateSelectedRegion();
   }
-
 }

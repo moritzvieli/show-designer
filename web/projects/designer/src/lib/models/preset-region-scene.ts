@@ -1,9 +1,8 @@
 import { Preset } from './preset';
-import { ScenePlaybackRegion } from './scene-playback-region';
 import { Scene } from './scene';
+import { ScenePlaybackRegion } from './scene-playback-region';
 
 export class PresetRegionScene {
-
   preset: Preset;
   region: ScenePlaybackRegion;
   scene: Scene;
@@ -13,5 +12,4 @@ export class PresetRegionScene {
     this.region = region;
     this.scene = scene;
   }
-
 }

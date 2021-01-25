@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { PreviewService } from './preview.service';
 
 describe('PreviewService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [PreviewService]
+      providers: [PreviewService],
     });
   });
 

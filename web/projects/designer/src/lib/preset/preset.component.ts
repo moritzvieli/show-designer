@@ -1,29 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { PresetService } from '../services/preset.service';
-import { SceneService } from '../services/scene.service';
-import { ProjectService } from '../services/project.service';
-import { IntroService } from '../services/intro.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { PresetSettingsComponent } from './preset-settings/preset-settings.component';
 import { Preset } from '../models/preset';
+import { IntroService } from '../services/intro.service';
+import { PresetService } from '../services/preset.service';
+import { ProjectService } from '../services/project.service';
+import { SceneService } from '../services/scene.service';
+import { PresetSettingsComponent } from './preset-settings/preset-settings.component';
 
 @Component({
   selector: 'lib-app-preset',
   templateUrl: './preset.component.html',
-  styleUrls: ['./preset.component.css']
+  styleUrls: ['./preset.component.css'],
 })
 export class PresetComponent implements OnInit {
-
   constructor(
     public presetService: PresetService,
     public sceneService: SceneService,
     public projectService: ProjectService,
     public introService: IntroService,
     private modalService: BsModalService
-  ) { }
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   selectPreset(index: number) {
     this.projectService.project.previewPreset = true;
@@ -71,15 +69,11 @@ export class PresetComponent implements OnInit {
   }
 
   openSettings(preset: Preset) {
-    const bsModalRef = this.modalService.show(
-      PresetSettingsComponent,
-      {
-        keyboard: true,
-        ignoreBackdropClick: false,
-        class: '',
-        initialState: { preset: preset }
-      }
-    );
+    const bsModalRef = this.modalService.show(PresetSettingsComponent, {
+      keyboard: true,
+      ignoreBackdropClick: false,
+      class: '',
+      initialState: { preset },
+    });
   }
-
 }

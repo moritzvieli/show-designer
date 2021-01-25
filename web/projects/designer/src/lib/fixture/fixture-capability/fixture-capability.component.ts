@@ -1,12 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { PresetService } from '../../services/preset.service';
-import { FixtureService } from '../../services/fixture.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
 import { FixtureProfile } from '../../models/fixture-profile';
 import { FixtureWheelSlotType } from '../../models/fixture-wheel-slot';
-import { CachedFixtureChannel } from '../../models/cached-fixture-channel';
-import { ProjectService } from '../../services/project.service';
+import { FixtureService } from '../../services/fixture.service';
 import { IntroService } from '../../services/intro.service';
-import { Subscription } from 'rxjs';
+import { PresetService } from '../../services/preset.service';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'lib-app-fixture-capability',
@@ -15,7 +15,6 @@ import { Subscription } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FixtureCapabilityComponent implements OnInit, OnDestroy {
-
   // map containing the profile and the channel name containing the wheel
   colorWheelChannels: Map<FixtureProfile, CachedFixtureChannel> = new Map<FixtureProfile, CachedFixtureChannel>();
 
@@ -42,8 +41,7 @@ export class FixtureCapabilityComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.fixtureSelectionChangedSubscription.unsubscribe();
@@ -98,5 +96,4 @@ export class FixtureCapabilityComponent implements OnInit, OnDestroy {
     }
     return false;
   }
-
 }

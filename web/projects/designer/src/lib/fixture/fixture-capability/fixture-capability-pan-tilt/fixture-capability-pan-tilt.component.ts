@@ -5,17 +5,12 @@ import { PresetService } from '../../../services/preset.service';
 @Component({
   selector: 'lib-app-fixture-capability-pan-tilt',
   templateUrl: './fixture-capability-pan-tilt.component.html',
-  styleUrls: ['./fixture-capability-pan-tilt.component.css']
+  styleUrls: ['./fixture-capability-pan-tilt.component.css'],
 })
 export class FixtureCapabilityPanTiltComponent implements OnInit {
+  constructor(private presetService: PresetService, private changeDetectorRef: ChangeDetectorRef) {}
 
-  constructor(
-    private presetService: PresetService,
-    private changeDetectorRef: ChangeDetectorRef
-  ) { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getValuePan(): number {
     const capabilityValue = this.presetService.getCapabilityValue(this.presetService.selectedPreset, FixtureCapabilityType.Pan);
@@ -88,5 +83,4 @@ export class FixtureCapabilityPanTiltComponent implements OnInit {
     }
     this.presetService.previewLive();
   }
-
 }

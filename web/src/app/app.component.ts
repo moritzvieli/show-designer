@@ -4,12 +4,8 @@ import { AppHttpInterceptor } from './app-http-interceptor/app-http-interceptor'
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-
-  constructor(public appHttpInterceptor: AppHttpInterceptor) {
-
-  }
-
+  constructor(public appHttpInterceptor: AppHttpInterceptor) {}
 }

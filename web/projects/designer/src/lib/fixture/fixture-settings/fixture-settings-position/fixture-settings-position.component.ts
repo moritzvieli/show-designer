@@ -6,10 +6,9 @@ import { PresetService } from '../../../services/preset.service';
 @Component({
   selector: 'lib-app-fixture-settings-position',
   templateUrl: './fixture-settings-position.component.html',
-  styleUrls: ['./fixture-settings-position.component.css']
+  styleUrls: ['./fixture-settings-position.component.css'],
 })
 export class FixtureSettingsPositionComponent implements OnInit {
-
   selectUndefinedOptionValue: any = undefined;
 
   selectedPositioning: string = undefined;
@@ -32,17 +31,13 @@ export class FixtureSettingsPositionComponent implements OnInit {
   rotationMin = 0;
   rotationMax = 360;
 
-  constructor(
-    public fixtureService: FixtureService,
-    private presetService: PresetService
-  ) {
+  constructor(public fixtureService: FixtureService, private presetService: PresetService) {
     presetService.fixtureSelectionSettingsChanged.subscribe(() => {
       this.updateSelection();
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   private updateSelection() {
     // get all display values for the selected settings fixtures
@@ -195,5 +190,4 @@ export class FixtureSettingsPositionComponent implements OnInit {
       }
     }
   }
-
 }

@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { TimelineService } from './timeline.service';
 
 describe('TimelineService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TimelineService]
+      providers: [TimelineService],
     });
   });
 

@@ -2,20 +2,18 @@ import { Injectable } from '@angular/core';
 import { Universe } from '../models/universe';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UniverseService {
-
   universes: Universe[] = [];
 
-  constructor() { }
+  constructor() {}
 
   getUniverseByUuid(uuid: string): Universe {
     for (const universe of this.universes) {
-      if (universe.uuid = uuid) {
+      if (universe.uuid === uuid) {
         return universe;
       }
     }
   }
-
 }

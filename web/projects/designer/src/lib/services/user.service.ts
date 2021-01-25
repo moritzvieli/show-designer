@@ -1,22 +1,19 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Project } from '../models/project';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
   // the authentication token
   token: string;
   tokenExpiration: Date;
   username: string;
 
-  constructor(
-    private http: HttpClient
-  ) {
+  constructor(private http: HttpClient) {
     this.loadFromLocalStorage();
   }
 
@@ -36,21 +33,23 @@ export class UserService {
 
   // login a user in the api
   login(email: string, password: string): Observable<any> {
-    return this.http.post('login?email=' + email + '&password=' + password, null).pipe(map((result: any) => {
-      this.token = result.token;
-      this.username = result.username;
+    return this.http.post('login?email=' + email + '&password=' + password, null).pipe(
+      map((result: any) => {
+        this.token = result.token;
+        this.username = result.username;
 
-      // the token expires one month from now
-      this.tokenExpiration = new Date();
-      this.tokenExpiration.setDate(this.tokenExpiration.getDate() + 30);
+        // the token expires one month from now
+        this.tokenExpiration = new Date();
+        this.tokenExpiration.setDate(this.tokenExpiration.getDate() + 30);
 
-      // store to the local storage
-      localStorage.setItem('token', this.token);
-      localStorage.setItem('tokenExpiration', JSON.stringify(this.tokenExpiration));
-      localStorage.setItem('username', this.username);
+        // store to the local storage
+        localStorage.setItem('token', this.token);
+        localStorage.setItem('tokenExpiration', JSON.stringify(this.tokenExpiration));
+        localStorage.setItem('username', this.username);
 
-      this.loadFromLocalStorage();
-    }));
+        this.loadFromLocalStorage();
+      })
+    );
   }
 
   logout() {
@@ -103,5 +102,4 @@ export class UserService {
   getAutoLoadProjectName(): string {
     return localStorage.getItem('projectName');
   }
-
 }

@@ -11,7 +11,7 @@ export const environment = {
   localBackend: 'http://localhost:8080',
   // localBackend: "http://rocketshow.local:8080",
 
-  debug: true
+  debug: true,
 };
 
 /*

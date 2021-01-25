@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfigService {
-
   public restUrl: string;
   public enableMediaLibrary = false;
   public loginAvailable = false;
@@ -20,6 +19,5 @@ export class ConfigService {
 
   public menuHeightChanged: Subject<void> = new Subject<void>();
 
-  constructor() { }
-
+  constructor() {}
 }

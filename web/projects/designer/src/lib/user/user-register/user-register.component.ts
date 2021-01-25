@@ -1,16 +1,15 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { UserLoginComponent } from '../user-login/user-login.component';
-import { UserService } from '../../services/user.service';
 import { Subject } from 'rxjs';
+import { UserService } from '../../services/user.service';
+import { UserLoginComponent } from '../user-login/user-login.component';
 
 @Component({
   selector: 'lib-user-register',
   templateUrl: './user-register.component.html',
-  styleUrls: ['./user-register.component.css']
+  styleUrls: ['./user-register.component.css'],
 })
 export class UserRegisterComponent implements OnInit {
-
   error = '';
   registering = false;
 
@@ -22,14 +21,9 @@ export class UserRegisterComponent implements OnInit {
   // emits, when logged in
   subject: Subject<void>;
 
-  constructor(
-    private bsModalRef: BsModalRef,
-    private modalService: BsModalService,
-    private userService: UserService
-  ) { }
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private userService: UserService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   cancel() {
     this.bsModalRef.hide();
@@ -68,25 +62,27 @@ export class UserRegisterComponent implements OnInit {
       return;
     }
 
-    this.userService.register(this.email, this.username, this.password).subscribe(() => {
-      // automatically login after registering
-      this.userService.login(this.email, this.password).subscribe(() => {
+    this.userService.register(this.email, this.username, this.password).subscribe(
+      () => {
+        // automatically login after registering
+        this.userService.login(this.email, this.password).subscribe(() => {
+          this.registering = false;
+          this.bsModalRef.hide();
+        });
+      },
+      (response) => {
+        if (response.error && response.error.error) {
+          this.error = response.error.error;
+        } else {
+          this.error = 'internal';
+        }
         this.registering = false;
-        this.bsModalRef.hide();
-      });
-    }, (response) => {
-      if (response.error && response.error.error) {
-        this.error = response.error.error;
-      } else {
-        this.error = 'internal';
       }
-      this.registering = false;
-    });
+    );
   }
 
   @HostListener('document:keydown.enter', ['$event'])
   handleKeyboardEvent(event: any) {
     this.register();
   }
-
 }
