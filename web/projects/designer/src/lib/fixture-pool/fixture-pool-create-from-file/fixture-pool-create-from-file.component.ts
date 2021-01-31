@@ -3,11 +3,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { ToastrService } from 'ngx-toastr';
-import { FixtureService } from '../../services/fixture.service';
-import { ProjectService } from '../../services/project.service';
+import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FixtureProfile } from '../../models/fixture-profile';
-import { Subject } from 'rxjs';
+import { FixtureService } from '../../services/fixture.service';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'lib-fixture-pool-create-from-file',

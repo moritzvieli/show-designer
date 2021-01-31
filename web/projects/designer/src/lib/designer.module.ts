@@ -18,6 +18,7 @@ import { EffectCurveComponent } from './effect/effect-curve/effect-curve.compone
 import { EffectPanTiltComponent } from './effect/effect-pan-tilt/effect-pan-tilt.component';
 import { EffectComponent } from './effect/effect.component';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
+import { FixturePoolCreateFromFileComponent } from './fixture-pool/fixture-pool-create-from-file/fixture-pool-create-from-file.component';
 import { FixturePoolComponent } from './fixture-pool/fixture-pool.component';
 import { FixtureCapabilityChannelComponent } from './fixture/fixture-capability/fixture-capability-channel/fixture-capability-channel.component';
 import { FixtureCapabilityColorWheelComponent } from './fixture/fixture-capability/fixture-capability-color-wheel/fixture-capability-color-wheel.component';
@@ -48,7 +49,6 @@ import { UserLoginComponent } from './user/user-login/user-login.component';
 import { UserRegisterComponent } from './user/user-register/user-register.component';
 import { WaitDialogComponent } from './wait-dialog/wait-dialog.component';
 import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
-import { FixturePoolCreateFromFileComponent } from './fixture-pool/fixture-pool-create-from-file/fixture-pool-create-from-file.component';
 
 @NgModule({
   declarations: [
