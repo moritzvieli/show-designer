@@ -28,7 +28,7 @@ export class FixtureProfile {
 
   // set to file, if the profile is not loaded from the backend
   source: string;
-  createdFromFile = false;
+  createdFromFile: boolean = false;
   manufacturerShortName: string;
   manufacturerName: string;
   categories: FixtureCategory[] = [];

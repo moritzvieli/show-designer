@@ -14,6 +14,8 @@ The Rocket Show Designer relies on the Open Fixture Library (OFL). There is curr
 - Some functionality requires a server (e.g. loading/saving projects, handling audio files). You can start a rocket show server (see https://github.com/moritzvieli/rocketshow) and point environment.ts's localBackend to `http://localhost:8080`
 - Prettier and precommit hook according to: https://medium.com/@victormejia/setting-up-prettier-in-an-angular-cli-project-2f50c3b9a537
 
+If the linter fails, you can check and try to automatically fix it with `ng lint --fix`.
+
 ## Build & publish as NPM package
 
 ```
