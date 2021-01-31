@@ -9,7 +9,7 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint",
+    "lint": "ng lint --fix",
     "e2e": "ng e2e",
     "pretty-quick": "pretty-quick",
     "precommit": "npm run pretty-quick --staged && npm run lint",

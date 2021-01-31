@@ -25,6 +25,10 @@ export enum FixtureCategory {
 export class FixtureProfile {
   uuid: string;
   name: string;
+
+  // set to file, if the profile is not loaded from the backend
+  source: string;
+  createdFromFile: boolean = false;
   manufacturerShortName: string;
   manufacturerName: string;
   categories: FixtureCategory[] = [];
@@ -69,6 +73,9 @@ export class FixtureProfile {
         const fixtureChannel = new FixtureChannel(data.availableChannels[property]);
         this.availableChannels[property] = fixtureChannel;
       }
+    }
+    if (data.createdFromFile) {
+      this.createdFromFile = data.createdFromFile;
     }
   }
 }

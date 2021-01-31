@@ -7,12 +7,6 @@
 <div class="modal-body">
   <div class="row">
     <div class="col-6">
-      <!-- Upload a profile -->
-      <!-- TODO -->
-      <!-- <a class="btn btn-primary mb-3 btn btn-primary btn-block" href="#" role="button" (click)="ok(); false">
-        <i class="fa fa-plus" aria-hidden="true"></i> {{ 'designer.fixture-pool.create-profile' | translate }}
-      </a> -->
-
       <!-- Search for profiles -->
       <input
         type="text"
@@ -77,13 +71,24 @@
       </div>
     </div>
     <div class="col-6">
-      <!-- Universe -->
-      <div class="form-group row">
-        <label class="col-lg-4 col-form-label">{{ 'designer.fixture-pool.universe' | translate }}</label>
-        <div class="col-lg-8">
-          <select class="custom-select">
-            <option>Universe 1</option>
-          </select>
+      <div class="row">
+        <!-- Add fixture from local profile -->
+        <div class="col-6">
+          <button type="button" class="btn btn-secondary" (click)="createFixtureFromProfileFile()" role="button">
+            <i class="fa fa-plus" aria-hidden="true"></i> {{ 'designer.fixture-pool.create-fixture-from-profile-file' | translate }}
+          </button>
+        </div>
+
+        <!-- Universe -->
+        <div class="col-6">
+          <div class="form-group row">
+            <label class="col-lg-4 col-form-label">{{ 'designer.fixture-pool.universe' | translate }}</label>
+            <div class="col-lg-8">
+              <select class="custom-select">
+                <option>Universe 1</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 

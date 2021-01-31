@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { PresetService } from '../services/preset.service';
 import { PreviewService } from '../services/preview.service';
 import { ProjectService } from '../services/project.service';
 import { UuidService } from '../services/uuid.service';
+import { FixturePoolCreateFromFileComponent } from './fixture-pool-create-from-file/fixture-pool-create-from-file.component';
 
 @Component({
   selector: 'lib-app-fixture-pool',
@@ -47,7 +48,8 @@ export class FixturePoolComponent implements OnInit {
     private translateService: TranslateService,
     private toastrService: ToastrService,
     private presetService: PresetService,
-    public configService: ConfigService
+    public configService: ConfigService,
+    private modalService: BsModalService
   ) {
     this.fixturePool = [...this.projectService.project.fixtures];
 
@@ -111,87 +113,13 @@ export class FixturePoolComponent implements OnInit {
     }
   }
 
-  private getNextFreeDmxChannel(neededChannels: number): number {
-    // get the next free space for this fixture
-    let freeChannels = 0;
-
-    for (let i = 0; i < 512; i++) {
-      let occupiedChannels = 0;
-
-      for (const fixture of this.fixturePool) {
-        const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
-
-        if (i >= fixture.dmxFirstChannel && i < fixture.dmxFirstChannel + mode.channels.length) {
-          // this channel is already occupied by a fixture -> move forward to the end of the fixture
-          if (mode.channels.length > occupiedChannels) {
-            occupiedChannels = mode.channels.length - (i - fixture.dmxFirstChannel);
-          }
-        }
-      }
-
-      if (occupiedChannels > 0) {
-        i += occupiedChannels - 1;
-        freeChannels = 0;
-      } else {
-        freeChannels++;
-      }
-
-      if (freeChannels === neededChannels) {
-        return i - freeChannels + 1;
-      }
-    }
-
-    // no free space left for the needed channels
-    return -1;
-  }
-
   addFixture(searchProfile: FixtureProfile) {
     // Load the profile details, if not already done. There is only a
     // minimal profile passed from the search.
     this.fixtureService.loadProfileByUuid(searchProfile.uuid).subscribe(() => {
       const profile = this.fixtureService.getProfileByUuid(searchProfile.uuid);
-      const fixture = new Fixture();
-      fixture.uuid = this.uuidService.getUuid();
-      fixture.profileUuid = profile.uuid;
-      fixture.name = profile.name;
-
-      if (profile.modes && profile.modes.length > 0) {
-        fixture.modeShortName = profile.modes[0].shortName;
-      }
-
-      // add the same mode as an existing fixture, if available
-      let existingModeShortName: string;
-      for (const existingFixture of this.fixturePool) {
-        const existingProfile = this.fixtureService.getProfileByUuid(existingFixture.profileUuid);
-
-        if (existingProfile === profile) {
-          existingModeShortName = existingFixture.modeShortName;
-          break;
-        }
-      }
-
-      if (existingModeShortName) {
-        fixture.modeShortName = existingModeShortName;
-      } else {
-        fixture.modeShortName = profile.modes[0].shortName || profile.modes[0].name;
-      }
-
-      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
-      const firstChannel = this.getNextFreeDmxChannel(mode.channels.length);
-
-      if (firstChannel >= 0) {
-        fixture.dmxFirstChannel = firstChannel;
-        this.fixturePool.push(fixture);
-        this.selectFixture(fixture);
-      } else {
-        // no free space anymore
-        const msg = 'designer.fixture-pool.no-free-space';
-        const title = 'designer.fixture-pool.no-free-space-title';
-
-        this.translateService.get([msg, title]).subscribe((result) => {
-          this.toastrService.error(result[msg], result[title]);
-        });
-      }
+      const newFixture = this.fixtureService.addFixture(profile, this.fixturePool);
+      this.selectFixture(newFixture);
     });
   }
 
@@ -439,6 +367,14 @@ export class FixturePoolComponent implements OnInit {
           this.toastrService.success(result[msg], result[title]);
         });
       });
+  }
+
+  createFixtureFromProfileFile() {
+    const bsModalRef = this.modalService.show(FixturePoolCreateFromFileComponent, { keyboard: true, ignoreBackdropClick: false });
+    (bsModalRef.content as FixturePoolCreateFromFileComponent).onClose.subscribe((profile: FixtureProfile) => {
+      const newFixture = this.fixtureService.addFixture(profile, this.fixturePool);
+      this.selectFixture(newFixture);
+    });
   }
 
   @HostListener('document:keydown.enter', ['$event'])

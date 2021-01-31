@@ -17,7 +17,10 @@
       "please-wait": "Einen Moment bitte...",
       "warning-proceed-unsaved": "Nicht gespeicherte Änderungen gehen verloren. Möchtest du wirklich fortfahren?",
       "language": "Sprache",
-      "ms": "ms"
+      "ms": "ms",
+      "dropzone-message": "Ziehe eine Datei hier hinein oder klicke, um hochzuladen",
+      "toast-upload-error-title": "Fehler beim Hochladen",
+      "toast-upload-error": "Die Datei konnte aus dem folgenden Grund nicht hochgeladen werden: "
     },
     "loading": {
       "title": "Laden...",
@@ -145,7 +148,11 @@
       "profiles-updated": "Die Profile wurden erfolgreich aktualisiert.",
       "profiles-updated-title": "Aktualisierung erfolgreich",
       "profiles-update-error": "Die Profile konnten nicht aktualisiert werden. Bitte prüfe die Internetverbindung zum Gerät.",
-      "profiles-update-error-title": "Fehler bei der Aktualisierung"
+      "profiles-update-error-title": "Fehler bei der Aktualisierung",
+      "create-fixture-from-profile-file": "Von Profil-Datei erstellen",
+      "create-from-local-profile": "Von Profil-Datei erstellen",
+      "create-fixture-from-profile-file-dialog-title": "OFL Profil-Datei auswählen",
+      "invalid-fixture-profile-file": "Das ist keine gültige OFL Profil-Datei. Bitte wähle eine gültige OFL Profil-Datei."
     },
     "effect": {
       "add-new": "Neuen Effekt hinzufügen",
@@ -187,12 +194,9 @@
       "composition-sync-type-none": "Keine",
       "composition-sync-type-audio": "Audiodatei",
       "composition-no-file-selected": "Keine Datei ausgewählt",
-      "composition-dropzone-message": "Ziehe eine Datei hier hinein oder klicke, um hochzuladen",
       "composition-file-upload": "Hochladen",
       "composition-file-library": "Mediathek",
-      "warning-delete-composition": "Möchtest du diese Komposition wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-      "toast-composition-upload-error": "Die Datei konnte aus dem folgenden Grund nicht hochgeladen werden: ",
-      "toast-composition-upload-error-title": "Fehler beim Hochladen"
+      "warning-delete-composition": "Möchtest du diese Komposition wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
     },
     "intro": {
       "next": "Weiter",

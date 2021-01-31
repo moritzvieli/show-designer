@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CachedFixture } from '../models/cached-fixture';
@@ -14,6 +16,7 @@ import { FixtureProfile } from '../models/fixture-profile';
 import { FixtureWheel } from '../models/fixture-wheel';
 import { FixtureWheelSlot, FixtureWheelSlotType } from '../models/fixture-wheel-slot';
 import { ProjectService } from './project.service';
+import { UuidService } from './uuid.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +29,13 @@ export class FixtureService {
 
   selectedSettingsFixtures: Fixture[] = [];
 
-  constructor(private http: HttpClient, private projectService: ProjectService) {}
+  constructor(
+    private http: HttpClient,
+    private projectService: ProjectService,
+    private translateService: TranslateService,
+    private toastrService: ToastrService,
+    private uuidService: UuidService
+  ) {}
 
   getFixtureByUuid(uuid: string): Fixture {
     for (const fixture of this.projectService.project.fixtures) {
@@ -425,5 +434,85 @@ export class FixtureService {
 
   updateProfiles() {
     return this.http.post('update-profiles', null);
+  }
+
+  getNextFreeDmxChannel(fixturePool: Fixture[], neededChannels: number): number {
+    // get the next free space for this fixture
+    let freeChannels = 0;
+
+    for (let i = 0; i < 512; i++) {
+      let occupiedChannels = 0;
+
+      for (const fixture of fixturePool) {
+        const mode = this.getModeByFixture(this.getProfileByUuid(fixture.profileUuid), fixture);
+
+        if (i >= fixture.dmxFirstChannel && i < fixture.dmxFirstChannel + mode.channels.length) {
+          // this channel is already occupied by a fixture -> move forward to the end of the fixture
+          if (mode.channels.length > occupiedChannels) {
+            occupiedChannels = mode.channels.length - (i - fixture.dmxFirstChannel);
+          }
+        }
+      }
+
+      if (occupiedChannels > 0) {
+        i += occupiedChannels - 1;
+        freeChannels = 0;
+      } else {
+        freeChannels++;
+      }
+
+      if (freeChannels === neededChannels) {
+        return i - freeChannels + 1;
+      }
+    }
+
+    // no free space left for the needed channels
+    return -1;
+  }
+
+  addFixture(profile: FixtureProfile, fixturePool: Fixture[]): Fixture {
+    const fixture = new Fixture();
+
+    fixture.uuid = this.uuidService.getUuid();
+    fixture.profileUuid = profile.uuid;
+    fixture.name = profile.name;
+
+    if (profile.modes && profile.modes.length > 0) {
+      fixture.modeShortName = profile.modes[0].shortName;
+    }
+
+    // add the same mode as an existing fixture, if available
+    let existingModeShortName: string;
+    for (const existingFixture of fixturePool) {
+      const existingProfile = this.getProfileByUuid(existingFixture.profileUuid);
+
+      if (existingProfile === profile) {
+        existingModeShortName = existingFixture.modeShortName;
+        break;
+      }
+    }
+
+    if (existingModeShortName) {
+      fixture.modeShortName = existingModeShortName;
+    } else {
+      fixture.modeShortName = profile.modes[0].shortName || profile.modes[0].name;
+    }
+
+    const mode = this.getModeByFixture(this.getProfileByUuid(fixture.profileUuid), fixture);
+    const firstChannel = this.getNextFreeDmxChannel(fixturePool, mode.channels.length);
+
+    if (firstChannel >= 0) {
+      fixture.dmxFirstChannel = firstChannel;
+      fixturePool.push(fixture);
+      return fixture;
+    } else {
+      // no free space anymore
+      const msg = 'designer.fixture-pool.no-free-space';
+      const title = 'designer.fixture-pool.no-free-space-title';
+
+      this.translateService.get([msg, title]).subscribe((result) => {
+        this.toastrService.error(result[msg], result[title]);
+      });
+    }
   }
 }

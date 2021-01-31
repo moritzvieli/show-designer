@@ -46,7 +46,7 @@ export class ProjectImportComponent implements OnInit {
     };
 
     this.translateService
-      .get('designer.timeline.composition-dropzone-message')
+      .get('designer.misc.dropzone-message')
       .pipe(
         map((result) => {
           this.uploadMessage = '<h3 class="mb-0"><i class="fa fa-cloud-upload"></i></h3>' + result;
@@ -61,8 +61,8 @@ export class ProjectImportComponent implements OnInit {
       return;
     }
 
-    const msg = 'designer.timeline.toast-composition-upload-error';
-    const title = 'designer.timeline.toast-composition-upload-error-title';
+    const msg = 'designer.misc.toast-upload-error';
+    const title = 'designer.misc.toast-upload-error-title';
     this.translateService.get([msg, title]).subscribe((result) => {
       this.toastrService.error(result[msg] + args[1], result[title], { timeOut: 0, extendedTimeOut: 0, enableHtml: true });
     });

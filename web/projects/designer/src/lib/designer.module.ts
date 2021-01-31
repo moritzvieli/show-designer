@@ -48,6 +48,7 @@ import { UserLoginComponent } from './user/user-login/user-login.component';
 import { UserRegisterComponent } from './user/user-register/user-register.component';
 import { WaitDialogComponent } from './wait-dialog/wait-dialog.component';
 import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
+import { FixturePoolCreateFromFileComponent } from './fixture-pool/fixture-pool-create-from-file/fixture-pool-create-from-file.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import { WarningDialogComponent } from './warning-dialog/warning-dialog.componen
     PresetSettingsComponent,
     SceneSettingsComponent,
     ProjectSaveComponent,
+    FixturePoolCreateFromFileComponent,
   ],
   imports: [
     RouterModule.forRoot([]),
