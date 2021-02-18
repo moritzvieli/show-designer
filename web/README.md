@@ -25,7 +25,9 @@ cd ../..
 npm run publish
 ```
 
-## Build for production
+## Build online version for production
+
+Activate the online designer-part in app.component.html first.
 
 ```
 ng build --prod --base-href /designer/app/
