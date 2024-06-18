@@ -169,7 +169,10 @@ export class DesignerComponent implements OnInit, AfterViewInit {
           });
         }
       );
-    } else if (this.userService.isLoggedIn() && (this.userService.getAutoLoadProjectId() || this.userService.getAutoLoadProjectName())) {
+    } else if (
+      (this.userService.isLoggedIn() || !this.configService.loginAvailable) &&
+      (this.userService.getAutoLoadProjectId() || this.userService.getAutoLoadProjectName())
+    ) {
       // restore the last saved project
       this.projectLoadService.load(this.userService.getAutoLoadProjectId(), this.userService.getAutoLoadProjectName()).subscribe(
         () => {},

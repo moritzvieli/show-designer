@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import * as THREE from 'three';
-import STATS from 'three/examples/js/libs/stats.min';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { FixtureCategory } from '../models/fixture-profile';
 import { FixtureService } from '../services/fixture.service';
@@ -24,9 +23,6 @@ export class PreviewComponent implements AfterViewInit {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   public controls: OrbitControls;
-
-  private stats: any = STATS();
-  // private rendererStats = new THREEx.RendererStats();
 
   private fixtures3d: Fixture3d[] = [];
 
@@ -108,8 +104,6 @@ export class PreviewComponent implements AfterViewInit {
   }
 
   private animate(timeMillis: number) {
-    this.stats.begin();
-
     if (this.timelineService.playState === 'playing') {
       // Overwrite the current time with the playing time, if we're in playback mode
       timeMillis = this.timelineService.waveSurfer.getCurrentTime() * 1000;
@@ -181,13 +175,8 @@ export class PreviewComponent implements AfterViewInit {
     // TODO enable for monitoring the DMX universes
     this.previewService.setUniverseValues(calculatedFixtures, this.projectService.project.masterDimmerValue);
 
-    // Update the statistics
-    // this.rendererStats.update(this.renderer);
-
     // Render the scene
     this.render();
-
-    this.stats.end();
 
     requestAnimationFrame(this.animate.bind(this));
   }
@@ -214,9 +203,9 @@ export class PreviewComponent implements AfterViewInit {
     this.canvas.appendChild(this.renderer.domElement);
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
-    this.renderer.shadowMap.enabled = false;
-    this.renderer.gammaInput = true;
-    this.renderer.gammaOutput = true;
+    // this.renderer.shadowMap.enabled = true;
+    // this.renderer.gammaInput = true;
+    // this.renderer.gammaOutput = true;
   }
 
   private setupCamera() {
@@ -240,63 +229,37 @@ export class PreviewComponent implements AfterViewInit {
     // this.controls.rotation = 100;
   }
 
-  private setupFloor() {
-    const width = 4000;
-    const height = 1;
-
-    const geometry = new THREE.BoxGeometry(width, height, width);
-    const material = new THREE.MeshStandardMaterial({ color: 0x0d0d0d });
-
-    const floor = new THREE.Mesh(geometry.clone(), material);
-    floor.receiveShadow = false;
-    floor.castShadow = false;
-    floor.position.set(0, -height / 2, 0);
-    this.scene.add(floor);
-  }
-
-  private setupStats() {
-    // this.rendererStats.domElement.style.position = 'absolute';
-    // this.rendererStats.domElement.style.left = '0px';
-    // this.rendererStats.domElement.style.bottom = '0px';
-    // this.canvas.appendChild(this.rendererStats.domElement);
-
-    this.stats.domElement.style.position = 'absolute';
-    this.stats.domElement.style.left = '0px';
-    this.canvas.appendChild(this.stats.domElement);
-  }
-
   private setupScene() {
     // Create a new scene
     this.scene = new THREE.Scene();
+    // this.scene.background = new THREE.Color(0x080808);
+    // this.scene.fog	= new THREE.FogExp2( 0x000000, 0.1 );
 
     this.previewService.scene = this.scene;
 
     // Add a little bit of ambient light
-    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.5);
     this.scene.add(ambient);
-
-    // Add a floor
-    this.setupFloor();
 
     // Create the stage dimensions
     this.previewService.updateStage();
 
-    // TODO refine. background light in a color of the fixtures?
     const lights = [];
-    lights[0] = new THREE.PointLight(0xffffff, 0.5, 0);
-    lights[1] = new THREE.PointLight(0xffffff, 0.5, 0);
-    lights[2] = new THREE.PointLight(0xffffff, 0.5, 0);
+    lights[0] = new THREE.PointLight(0xffffff, 1, 0, 0.1);
+    lights[1] = new THREE.PointLight(0xffffff, 1, 0, 0.1);
+    lights[2] = new THREE.PointLight(0xffffff, 1, 0, 0.1);
 
     lights[0].position.set(0, 2000, 0);
     lights[1].position.set(1000, 2000, 1000);
     lights[2].position.set(-1000, -2000, -1000);
 
+    lights[0].castShadow = true;
+    lights[1].castShadow = true;
+    lights[2].castShadow = true;
+
     this.scene.add(lights[0]);
     this.scene.add(lights[1]);
     this.scene.add(lights[2]);
-
-    // Create the stats
-    this.setupStats();
   }
 
   ngAfterViewInit(): void {

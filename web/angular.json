@@ -32,7 +32,6 @@
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/bootstrap-slider/dist/bootstrap-slider.min.js",
               "node_modules/wavesurfer.js/dist/wavesurfer.min.js",
-              "src/assets/designer/js/threex.rendererstats.js",
               "src/assets/designer/js/iro.js"
             ]
           },
