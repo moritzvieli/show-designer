@@ -91,7 +91,7 @@ import { WarningDialogComponent } from './warning-dialog/warning-dialog.componen
     FixturePoolCreateFromFileComponent,
   ],
   imports: [
-    RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot([], {}),
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
