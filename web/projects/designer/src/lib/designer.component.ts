@@ -150,7 +150,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
         shareToken = '';
       }
 
-      this.projectLoadService.load(Number.parseInt(projectId), projectName, shareToken).subscribe(
+      this.projectLoadService.load(Number.parseInt(projectId, 10), projectName, shareToken).subscribe(
         () => {},
         (response) => {
           let error = response && response.error ? response.error.error : 'unknown';

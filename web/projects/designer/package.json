@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "ngx-sortablejs": "^11.1.0",
+    "tslib": "^2.0.0",
     "wavesurfer.js": "^3.0.0"
   },
   "peerDependencies": {

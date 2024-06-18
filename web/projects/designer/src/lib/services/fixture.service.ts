@@ -97,9 +97,9 @@ export class FixtureService {
   getRotationAngleDeg(value: string): number {
     // convert a rotation angle value into degrees
     if (value.endsWith('deg')) {
-      return Number.parseInt(value.replace('deg', ''));
+      return Number.parseInt(value.replace('deg', ''), 10);
     } else if (value.endsWith('%')) {
-      const perc = Number.parseInt(value.replace('%', ''));
+      const perc = Number.parseInt(value.replace('%', ''), 10);
       return (perc / 100) * 360;
     }
 
@@ -284,12 +284,12 @@ export class FixtureService {
 
     if (isNaN(fixtureChannel.defaultValue as any) && (fixtureChannel.defaultValue as string).endsWith('%')) {
       // percentage value
-      const percentage = Number.parseInt((fixtureChannel.defaultValue as string).replace('%', ''));
+      const percentage = Number.parseInt((fixtureChannel.defaultValue as string).replace('%', ''), 10);
       const maxValue = this.getMaxValueByChannel(fixtureChannel);
       return (maxValue / 100) * percentage;
     } else {
       // DMX value
-      return Number.parseInt(fixtureChannel.defaultValue as any);
+      return Number.parseInt(fixtureChannel.defaultValue as any, 10);
     }
   }
 
