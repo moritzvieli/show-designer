@@ -37,7 +37,7 @@
     "jquery": "^3.5.1",
     "ncp": "^2.0.0",
     "ngx-bootstrap": "^6.2.0",
-    "ngx-bootstrap-slider": "^1.9.0",
+    "ngx-bootstrap-slider": "^2.0.0",
     "ngx-dropzone-wrapper": "^10.0.1",
     "ngx-sortablejs": "^11.1.0",
     "ngx-toastr": "^13.2.1",
