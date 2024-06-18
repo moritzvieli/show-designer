@@ -10,7 +10,7 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
-import { SortablejsModule } from 'ngx-sortablejs';
+import { SortablejsModule } from 'ngx-sortablejs-plus';
 import { ToastrModule } from 'ngx-toastr';
 import { ArraySortPipe } from './array-sort-pipe';
 import { DesignerComponent } from './designer.component';
