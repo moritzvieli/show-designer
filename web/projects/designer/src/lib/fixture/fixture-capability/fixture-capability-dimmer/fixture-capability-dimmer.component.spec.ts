@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FixtureCapabilityDimmerComponent } from './fixture-capability-dimmer.component';
 
@@ -6,7 +6,7 @@ describe('FixturePropertyDimmerComponent', () => {
   let component: FixtureCapabilityDimmerComponent;
   let fixture: ComponentFixture<FixtureCapabilityDimmerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [FixtureCapabilityDimmerComponent],
     }).compileComponents();

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MasterDimmerComponent } from './master-dimmer.component';
 
@@ -6,7 +6,7 @@ describe('MasterDimmerComponent', () => {
   let component: MasterDimmerComponent;
   let fixture: ComponentFixture<MasterDimmerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [MasterDimmerComponent],
     }).compileComponents();
