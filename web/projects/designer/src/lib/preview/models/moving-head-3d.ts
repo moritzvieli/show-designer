@@ -36,61 +36,66 @@ export class MovingHead3d extends Fixture3d {
   private atmosphereMaterial: THREE.ShaderMaterial;
 
   private atmosphereMat() {
-    const vertexShader = [
-      'varying vec3	vVertexWorldPosition;',
-      'varying vec3	vVertexNormal;',
+    const vertexShader = `
+      varying vec3 vNormal;
+      varying vec3 vWorldPosition;
 
-      'void main(){',
-      '	vVertexNormal = normalize(normalMatrix * normal);',
+      void main(){
+        vNormal = normalize(normalMatrix * normal);
 
-      '	vVertexWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;',
+        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+        vWorldPosition = worldPosition.xyz;
 
-      '	// set gl_Position',
-      '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
-      '}',
-    ].join('\n');
-    const fragmentShader = [
-      'uniform vec3	glowColor;',
-      'uniform float	coeficient;',
-      'uniform float	power;',
-      'uniform float	opacity;',
+        gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`;
+    const fragmentShader = `
+      varying vec3 vNormal;
+      varying vec3 vWorldPosition;
 
-      'varying vec3	vVertexNormal;',
-      'varying vec3	vVertexWorldPosition;',
+      uniform vec3 lightColor;
+      uniform float	opacity;
+      uniform vec3 spotPosition;
+      uniform float attenuation;
+      uniform float	anglePower;
 
-      'void main(){',
-      '	vec3 worldCameraToVertex= vVertexWorldPosition - cameraPosition;',
-      '	vec3 viewCameraToVertex	= (viewMatrix * vec4(worldCameraToVertex, 0.0)).xyz;',
-      '	viewCameraToVertex	= normalize(viewCameraToVertex);',
-      '	float intensity		= pow(coeficient + dot(vVertexNormal, viewCameraToVertex), power);',
-      '	gl_FragColor		= vec4(glowColor, intensity * opacity);',
-      '}',
-    ].join('\n');
+      void main(){
+        float intensity;
 
-    // create custom material from the shader code above
-    // that is within specially labeled script tags
+        intensity	= distance(vWorldPosition, spotPosition) / attenuation;
+        intensity	= 1.0 - clamp(intensity, 0.0, 1.0);
+
+        vec3 normal	= vec3(vNormal.x, vNormal.y, abs(vNormal.z));
+        float angleIntensity	= pow(dot(normal, vec3(0.0, 0.0, 1.0)), anglePower);
+        intensity	= intensity * angleIntensity * opacity;
+
+        gl_FragColor	= vec4(lightColor, intensity);
+      }`;
+
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        coeficient: {
+        attenuation: {
           type: 'f',
-          value: 0.3,
+          value: 800.0,
         },
-        power: {
+        anglePower: {
           type: 'f',
-          value: 1.3,
+          value: 2,
+        },
+        spotPosition: {
+          type: 'v3',
+          value: new THREE.Vector3(0, 0, 0),
+        },
+        lightColor: {
+          type: 'c',
+          value: new THREE.Color('white'),
         },
         opacity: {
           type: 'f',
           value: 1.0,
         },
-        glowColor: {
-          type: 'c',
-          value: new THREE.Color('white'),
-        },
       },
       vertexShader,
       fragmentShader,
-      // blending: THREE.AdditiveBlending,
       transparent: true,
       depthWrite: false,
     });
@@ -106,14 +111,14 @@ export class MovingHead3d extends Fixture3d {
     // TODO update the correct angle from the profile
     const beamAngleDegrees = 14;
     const geometry = new THREE.CylinderGeometry(0.1, beamAngleDegrees * 1.2, 100, 64, 20, false);
-    geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
-    geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
-
-    // var zrak_mat = new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, opacity: 0.1 });
+    geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
+    geometry.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 
     this.atmosphereMaterial = this.atmosphereMat();
     this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMaterial);
     this.spotLightBeam.position.set(0, -0.02, 0);
+    this.spotLightBeam.receiveShadow = false;
+    this.spotLightBeam.castShadow = false;
 
     this.spotlightGroup.add(this.spotLightBeam);
     this.spotLightBeam.rotation.x = Math.PI / 2;
@@ -137,16 +142,15 @@ export class MovingHead3d extends Fixture3d {
     this.headGroup.add(headPivotGroup);
 
     // Add the spotlight
-    this.spotLight = new THREE.SpotLight(0xffffff, 1);
-    this.spotLight.angle = 0.244;
-    this.spotLight.penumbra = 0.5;
-    this.spotLight.decay = 2;
-    this.spotLight.distance = 60000;
-    this.spotLight.castShadow = false;
-    this.spotLight.intensity = 10;
+    this.spotLight = new THREE.SpotLight(0xffffff, 50000);
+    this.spotLight.angle = 2;
+    this.spotLight.penumbra = 1;
+    this.spotLight.decay = 0.01;
+    this.spotLight.distance = 0;
+    this.spotLight.intensity = 1;
 
     this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
-    // scene.add(this.spotLightHelper);
+    this.scene.add(this.spotLightHelper);
 
     const spotLightTarget = new THREE.Object3D();
     this.spotLight.target = spotLightTarget;
@@ -157,7 +161,7 @@ export class MovingHead3d extends Fixture3d {
     spotLightTarget.position.set(0, -10, 0);
 
     // Add the point light for the surrounding light
-    this.pointLight = new THREE.PointLight(0xffffff, 2, 1000);
+    this.pointLight = new THREE.PointLight(0xffffff, 500, 0, 0.1);
     this.spotlightGroup.add(this.pointLight);
     this.pointLight.position.set(0, -1.4, 0);
 
@@ -250,14 +254,14 @@ export class MovingHead3d extends Fixture3d {
     this.updatePosition(this.objectGroup);
 
     // calculate the y/x rotation in radiants based on pan/tilt (0-1) respecting the max pan/tilt
-    this.armGroup.rotation.y = THREE.Math.degToRad(panEnd * this.pan + panStart) - THREE.Math.degToRad(panEnd / 2);
-    this.headGroup.rotation.x = THREE.Math.degToRad(tiltEnd * this.tilt + tiltStart) - THREE.Math.degToRad(tiltEnd / 2);
+    this.armGroup.rotation.y = THREE.MathUtils.degToRad(panEnd * this.pan + panStart) - THREE.MathUtils.degToRad(panEnd / 2);
+    this.headGroup.rotation.x = THREE.MathUtils.degToRad(tiltEnd * this.tilt + tiltStart) - THREE.MathUtils.degToRad(tiltEnd / 2);
 
     // Update the angle (only on change, because it's expensive)
     // TODO update the correct angle from the profile
     const beamAngleDregrees = 14;
     if (this.lastBeamAngleDegrees !== beamAngleDregrees) {
-      this.spotLight.angle = THREE.Math.degToRad(beamAngleDregrees);
+      this.spotLight.angle = THREE.MathUtils.degToRad(beamAngleDregrees);
       this.createSpotLightBeam();
       this.lastBeamAngleDegrees = beamAngleDregrees;
     }
@@ -277,32 +281,32 @@ export class MovingHead3d extends Fixture3d {
       this.lastSelected = this.isSelected;
     }
 
-    // Update the light helpers
-    this.spotLightHelper.update();
-
     // Apply the colors
     const color = new THREE.Color('rgb(' + this.colorRed + ', ' + this.colorGreen + ', ' + this.colorBlue + ')');
 
     this.pointLight.color = color;
 
     this.spotLight.color = color;
-    (this.spotLightBeam.material as any).uniforms.glowColor.value = color;
+    this.spotLightBeam.material.uniforms.lightColor.value = color;
 
     // Apply the dimmer value
     // Take the color into account for the beam (don't show a black beam)
     const intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue);
-    (this.spotLightBeam.material as any).uniforms.opacity.value = Math.min(intensityColor, this.dimmer);
+    // console.log(Math.min(intensityColor, this.dimmer));
+    this.spotLightBeam.material.uniforms.opacity.value = Math.min(intensityColor, this.dimmer);
 
     this.spotLight.intensity = this.spotLightLightMaxIntensity * this.dimmer;
     this.pointLight.intensity = this.pointLightMaxIntensity * this.dimmer;
 
-    // this.spotLightBeam.material.uniforms.viewVector.value =
-    //     new THREE.Vector3().subVectors(this.camera.position, this.spotLightBeam.position);
+    this.spotLightBeam.material.uniforms.spotPosition.value = this.objectGroup.position;
+
+    // this.spotLightHelper.update();
   }
 
   destroy() {
     this.scene.remove(this.objectGroup);
     this.material.dispose();
     this.atmosphereMaterial.dispose();
+    this.spotLightHelper.dispose();
   }
 }

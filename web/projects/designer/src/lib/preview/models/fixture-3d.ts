@@ -143,30 +143,30 @@ export abstract class Fixture3d {
     // Update the position
     switch (this.fixture.fixture.positioning) {
       case Positioning.topFront: {
-        object.rotation.x = THREE.Math.degToRad(0);
+        object.rotation.x = THREE.MathUtils.degToRad(0);
         object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
         break;
       }
       case Positioning.bottomFront: {
-        object.rotation.x = THREE.Math.degToRad(180);
+        object.rotation.x = THREE.MathUtils.degToRad(180);
         object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
         break;
       }
       case Positioning.topBack: {
-        object.rotation.x = THREE.Math.degToRad(0);
+        object.rotation.x = THREE.MathUtils.degToRad(0);
         object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY - 13, this.fixture.fixture.positionZ);
         break;
       }
       case Positioning.bottomBack: {
-        object.rotation.x = THREE.Math.degToRad(180);
+        object.rotation.x = THREE.MathUtils.degToRad(180);
         object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY + 13, this.fixture.fixture.positionZ);
         break;
       }
       case Positioning.manual: {
         object.position.set(this.fixture.fixture.positionX, this.fixture.fixture.positionY, this.fixture.fixture.positionZ);
-        object.rotation.x = THREE.Math.degToRad(this.fixture.fixture.rotationX);
-        object.rotation.y = THREE.Math.degToRad(this.fixture.fixture.rotationY);
-        object.rotation.z = THREE.Math.degToRad(this.fixture.fixture.rotationZ);
+        object.rotation.x = THREE.MathUtils.degToRad(this.fixture.fixture.rotationX);
+        object.rotation.y = THREE.MathUtils.degToRad(this.fixture.fixture.rotationY);
+        object.rotation.z = THREE.MathUtils.degToRad(this.fixture.fixture.rotationZ);
         break;
       }
     }

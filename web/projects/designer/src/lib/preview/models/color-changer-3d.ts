@@ -98,8 +98,8 @@ export class ColorChanger3d extends Fixture3d {
     // TODO update the correct angle from the profile
     const beamAngleDegrees = 14;
     const geometry = new THREE.CylinderGeometry(0.8, beamAngleDegrees * 1.2, 100, 64, 20, false);
-    geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
-    geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+    geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
+    geometry.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 
     this.atmosphereMaterial = this.atmosphereMat();
     this.spotLightBeam = new THREE.Mesh(geometry, this.atmosphereMaterial);

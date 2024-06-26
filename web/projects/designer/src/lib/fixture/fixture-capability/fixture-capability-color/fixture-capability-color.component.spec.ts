@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FixtureCapabilityColorComponent } from './fixture-capability-color.component';
 
@@ -6,7 +6,7 @@ describe('ColorComponent', () => {
   let component: FixtureCapabilityColorComponent;
   let fixture: ComponentFixture<FixtureCapabilityColorComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [FixtureCapabilityColorComponent],
     }).compileComponents();

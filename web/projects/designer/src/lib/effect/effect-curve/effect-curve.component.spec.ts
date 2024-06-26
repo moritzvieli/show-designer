@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EffectCurveComponent } from './effect-curve.component';
 
@@ -6,7 +6,7 @@ describe('EffectCurveComponent', () => {
   let component: EffectCurveComponent;
   let fixture: ComponentFixture<EffectCurveComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [EffectCurveComponent],
     }).compileComponents();

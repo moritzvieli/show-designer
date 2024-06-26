@@ -24,7 +24,11 @@ export class PreviewService {
   public scene: THREE.Scene;
 
   private stageMeshes: THREE.Mesh[] = [];
-  private stageMaterial = new THREE.MeshStandardMaterial({ color: 0x0d0d0d });
+  private stageMaterial = new THREE.MeshStandardMaterial({
+    color: 0x0d0d0d,
+    // roughness: 0.5,
+    // metalness: 0.5,
+  });
 
   constructor(
     private presetService: PresetService,
@@ -100,7 +104,7 @@ export class PreviewService {
     if (intensityPercentage < 1) {
       // We need to mix a possibly existing value (or the default value 0) with the new value (fading)
 
-      // Get the existant value for this property
+      // Get the existent value for this property
       for (const existingChannelValue of existingChannelValues) {
         if (
           existingChannelValue.channelName === channelValue.channelName &&
@@ -115,7 +119,7 @@ export class PreviewService {
       newValue = existingValue * (1 - intensityPercentage) + newValue * intensityPercentage;
     }
 
-    // Remove the existant value, if available
+    // Remove the existent value, if available
     for (let i = 0; i < existingChannelValues.length; i++) {
       if (
         existingChannelValues[i].channelName === channelValue.channelName &&
@@ -528,6 +532,11 @@ export class PreviewService {
     this.doUpdateFixtureSetup.next();
   }
 
+  private prepareStageMesh(mesh: THREE.Mesh) {
+    mesh.receiveShadow = false;
+    mesh.castShadow = false;
+  }
+
   public updateStage() {
     if (!this.scene) {
       return;
@@ -543,28 +552,35 @@ export class PreviewService {
     }
     this.stageMeshes = [];
 
+    // Ground
+    geometry = new THREE.PlaneGeometry(5000, 5000);
+    mesh = new THREE.Mesh(geometry, this.stageMaterial);
+    this.prepareStageMesh(mesh);
+    mesh.position.set(0, 0, 0);
+    mesh.rotateX((Math.PI / 180) * -90);
+    this.scene.add(mesh);
+    this.stageMeshes.push(mesh);
+
     // Floor
-    geometry = new THREE.BoxBufferGeometry(
+    geometry = new THREE.BoxGeometry(
       this.projectService.project.stageWidthCm,
       this.projectService.project.stageFloorHeightCm,
       this.projectService.project.stageDepthCm
     );
-    mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
-    mesh.receiveShadow = false;
-    mesh.castShadow = false;
+    mesh = new THREE.Mesh(geometry, this.stageMaterial);
+    this.prepareStageMesh(mesh);
     mesh.position.set(0, this.projectService.project.stageFloorHeightCm / 2, 0);
     this.scene.add(mesh);
     this.stageMeshes.push(mesh);
 
     // Pillar front left
-    geometry = new THREE.BoxBufferGeometry(
+    geometry = new THREE.BoxGeometry(
       this.projectService.project.stagePillarWidthCm,
       this.projectService.project.stageHeightCm,
       this.projectService.project.stagePillarWidthCm
     );
-    mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
-    mesh.receiveShadow = false;
-    mesh.castShadow = false;
+    mesh = new THREE.Mesh(geometry, this.stageMaterial);
+    this.prepareStageMesh(mesh);
     mesh.position.set(
       -this.projectService.project.stageWidthCm / 2 + this.projectService.project.stagePillarWidthCm / 2,
       this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm,
@@ -574,14 +590,13 @@ export class PreviewService {
     this.stageMeshes.push(mesh);
 
     // Pillar front right
-    geometry = new THREE.BoxBufferGeometry(
+    geometry = new THREE.BoxGeometry(
       this.projectService.project.stagePillarWidthCm,
       this.projectService.project.stageHeightCm,
       this.projectService.project.stagePillarWidthCm
     );
-    mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
-    mesh.receiveShadow = false;
-    mesh.castShadow = false;
+    mesh = new THREE.Mesh(geometry, this.stageMaterial);
+    this.prepareStageMesh(mesh);
     mesh.position.set(
       this.projectService.project.stageWidthCm / 2 - this.projectService.project.stagePillarWidthCm / 2,
       this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm,
@@ -591,14 +606,13 @@ export class PreviewService {
     this.stageMeshes.push(mesh);
 
     // Pillar back left
-    geometry = new THREE.BoxBufferGeometry(
+    geometry = new THREE.BoxGeometry(
       this.projectService.project.stagePillarWidthCm,
       this.projectService.project.stageHeightCm,
       this.projectService.project.stagePillarWidthCm
     );
-    mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
-    mesh.receiveShadow = false;
-    mesh.castShadow = false;
+    mesh = new THREE.Mesh(geometry, this.stageMaterial);
+    this.prepareStageMesh(mesh);
     mesh.position.set(
       -this.projectService.project.stageWidthCm / 2 + this.projectService.project.stagePillarWidthCm / 2,
       this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm,
@@ -608,14 +622,13 @@ export class PreviewService {
     this.stageMeshes.push(mesh);
 
     // Pillar back right
-    geometry = new THREE.BoxBufferGeometry(
+    geometry = new THREE.BoxGeometry(
       this.projectService.project.stagePillarWidthCm,
       this.projectService.project.stageHeightCm,
       this.projectService.project.stagePillarWidthCm
     );
-    mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
-    mesh.receiveShadow = false;
-    mesh.castShadow = false;
+    mesh = new THREE.Mesh(geometry, this.stageMaterial);
+    this.prepareStageMesh(mesh);
     mesh.position.set(
       this.projectService.project.stageWidthCm / 2 - this.projectService.project.stagePillarWidthCm / 2,
       this.projectService.project.stageHeightCm / 2 + this.projectService.project.stageFloorHeightCm,
@@ -625,14 +638,13 @@ export class PreviewService {
     this.stageMeshes.push(mesh);
 
     // Ceiling
-    geometry = new THREE.BoxBufferGeometry(
+    geometry = new THREE.BoxGeometry(
       this.projectService.project.stageWidthCm,
       this.projectService.project.stageCeilingHeightCm,
       this.projectService.project.stageDepthCm
     );
-    mesh = new THREE.Mesh(geometry.clone(), this.stageMaterial);
-    mesh.receiveShadow = false;
-    mesh.castShadow = false;
+    mesh = new THREE.Mesh(geometry, this.stageMaterial);
+    this.prepareStageMesh(mesh);
     mesh.position.set(
       0,
       this.projectService.project.stageHeightCm +

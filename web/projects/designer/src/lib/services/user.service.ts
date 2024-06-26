@@ -96,7 +96,7 @@ export class UserService {
     if (!localStorage.getItem('projectId')) {
       return null;
     }
-    return Number.parseInt(localStorage.getItem('projectId'));
+    return Number.parseInt(localStorage.getItem('projectId'), 10);
   }
 
   getAutoLoadProjectName(): string {

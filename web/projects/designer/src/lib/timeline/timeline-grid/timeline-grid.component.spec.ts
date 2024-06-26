@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TimelineGridComponent } from './timeline-grid.component';
 
@@ -6,7 +6,7 @@ describe('TimelineGridComponent', () => {
   let component: TimelineGridComponent;
   let fixture: ComponentFixture<TimelineGridComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TimelineGridComponent],
     }).compileComponents();

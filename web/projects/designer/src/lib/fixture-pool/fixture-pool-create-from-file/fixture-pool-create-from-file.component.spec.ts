@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FixturePoolCreateFromFileComponent } from './fixture-pool-create-from-file.component';
 
@@ -6,7 +6,7 @@ describe('FixturePoolCreateFromFileComponent', () => {
   let component: FixturePoolCreateFromFileComponent;
   let fixture: ComponentFixture<FixturePoolCreateFromFileComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [FixturePoolCreateFromFileComponent],
     }).compileComponents();

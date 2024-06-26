@@ -150,7 +150,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
         shareToken = '';
       }
 
-      this.projectLoadService.load(Number.parseInt(projectId), projectName, shareToken).subscribe(
+      this.projectLoadService.load(Number.parseInt(projectId, 10), projectName, shareToken).subscribe(
         () => {},
         (response) => {
           let error = response && response.error ? response.error.error : 'unknown';
@@ -169,7 +169,10 @@ export class DesignerComponent implements OnInit, AfterViewInit {
           });
         }
       );
-    } else if (this.userService.isLoggedIn() && (this.userService.getAutoLoadProjectId() || this.userService.getAutoLoadProjectName())) {
+    } else if (
+      (this.userService.isLoggedIn() || !this.configService.loginAvailable) &&
+      (this.userService.getAutoLoadProjectId() || this.userService.getAutoLoadProjectName())
+    ) {
       // restore the last saved project
       this.projectLoadService.load(this.userService.getAutoLoadProjectId(), this.userService.getAutoLoadProjectName()).subscribe(
         () => {},

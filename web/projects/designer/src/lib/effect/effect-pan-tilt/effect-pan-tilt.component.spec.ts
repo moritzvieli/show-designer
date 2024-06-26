@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EffectPanTiltComponent } from './effect-pan-tilt.component';
 
@@ -6,7 +6,7 @@ describe('EffectPanTiltComponent', () => {
   let component: EffectPanTiltComponent;
   let fixture: ComponentFixture<EffectPanTiltComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [EffectPanTiltComponent],
     }).compileComponents();
