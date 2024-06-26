@@ -13,11 +13,11 @@
     "e2e": "ng e2e",
     "pretty-quick": "pretty-quick --staged",
     "precommit": "npm run pretty-quick && npm run lint",
-    "copy_lib_assets": "ncp src/assets/designer projects/designer/dist/assets",
+    "copy_lib_assets": "ncp src/assets/designer dist/designer/assets",
     "build_lib": "ng build --configuration production designer && npm run copy_lib_assets",
-    "npm_pack": "cd projects/designer/dist && npm pack",
+    "npm_pack": "cd dist/designer && npm pack",
     "package": "npm run build_lib && npm run npm_pack",
-    "publish": "npm run package && cd projects/designer/dist && npm publish --access public"
+    "publish": "npm run package && cd dist/designer && npm publish --access public"
   },
   "dependencies": {
     "@angular/animations": "^17.3.11",

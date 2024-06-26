@@ -18,11 +18,13 @@ If the linter fails, you can check and try to automatically fix it with `ng lint
 
 ## Build & publish as NPM package
 
+Use ignore-scripts: https://stackoverflow.com/a/66383890/1925327
+
 ```
 cd projects/designer
 npm version minor
 cd ../..
-npm run publish
+npm run publish --ignore-scripts
 ```
 
 ## Build online version for production
