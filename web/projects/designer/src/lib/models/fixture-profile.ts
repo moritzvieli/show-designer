@@ -1,5 +1,6 @@
 import { FixtureChannel } from './fixture-channel';
 import { FixtureMode } from './fixture-mode';
+import { FixturePhysical } from './fixture-physical';
 import { FixtureWheel } from './fixture-wheel';
 
 export enum FixtureCategory {
@@ -32,6 +33,7 @@ export class FixtureProfile {
   manufacturerShortName: string;
   manufacturerName: string;
   categories: FixtureCategory[] = [];
+  physical: FixturePhysical;
   availableChannels: any = {};
   shortName: string;
   wheels: any = {};
@@ -56,6 +58,9 @@ export class FixtureProfile {
       }
     } else if (data.mainCategory) {
       this.categories.push(FixtureCategory[data.mainCategory as string]);
+    }
+    if (data.physical) {
+      this.physical = new FixturePhysical(data.physical);
     }
     if (data.wheels) {
       for (const property of Object.keys(data.wheels)) {

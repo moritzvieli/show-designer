@@ -1,7 +1,9 @@
+import { FixtureChannel } from './fixture-channel';
+
 export class FixtureMode {
   name: string;
   shortName: string;
-  channels: any[] = [];
+  channels: FixtureChannel[] = [];
 
   constructor(data?: any) {
     if (!data) {
@@ -12,7 +14,9 @@ export class FixtureMode {
     this.shortName = data.shortName;
 
     if (data.channels) {
-      this.channels = data.channels;
+      for (const channel of data.channels) {
+        this.channels.push(new FixtureChannel(channel));
+      }
     }
   }
 }
