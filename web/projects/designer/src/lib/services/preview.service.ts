@@ -479,41 +479,41 @@ export class PreviewService {
     // TODO only, if monitoring is enabled
     return;
 
-    // Reset all DMX universes
-    for (const universe of this.universeService.universes) {
-      universe.channelValues = [];
-      for (let i = 0; i < 512; i++) {
-        universe.channelValues.push(0);
-      }
-    }
+    // // Reset all DMX universes
+    // for (const universe of this.universeService.universes) {
+    //   universe.channelValues = [];
+    //   for (let i = 0; i < 512; i++) {
+    //     universe.channelValues.push(0);
+    //   }
+    // }
 
-    // loop over each fixture
-    fixtures.forEach((channelValues: FixtureChannelValue[], cachedFixture: CachedFixture) => {
-      // TODO Get the correct universe for this fixture
-      const universe: Universe = this.universeService.getUniverseByUuid(cachedFixture.fixture.dmxUniverseUuid);
+    // // loop over each fixture
+    // fixtures.forEach((channelValues: FixtureChannelValue[], cachedFixture: CachedFixture) => {
+    //   // TODO Get the correct universe for this fixture
+    //   const universe: Universe = this.universeService.getUniverseByUuid(cachedFixture.fixture.dmxUniverseUuid);
 
-      // loop over each channel for this fixture
-      for (let channelIndex = 0; channelIndex < cachedFixture.mode.channels.length; channelIndex++) {
-        const channelObj = cachedFixture.mode.channels[channelIndex];
-        if (typeof channelObj === 'string') {
-          const channelName = channelObj;
-          // match this mode channel with a channel value
-          for (const channelValue of channelValues) {
-            const channel = this.fixtureService.getChannelByName(cachedFixture, channelName);
-            if (channel && channel.channel) {
-              const fineIndex = channel.channel.fineChannelAliases.indexOf(channelName);
-              if (channel.name === channelValue.channelName || fineIndex > -1) {
-                const universeChannel = cachedFixture.fixture.dmxFirstChannel + channelIndex;
-                const dmxValue =
-                  Math.floor(channelValue.value / Math.pow(256, channel.channel.fineChannelAliases.length - (fineIndex + 1))) % 256;
-                // TODO
-                break;
-              }
-            }
-          }
-        }
-      }
-    });
+    //   // loop over each channel for this fixture
+    //   for (let channelIndex = 0; channelIndex < cachedFixture.mode.channels.length; channelIndex++) {
+    //     const channelObj = cachedFixture.mode.channels[channelIndex];
+    //     if (typeof channelObj === 'string') {
+    //       const channelName = channelObj;
+    //       // match this mode channel with a channel value
+    //       for (const channelValue of channelValues) {
+    //         const channel = this.fixtureService.getChannelByName(cachedFixture, channelName);
+    //         if (channel && channel.channel) {
+    //           const fineIndex = channel.channel.fineChannelAliases.indexOf(channelName);
+    //           if (channel.name === channelValue.channelName || fineIndex > -1) {
+    //             const universeChannel = cachedFixture.fixture.dmxFirstChannel + channelIndex;
+    //             const dmxValue =
+    //               Math.floor(channelValue.value / Math.pow(256, channel.channel.fineChannelAliases.length - (fineIndex + 1))) % 256;
+    //             // TODO
+    //             break;
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
   }
 
   public fixtureIsSelected(uuid: string, presets: PresetRegionScene[]): boolean {

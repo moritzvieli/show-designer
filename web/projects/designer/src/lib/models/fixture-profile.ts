@@ -1,4 +1,5 @@
 import { FixtureChannel } from './fixture-channel';
+import { FixtureMatrix } from './fixture-matrix';
 import { FixtureMode } from './fixture-mode';
 import { FixturePhysical } from './fixture-physical';
 import { FixtureWheel } from './fixture-wheel';
@@ -34,7 +35,9 @@ export class FixtureProfile {
   manufacturerName: string;
   categories: FixtureCategory[] = [];
   physical: FixturePhysical;
+  matrix: FixtureMatrix;
   availableChannels: any = {};
+  templateChannels: any = {};
   shortName: string;
   wheels: any = {};
 
@@ -62,6 +65,9 @@ export class FixtureProfile {
     if (data.physical) {
       this.physical = new FixturePhysical(data.physical);
     }
+    if (data.matrix) {
+      this.matrix = new FixtureMatrix(data.matrix);
+    }
     if (data.wheels) {
       for (const property of Object.keys(data.wheels)) {
         const wheel = new FixtureWheel(data.wheels[property]);
@@ -77,6 +83,12 @@ export class FixtureProfile {
       for (const property of Object.keys(data.availableChannels)) {
         const fixtureChannel = new FixtureChannel(data.availableChannels[property]);
         this.availableChannels[property] = fixtureChannel;
+      }
+    }
+    if (data.templateChannels) {
+      for (const property of Object.keys(data.templateChannels)) {
+        const templateChannel = new FixtureChannel(data.templateChannels[property]);
+        this.templateChannels[property] = templateChannel;
       }
     }
     if (data.createdFromFile) {

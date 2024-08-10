@@ -292,7 +292,6 @@ export class MovingHead3d extends Fixture3d {
     // Apply the dimmer value
     // Take the color into account for the beam (don't show a black beam)
     const intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue);
-    // console.log(Math.min(intensityColor, this.dimmer));
     this.spotLightBeam.material.uniforms.opacity.value = Math.min(intensityColor, this.dimmer);
 
     this.spotLight.intensity = this.spotLightLightMaxIntensity * this.dimmer;

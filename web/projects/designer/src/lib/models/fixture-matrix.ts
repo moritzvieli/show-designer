@@ -3,7 +3,7 @@ import { FixtureMatrixPixelGroup } from './fixture-matrix-pixel-group';
 export class FixtureMatrix {
   pixelKeys: string[][];
   pixelCount: number[] = [];
-  pixelGroups: FixtureMatrixPixelGroup[] = [];
+  pixelGroups: any = {};
 
   constructor(data?: any) {
     if (!data) {
@@ -19,8 +19,9 @@ export class FixtureMatrix {
       }
     }
     if (data.pixelGroups) {
-      for (const pixelGroup of data.pixelGroups) {
-        this.pixelGroups.push(new FixtureMatrixPixelGroup(pixelGroup));
+      for (const property of Object.keys(data.pixelGroups)) {
+        const pixelGroup = new FixtureMatrixPixelGroup(data.pixelGroups[property]);
+        this.pixelGroups[property] = pixelGroup;
       }
     }
   }
