@@ -20,7 +20,11 @@ export class FixtureModeChannel {
       this.name = data.name;
 
       this.insert = data.insert;
-      this.repeatFor = data.repeatFor;
+      if (Array.isArray(data.repeatFor)) {
+        this.repeatFor = data.repeatFor;
+      } else {
+        this.repeatFor.push(data.repeatFor);
+      }
       this.channelOrder = data.channelOrder;
       this.templateChannels = data.templateChannels;
     }

@@ -291,17 +291,17 @@ export class FixturePoolComponent implements OnInit {
   }
 
   channelMouseOver(event: any) {
+    if (!this.channelDragFixture) {
+      return;
+    }
+
     // perform dragging
     const selectedIndex = event.target.dataset.index;
     const profile = this.fixtureService.getProfileByUuid(this.channelDragFixture.profileUuid);
     const mode = this.fixtureService.getModeByFixture(profile, this.selectedFixture);
     const channelCount = this.fixtureService.getModeChannelCount(profile, mode);
 
-    if (
-      this.channelDragFixture &&
-      selectedIndex - this.channelDragOffset >= 0 &&
-      selectedIndex - this.channelDragOffset + channelCount - 1 <= 511
-    ) {
+    if (selectedIndex - this.channelDragOffset >= 0 && selectedIndex - this.channelDragOffset + channelCount - 1 <= 511) {
       this.channelDragFixture.dmxFirstChannel = selectedIndex - this.channelDragOffset;
     }
   }

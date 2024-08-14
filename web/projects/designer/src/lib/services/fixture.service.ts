@@ -344,11 +344,21 @@ export class FixtureService {
       result = repeatFor;
     } else if (repeatFor[0] === 'eachPixelABC') {
       // Gets computed into an alphanumerically sorted list of all pixelKeys
-      for (let pixelKeyZ of profile.matrix.pixelKeys) {
-        for (let pixelKeyY of pixelKeyZ) {
-          for (let pixelKeyX of pixelKeyY) {
-            if (pixelKeyX) {
-              result.push(pixelKeyX);
+      if (profile.matrix.pixelCount.length === 3) {
+        for (let x = 0; x < profile.matrix.pixelCount[0]; x++) {
+          for (let y = 0; y < profile.matrix.pixelCount[1]; y++) {
+            for (let z = 0; z < profile.matrix.pixelCount[2]; z++) {
+              result.push('Pixel ' + (x + 1) + '-' + (y + 1) + '-' + (z + 1));
+            }
+          }
+        }
+      } else {
+        for (let pixelKeyX of profile.matrix.pixelKeys) {
+          for (let pixelKeyY of pixelKeyX) {
+            for (let pixelKeyZ of pixelKeyY) {
+              if (pixelKeyZ) {
+                result.push(pixelKeyZ);
+              }
             }
           }
         }
@@ -447,7 +457,7 @@ export class FixtureService {
         } else if (channel.repeatFor[0] === 'eachPixelGroup') {
           count += profile.matrix.pixelGroups.length * channel.templateChannels.length;
         } else if (channel.repeatFor[0].startsWith('eachPixel')) {
-          if ((profile.matrix.pixelCount.length = 3)) {
+          if (profile.matrix.pixelCount.length === 3) {
             count +=
               profile.matrix.pixelCount[0] * profile.matrix.pixelCount[1] * profile.matrix.pixelCount[2] * channel.templateChannels.length;
           } else {
