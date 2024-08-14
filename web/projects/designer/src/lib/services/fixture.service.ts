@@ -432,6 +432,47 @@ export class FixtureService {
     return result;
   }
 
+  getModeChannelCount(profile: FixtureProfile, mode: FixtureMode): number {
+    let count: number = 0;
+
+    // already calculated?
+    if (mode.channelCount) {
+      return mode.channelCount;
+    }
+
+    for (let channel of mode.channels) {
+      if (channel.insert === 'matrixChannels') {
+        if (channel.repeatFor.length > 1) {
+          count += channel.repeatFor.length * channel.templateChannels.length;
+        } else if (channel.repeatFor[0] === 'eachPixelGroup') {
+          count += profile.matrix.pixelGroups.length * channel.templateChannels.length;
+        } else if (channel.repeatFor[0].startsWith('eachPixel')) {
+          if ((profile.matrix.pixelCount.length = 3)) {
+            count +=
+              profile.matrix.pixelCount[0] * profile.matrix.pixelCount[1] * profile.matrix.pixelCount[2] * channel.templateChannels.length;
+          } else {
+            for (let x = 0; x < profile.matrix.pixelKeys.length; x++) {
+              for (let y = 0; y < profile.matrix.pixelKeys[x].length; y++) {
+                for (let z = 0; z < profile.matrix.pixelKeys[x][y].length; z++) {
+                  const pixel = profile.matrix.pixelKeys[x][y][z];
+                  if (pixel) {
+                    count += channel.templateChannels.length;
+                  }
+                }
+              }
+            }
+          }
+        }
+      } else {
+        count++;
+      }
+    }
+
+    mode.channelCount = count;
+
+    return mode.channelCount;
+  }
+
   getCachedChannels(profile: FixtureProfile, mode: FixtureMode): CachedFixtureChannel[] {
     const channels: CachedFixtureChannel[] = [];
 
@@ -571,12 +612,14 @@ export class FixtureService {
       let occupiedChannels = 0;
 
       for (const fixture of fixturePool) {
+        const profile = this.getProfileByUuid(fixture.profileUuid);
         const mode = this.getModeByFixture(this.getProfileByUuid(fixture.profileUuid), fixture);
+        const channelCount = this.getModeChannelCount(profile, mode);
 
-        if (i >= fixture.dmxFirstChannel && i < fixture.dmxFirstChannel + mode.channels.length) {
+        if (i >= fixture.dmxFirstChannel && i < fixture.dmxFirstChannel + channelCount) {
           // this channel is already occupied by a fixture -> move forward to the end of the fixture
-          if (mode.channels.length > occupiedChannels) {
-            occupiedChannels = mode.channels.length - (i - fixture.dmxFirstChannel);
+          if (channelCount > occupiedChannels) {
+            occupiedChannels = channelCount - (i - fixture.dmxFirstChannel);
           }
         }
       }
@@ -625,8 +668,9 @@ export class FixtureService {
       fixture.modeShortName = profile.modes[0].shortName || profile.modes[0].name;
     }
 
-    const mode = this.getModeByFixture(this.getProfileByUuid(fixture.profileUuid), fixture);
-    const firstChannel = this.getNextFreeDmxChannel(fixturePool, mode.channels.length);
+    const mode = this.getModeByFixture(profile, fixture);
+    const channelCount = this.getModeChannelCount(profile, mode);
+    const firstChannel = this.getNextFreeDmxChannel(fixturePool, channelCount);
 
     if (firstChannel >= 0) {
       fixture.dmxFirstChannel = firstChannel;

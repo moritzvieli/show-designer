@@ -4,6 +4,7 @@ export class FixtureMode {
   name: string;
   shortName: string;
   channels: FixtureModeChannel[] = [];
+  channelCount: number;
 
   constructor(data?: any) {
     if (!data) {

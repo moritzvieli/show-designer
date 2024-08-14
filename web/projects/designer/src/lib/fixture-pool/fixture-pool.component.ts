@@ -170,9 +170,11 @@ export class FixturePoolComponent implements OnInit {
 
   channelOccupied(index: number): boolean {
     for (const fixture of this.fixturePool) {
-      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
+      const profile = this.fixtureService.getProfileByUuid(fixture.profileUuid);
+      const mode = this.fixtureService.getModeByFixture(profile, fixture);
+      const channelCount = this.fixtureService.getModeChannelCount(profile, mode);
 
-      if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
+      if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + channelCount) {
         return true;
       }
     }
@@ -192,9 +194,11 @@ export class FixturePoolComponent implements OnInit {
 
   channelOccupiedEnd(index: number): boolean {
     for (const fixture of this.fixturePool) {
-      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
+      const profile = this.fixtureService.getProfileByUuid(fixture.profileUuid);
+      const mode = this.fixtureService.getModeByFixture(profile, fixture);
+      const channelCount = this.fixtureService.getModeChannelCount(profile, mode);
 
-      if (index === fixture.dmxFirstChannel + mode.channels.length - 1) {
+      if (index === fixture.dmxFirstChannel + channelCount - 1) {
         return true;
       }
     }
@@ -206,9 +210,11 @@ export class FixturePoolComponent implements OnInit {
     let occupiedFixture: Fixture;
 
     for (const fixture of this.fixturePool) {
-      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
+      const profile = this.fixtureService.getProfileByUuid(fixture.profileUuid);
+      const mode = this.fixtureService.getModeByFixture(profile, fixture);
+      const channelCount = this.fixtureService.getModeChannelCount(profile, mode);
 
-      if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + mode.channels.length) {
+      if (index >= fixture.dmxFirstChannel && index < fixture.dmxFirstChannel + channelCount) {
         if (occupiedFixture) {
           if (occupiedFixture.dmxFirstChannel !== fixture.dmxFirstChannel || occupiedFixture.modeShortName !== fixture.modeShortName) {
             // fixtures are allowed to overlap, if they start at the same channel and
@@ -232,9 +238,11 @@ export class FixturePoolComponent implements OnInit {
     // find a dragging fixture and select it, but don't change the selection, if the
     // currently selected fixture might also be selected (on overlapped fixtures)
     for (const fixture of this.fixturePool) {
-      const mode = this.fixtureService.getModeByFixture(this.fixtureService.getProfileByUuid(fixture.profileUuid), fixture);
+      const profile = this.fixtureService.getProfileByUuid(fixture.profileUuid);
+      const mode = this.fixtureService.getModeByFixture(profile, fixture);
+      const channelCount = this.fixtureService.getModeChannelCount(profile, mode);
 
-      if (selectedIndex >= fixture.dmxFirstChannel && selectedIndex <= fixture.dmxFirstChannel + mode.channels.length - 1) {
+      if (selectedIndex >= fixture.dmxFirstChannel && selectedIndex <= fixture.dmxFirstChannel + channelCount - 1) {
         if (this.selectedFixture === fixture) {
           newSelectedFixture = fixture;
           break;
@@ -262,12 +270,11 @@ export class FixturePoolComponent implements OnInit {
     }
 
     if (index >= this.selectedFixture.dmxFirstChannel) {
-      const mode = this.fixtureService.getModeByFixture(
-        this.fixtureService.getProfileByUuid(this.selectedFixture.profileUuid),
-        this.selectedFixture
-      );
+      const profile = this.fixtureService.getProfileByUuid(this.selectedFixture.profileUuid);
+      const mode = this.fixtureService.getModeByFixture(profile, this.selectedFixture);
+      const channelCount = this.fixtureService.getModeChannelCount(profile, mode);
 
-      if (index < this.selectedFixture.dmxFirstChannel + mode.channels.length) {
+      if (index < this.selectedFixture.dmxFirstChannel + channelCount) {
         return true;
       }
     }
@@ -286,18 +293,14 @@ export class FixturePoolComponent implements OnInit {
   channelMouseOver(event: any) {
     // perform dragging
     const selectedIndex = event.target.dataset.index;
+    const profile = this.fixtureService.getProfileByUuid(this.channelDragFixture.profileUuid);
+    const mode = this.fixtureService.getModeByFixture(profile, this.selectedFixture);
+    const channelCount = this.fixtureService.getModeChannelCount(profile, mode);
 
     if (
       this.channelDragFixture &&
       selectedIndex - this.channelDragOffset >= 0 &&
-      selectedIndex -
-        this.channelDragOffset +
-        this.fixtureService.getModeByFixture(
-          this.fixtureService.getProfileByUuid(this.channelDragFixture.profileUuid),
-          this.channelDragFixture
-        ).channels.length -
-        1 <=
-        511
+      selectedIndex - this.channelDragOffset + channelCount - 1 <= 511
     ) {
       this.channelDragFixture.dmxFirstChannel = selectedIndex - this.channelDragOffset;
     }

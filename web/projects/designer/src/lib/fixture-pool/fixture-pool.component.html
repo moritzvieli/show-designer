@@ -26,7 +26,7 @@
               </p>
             </a>
 
-            <div class="list-group-item" *ngFor="let profile of filteredProfiles | sort: 'uuid'">
+            <div class="list-group-item" *ngFor="let profile of filteredProfiles | sort : 'uuid'">
               <div class="row">
                 <div class="col-10 col-auto my-auto pl-2">
                   <p class="mb-0">
@@ -202,7 +202,7 @@
                 >
                   <option *ngFor="let mode of selectedFixtureProfile.modes" [ngValue]="mode.shortName || mode.name">
                     {{ mode.name }}
-                    - {{ mode.channels.length }}
+                    - {{ fixtureService.getModeChannelCount(selectedFixtureProfile, mode) }}
                     {{ 'designer.fixture-pool.channels' | translate }}
                   </option>
                 </select>
