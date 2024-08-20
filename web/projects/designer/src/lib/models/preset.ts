@@ -3,13 +3,16 @@ import { EffectCurve } from './effect-curve';
 import { EffectPanTilt } from './effect-pan-tilt';
 import { FixtureCapabilityValue } from './fixture-capability-value';
 import { FixtureChannelValue } from './fixture-channel-value';
+import { PresetFixture } from './preset-fixture';
 
 export class Preset {
   uuid: string;
   name: string;
 
   // all related fixtures
+  // OBSOLETE: replaced with fixtures
   fixtureUuids: string[] = [];
+  fixtures: PresetFixture[] = [];
 
   // the selected values
   fixtureChannelValues: FixtureChannelValue[] = [];
@@ -38,7 +41,16 @@ export class Preset {
 
     this.uuid = data.uuid;
     this.name = data.name;
+
+    // OBSOLETE
     this.fixtureUuids = data.fixtureUuids;
+
+    if (data.fixtures) {
+      for (const fixture of data.fixtures) {
+        this.fixtures.push(new PresetFixture(fixture));
+      }
+    }
+
     if (data.fixtureChannelValues) {
       for (const fixtureChannelValue of data.fixtureChannelValues) {
         this.fixtureChannelValues.push(new FixtureChannelValue(fixtureChannelValue));

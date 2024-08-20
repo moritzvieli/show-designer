@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, HostListener, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
 import Split from 'split.js';
 import { PreviewComponent } from './preview/preview.component';
@@ -23,6 +22,7 @@ import { UserService } from './services/user.service';
 import { WarningDialogService } from './services/warning-dialog.service';
 import { TimelineComponent } from './timeline/timeline.component';
 import { UserRegisterComponent } from './user/user-register/user-register.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'lib-designer',
@@ -93,6 +93,11 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     this.configService.uniqueProjectNames = value;
   }
 
+  @Input()
+  set dropzoneChunking(value: boolean) {
+    this.configService.dropzoneChunking = value;
+  }
+
   // the size of the menu used in the designer
   private designerMenuSizePx = 20;
 
@@ -110,14 +115,13 @@ export class DesignerComponent implements OnInit, AfterViewInit {
 
   constructor(
     private translateService: TranslateService,
-    private projectService: ProjectService,
+    public projectService: ProjectService,
     public configService: ConfigService,
     private fixturePoolService: FixturePoolService,
     private hotkeyTargetExcludeService: HotkeyTargetExcludeService,
     private modalService: BsModalService,
     public userService: UserService,
     private userEnsureLoginService: UserEnsureLoginService,
-    private toastrService: ToastrService,
     private projectLoadService: ProjectLoadService,
     private warningDialogService: WarningDialogService,
     private errorDialogService: ErrorDialogService,
@@ -127,6 +131,26 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   ) {
     this.configService.menuHeightChanged.subscribe(() => {
       this.calcTotalMenuHeight();
+    });
+  }
+
+  private loadError(response: any) {
+    console.error(response);
+    let msg = 'designer.project.open-error';
+    let error: string;
+    if (response instanceof HttpErrorResponse) {
+      error = response && response.error ? response.error.error : 'unknown';
+      if (error === 'no-permission') {
+        msg = 'designer.project.open-no-permission-error';
+        error = undefined;
+      } else {
+        msg = 'designer.project.open-error';
+      }
+    } else {
+      error = response && response.message ? response.message : 'unknown';
+    }
+    this.errorDialogService.show(msg, error).subscribe(() => {
+      this.projectLoadService.new();
     });
   }
 
@@ -153,20 +177,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       this.projectLoadService.load(Number.parseInt(projectId, 10), projectName, shareToken).subscribe(
         () => {},
         (response) => {
-          let error = response && response.error ? response.error.error : 'unknown';
-
-          let msg = '';
-
-          if (error === 'no-permission') {
-            msg = 'designer.project.open-no-permission-error';
-            error = undefined;
-          } else {
-            msg = 'designer.project.open-error';
-          }
-
-          this.errorDialogService.show(msg, error).subscribe(() => {
-            this.projectLoadService.new();
-          });
+          this.loadError(response);
         }
       );
     } else if (
@@ -177,12 +188,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       this.projectLoadService.load(this.userService.getAutoLoadProjectId(), this.userService.getAutoLoadProjectName()).subscribe(
         () => {},
         (response) => {
-          const msg = 'designer.project.open-error';
-          const error = response && response.error ? response.error.error : 'unknown';
-
-          this.errorDialogService.show(msg, error).subscribe(() => {
-            this.projectLoadService.new();
-          });
+          this.loadError(response);
         }
       );
     } else {
@@ -213,7 +219,7 @@ export class DesignerComponent implements OnInit, AfterViewInit {
     // Set up the splitter
     setTimeout(() => {
       Split(['#row1', '#row2', '#row3'], {
-        sizes: [42, 38, 20],
+        sizes: [42, 40, 18],
         direction: 'vertical',
         cursor: 'row-resize',
         snapOffset: 0,
@@ -222,14 +228,14 @@ export class DesignerComponent implements OnInit, AfterViewInit {
       });
 
       Split(['#scenes', '#presets', '#preview'], {
-        sizes: [15, 15, 70],
+        sizes: [20, 20, 60],
         snapOffset: 0,
         gutterSize: this.splitGutterSizePx,
         onDrag: this.onResize.bind(this),
       });
 
       Split(['#capabilities', '#fixtures', '#masterDimmer'], {
-        sizes: [74, 18, 8],
+        sizes: [70, 24, 6],
         snapOffset: 0,
         gutterSize: this.splitGutterSizePx,
         onDrag: this.onResize.bind(this),

@@ -39,48 +39,10 @@ export class CompositionSettingsComponent implements OnInit {
     private http: HttpClient,
     private warningDialogService: WarningDialogService,
     private toastrService: ToastrService,
-    private projectService: ProjectService
+    public projectService: ProjectService
   ) {}
 
   ngOnInit() {
-    const projectId = this.projectService.project.id ? this.projectService.project.id : '';
-    this.dropzoneConfig = {
-      url: this.configService.restUrl + 'file/upload?compositionUuid=' + this.composition.uuid + '&projectId=' + projectId,
-      addRemoveLinks: false,
-      maxFilesize: 100 /* 100 MB */,
-      acceptedFiles: 'audio/*',
-      timeout: 0,
-      parallelUploads: 1,
-      previewTemplate: `
-      <div class="dz-preview dz-file-preview">
-        <!-- The attachment details -->
-        <div class="dz-details" style="text-align: left">
-          <i class="fa fa-file-o"></i> <span data-dz-name></span> <small>
-          <span class="label label-default file-size" data-dz-size></span></small>
-        </div>
-
-        <!--div class="mt-5">
-          <span data-dz-errormessage></span>
-        </div-->
-
-        <div class="progress mt-4 mb-1" style="height: 10px">
-          <div class="progress-bar progress-bar-striped progress-bar-animated"
-            role="progressbar" style="width:0%;" data-dz-uploadprogress>
-          </div>
-        </div>
-      </div>
-      `,
-    };
-
-    this.translateService
-      .get('designer.misc.dropzone-message')
-      .pipe(
-        map((result) => {
-          this.uploadMessage = '<h3 class="mb-0"><i class="fa fa-cloud-upload"></i></h3>' + result;
-        })
-      )
-      .subscribe();
-
     this.loadFiles();
 
     if (this.timelineService.externalCompositionsAvailable) {
@@ -88,6 +50,11 @@ export class CompositionSettingsComponent implements OnInit {
         this.existingCompositionNames = compositionNames;
       });
     }
+  }
+
+  getDropzoneUrl() {
+    const projectId = this.projectService.project.id ? this.projectService.project.id : '';
+    return 'file/upload?compositionUuid=' + this.composition.uuid + '&projectId=' + projectId;
   }
 
   ok() {

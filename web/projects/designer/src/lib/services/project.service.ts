@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Project } from '../models/project';
 import { UserService } from './user.service';
-import { UuidService } from './uuid.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,19 +15,17 @@ export class ProjectService {
   // the current project
   public project: Project;
 
+  // the project-file versions used in this version of the designer (older ones will be migrated, newer ones are not supported)
+  public currentProjectVersion = 2;
+
   constructor(
-    private uuidService: UuidService,
     private http: HttpClient,
     private userService: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private translateService: TranslateService,
     private toastrService: ToastrService
-  ) {
-    this.project = new Project();
-    this.project.uuid = this.uuidService.getUuid();
-    this.project.name = 'New Project';
-  }
+  ) {}
 
   private saveApi(project: Project): Observable<object> {
     return this.http.post('project', JSON.stringify(project), { headers: this.userService.getHeaders() }).pipe(

@@ -2,10 +2,12 @@ import { Composition } from './composition';
 import { Fixture } from './fixture';
 import { FixtureProfile } from './fixture-profile';
 import { Preset } from './preset';
+import { PresetFixture } from './preset-fixture';
 import { Scene } from './scene';
 
 export class Project {
   public id: number;
+  public version: number;
   public uuid: string;
   public name: string;
   public shareToken: string;
@@ -30,7 +32,13 @@ export class Project {
 
   public compositions: Composition[] = [];
   public fixtureProfiles: FixtureProfile[] = [];
+
+  // fixtures added to the project in a DMX universe
   public fixtures: Fixture[] = [];
+
+  // the fixtures and pixel keys in order to be selectable
+  public presetFixtures: PresetFixture[] = [];
+
   public scenes: Scene[] = [];
   public presets: Preset[] = [];
 
@@ -40,6 +48,7 @@ export class Project {
     }
 
     this.id = data.id;
+    this.version = data.version;
     this.uuid = data.uuid;
     this.name = data.name;
     this.shareToken = data.shareToken;
@@ -74,6 +83,12 @@ export class Project {
     if (data.fixtures) {
       for (const fixture of data.fixtures) {
         this.fixtures.push(new Fixture(fixture));
+      }
+    }
+
+    if (data.presetFixtures) {
+      for (const presetFixture of data.presetFixtures) {
+        this.presetFixtures.push(new PresetFixture(presetFixture));
       }
     }
 

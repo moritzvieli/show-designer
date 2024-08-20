@@ -11,7 +11,7 @@ export class Fixture {
   profileUuid: string;
   name: string;
   dmxUniverseUuid: string;
-  dmxFirstChannel = 5;
+  dmxFirstChannel = 1;
   modeShortName: string;
   positioning: Positioning = Positioning.topFront;
 

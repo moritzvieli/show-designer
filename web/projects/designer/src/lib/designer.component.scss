@@ -1,10 +1,15 @@
+body {
+  // reduce base font size a little bit
+  font-size: 14px;
+}
+
 // Global styles
 .modal-full {
   max-width: unset !important;
   margin: 1.75rem !important;
 }
 
-/* Make the modals appear in front of the threejs debug information boxes */
+// Make the modals appear in front of the threejs debug information boxes
 .modal {
   z-index: 10001;
 }

@@ -28,7 +28,9 @@ export class FixtureChannelComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.calculateProfiles();
+  }
 
   ngOnDestroy() {
     this.fixtureSelectionChangedSubscription.unsubscribe();

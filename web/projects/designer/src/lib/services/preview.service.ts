@@ -7,13 +7,11 @@ import { FixtureCapabilityType } from '../models/fixture-capability';
 import { FixtureChannelValue } from '../models/fixture-channel-value';
 import { Preset } from '../models/preset';
 import { PresetRegionScene } from '../models/preset-region-scene';
-import { Universe } from '../models/universe';
 import { FixtureService } from './fixture.service';
 import { PresetService } from './preset.service';
 import { ProjectService } from './project.service';
 import { SceneService } from './scene.service';
 import { TimelineService } from './timeline.service';
-import { UniverseService } from './universe.service';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +33,6 @@ export class PreviewService {
     private fixtureService: FixtureService,
     private sceneService: SceneService,
     private timelineService: TimelineService,
-    private universeService: UniverseService,
     private projectService: ProjectService
   ) {}
 
@@ -139,30 +136,41 @@ export class PreviewService {
   }
 
   // Get the fixture index inside the passed preset (used for chasing)
-  private getFixtureIndex(preset: Preset, fixtureUuid: string): number {
+  private getFixtureIndex(preset: Preset, fixtureUuid: string, pixelKey: string): number {
     let index = 0;
-    const countedDmxChannels: number[] = [];
+    const countedFirstDmxChannelPixelKey: any[] = [];
 
     // Loop over the global fixtures to retain the order
-    for (const fixture of this.projectService.project.fixtures) {
-      for (const presetFixtureUuid of preset.fixtureUuids) {
-        if (presetFixtureUuid === fixture.uuid) {
-          if (fixture.uuid === fixtureUuid) {
-            return index;
-          }
+    for (const projectFixture of this.projectService.project.presetFixtures) {
+      const presetFixture = this.presetService.getPresetFixture(preset, fixtureUuid, pixelKey);
 
-          // don't count fixtures on the same channel as already counted ones
-          if (!countedDmxChannels.includes(fixture.dmxFirstChannel)) {
-            countedDmxChannels.push(fixture.dmxFirstChannel);
-            index++;
-          }
-          break;
-        }
+      if (!presetFixture) {
+        // Not found in the preset
+        return undefined;
+      }
+
+      if (projectFixture.fixtureUuid === fixtureUuid && ((!projectFixture.pixelKey && !pixelKey) || projectFixture.pixelKey === pixelKey)) {
+        return index;
+      }
+
+      const fixture = this.fixtureService.getFixtureByUuid(projectFixture.fixtureUuid);
+      const firstDmxChannelAndFixtureUuid = {
+        firstDmxChannel: fixture.dmxFirstChannel,
+        pixelKey: projectFixture.pixelKey,
+      };
+
+      const exists = countedFirstDmxChannelPixelKey.some(
+        (item) =>
+          item.firstDmxChannel === firstDmxChannelAndFixtureUuid.firstDmxChannel &&
+          ((!item.pixelKey && !firstDmxChannelAndFixtureUuid.pixelKey) || item.pixelKey === firstDmxChannelAndFixtureUuid.pixelKey)
+      );
+
+      // don't count fixtures on the same channel as already counted ones
+      if (!exists) {
+        index++;
+        countedFirstDmxChannelPixelKey.push(firstDmxChannelAndFixtureUuid);
       }
     }
-
-    // Not found in the preset
-    return undefined;
   }
 
   private getPresetIntensity(preset: PresetRegionScene, timeMillis: number): number {
@@ -424,7 +432,7 @@ export class PreviewService {
 
   // return all fixture uuids with their corresponding channel values
   public getChannelValues(timeMillis: number, presets: PresetRegionScene[]): Map<CachedFixture, FixtureChannelValue[]> {
-    // Loop over all relevant presets and calc the property values from the presets (capabilities and effects)
+    // Loop over all relevant presets and calc the property values from the presets (capabilities, channels and effects)
     const calculatedFixtures = new Map<CachedFixture, FixtureChannelValue[]>();
 
     for (let i = 0; i < this.fixtureService.cachedFixtures.length; i++) {
@@ -454,7 +462,7 @@ export class PreviewService {
 
         for (const preset of presets) {
           // search for this fixture in the preset and get it's preset-specific index (for chasing effects)
-          const fixtureIndex = this.getFixtureIndex(preset.preset, cachedFixture.fixture.uuid);
+          const fixtureIndex = this.getFixtureIndex(preset.preset, cachedFixture.fixture.uuid, cachedFixture.pixelKey);
 
           if (fixtureIndex >= 0) {
             // this fixture is also in the preset -> mix the required values (overwrite existing values,
@@ -516,12 +524,10 @@ export class PreviewService {
     // });
   }
 
-  public fixtureIsSelected(uuid: string, presets: PresetRegionScene[]): boolean {
+  public fixtureIsSelected(uuid: string, pixelKey: string, presets: PresetRegionScene[]): boolean {
     for (const preset of presets) {
-      for (const fixtureUuid of preset.preset.fixtureUuids) {
-        if (fixtureUuid === uuid) {
-          return true;
-        }
+      if (this.presetService.getPresetFixture(preset.preset, uuid, pixelKey)) {
+        return true;
       }
     }
 

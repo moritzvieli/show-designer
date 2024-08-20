@@ -13,6 +13,8 @@ import { ProjectService } from './project.service';
 import { SceneService } from './scene.service';
 import { TimelineService } from './timeline.service';
 import { UuidService } from './uuid.service';
+import { PresetFixture } from '../models/preset-fixture';
+import { WarningDialogService } from './warning-dialog.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,10 +30,63 @@ export class ProjectLoadService {
     private uuidService: UuidService,
     private timelineService: TimelineService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private warningDialogService: WarningDialogService
   ) {}
 
+  private migrateToVersion2() {
+    for (let fixture of this.projectService.project.fixtures) {
+      const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
+      if (pixelKeys.length > 0) {
+        for (let pixelKey of pixelKeys) {
+          const projectFixture = new PresetFixture();
+          projectFixture.fixtureUuid = fixture.uuid;
+          projectFixture.pixelKey = pixelKey;
+          this.projectService.project.presetFixtures.push(projectFixture);
+        }
+      } else {
+        const projectFixture = new PresetFixture();
+        projectFixture.fixtureUuid = fixture.uuid;
+        this.projectService.project.presetFixtures.push(projectFixture);
+      }
+    }
+    for (let preset of this.projectService.project.presets) {
+      for (let fixtureUuid of preset.fixtureUuids) {
+        const fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
+        const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
+        if (pixelKeys.length > 0) {
+          for (let pixelKey of pixelKeys) {
+            const presetFixture = new PresetFixture();
+            presetFixture.fixtureUuid = fixtureUuid;
+            presetFixture.pixelKey = pixelKey;
+            preset.fixtures.push(presetFixture);
+          }
+        } else {
+          const presetFixture = new PresetFixture();
+          presetFixture.fixtureUuid = fixtureUuid;
+          preset.fixtures.push(presetFixture);
+        }
+      }
+    }
+    this.projectService.project.version = 2;
+  }
+
+  private migrateFromOldProject() {
+    let migrated = false;
+
+    if (!this.projectService.project.version) {
+      // Migrate from version 1
+      this.migrateToVersion2();
+      migrated = true;
+    }
+
+    if (migrated) {
+      this.warningDialogService.show('designer.project.migrated').subscribe();
+    }
+  }
+
   private afterLoad() {
+    this.migrateFromOldProject();
     this.fixtureService.updateCachedFixtures();
     this.presetService.removeDeletedFixtures();
     this.previewService.updateFixtureSetup();
@@ -66,6 +121,13 @@ export class ProjectLoadService {
 
     return this.projectService.getProject(id, name, shareToken).pipe(
       map((project) => {
+        if (project.version > this.projectService.currentProjectVersion) {
+          throw new Error(
+            'The project version ' +
+              project.version +
+              ' is created with a newer version of the designer. Please update your Rocket Show version to open this project.'
+          );
+        }
         this.projectService.project = project;
         this.selectScenesPresetComposition();
         this.afterLoad();
@@ -100,6 +162,7 @@ export class ProjectLoadService {
     // create an empty new project
     const project = new Project();
     project.uuid = this.uuidService.getUuid();
+    project.version = this.projectService.currentProjectVersion;
     this.projectService.project = project;
     this.projectService.project.shareToken = this.uuidService.getUuid();
 

@@ -16,6 +16,7 @@ import { EffectService } from './effect.service';
 import { FixtureService } from './fixture.service';
 import { ProjectService } from './project.service';
 import { UuidService } from './uuid.service';
+import { PresetFixture } from '../models/preset-fixture';
 
 @Injectable({
   providedIn: 'root',
@@ -57,7 +58,17 @@ export class PresetService {
     }
   }
 
-  fixtureIsSelected(fixture: Fixture, preset?: Preset): boolean {
+  getPresetFixture(preset: Preset, fixtureUuid: string, pixelKey?: string): PresetFixture {
+    for (const fixture of preset.fixtures) {
+      if (fixture.fixtureUuid === fixtureUuid && ((!fixture.pixelKey && !pixelKey) || fixture.pixelKey === pixelKey)) {
+        return fixture;
+      }
+    }
+
+    return null;
+  }
+
+  fixtureIsSelected(fixture: Fixture, pixelKey: string, preset?: Preset): boolean {
     // is the passed fixture selected in the passed/currently selected preset?
     if (!preset) {
       if (this.selectedPreset) {
@@ -67,33 +78,42 @@ export class PresetService {
       }
     }
 
-    for (const selectedFixtureUuid of preset.fixtureUuids) {
-      if (selectedFixtureUuid === fixture.uuid) {
-        return true;
-      }
+    const presetFixture = this.getPresetFixture(preset, fixture.uuid, pixelKey);
+
+    if (presetFixture) {
+      return true;
     }
 
     return false;
   }
 
-  switchFixtureSelection(fixture: Fixture) {
+  switchFixtureSelection(fixture: Fixture, pixelKey: string) {
     if (!this.selectedPreset) {
       return;
     }
 
     // select all fixtures at the specified start channel or unselect them,
     // if already selected
-    if (this.fixtureIsSelected(fixture)) {
-      for (let i = this.selectedPreset.fixtureUuids.length - 1; i >= 0; i--) {
-        const projectFixture = this.fixtureService.getFixtureByUuid(this.selectedPreset.fixtureUuids[i]);
-        if (projectFixture.dmxFirstChannel === fixture.dmxFirstChannel) {
-          this.selectedPreset.fixtureUuids.splice(i, 1);
+    if (this.fixtureIsSelected(fixture, pixelKey)) {
+      for (let i = this.selectedPreset.fixtures.length - 1; i >= 0; i--) {
+        const projectFixture = this.fixtureService.getFixtureByUuid(this.selectedPreset.fixtures[i].fixtureUuid);
+        if (
+          projectFixture.dmxFirstChannel === fixture.dmxFirstChannel &&
+          ((!this.selectedPreset.fixtures[i].pixelKey && !pixelKey) || this.selectedPreset.fixtures[i].pixelKey === pixelKey)
+        ) {
+          this.selectedPreset.fixtures.splice(i, 1);
         }
       }
     } else {
-      for (const projectFixture of this.projectService.project.fixtures) {
-        if (projectFixture.dmxFirstChannel === fixture.dmxFirstChannel) {
-          this.selectedPreset.fixtureUuids.push(projectFixture.uuid);
+      for (const projectPresetFixture of this.projectService.project.presetFixtures) {
+        if ((!projectPresetFixture.pixelKey && !pixelKey) || projectPresetFixture.pixelKey === pixelKey) {
+          const projectFixture = this.fixtureService.getFixtureByUuid(projectPresetFixture.fixtureUuid);
+          if (projectFixture.dmxFirstChannel === fixture.dmxFirstChannel) {
+            const presetFixture = new PresetFixture();
+            presetFixture.fixtureUuid = projectPresetFixture.fixtureUuid;
+            presetFixture.pixelKey = pixelKey;
+            this.selectedPreset.fixtures.push(presetFixture);
+          }
         }
       }
     }
@@ -105,8 +125,22 @@ export class PresetService {
     }
 
     for (const fixture of this.projectService.project.fixtures) {
-      if (!this.fixtureIsSelected(fixture)) {
-        this.selectedPreset.fixtureUuids.push(fixture.uuid);
+      const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
+      if (pixelKeys.length > 0) {
+        for (const pixelKey of pixelKeys) {
+          if (!this.fixtureIsSelected(fixture, pixelKey)) {
+            const presetFixture = new PresetFixture();
+            presetFixture.fixtureUuid = fixture.uuid;
+            presetFixture.pixelKey = pixelKey;
+            this.selectedPreset.fixtures.push(presetFixture);
+          }
+        }
+      } else {
+        if (!this.fixtureIsSelected(fixture, null)) {
+          const presetFixture = new PresetFixture();
+          presetFixture.fixtureUuid = fixture.uuid;
+          this.selectedPreset.fixtures.push(presetFixture);
+        }
       }
     }
   }
@@ -116,17 +150,17 @@ export class PresetService {
       return;
     }
 
-    this.selectedPreset.fixtureUuids = [];
+    this.selectedPreset.fixtures = [];
   }
 
   public removeDeletedFixtures() {
     // after changing the configuration in the fixture pool, we might need to
     // delete some fixtures
     for (const preset of this.projectService.project.presets) {
-      for (let i = preset.fixtureUuids.length - 1; i >= 0; i--) {
-        const presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
+      for (let i = preset.fixtures.length - 1; i >= 0; i--) {
+        const presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtures[i].fixtureUuid);
         if (!presetFixture) {
-          preset.fixtureUuids.splice(i, 1);
+          preset.fixtures.splice(i, 1);
         }
       }
     }
@@ -136,11 +170,17 @@ export class PresetService {
     // after changing the configuration in the fixture pool, we might need to
     // select some more fixtures on the same channel as already selected ones
     for (const preset of this.projectService.project.presets) {
-      for (let i = preset.fixtureUuids.length - 1; i >= 0; i--) {
-        const presetFixture = this.fixtureService.getFixtureByUuid(preset.fixtureUuids[i]);
+      for (let presetFixture of preset.fixtures) {
+        const fixture = this.fixtureService.getFixtureByUuid(presetFixture.fixtureUuid);
         for (const projectFixture of this.projectService.project.fixtures) {
-          if (projectFixture.dmxFirstChannel === presetFixture.dmxFirstChannel && !this.fixtureIsSelected(projectFixture, preset)) {
-            preset.fixtureUuids.push(projectFixture.uuid);
+          if (
+            projectFixture.dmxFirstChannel === fixture.dmxFirstChannel &&
+            !this.fixtureIsSelected(projectFixture, presetFixture.pixelKey, preset)
+          ) {
+            const newPresetFixture = new PresetFixture();
+            newPresetFixture.fixtureUuid = projectFixture.uuid;
+            newPresetFixture.pixelKey = presetFixture.pixelKey;
+            preset.fixtures.push(newPresetFixture);
           }
         }
       }
@@ -304,8 +344,8 @@ export class PresetService {
 
   private hasCapabilityType(type: FixtureCapabilityType): boolean {
     // there is at least one channel with at least one intensity capability
-    for (const fixtureUuid of this.selectedPreset.fixtureUuids) {
-      const fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+    for (const projectFixture of this.selectedPreset.fixtures) {
+      const fixture = this.fixtureService.getCachedFixtureByUuid(projectFixture.fixtureUuid, projectFixture.pixelKey);
       for (const channel of fixture.channels) {
         if (channel.channel) {
           for (const capability of channel.capabilities) {
@@ -343,8 +383,8 @@ export class PresetService {
     }
 
     // a color wheel is involved
-    for (const fixtureUuid of this.selectedPreset.fixtureUuids) {
-      const fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+    for (const projectFixture of this.selectedPreset.fixtures) {
+      const fixture = this.fixtureService.getCachedFixtureByUuid(projectFixture.fixtureUuid, projectFixture.pixelKey);
       for (const channel of fixture.channels) {
         if (channel.colorWheel) {
           return true;
@@ -410,6 +450,7 @@ export class PresetService {
     this.selectPreset(highestSelectedPresetIndex);
   }
 
+  // return all fixture profiles used in the current preset selection
   getSelectedProfiles() {
     const profiles: FixtureProfile[] = [];
 
@@ -417,8 +458,8 @@ export class PresetService {
       return profiles;
     }
 
-    for (const fixtureUuid of this.selectedPreset.fixtureUuids) {
-      const fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
+    for (const presetFixture of this.selectedPreset.fixtures) {
+      const fixture = this.fixtureService.getFixtureByUuid(presetFixture.fixtureUuid);
       const profile = this.fixtureService.getProfileByUuid(fixture.profileUuid);
 
       if (profiles.indexOf(profile) < 0) {
@@ -429,26 +470,46 @@ export class PresetService {
     return profiles;
   }
 
+  // given a list of fixture profiles, return all available channels based on the currently selected fixtures in the preset
   getSelectedProfileChannels(selectedProfiles: FixtureProfile[]) {
+    const calculatedProfileModes = new Map<FixtureProfile, any[]>();
     const availableChannels: Map<FixtureProfile, CachedFixtureChannel[]> = new Map<FixtureProfile, CachedFixtureChannel[]>();
 
-    const calculatedProfileModes = new Map<FixtureProfile, FixtureMode[]>();
+    // calculate all modes for each profile
     for (const profile of selectedProfiles) {
-      const modes: FixtureMode[] = [];
-      for (const fixtureUuid of this.selectedPreset.fixtureUuids) {
-        const fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
-        if (modes.indexOf(fixture.mode) < 0) {
-          modes.push(fixture.mode);
+      const modeAndPixelKeys: any[] = [];
+
+      // loop over the project fixtures to keep the order
+      for (let projectFixture of this.projectService.project.presetFixtures) {
+        for (const presetFixture of this.selectedPreset.fixtures) {
+          if (
+            projectFixture.fixtureUuid === presetFixture.fixtureUuid &&
+            ((!projectFixture.pixelKey && !presetFixture.pixelKey) || projectFixture.pixelKey === presetFixture.pixelKey)
+          ) {
+            const fixture = this.fixtureService.getCachedFixtureByUuid(presetFixture.fixtureUuid, presetFixture.pixelKey);
+            if (fixture.profile.uuid === profile.uuid) {
+              const exists = modeAndPixelKeys.some(
+                (item) => (item.mode === fixture.mode && !item.pixelKey && !fixture.pixelKey) || item.pixelKey === fixture.pixelKey
+              );
+              if (!exists) {
+                modeAndPixelKeys.push({
+                  mode: fixture.mode,
+                  pixelKey: presetFixture.pixelKey,
+                });
+              }
+            }
+          }
         }
+
+        calculatedProfileModes.set(profile, modeAndPixelKeys);
       }
-      calculatedProfileModes.set(profile, modes);
     }
 
-    // calculate all required channels from the modes
-    calculatedProfileModes.forEach((modes: FixtureMode[], profile: FixtureProfile) => {
+    // calculate all channels from the modes
+    calculatedProfileModes.forEach((modeAndPixelKeys: any[], profile: FixtureProfile) => {
       const profileChannels: CachedFixtureChannel[] = [];
-      for (const mode of modes) {
-        const channels = this.fixtureService.getCachedChannels(profile, mode);
+      for (const modeAndPixelKey of modeAndPixelKeys) {
+        const channels = this.fixtureService.getCachedChannels(profile, modeAndPixelKey.mode, modeAndPixelKey.pixelKey);
         for (const channel of channels) {
           // only add the channel, if no channel with the same name has already been added
           // (e.g. a fine channel)

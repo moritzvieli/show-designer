@@ -13,6 +13,7 @@ import { PreviewService } from '../services/preview.service';
 import { ProjectService } from '../services/project.service';
 import { UuidService } from '../services/uuid.service';
 import { FixturePoolCreateFromFileComponent } from './fixture-pool-create-from-file/fixture-pool-create-from-file.component';
+import { PresetFixture } from '../models/preset-fixture';
 
 @Component({
   selector: 'lib-app-fixture-pool',
@@ -119,12 +120,15 @@ export class FixturePoolComponent implements OnInit {
     this.fixtureService.loadProfileByUuid(searchProfile.uuid).subscribe(() => {
       const profile = this.fixtureService.getProfileByUuid(searchProfile.uuid);
       const newFixture = this.fixtureService.addFixture(profile, this.fixturePool);
-      this.selectFixture(newFixture);
+      if (newFixture) {
+        this.selectFixture(newFixture);
+      }
     });
   }
 
   addCopy(originalFixture: Fixture) {
     const fixture = new Fixture();
+
     fixture.uuid = this.uuidService.getUuid();
     fixture.profileUuid = originalFixture.profileUuid;
     fixture.name = originalFixture.name;
@@ -322,6 +326,47 @@ export class FixturePoolComponent implements OnInit {
     }
 
     this.projectService.project.fixtures = this.fixturePool;
+
+    // remove deleted fixtures from preset fixtures
+    for (let i = this.projectService.project.presetFixtures.length - 1; i >= 0; i--) {
+      let found = false;
+      const presetFixture = this.projectService.project.presetFixtures[i];
+      for (let fixture of this.projectService.project.fixtures) {
+        if (presetFixture.fixtureUuid === fixture.uuid) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        this.projectService.project.presetFixtures.splice(i, 1);
+      }
+    }
+
+    // add the new fixtures to the preset fixtures
+    for (let fixture of this.projectService.project.fixtures) {
+      let found = false;
+      for (let presetFixture of this.projectService.project.presetFixtures) {
+        if (presetFixture.fixtureUuid === fixture.uuid) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
+        if (pixelKeys.length > 0) {
+          for (let pixelKey of pixelKeys) {
+            const presetFixture = new PresetFixture();
+            presetFixture.fixtureUuid = fixture.uuid;
+            presetFixture.pixelKey = pixelKey;
+            this.projectService.project.presetFixtures.push(presetFixture);
+          }
+        } else {
+          const presetFixture = new PresetFixture();
+          presetFixture.fixtureUuid = fixture.uuid;
+          this.projectService.project.presetFixtures.push(presetFixture);
+        }
+      }
+    }
 
     this.fixtureService.updateCachedFixtures();
     this.presetService.removeDeletedFixtures();

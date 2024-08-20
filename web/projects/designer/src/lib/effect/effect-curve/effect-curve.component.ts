@@ -103,14 +103,26 @@ export class EffectCurveComponent implements OnInit {
 
   private getPhasingCount(): number {
     let count = 0;
-    const countedDmxChannels: number[] = [];
+    const countedFirstDmxChannelPixelKey: any[] = [];
 
-    for (const fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-      const fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
+    for (const presetFixture of this.presetService.selectedPreset.fixtures) {
+      const fixture = this.fixtureService.getFixtureByUuid(presetFixture.fixtureUuid);
+      const firstDmxChannelAndFixtureUuid = {
+        firstDmxChannel: fixture.dmxFirstChannel,
+        pixelKey: presetFixture.pixelKey,
+      };
 
-      if (!countedDmxChannels.includes(fixture.dmxFirstChannel)) {
+      const exists = countedFirstDmxChannelPixelKey.some(
+        (item) =>
+          item.firstDmxChannel === firstDmxChannelAndFixtureUuid.firstDmxChannel &&
+          ((!item.pixelKey && !firstDmxChannelAndFixtureUuid.pixelKey) || item.pixelKey === firstDmxChannelAndFixtureUuid.pixelKey)
+      );
+
+      // don't count it, if it has the same DMX address and pixel key (if available),
+      // as an already counted one
+      if (!exists) {
         count++;
-        countedDmxChannels.push(fixture.dmxFirstChannel);
+        countedFirstDmxChannelPixelKey.push(firstDmxChannelAndFixtureUuid);
       }
     }
 

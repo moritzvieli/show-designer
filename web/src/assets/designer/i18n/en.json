@@ -81,7 +81,8 @@
       "delete-warning": "Do you really want to delete this project?",
       "save-title": "Save project",
       "name": "Name",
-      "overwrite-warning": "Do you really want to overwrite the existing project with the same name?"
+      "overwrite-warning": "Do you really want to overwrite the existing project with the same name?",
+      "migrated": "The project has been upgraded to the current designer-version."
     },
     "scene": {
       "title": "Scenes",

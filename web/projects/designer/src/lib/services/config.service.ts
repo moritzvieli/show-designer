@@ -16,6 +16,7 @@ export class ConfigService {
   public localProfiles = false;
   public intro = false;
   public uniqueProjectNames = false;
+  public dropzoneChunking = true;
 
   public menuHeightChanged: Subject<void> = new Subject<void>();
 

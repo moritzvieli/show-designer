@@ -65,16 +65,15 @@
       <div class="tab-content" id="myTabContent">
         <!-- Upload -->
         <div class="tab-pane fade show active" id="upload" role="tabpanel">
-          <!-- Dropzone -->
-          <dropzone
-            [config]="dropzoneConfig"
-            [useDropzoneClass]="'false'"
+          <app-dropzone
+            [url]="getDropzoneUrl()"
+            [acceptedFiles]="'audio/*'"
             [message]="uploadMessage"
             (error)="onUploadError($event)"
             (success)="onUploadSuccess($event)"
             (queuecomplete)="onQueueComplete($event)"
             (addedfile)="onAddedFile($event)"
-          ></dropzone>
+          ></app-dropzone>
         </div>
 
         <!-- Media library -->
@@ -91,7 +90,7 @@
             <div class="card-body p-0">
               <div class="list-group list-group-flush">
                 <a
-                  *ngFor="let existingFile of filteredExistingFiles | sort: 'name'"
+                  *ngFor="let existingFile of filteredExistingFiles | sort : 'name'"
                   class="list-group-item"
                   [class.active]="composition.audioFileName == existingFile"
                   href="#"

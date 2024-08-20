@@ -65,8 +65,8 @@ export class FixtureCapabilityComponent implements OnInit, OnDestroy {
       return;
     }
 
-    for (const fixtureUuid of this.presetService.selectedPreset.fixtureUuids) {
-      const fixture = this.fixtureService.getCachedFixtureByUuid(fixtureUuid);
+    for (const preserFixture of this.presetService.selectedPreset.fixtures) {
+      const fixture = this.fixtureService.getCachedFixtureByUuid(preserFixture.fixtureUuid, preserFixture.pixelKey);
       for (const channel of fixture.channels) {
         for (const capability of channel.capabilities) {
           if (capability.wheel && capability.wheelSlots && capability.wheelSlots.length > 0) {

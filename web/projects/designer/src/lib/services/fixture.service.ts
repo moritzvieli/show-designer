@@ -46,9 +46,9 @@ export class FixtureService {
     }
   }
 
-  getCachedFixtureByUuid(uuid: string): CachedFixture {
+  getCachedFixtureByUuid(uuid: string, pixelKey: string): CachedFixture {
     for (const fixture of this.cachedFixtures) {
-      if (fixture.fixture.uuid === uuid) {
+      if (fixture.fixture.uuid === uuid && ((!fixture.pixelKey && !pixelKey) || fixture.pixelKey === pixelKey)) {
         return fixture;
       }
     }
@@ -317,10 +317,19 @@ export class FixtureService {
     return undefined;
   }
 
-  private addCachedChannel(channels: CachedFixtureChannel[], channel: FixtureChannel, channelName: string, profile: FixtureProfile) {
+  private addCachedChannel(
+    channels: CachedFixtureChannel[],
+    channel: FixtureChannel,
+    templateChannelName: string,
+    pixelKey: string,
+    profile: FixtureProfile
+  ) {
     const cachedFixtureChannel = new CachedFixtureChannel();
+    const channelName = templateChannelName.replace('$pixelKey', pixelKey);
+
     cachedFixtureChannel.channel = channel;
     cachedFixtureChannel.name = channelName;
+    cachedFixtureChannel.pixelKey = pixelKey;
     cachedFixtureChannel.capabilities = this.getCapabilitiesByChannel(cachedFixtureChannel.channel, channelName, profile);
     const defaultValue = this.getDefaultValueByChannel(cachedFixtureChannel.channel);
     if (defaultValue) {
@@ -435,8 +444,6 @@ export class FixtureService {
           }
         }
       }
-    } else {
-      console.error('Unknown repeatFor "' + repeatFor[0] + '"');
     }
 
     return result;
@@ -483,7 +490,7 @@ export class FixtureService {
     return mode.channelCount;
   }
 
-  getCachedChannels(profile: FixtureProfile, mode: FixtureMode): CachedFixtureChannel[] {
+  getCachedChannels(profile: FixtureProfile, mode: FixtureMode, pixelKey: string): CachedFixtureChannel[] {
     const channels: CachedFixtureChannel[] = [];
 
     if (!mode) {
@@ -491,7 +498,7 @@ export class FixtureService {
     }
 
     for (const channel of mode.channels) {
-      if (channel.name) {
+      if (channel.name && !pixelKey) {
         // direct reference to a channel
 
         for (const availableChannelName of Object.keys(profile.availableChannels)) {
@@ -499,24 +506,26 @@ export class FixtureService {
           if (channel.name === availableChannelName) {
             const availableChannel: FixtureChannel = profile.availableChannels[availableChannelName];
 
-            this.addCachedChannel(channels, availableChannel, availableChannelName, profile);
+            this.addCachedChannel(channels, availableChannel, availableChannelName, null, profile);
           }
         }
       } else {
         // reference a channel through a pixel matrix
-        const pixelKeys = this.getPixelKeysInOrder(profile, channel.repeatFor);
+        const availablePixelKeys = this.getPixelKeysInOrder(profile, channel.repeatFor);
 
         if (channel.channelOrder === 'perPixel') {
           // each channel for each pixel
 
-          for (const pixelKey of pixelKeys) {
-            for (const modeTemplateChannelName of channel.templateChannels) {
-              for (const templateChannelName of Object.keys(profile.templateChannels)) {
-                // don't check the fine channels. only add the coarse channel.
-                if (modeTemplateChannelName === templateChannelName) {
-                  const templateChannel: FixtureChannel = profile.templateChannels[templateChannelName];
+          for (const availablePixelKey of availablePixelKeys) {
+            if (availablePixelKey === pixelKey) {
+              for (const modeTemplateChannelName of channel.templateChannels) {
+                for (const templateChannelName of Object.keys(profile.templateChannels)) {
+                  // don't check the fine channels. only add the coarse channel.
+                  if (modeTemplateChannelName === templateChannelName) {
+                    const templateChannel: FixtureChannel = profile.templateChannels[templateChannelName];
 
-                  this.addCachedChannel(channels, templateChannel, templateChannelName.replace('$pixelKey', pixelKey), profile);
+                    this.addCachedChannel(channels, templateChannel, templateChannelName, availablePixelKey, profile);
+                  }
                 }
               }
             }
@@ -525,13 +534,15 @@ export class FixtureService {
           // each pixel for each channel
 
           for (const modeTemplateChannelName of channel.templateChannels) {
-            for (const pixelKey of pixelKeys) {
-              for (const templateChannelName of Object.keys(profile.templateChannels)) {
-                // don't check the fine channels. only add the coarse channel.
-                if (modeTemplateChannelName === templateChannelName) {
-                  const templateChannel: FixtureChannel = profile.templateChannels[templateChannelName];
+            for (const availablePixelKey of availablePixelKeys) {
+              if (availablePixelKey === pixelKey) {
+                for (const templateChannelName of Object.keys(profile.templateChannels)) {
+                  // don't check the fine channels. only add the coarse channel.
+                  if (modeTemplateChannelName === templateChannelName) {
+                    const templateChannel: FixtureChannel = profile.templateChannels[templateChannelName];
 
-                  this.addCachedChannel(channels, templateChannel, templateChannelName.replace('$pixelKey', pixelKey), profile);
+                    this.addCachedChannel(channels, templateChannel, templateChannelName, availablePixelKey, profile);
+                  }
                 }
               }
             }
@@ -543,20 +554,45 @@ export class FixtureService {
     return channels;
   }
 
+  fixtureGetUniquePixelKeys(fixture: Fixture): string[] {
+    let pixelKeys: Set<string> = new Set();
+
+    let profile = this.getProfileByUuid(fixture.profileUuid);
+    let mode = this.getModeByFixture(profile, fixture);
+
+    // add the unique pixel keys
+    for (let channel of mode.channels) {
+      this.getPixelKeysInOrder(profile, channel.repeatFor).forEach((str) => pixelKeys.add(str));
+    }
+
+    return Array.from(pixelKeys);
+  }
+
   updateCachedFixtures() {
     // calculate some frequently used values as a cache to save cpu time
     // afterwards
     this.cachedFixtures = [];
 
     for (const fixture of this.projectService.project.fixtures) {
-      const cachedFixture = new CachedFixture();
-
-      cachedFixture.fixture = fixture;
-      cachedFixture.profile = this.getProfileByUuid(fixture.profileUuid);
-      cachedFixture.mode = this.getModeByFixture(cachedFixture.profile, fixture);
-      cachedFixture.channels = this.getCachedChannels(cachedFixture.profile, cachedFixture.mode);
-
-      this.cachedFixtures.push(cachedFixture);
+      const pixelKeys = this.fixtureGetUniquePixelKeys(fixture);
+      if (pixelKeys.length > 0) {
+        for (let pixelKey of pixelKeys) {
+          const cachedFixture = new CachedFixture();
+          cachedFixture.fixture = fixture;
+          cachedFixture.pixelKey = pixelKey;
+          cachedFixture.profile = this.getProfileByUuid(fixture.profileUuid);
+          cachedFixture.mode = this.getModeByFixture(cachedFixture.profile, fixture);
+          cachedFixture.channels = this.getCachedChannels(cachedFixture.profile, cachedFixture.mode, pixelKey);
+          this.cachedFixtures.push(cachedFixture);
+        }
+      } else {
+        const cachedFixture = new CachedFixture();
+        cachedFixture.fixture = fixture;
+        cachedFixture.profile = this.getProfileByUuid(fixture.profileUuid);
+        cachedFixture.mode = this.getModeByFixture(cachedFixture.profile, fixture);
+        cachedFixture.channels = this.getCachedChannels(cachedFixture.profile, cachedFixture.mode, null);
+        this.cachedFixtures.push(cachedFixture);
+      }
     }
   }
 

@@ -20,4 +20,7 @@ export class CachedFixtureChannel {
 
   // a color wheel, if available
   colorWheel: FixtureWheel;
+
+  // a pixel key (beam), this channel is referring to
+  pixelKey: string;
 }

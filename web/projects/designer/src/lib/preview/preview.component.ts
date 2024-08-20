@@ -38,12 +38,17 @@ export class PreviewComponent implements AfterViewInit {
     private projectService: ProjectService
   ) {
     this.previewService.doUpdateFixtureSetup.subscribe(() => {
-      // synchronize the 3d-fixtures to the project fixtures
       this.syncFixtures();
     });
+    this.syncFixtures();
   }
 
+  // synchronize the 3d-fixtures to the project fixtures
   private syncFixtures() {
+    if (!this.previewService.scene) {
+      return;
+    }
+
     // remove all fixtures
     for (const fixture3d of this.fixtures3d) {
       fixture3d.destroy();
@@ -86,17 +91,19 @@ export class PreviewComponent implements AfterViewInit {
     let positionCount = 0; // Number of fixtures in the same position
     let positionIndex = 1;
 
-    this.projectService.project.fixtures.forEach((element, index) => {
-      if (element.positioning === positioning) {
+    this.projectService.project.presetFixtures.forEach((element, index) => {
+      const fixture = this.fixtureService.getFixtureByUuid(element.fixtureUuid);
+      if (fixture.positioning === positioning) {
         positionCount++;
       }
     });
 
-    this.projectService.project.fixtures.forEach((element, index) => {
-      if (element.positioning === positioning) {
-        element.positionX = xMin + ((xMax - xMin) / (positionCount + 1)) * positionIndex;
-        element.positionY = yMin + ((yMax - yMin) / (positionCount + 1)) * positionIndex;
-        element.positionZ = zMin + ((zMax - zMin) / (positionCount + 1)) * positionIndex;
+    this.projectService.project.presetFixtures.forEach((element, index) => {
+      const fixture = this.fixtureService.getFixtureByUuid(element.fixtureUuid);
+      if (fixture.positioning === positioning) {
+        fixture.positionX = xMin + ((xMax - xMin) / (positionCount + 1)) * positionIndex;
+        fixture.positionY = yMin + ((yMax - yMin) / (positionCount + 1)) * positionIndex;
+        fixture.positionZ = zMin + ((zMax - zMin) / (positionCount + 1)) * positionIndex;
 
         positionIndex++;
       }
@@ -168,7 +175,7 @@ export class PreviewComponent implements AfterViewInit {
       if (this.fixtureService.settingsSelection) {
         fixture3d.isSelected = this.fixtureService.settingsFixtureIsSelected(fixture3d.fixture.fixture);
       } else {
-        fixture3d.isSelected = this.previewService.fixtureIsSelected(fixture3d.fixture.fixture.uuid, presets);
+        fixture3d.isSelected = this.previewService.fixtureIsSelected(fixture3d.fixture.fixture.uuid, fixture3d.fixture.pixelKey, presets);
       }
     }
 
@@ -238,16 +245,16 @@ export class PreviewComponent implements AfterViewInit {
     this.previewService.scene = this.scene;
 
     // Add a little bit of ambient light
-    const ambient = new THREE.AmbientLight(0xffffff, 1.5);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.8);
     this.scene.add(ambient);
 
     // Create the stage dimensions
     this.previewService.updateStage();
 
     const lights = [];
-    lights[0] = new THREE.PointLight(0xffffff, 1, 0, 0.1);
-    lights[1] = new THREE.PointLight(0xffffff, 1, 0, 0.1);
-    lights[2] = new THREE.PointLight(0xffffff, 1, 0, 0.1);
+    lights[0] = new THREE.PointLight(0xffffff, 2, 0, 0.1);
+    lights[1] = new THREE.PointLight(0xffffff, 2, 0, 0.1);
+    lights[2] = new THREE.PointLight(0xffffff, 2, 0, 0.1);
 
     lights[0].position.set(0, 2000, 0);
     lights[1].position.set(1000, 2000, 1000);
@@ -260,6 +267,8 @@ export class PreviewComponent implements AfterViewInit {
     this.scene.add(lights[0]);
     this.scene.add(lights[1]);
     this.scene.add(lights[2]);
+
+    this.previewService.updateFixtureSetup();
   }
 
   ngAfterViewInit(): void {
