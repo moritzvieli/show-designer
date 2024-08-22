@@ -329,7 +329,6 @@ export class FixtureService {
 
     cachedFixtureChannel.channel = channel;
     cachedFixtureChannel.name = channelName;
-    cachedFixtureChannel.pixelKey = pixelKey;
     cachedFixtureChannel.capabilities = this.getCapabilitiesByChannel(cachedFixtureChannel.channel, channelName, profile);
     const defaultValue = this.getDefaultValueByChannel(cachedFixtureChannel.channel);
     if (defaultValue) {
