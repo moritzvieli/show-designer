@@ -142,7 +142,7 @@ export class PreviewService {
 
     if (!this.presetService.getPresetFixture(preset, fixtureUuid, pixelKey)) {
       // fixture is not in preset
-      return null;
+      return undefined;
     }
 
     // Loop over the global fixtures to retain the order

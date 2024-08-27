@@ -36,37 +36,41 @@ export class ProjectLoadService {
 
   private migrateToVersion2() {
     for (let fixture of this.projectService.project.fixtures) {
-      const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
-      if (pixelKeys.length > 0) {
-        for (let pixelKey of pixelKeys) {
-          const projectFixture = new PresetFixture();
-          projectFixture.fixtureUuid = fixture.uuid;
-          projectFixture.pixelKey = pixelKey;
-          this.projectService.project.presetFixtures.push(projectFixture);
-        }
-      } else {
+      if (this.fixtureService.fixtureHasGeneralChannel(fixture)) {
         const projectFixture = new PresetFixture();
         projectFixture.fixtureUuid = fixture.uuid;
+        this.projectService.project.presetFixtures.push(projectFixture);
+      }
+
+      const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
+
+      for (let pixelKey of pixelKeys) {
+        const projectFixture = new PresetFixture();
+        projectFixture.fixtureUuid = fixture.uuid;
+        projectFixture.pixelKey = pixelKey;
         this.projectService.project.presetFixtures.push(projectFixture);
       }
     }
     for (let preset of this.projectService.project.presets) {
       for (let fixtureUuid of preset.fixtureUuids) {
         const fixture = this.fixtureService.getFixtureByUuid(fixtureUuid);
-        const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
-        if (pixelKeys.length > 0) {
-          for (let pixelKey of pixelKeys) {
-            const presetFixture = new PresetFixture();
-            presetFixture.fixtureUuid = fixtureUuid;
-            presetFixture.pixelKey = pixelKey;
-            preset.fixtures.push(presetFixture);
-          }
-        } else {
+
+        if (this.fixtureService.fixtureHasGeneralChannel(fixture)) {
           const presetFixture = new PresetFixture();
           presetFixture.fixtureUuid = fixtureUuid;
           preset.fixtures.push(presetFixture);
         }
+
+        const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
+
+        for (let pixelKey of pixelKeys) {
+          const presetFixture = new PresetFixture();
+          presetFixture.fixtureUuid = fixtureUuid;
+          presetFixture.pixelKey = pixelKey;
+          preset.fixtures.push(presetFixture);
+        }
       }
+      preset.fixtureUuids = undefined;
     }
     this.projectService.project.version = 2;
   }

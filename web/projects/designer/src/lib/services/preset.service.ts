@@ -129,20 +129,21 @@ export class PresetService {
     }
 
     for (const fixture of this.projectService.project.fixtures) {
-      const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
-      if (pixelKeys.length > 0) {
-        for (const pixelKey of pixelKeys) {
-          if (!this.fixtureIsSelected(fixture, pixelKey)) {
-            const presetFixture = new PresetFixture();
-            presetFixture.fixtureUuid = fixture.uuid;
-            presetFixture.pixelKey = pixelKey;
-            this.selectedPreset.fixtures.push(presetFixture);
-          }
-        }
-      } else {
+      if (this.fixtureService.fixtureHasGeneralChannel(fixture)) {
         if (!this.fixtureIsSelected(fixture, null)) {
           const presetFixture = new PresetFixture();
           presetFixture.fixtureUuid = fixture.uuid;
+          this.selectedPreset.fixtures.push(presetFixture);
+        }
+      }
+
+      const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
+
+      for (const pixelKey of pixelKeys) {
+        if (!this.fixtureIsSelected(fixture, pixelKey)) {
+          const presetFixture = new PresetFixture();
+          presetFixture.fixtureUuid = fixture.uuid;
+          presetFixture.pixelKey = pixelKey;
           this.selectedPreset.fixtures.push(presetFixture);
         }
       }

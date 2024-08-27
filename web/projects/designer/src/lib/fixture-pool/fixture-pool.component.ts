@@ -352,17 +352,18 @@ export class FixturePoolComponent implements OnInit {
         }
       }
       if (!found) {
-        const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
-        if (pixelKeys.length > 0) {
-          for (let pixelKey of pixelKeys) {
-            const presetFixture = new PresetFixture();
-            presetFixture.fixtureUuid = fixture.uuid;
-            presetFixture.pixelKey = pixelKey;
-            this.projectService.project.presetFixtures.push(presetFixture);
-          }
-        } else {
+        if (this.fixtureService.fixtureHasGeneralChannel(fixture)) {
           const presetFixture = new PresetFixture();
           presetFixture.fixtureUuid = fixture.uuid;
+          this.projectService.project.presetFixtures.push(presetFixture);
+        }
+
+        const pixelKeys = this.fixtureService.fixtureGetUniquePixelKeys(fixture);
+
+        for (let pixelKey of pixelKeys) {
+          const presetFixture = new PresetFixture();
+          presetFixture.fixtureUuid = fixture.uuid;
+          presetFixture.pixelKey = pixelKey;
           this.projectService.project.presetFixtures.push(presetFixture);
         }
       }
