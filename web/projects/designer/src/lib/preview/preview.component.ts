@@ -179,9 +179,6 @@ export class PreviewComponent implements AfterViewInit {
       }
     }
 
-    // TODO enable for monitoring the DMX universes
-    this.previewService.setUniverseValues(calculatedFixtures, this.projectService.project.masterDimmerValue);
-
     // Render the scene
     this.render();
 

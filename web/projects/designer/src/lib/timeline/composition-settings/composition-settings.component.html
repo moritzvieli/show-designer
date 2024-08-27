@@ -68,7 +68,6 @@
           <app-dropzone
             [url]="getDropzoneUrl()"
             [acceptedFiles]="'audio/*'"
-            [message]="uploadMessage"
             (error)="onUploadError($event)"
             (success)="onUploadSuccess($event)"
             (queuecomplete)="onQueueComplete($event)"

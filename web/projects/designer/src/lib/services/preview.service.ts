@@ -140,37 +140,50 @@ export class PreviewService {
     let index = 0;
     const countedFirstDmxChannelPixelKey: any[] = [];
 
+    if (!this.presetService.getPresetFixture(preset, fixtureUuid, pixelKey)) {
+      // fixture is not in preset
+      return null;
+    }
+
     // Loop over the global fixtures to retain the order
     for (const projectFixture of this.projectService.project.presetFixtures) {
-      const presetFixture = this.presetService.getPresetFixture(preset, fixtureUuid, pixelKey);
+      for (const presetFixture of preset.fixtures) {
+        if (
+          this.presetService.fixtureUuidAndPixelKeyEquals(
+            projectFixture.fixtureUuid,
+            presetFixture.fixtureUuid,
+            projectFixture.pixelKey,
+            presetFixture.pixelKey
+          )
+        ) {
+          if (this.presetService.fixtureUuidAndPixelKeyEquals(projectFixture.fixtureUuid, fixtureUuid, projectFixture.pixelKey, pixelKey)) {
+            return index;
+          }
 
-      if (!presetFixture) {
-        // Not found in the preset
-        return undefined;
-      }
+          const fixture = this.fixtureService.getFixtureByUuid(projectFixture.fixtureUuid);
+          const firstDmxChannelAndFixtureUuid = {
+            firstDmxChannel: fixture.dmxFirstChannel,
+            pixelKey: projectFixture.pixelKey,
+          };
 
-      if (projectFixture.fixtureUuid === fixtureUuid && ((!projectFixture.pixelKey && !pixelKey) || projectFixture.pixelKey === pixelKey)) {
-        return index;
-      }
+          const exists = countedFirstDmxChannelPixelKey.some(
+            (item) =>
+              item.firstDmxChannel === firstDmxChannelAndFixtureUuid.firstDmxChannel &&
+              ((!item.pixelKey && !firstDmxChannelAndFixtureUuid.pixelKey) || item.pixelKey === firstDmxChannelAndFixtureUuid.pixelKey)
+          );
 
-      const fixture = this.fixtureService.getFixtureByUuid(projectFixture.fixtureUuid);
-      const firstDmxChannelAndFixtureUuid = {
-        firstDmxChannel: fixture.dmxFirstChannel,
-        pixelKey: projectFixture.pixelKey,
-      };
+          // don't count fixtures on the same channel as already counted ones
+          if (!exists) {
+            index++;
+            countedFirstDmxChannelPixelKey.push(firstDmxChannelAndFixtureUuid);
+          }
 
-      const exists = countedFirstDmxChannelPixelKey.some(
-        (item) =>
-          item.firstDmxChannel === firstDmxChannelAndFixtureUuid.firstDmxChannel &&
-          ((!item.pixelKey && !firstDmxChannelAndFixtureUuid.pixelKey) || item.pixelKey === firstDmxChannelAndFixtureUuid.pixelKey)
-      );
-
-      // don't count fixtures on the same channel as already counted ones
-      if (!exists) {
-        index++;
-        countedFirstDmxChannelPixelKey.push(firstDmxChannelAndFixtureUuid);
+          break;
+        }
       }
     }
+
+    return undefined;
   }
 
   private getPresetIntensity(preset: PresetRegionScene, timeMillis: number): number {
@@ -481,47 +494,6 @@ export class PreviewService {
     }
 
     return calculatedFixtures;
-  }
-
-  public setUniverseValues(fixtures: Map<CachedFixture, FixtureChannelValue[]>, masterDimmerValue: number) {
-    // TODO only, if monitoring is enabled
-    return;
-
-    // // Reset all DMX universes
-    // for (const universe of this.universeService.universes) {
-    //   universe.channelValues = [];
-    //   for (let i = 0; i < 512; i++) {
-    //     universe.channelValues.push(0);
-    //   }
-    // }
-
-    // // loop over each fixture
-    // fixtures.forEach((channelValues: FixtureChannelValue[], cachedFixture: CachedFixture) => {
-    //   // TODO Get the correct universe for this fixture
-    //   const universe: Universe = this.universeService.getUniverseByUuid(cachedFixture.fixture.dmxUniverseUuid);
-
-    //   // loop over each channel for this fixture
-    //   for (let channelIndex = 0; channelIndex < cachedFixture.mode.channels.length; channelIndex++) {
-    //     const channelObj = cachedFixture.mode.channels[channelIndex];
-    //     if (typeof channelObj === 'string') {
-    //       const channelName = channelObj;
-    //       // match this mode channel with a channel value
-    //       for (const channelValue of channelValues) {
-    //         const channel = this.fixtureService.getChannelByName(cachedFixture, channelName);
-    //         if (channel && channel.channel) {
-    //           const fineIndex = channel.channel.fineChannelAliases.indexOf(channelName);
-    //           if (channel.name === channelValue.channelName || fineIndex > -1) {
-    //             const universeChannel = cachedFixture.fixture.dmxFirstChannel + channelIndex;
-    //             const dmxValue =
-    //               Math.floor(channelValue.value / Math.pow(256, channel.channel.fineChannelAliases.length - (fineIndex + 1))) % 256;
-    //             // TODO
-    //             break;
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // });
   }
 
   public fixtureIsSelected(uuid: string, pixelKey: string, presets: PresetRegionScene[]): boolean {

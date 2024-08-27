@@ -58,9 +58,13 @@ export class PresetService {
     }
   }
 
+  fixtureUuidAndPixelKeyEquals(fixtureUuid1: string, fixtureUuid2: string, pixelKey1: string, pixelKey2: string): boolean {
+    return fixtureUuid1 === fixtureUuid2 && ((!pixelKey1 && !pixelKey2) || pixelKey1 === pixelKey2);
+  }
+
   getPresetFixture(preset: Preset, fixtureUuid: string, pixelKey?: string): PresetFixture {
     for (const fixture of preset.fixtures) {
-      if (fixture.fixtureUuid === fixtureUuid && ((!fixture.pixelKey && !pixelKey) || fixture.pixelKey === pixelKey)) {
+      if (this.fixtureUuidAndPixelKeyEquals(fixture.fixtureUuid, fixtureUuid, fixture.pixelKey, pixelKey)) {
         return fixture;
       }
     }

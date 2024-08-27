@@ -350,6 +350,8 @@ export class FixtureService {
     if (repeatFor.length > 1) {
       // an array of pixel (groups)
       result = repeatFor;
+    } else if (repeatFor.length === 0) {
+      return result;
     } else if (repeatFor[0] === 'eachPixelABC') {
       // Gets computed into an alphanumerically sorted list of all pixelKeys
       if (profile.matrix.pixelCount.length === 3) {
@@ -574,7 +576,14 @@ export class FixtureService {
 
     for (const fixture of this.projectService.project.fixtures) {
       const pixelKeys = this.fixtureGetUniquePixelKeys(fixture);
-      if (pixelKeys.length > 0) {
+      if (pixelKeys.length === 0) {
+        const cachedFixture = new CachedFixture();
+        cachedFixture.fixture = fixture;
+        cachedFixture.profile = this.getProfileByUuid(fixture.profileUuid);
+        cachedFixture.mode = this.getModeByFixture(cachedFixture.profile, fixture);
+        cachedFixture.channels = this.getCachedChannels(cachedFixture.profile, cachedFixture.mode, null);
+        this.cachedFixtures.push(cachedFixture);
+      } else {
         for (let pixelKey of pixelKeys) {
           const cachedFixture = new CachedFixture();
           cachedFixture.fixture = fixture;
@@ -584,13 +593,6 @@ export class FixtureService {
           cachedFixture.channels = this.getCachedChannels(cachedFixture.profile, cachedFixture.mode, pixelKey);
           this.cachedFixtures.push(cachedFixture);
         }
-      } else {
-        const cachedFixture = new CachedFixture();
-        cachedFixture.fixture = fixture;
-        cachedFixture.profile = this.getProfileByUuid(fixture.profileUuid);
-        cachedFixture.mode = this.getModeByFixture(cachedFixture.profile, fixture);
-        cachedFixture.channels = this.getCachedChannels(cachedFixture.profile, cachedFixture.mode, null);
-        this.cachedFixtures.push(cachedFixture);
       }
     }
   }
