@@ -546,14 +546,15 @@ export class FixtureService {
         // check the template channels, if not found in the available channels
         if (!channelFound) {
           for (const templateChannelName of Object.keys(profile.templateChannels)) {
-            let pixelKeys = this.getAllPixelKeys(profile).concat(this.getAllPixelGroups(profile));
-            for (const pixelKey of pixelKeys) {
-              const channelName = this.getChannelNameWithPixelKey(templateChannelName, pixelKey);
+            let existingPixelKeys = this.getAllPixelKeys(profile).concat(this.getAllPixelGroups(profile));
+
+            for (const existingPixelKey of existingPixelKeys) {
+              const channelName = this.getChannelNameWithPixelKey(templateChannelName, existingPixelKey);
 
               if (channel.name === channelName) {
                 const templateChannel: FixtureChannel = profile.templateChannels[templateChannelName];
 
-                this.addCachedChannel(channels, templateChannel, channelName, pixelKey, profile);
+                this.addCachedChannel(channels, templateChannel, channelName, existingPixelKey, profile);
               }
             }
           }
