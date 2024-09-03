@@ -127,7 +127,9 @@
       "setting-stage-depth": "Tiefe",
       "setting-stage-floor-height": "Bodenhöhe",
       "setting-stage-ceiling-height": "Deckenhöhe",
-      "setting-stage-pillar-width": "Trägerdicke"
+      "setting-stage-pillar-width": "Trägerdicke",
+      "capability-sound-controlled": "Sound controlled",
+      "capability-random-timing": "Zufallsgesteuert"
     },
     "fixture-pool": {
       "title": "Fixture Pool",

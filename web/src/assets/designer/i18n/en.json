@@ -127,7 +127,9 @@
       "setting-stage-depth": "Depth",
       "setting-stage-floor-height": "Floor height",
       "setting-stage-ceiling-height": "Ceiling height",
-      "setting-stage-pillar-width": "Pillar width"
+      "setting-stage-pillar-width": "Pillar width",
+      "capability-sound-controlled": "Sound controlled",
+      "capability-random-timing": "Random timing"
     },
     "fixture-pool": {
       "title": "Fixture pool",

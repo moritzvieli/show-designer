@@ -3,6 +3,7 @@ import { CachedFixtureCapability } from '../../../models/cached-fixture-capabili
 import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
 import { FixtureProfile } from '../../../models/fixture-profile';
 import { PresetService } from '../../../services/preset.service';
+import { FixtureCapability } from 'dist/designer/lib/models/fixture-capability';
 
 @Component({
   selector: 'lib-app-fixture-capability-channel',
@@ -46,7 +47,11 @@ export class FixtureCapabilityChannelComponent implements OnInit {
 
     if (this.value >= 0) {
       for (const capability of this._channel.capabilities) {
-        if (capability.capability.dmxRange.length > 0 && capability.centerValue === this.value) {
+        if (
+          capability.capability.dmxRange.length > 0 &&
+          capability.capability.dmxRange[0] <= this.value &&
+          this.value <= capability.capability.dmxRange[1]
+        ) {
           this.selectedCapability = capability;
           break;
         }
@@ -59,15 +64,102 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   }
 
   capabilityHasRange(): boolean {
-    if (this._channel.capabilities && this._channel.capabilities.length === 1) {
+    if (this._channel?.capabilities?.length === 1) {
+      // TODO does this work in all cases? if we have no option, it's always a range?
       return true;
     }
 
-    if (this.selectedCapability && this.selectedCapability.capability.angleStart) {
+    if (
+      this.selectedCapability?.capability.angleStart ||
+      this.selectedCapability?.capability.speedStart ||
+      this.selectedCapability?.capability.brightnessStart ||
+      this.selectedCapability?.capability.durationStart ||
+      this.selectedCapability?.capability.colorTemperatureStart ||
+      this.selectedCapability?.capability.soundSensitivityStart ||
+      this.selectedCapability?.capability.horizontalAngleStart ||
+      this.selectedCapability?.capability.verticalAngleStart ||
+      this.selectedCapability?.capability.distanceStart ||
+      this.selectedCapability?.capability.openPercentStart ||
+      this.selectedCapability?.capability.frostIntensityStart ||
+      this.selectedCapability?.capability.fogOutputStart ||
+      this.selectedCapability?.capability.timeStart ||
+      this.selectedCapability?.capability.insertionStart ||
+      this.selectedCapability?.capability.colorsStart
+    ) {
       return true;
     }
 
     return false;
+  }
+
+  getDescriptionStart(capability: CachedFixtureCapability) {
+    if (!capability || !capability.capability) {
+      return '';
+    }
+    return (
+      capability.capability.angleStart ||
+      capability.capability.speedStart ||
+      capability.capability.brightnessStart ||
+      capability.capability.durationStart ||
+      capability.capability.colorTemperatureStart ||
+      capability.capability.soundSensitivityStart ||
+      capability.capability.horizontalAngleStart ||
+      capability.capability.verticalAngleStart ||
+      capability.capability.distanceStart ||
+      capability.capability.openPercentStart ||
+      capability.capability.frostIntensityStart ||
+      capability.capability.fogOutputStart ||
+      capability.capability.timeStart ||
+      capability.capability.insertionStart ||
+      capability.capability.colorsStart
+    );
+  }
+
+  getDescriptionEnd(capability: CachedFixtureCapability) {
+    if (!capability || !capability.capability) {
+      return '';
+    }
+    return (
+      capability.capability.angleEnd ||
+      capability.capability.speedEnd ||
+      capability.capability.brightnessEnd ||
+      capability.capability.durationEnd ||
+      capability.capability.colorTemperatureEnd ||
+      capability.capability.soundSensitivityEnd ||
+      capability.capability.horizontalAngleEnd ||
+      capability.capability.verticalAngleEnd ||
+      capability.capability.distanceEnd ||
+      capability.capability.openPercentEnd ||
+      capability.capability.frostIntensityEnd ||
+      capability.capability.fogOutputEnd ||
+      capability.capability.timeEnd ||
+      capability.capability.insertionEnd ||
+      capability.capability.colorsEnd
+    );
+  }
+
+  getDescription(capability: CachedFixtureCapability) {
+    if (!capability || !capability.capability) {
+      return '';
+    }
+    return (
+      capability.capability.slotNumber ||
+      capability.capability.shutterEffect ||
+      capability.capability.angle ||
+      capability.capability.speed ||
+      capability.capability.brightness ||
+      capability.capability.duration ||
+      capability.capability.colorTemperature ||
+      capability.capability.soundSensitivity ||
+      capability.capability.horizontalAngle ||
+      capability.capability.verticalAngle ||
+      capability.capability.distance ||
+      capability.capability.openPercent ||
+      capability.capability.frostIntensity ||
+      capability.capability.fogOutput ||
+      capability.capability.time ||
+      capability.capability.insertion
+    );
   }
 
   private getRangeMin(): number {
@@ -93,7 +185,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       return;
     }
 
-    if (!ignoreCapabilityRange && (value < this.getRangeMin() || value > this.getRangeMax())) {
+    if (!ignoreCapabilityRange && (value < this.rangeMin || value > this.rangeMax)) {
       return;
     }
 
@@ -107,7 +199,9 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       // TODO use the same technique in the dimmer/pan/tilt/color sliders
       if (!this.valueSetTimer) {
         this.valueSetTimer = setTimeout(() => {
-          this.sliderValue.nativeElement.value = this.value;
+          if (this.sliderValue) {
+            this.sliderValue.nativeElement.value = this.value;
+          }
           this.valueSetTimer = undefined;
         }, 30);
       }
@@ -141,10 +235,11 @@ export class FixtureCapabilityChannelComponent implements OnInit {
 
   capabilitySelected() {
     // select the center value of the selected capability
-    if (this.capabilityHasRange) {
+    if (this.capabilityHasRange()) {
       this.setValue(this.selectedCapability.capability.dmxRange[0], true);
     } else {
       this.setValue(this.selectedCapability.centerValue, true);
     }
+    this.updateChannel();
   }
 }
