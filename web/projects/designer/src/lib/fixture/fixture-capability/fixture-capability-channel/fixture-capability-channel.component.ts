@@ -69,7 +69,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
     this.rangeMin = this.getRangeMin();
     this.rangeMax = this.getRangeMax();
     this.descriptionStart = this.getDescriptionStart(this.selectedCapability);
-    this.descriptionEnd = this.getDescriptionStart(this.selectedCapability);
+    this.descriptionEnd = this.getDescriptionEnd(this.selectedCapability);
   }
 
   capabilityHasRange(): boolean {
