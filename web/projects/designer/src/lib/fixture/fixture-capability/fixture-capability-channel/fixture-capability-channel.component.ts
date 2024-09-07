@@ -3,7 +3,6 @@ import { CachedFixtureCapability } from '../../../models/cached-fixture-capabili
 import { CachedFixtureChannel } from '../../../models/cached-fixture-channel';
 import { FixtureProfile } from '../../../models/fixture-profile';
 import { PresetService } from '../../../services/preset.service';
-import { FixtureCapability } from 'dist/designer/lib/models/fixture-capability';
 
 @Component({
   selector: 'lib-app-fixture-capability-channel',
@@ -17,11 +16,16 @@ export class FixtureCapabilityChannelComponent implements OnInit {
   selectedCapability: CachedFixtureCapability;
   _channel: CachedFixtureChannel;
 
-  rangeMin = 0;
-  rangeMax = 0;
   defaultValue = 0;
   value = 0;
   templateValue = 0;
+  description: string;
+
+  hasRange = false;
+  rangeMin = 0;
+  rangeMax = 0;
+  descriptionStart: string;
+  descriptionEnd: string;
 
   valueSetTimer: any;
 
@@ -58,9 +62,14 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       }
     }
 
+    this.defaultValue = this.getDefaultValue();
+    this.description = this.getDescription(this.selectedCapability);
+
+    this.hasRange = this.capabilityHasRange();
     this.rangeMin = this.getRangeMin();
     this.rangeMax = this.getRangeMax();
-    this.defaultValue = this.getDefaultValue();
+    this.descriptionStart = this.getDescriptionStart(this.selectedCapability);
+    this.descriptionEnd = this.getDescriptionStart(this.selectedCapability);
   }
 
   capabilityHasRange(): boolean {
@@ -112,7 +121,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       capability.capability.timeStart ||
       capability.capability.insertionStart ||
       capability.capability.colorsStart
-    );
+    )?.toString();
   }
 
   getDescriptionEnd(capability: CachedFixtureCapability) {
@@ -135,7 +144,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       capability.capability.timeEnd ||
       capability.capability.insertionEnd ||
       capability.capability.colorsEnd
-    );
+    )?.toString();
   }
 
   getDescription(capability: CachedFixtureCapability) {
@@ -159,7 +168,7 @@ export class FixtureCapabilityChannelComponent implements OnInit {
       capability.capability.fogOutput ||
       capability.capability.time ||
       capability.capability.insertion
-    );
+    )?.toString();
   }
 
   private getRangeMin(): number {
