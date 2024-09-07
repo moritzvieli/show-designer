@@ -6,35 +6,44 @@ import { Positioning } from '../../models/fixture';
 import { FixtureCapabilityColor, FixtureCapabilityType } from '../../models/fixture-capability';
 import { FixtureChannelValue } from '../../models/fixture-channel-value';
 import { FixtureService } from '../../services/fixture.service';
+import { PreviewService } from '../../services/preview.service';
 
 export abstract class Fixture3d {
-  fixture: CachedFixture;
-  fixtureHasDimmer = false;
-  fixtureHasColorWheel = false;
-  fixtureHasColor = false;
+  private readonly pointLightMaxIntensity: number = 2;
+  private readonly spotLightLightMaxIntensity: number = 10;
 
-  scene: any;
+  protected scene: any;
 
-  colorRed: number;
-  colorGreen: number;
-  colorBlue: number;
+  public fixture: CachedFixture;
+  private fixtureHasDimmer = false;
+  private fixtureHasColorWheel = false;
+  private fixtureHasColor = false;
 
-  dimmer = 0;
+  private colorRed: number;
+  private colorGreen: number;
+  private colorBlue: number;
+  private dimmer: number = 0;
 
-  isSelected = false;
-  isLoaded = false;
+  protected lastSelected: boolean;
+  public isSelected = false;
+  protected isLoaded = false;
 
-  protected selectedMaterial: THREE.MeshLambertMaterial;
+  protected hasSpotLight: boolean = false;
+  protected spotLight: THREE.SpotLight;
+  protected spotLightBeam: THREE.Mesh;
+  protected spotlightGroup: THREE.Object3D;
+  protected spotlightMaterial: THREE.ShaderMaterial;
 
-  constructor(public fixtureService: FixtureService, fixture: CachedFixture, scene: any) {
+  constructor(
+    public fixtureService: FixtureService,
+    public previewService: PreviewService,
+    fixture: CachedFixture,
+    scene: any,
+    hasSpotLight: boolean = false
+  ) {
     this.fixture = fixture;
     this.scene = scene;
-
-    // TODO Don't create it for each fixture but pass it from the preview service
-    this.selectedMaterial = new THREE.MeshLambertMaterial({
-      color: 0xff00ff,
-      emissive: 0xff00ff,
-    });
+    this.hasSpotLight = hasSpotLight;
 
     // evaluate, various capabilities of this fixture
     for (const cachedChannel of this.fixture.channels) {
@@ -54,6 +63,95 @@ export abstract class Fixture3d {
           this.fixtureHasColorWheel = true;
         }
       }
+    }
+  }
+
+  private createSpotlightMaterial() {
+    const vertexShader = `
+    varying vec3 vNormal;
+    varying vec3 vWorldPosition;
+
+    void main(){
+      vNormal = normalize(normalMatrix * normal);
+
+      vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+      vWorldPosition = worldPosition.xyz;
+
+      gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`;
+    const fragmentShader = `
+    varying vec3 vNormal;
+    varying vec3 vWorldPosition;
+
+    uniform vec3 lightColor;
+    uniform float	opacity;
+    uniform vec3 spotPosition;
+    uniform float attenuation;
+    uniform float	anglePower;
+
+    void main(){
+      float intensity;
+
+      intensity	= distance(vWorldPosition, spotPosition) / attenuation;
+      intensity	= 1.0 - clamp(intensity, 0.0, 1.0);
+
+      vec3 normal	= vec3(vNormal.x, vNormal.y, abs(vNormal.z));
+      float angleIntensity	= pow(dot(normal, vec3(0.0, 0.0, 1.0)), anglePower);
+      intensity	= intensity * angleIntensity * opacity;
+
+      gl_FragColor	= vec4(lightColor, intensity);
+    }`;
+
+    this.spotlightMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        attenuation: {
+          type: 'f',
+          value: 800.0,
+        },
+        anglePower: {
+          type: 'f',
+          value: 2,
+        },
+        spotPosition: {
+          type: 'v3',
+          value: new THREE.Vector3(0, 0, 0),
+        },
+        lightColor: {
+          type: 'c',
+          value: new THREE.Color('white'),
+        },
+        opacity: {
+          type: 'f',
+          value: 1.0,
+        },
+      },
+      vertexShader,
+      fragmentShader,
+      transparent: true,
+      depthWrite: false,
+    });
+  }
+
+  protected createObjects() {
+    if (this.hasSpotLight) {
+      this.createSpotlightMaterial();
+
+      this.spotLight = new THREE.SpotLight(0xffffff, 50000);
+      this.spotLight.angle = 2;
+      this.spotLight.penumbra = 1;
+      this.spotLight.decay = 0.01;
+      this.spotLight.distance = 0;
+      this.spotLight.intensity = 1;
+
+      const spotLightTarget = new THREE.Object3D();
+      this.spotLight.target = spotLightTarget;
+
+      this.spotlightGroup = new THREE.Object3D();
+      this.spotlightGroup.add(this.spotLight);
+      this.spotlightGroup.add(spotLightTarget);
+      this.spotLight.position.set(0, -1.4, 0);
+      spotLightTarget.position.set(0, -10, 0);
+      this.createSpotLightBeam();
     }
   }
 
@@ -137,9 +235,24 @@ export abstract class Fixture3d {
         }
       }
     }
+
+    // Apply the colors and intensities
+    // Apply the dimmer value
+    // Take the color into account for the beam (don't show a black beam)
+    const color = new THREE.Color('rgb(' + this.colorRed + ', ' + this.colorGreen + ', ' + this.colorBlue + ')');
+    const intensityColor = Math.max(this.colorRed, this.colorGreen, this.colorBlue);
+
+    if (this.hasSpotLight) {
+      this.spotLight.color = color;
+      this.spotLightBeam.material.uniforms.lightColor.value = color;
+
+      this.spotLightBeam.material.uniforms.opacity.value = Math.min(intensityColor, this.dimmer);
+      this.spotLight.intensity = this.spotLightLightMaxIntensity * this.dimmer;
+      this.spotLightBeam.material.uniforms.spotPosition.value = this.spotlightGroup.position;
+    }
   }
 
-  updatePosition(object: THREE.Object3D) {
+  protected updatePosition(object: THREE.Object3D) {
     // Update the position
     switch (this.fixture.fixture.positioning) {
       case Positioning.topFront: {
@@ -172,7 +285,25 @@ export abstract class Fixture3d {
     }
   }
 
+  protected createSpotLightBeam() {
+    // TODO set the correct angle from the profile
+    const beamAngleDegrees = 14;
+    const geometry = new THREE.CylinderGeometry(0.1, beamAngleDegrees * 1.2, 100, 64, 20, false);
+    geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, -geometry.parameters.height / 2, 0));
+    geometry.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+
+    this.spotLightBeam = new THREE.Mesh(geometry, this.spotlightMaterial);
+    this.spotLightBeam.position.set(0, -0.02, 0);
+    this.spotLightBeam.receiveShadow = false;
+    this.spotLightBeam.castShadow = false;
+
+    this.spotlightGroup.add(this.spotLightBeam);
+    this.spotLightBeam.rotation.x = Math.PI / 2;
+  }
+
   destroy() {
-    this.selectedMaterial.dispose();
+    if (this.hasSpotLight) {
+      this.spotlightMaterial.dispose();
+    }
   }
 }

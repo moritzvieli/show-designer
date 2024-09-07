@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import * as THREE from 'three';
 import { CachedFixture } from '../models/cached-fixture';
@@ -16,17 +16,15 @@ import { TimelineService } from './timeline.service';
 @Injectable({
   providedIn: 'root',
 })
-export class PreviewService {
+export class PreviewService implements OnDestroy {
   public doUpdateFixtureSetup: Subject<void> = new Subject();
 
   public scene: THREE.Scene;
 
   private stageMeshes: THREE.Mesh[] = [];
-  private stageMaterial = new THREE.MeshStandardMaterial({
-    color: 0x0d0d0d,
-    // roughness: 0.5,
-    // metalness: 0.5,
-  });
+  private stageMaterial: THREE.MeshStandardMaterial;
+  fixtureMaterial: THREE.MeshStandardMaterial;
+  fixtureSelectedMaterial: THREE.MeshLambertMaterial;
 
   constructor(
     private presetService: PresetService,
@@ -34,7 +32,21 @@ export class PreviewService {
     private sceneService: SceneService,
     private timelineService: TimelineService,
     private projectService: ProjectService
-  ) {}
+  ) {
+    this.stageMaterial = new THREE.MeshStandardMaterial({
+      color: 0x0d0d0d,
+      // roughness: 0.5,
+      // metalness: 0.5,
+    });
+    this.fixtureMaterial = new THREE.MeshLambertMaterial({
+      color: 0x0d0d0d,
+      emissive: 0x0d0d0d,
+    });
+    this.fixtureSelectedMaterial = new THREE.MeshLambertMaterial({
+      color: 0xff00ff,
+      emissive: 0xff00ff,
+    });
+  }
 
   private getAlreadyCalculatedFixture(fixtures: CachedFixture[], fixtureIndex: number): CachedFixture {
     // Has this fixture already been calculated (same universe and dmx start address as a fixture before)
@@ -632,5 +644,10 @@ export class PreviewService {
     );
     this.scene.add(mesh);
     this.stageMeshes.push(mesh);
+  }
+
+  ngOnDestroy() {
+    this.fixtureMaterial.dispose();
+    this.fixtureSelectedMaterial.dispose();
   }
 }

@@ -15,11 +15,14 @@ import { ProjectService } from '../../services/project.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FixtureCapabilityComponent implements OnInit, OnDestroy {
-  // map containing the profile and the channel name containing the wheel
-  colorWheelChannels: Map<FixtureProfile, CachedFixtureChannel> = new Map<FixtureProfile, CachedFixtureChannel>();
-
   private fixtureSelectionChangedSubscription: Subscription;
   private previewSelectionChangedSubscription: Subscription;
+
+  // map containing the profile and the channel name containing the wheel
+  colorWheelChannels: Map<FixtureProfile, CachedFixtureChannel> = new Map<FixtureProfile, CachedFixtureChannel>();
+  hasCapabilityDimmer: boolean = false;
+  hasCapabilityColorOrColorWheel: boolean = false;
+  hasCapabilityPanTilt: boolean = false;
 
   constructor(
     public presetService: PresetService,
@@ -85,8 +88,15 @@ export class FixtureCapabilityComponent implements OnInit, OnDestroy {
     }
   }
 
+  private updateCapabilities() {
+    this.hasCapabilityDimmer = this.presetService.hasCapabilityDimmer();
+    this.hasCapabilityColorOrColorWheel = this.presetService.hasCapabilityColorOrColorWheel();
+    this.hasCapabilityPanTilt = this.presetService.hasCapabilityPanTilt();
+  }
+
   private update() {
     this.updateColorWheels();
+    this.updateCapabilities();
     this.changeDetectorRef.detectChanges();
   }
 

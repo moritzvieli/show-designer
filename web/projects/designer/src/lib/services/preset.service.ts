@@ -7,7 +7,6 @@ import { Fixture } from '../models/fixture';
 import { FixtureCapabilityColor, FixtureCapabilityType } from '../models/fixture-capability';
 import { FixtureCapabilityValue } from '../models/fixture-capability-value';
 import { FixtureChannelValue } from '../models/fixture-channel-value';
-import { FixtureMode } from '../models/fixture-mode';
 import { FixtureProfile } from '../models/fixture-profile';
 import { Preset } from '../models/preset';
 import { AnimationService } from './animation.service';
@@ -349,8 +348,8 @@ export class PresetService {
 
   private hasCapabilityType(type: FixtureCapabilityType): boolean {
     // there is at least one channel with at least one intensity capability
-    for (const projectFixture of this.selectedPreset.fixtures) {
-      const fixture = this.fixtureService.getCachedFixtureByUuid(projectFixture.fixtureUuid, projectFixture.pixelKey);
+    for (const presetFixture of this.selectedPreset.fixtures) {
+      const fixture = this.fixtureService.getCachedFixtureByUuid(presetFixture.fixtureUuid, presetFixture.pixelKey);
       for (const channel of fixture.channels) {
         if (channel.channel) {
           for (const capability of channel.capabilities) {

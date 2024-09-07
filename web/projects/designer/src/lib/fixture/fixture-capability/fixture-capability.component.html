@@ -7,13 +7,13 @@
       <!-- Dimmer -->
       <!-- the height attribute is required to avoid performance issues with many layouts (reflows)
       in Chrome during sliding -->
-      <div *ngIf="presetService.hasCapabilityDimmer()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+      <div *ngIf="hasCapabilityDimmer" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <lib-app-fixture-capability-dimmer></lib-app-fixture-capability-dimmer>
       </div>
 
       <!-- Color -->
       <!-- Also show for color wheel fixtures to approx. the color -->
-      <div *ngIf="presetService.hasCapabilityColorOrColorWheel()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+      <div *ngIf="hasCapabilityColorOrColorWheel" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <lib-app-fixture-capability-color></lib-app-fixture-capability-color>
       </div>
 
@@ -32,7 +32,7 @@
       </div>
 
       <!-- Pan/Tilt -->
-      <div *ngIf="presetService.hasCapabilityPanTilt()" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
+      <div *ngIf="hasCapabilityPanTilt" class="col col-auto p-0 my-3 mr-3" style="height: calc(100% - 2rem)">
         <lib-app-fixture-capability-pan-tilt></lib-app-fixture-capability-pan-tilt>
       </div>
 

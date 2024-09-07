@@ -59,13 +59,13 @@ export class PreviewComponent implements AfterViewInit {
     for (const fixture of this.fixtureService.cachedFixtures) {
       switch (fixture.profile.categories[0]) {
         case FixtureCategory['Moving Head']:
-          this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
+          this.fixtures3d.push(new MovingHead3d(this.fixtureService, this.previewService, this.previewMeshService, fixture, this.scene));
           break;
         case FixtureCategory['Color Changer']:
-          this.fixtures3d.push(new ColorChanger3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
+          this.fixtures3d.push(new ColorChanger3d(this.fixtureService, this.previewService, this.previewMeshService, fixture, this.scene));
           break;
         case FixtureCategory['Blinder']:
-          this.fixtures3d.push(new ColorChanger3d(this.fixtureService, this.previewMeshService, fixture, this.scene));
+          this.fixtures3d.push(new ColorChanger3d(this.fixtureService, this.previewService, this.previewMeshService, fixture, this.scene));
           break;
       }
     }

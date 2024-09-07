@@ -17,7 +17,6 @@ import { FixtureWheel } from '../models/fixture-wheel';
 import { FixtureWheelSlot, FixtureWheelSlotType } from '../models/fixture-wheel-slot';
 import { ProjectService } from './project.service';
 import { UuidService } from './uuid.service';
-import { FixtureModeChannel } from '../models/fixture-mode-channel';
 
 @Injectable({
   providedIn: 'root',
