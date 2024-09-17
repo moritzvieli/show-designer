@@ -9,6 +9,13 @@ The Rocket Show Designer relies on the Open Fixture Library (OFL). There is curr
 Use this repo to update the database with the newest fixtures:
 https://github.com/moritzvieli/show-designer-ofl-import
 
+## Example project for the online designer
+
+1. Prepare a project as desired
+2. Export it
+3. Remove the name and the id attributes
+4. Store it as project with ID 1 in the database
+
 ## Development
 
 - The git-flow-workflow is used: https://www.atlassian.com/de/git/tutorials/comparing-workflows/gitflow-workflow
@@ -32,8 +39,11 @@ npm run publish --ignore-scripts
 
 ## Build online version for production
 
-Activate the online designer-part in app.component.html first.
+Activate the online designer-part in web/src/app/app.component.html first.
 
 ```
-ng build --prod --base-href /designer/app/
+cd web
+ng build --configuration production --base-href /designer/app/
 ```
+
+Take the content of the folder dist/show-designer and upload it to the web (after emptying the folder there first).

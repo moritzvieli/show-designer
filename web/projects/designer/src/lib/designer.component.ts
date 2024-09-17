@@ -291,15 +291,15 @@ export class DesignerComponent implements OnInit, AfterViewInit {
   }
 
   projectSave() {
-    if (this.projectService.project.name) {
-      // this project has been saved before -> just save it again
-      this.projectService.save(this.projectService.project);
-    } else {
-      // this project has not yet been saved -> show the save as-dialog
-      this.userEnsureLoginService.login().subscribe(() => {
+    this.userEnsureLoginService.login().subscribe(() => {
+      if (this.projectService.project.name) {
+        // this project has been saved before -> just save it again
+        this.projectService.save(this.projectService.project);
+      } else {
+        // this project has not yet been saved -> show the save as-dialog
         this.modalService.show(ProjectSaveComponent, { keyboard: true, ignoreBackdropClick: false });
-      });
-    }
+      }
+    });
   }
 
   projectSaveAs() {

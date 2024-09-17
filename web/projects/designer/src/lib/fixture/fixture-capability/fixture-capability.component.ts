@@ -44,7 +44,9 @@ export class FixtureCapabilityComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.update();
+  }
 
   ngOnDestroy() {
     this.fixtureSelectionChangedSubscription.unsubscribe();

@@ -205,11 +205,11 @@
       "back": "Back",
       "close": "Close",
       "title-start": "Quick introduction",
-      "step-start": "Only fools read this! 🤪 Joking aside, you will see, Rocket Show is different. This two-minute-introduction will teach you the most basic functionalities. 🏆 You can always skip by closing this window on the top right.",
+      "step-start": "This two-minute-introduction will teach you the most basic functionalities of the Rocket Show Designer. 🏆 You can always skip by closing this window on the top right.",
       "title-preview": "Preview",
-      "step-preview": "You can see a 3D-preview of your show here. This might be useful as a guidance, but it looks much better in reality of course! 🤩",
+      "step-preview": "You can see a 3D-preview of your show here. This is a useful guidance, but it looks much better in reality, of course! If you're working on a Rocket Show device, you're able to activate a realtime preview for the connected devices in the settings.",
       "title-fixtures": "Fixtures",
-      "step-fixtures": "What would a lightshow be without lighting elements? 💩 Add new fixtures in the fixture pool (cogwheel upper right or key 'P') und and place them on the DMX universe. Continue selecting the fixtures here you want to use in the current preset. But what the heck is a preset? 🧐",
+      "step-fixtures": "Add new fixtures in the fixture pool (cogwheel upper right or key 'P') und and place them on the DMX universe. Continue, by selecting the fixtures you want to use in the current preset. But what's a preset? 🧐",
       "title-presets": "Presets",
       "step-presets": "A preset assigns properties and effects to a group of fixtures. There might be a preset to let all moving heads in the front row shine red.",
       "title-capabilities": "Capabilities, channels and effects",
@@ -217,9 +217,9 @@
       "title-scenes": "Scenes",
       "step-scenes": "One scene contains one or more presets. This allows for complex combinations you can easily use on different places. Higher placed presets overwrite properties from lower placed ones.",
       "title-timeline": "Timeline",
-      "step-timeline": "You can place scenes on the timeline and play them in sync with an audio file. ⏱ Such a file equals a composition on the Rocket Show device. Your lighting show will be played automatically with your composition.",
-      "title-finish": "The ending is near...",
-      "step-finish": "What!? You're still readying!? 😂 About time you're gonna try it out by yourself! Share your shows with your friends and see, what they think about it. 👫"
+      "step-timeline": "You can place scenes on the timeline and play them in sync with an audio file. ⏱ Such a file equals a composition on the Rocket Show device. Your lighting show will be played automatically with your composition, if the names match.",
+      "title-finish": "Well done!",
+      "step-finish": "About time you're gonna try it out by yourself! Share your shows with your friends and see, what they think about it. 👫"
     },
     "fixtureCapabilityType": {
       "NoFunction": "No function",
