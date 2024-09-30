@@ -52,5 +52,18 @@
     >
       <p class="m-auto" style="color: #717171">{{ 'designer.fixture.no-fixtures-selected' | translate }}</p>
     </div>
+
+    <div
+      *ngIf="
+        projectService.project.fixtures.length > 0 &&
+        presetService.selectedPreset &&
+        presetService.selectedPreset.fixtures.length > 0 &&
+        !hasCapabilityColorOrColorWheel &&
+        !hasCapabilityPanTilt
+      "
+      class="m-auto"
+    >
+      <p class="m-auto" style="color: #717171">{{ 'designer.fixture.no-capabilities-available' | translate }}</p>
+    </div>
   </div>
 </div>
