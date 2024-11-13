@@ -6,9 +6,13 @@ export const environment = {
   production: false,
   name: 'dev',
 
-  // Local backend
+  // online backend
   // localBackend: "https://rocketshow.net/designer",
+
+  // local backend
   localBackend: 'http://localhost:8080',
+
+  // rocket show device backend
   // localBackend: "http://rocketshow.local:8080",
 
   debug: true,

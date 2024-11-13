@@ -158,7 +158,7 @@
       "invalid-fixture-profile-file": "This is not a valid OFL fixture profile file. Please select a valid profile file."
     },
     "effect": {
-      "add-new": "Add new Effekt",
+      "add-new": "Add new Effect",
       "type-curve": "Curve",
       "type-pan-tilt": "Pan-Tilt",
       "curve": "Curve",
