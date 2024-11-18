@@ -398,6 +398,12 @@ export class PreviewService implements OnDestroy {
     values: FixtureChannelValue[],
     intensityPercentage: number
   ) {
+    let effectTimeMillis = timeMillis;
+
+    if (preset.region) {
+      effectTimeMillis = timeMillis - preset.region.startMillis;
+    }
+
     for (const effect of preset.preset.effects) {
       if (effect.visible) {
         // EffectCurve
@@ -423,7 +429,7 @@ export class PreviewService implements OnDestroy {
                   const fixtureChannelValue = new FixtureChannelValue();
                   fixtureChannelValue.channelName = cachedChannel.name;
                   fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
-                  fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex);
+                  fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(effectTimeMillis, fixtureIndex);
                   this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
                 }
               }
@@ -439,7 +445,7 @@ export class PreviewService implements OnDestroy {
                     const fixtureChannelValue = new FixtureChannelValue();
                     fixtureChannelValue.channelName = cachedChannel.name;
                     fixtureChannelValue.profileUuid = cachedFixture.profile.uuid;
-                    fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(timeMillis, fixtureIndex);
+                    fixtureChannelValue.value = cachedChannel.maxValue * effectCurve.getValueAtMillis(effectTimeMillis, fixtureIndex);
                     this.mixChannelValue(values, fixtureChannelValue, intensityPercentage);
                   }
                 }
