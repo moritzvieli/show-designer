@@ -37,6 +37,8 @@ cd ../..
 npm run publish --ignore-scripts
 ```
 
+Tag the version correspondingly.
+
 ## Build online version for production
 
 Activate the online designer-part in web/src/app/app.component.html first.
