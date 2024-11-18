@@ -45,7 +45,7 @@ Activate the online designer-part in web/src/app/app.component.html first.
 
 ```
 cd web
-ng build --configuration production --base-href /designer/app/
+ng build --configuration production --base-href web/designer/app/
 ```
 
-Take the content of the folder dist/show-designer and upload it to the web (after emptying the folder there first).
+Take the content of the folder dist/show-designer and upload it to the web /designer/app (after emptying the folder there first).
